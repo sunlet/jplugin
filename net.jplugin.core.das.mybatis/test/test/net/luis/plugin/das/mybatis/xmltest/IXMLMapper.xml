@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.net.luis.plugin.das.mybatis.xmltest.IXMLMapper">
+	<select id="add">
+		INSERT INTO mybtest(f1,f2) values( #{f1},#{f2})
+	</select>
+	<select id="select" resultType="test.net.jplugin.core.das.mybatis.MybtestBean">
+		SELECT * FROM mybtest
+	</select>
+	<delete id="clear">
+		DELETE FROM mybtest
+	</delete>
+</mapper>

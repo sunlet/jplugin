@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="default">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${basedir}/../jplugin-core-mvn/ant-lib/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+	<property name="tmpcls" value="${basedir}/tempclasses">
+	</property>
+
+	<target name="clean">
+		<delete dir="${tmpcls}" failonerror="no" />
+	</target>
+
+	<target name="foreach_test">
+		<foreach target="cp" param="projname" delimiter=",">
+			<path path="${basedir}/../net.jplugin.common.kits/bin" />
+			<path path="${basedir}/../net.jplugin.common.kits.http/bin" />
+			<path path="${basedir}/../net.jplugin.core.ctx/bin" />
+			<path path="${basedir}/../net.jplugin.core.das/bin" />
+			<path path="${basedir}/../net.jplugin.core.das.hib/bin" />
+			<path path="${basedir}/../net.jplugin.core.das.mybatis/bin" />
+			<path path="${basedir}/../net.jplugin.core.event/bin" />
+			<path path="${basedir}/../net.jplugin.core.job/bin" />
+			<path path="${basedir}/../net.jplugin.core.kernel/bin" />
+			<path path="${basedir}/../net.jplugin.core.lock/bin" />
+			<path path="${basedir}/../net.jplugin.core.log/bin" />
+			<path path="${basedir}/../net.jplugin.core.rclient/bin" />
+			<path path="${basedir}/../net.jplugin.core.scheduler/bin" />
+			<path path="${basedir}/../net.jplugin.core.service/bin" />
+		</foreach>
+	</target>
+
+	<target name="cp">
+		<copy todir="${tmpcls}">
+			<fileset dir="${projname}" includes="**/*.*">
+			</fileset>
+		</copy>
+	</target>
+
+
+	<property name="jar-file" value="${basedir}/target/${pom.name}-${pom.version}.jar" />
+	<target name="zip" >
+		<echo message="${basedir}/../jplugin-core-mvn/ant-lib/ant-contrib-1.0b3.jar" />
+		<echo message="##############${jar-file}">
+		</echo>
+		<jar destfile="${jar-file}">
+			<fileset dir="${tmpcls}" includes="**/*.*">
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="default" depends="clean,foreach_test,zip">
+	</target>
+
+</project>
