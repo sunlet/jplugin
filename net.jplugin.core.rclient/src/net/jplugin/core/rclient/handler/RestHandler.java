@@ -60,8 +60,9 @@ public class RestHandler implements IClientHandler{
 						}
 					}
 				}
-				String ret;
-				ret = HttpKit.post(c.getServiceBaseUrl()+"/"+method.getName()+".do", map);
+				String ret ;
+				String realUrl = ServiceUrlResolverManager.instance.resolveUrl(c.getProtocal(), c.getServiceBaseUrl());
+				ret = HttpKit.post(realUrl+"/"+method.getName()+".do", map);
 
 				if (StringKit.isNull(ret)){
 					throw new RuntimeException("Server return null,perhaps can't find the controller or method not found");
