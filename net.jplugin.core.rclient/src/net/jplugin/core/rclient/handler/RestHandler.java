@@ -21,10 +21,10 @@ import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.ext.webasic.api.Para;
 
 public class RestHandler implements IClientHandler{
-	static final String PARATYPES = "TYPES";
-	static final String PARAVALUES = "PARA";
-	static final String REMOTE_EXCEPTION_PREFIX = "$RE#";
-	static final String OPERATION_KEY = "_o";
+//	static final String PARATYPES = "TYPES";
+//	static final String PARAVALUES = "PARA";
+//	static final String REMOTE_EXCEPTION_PREFIX = "$RE#";
+//	static final String OPERATION_KEY = "_o";
 	
 	public <T> T createProxyObject(final Client<T> c) {
 		
