@@ -2,6 +2,13 @@ package net.jplugin.core.rclient;
 
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.kernel.api.ExtensionPoint;
+import net.jplugin.core.rclient.api.Client;
+import net.jplugin.core.rclient.api.ClientFactory;
+import net.jplugin.core.rclient.api.IClientHandler;
+import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
+import net.jplugin.core.rclient.handler.JavaRemotHandler;
+import net.jplugin.core.rclient.handler.RestHandler;
 
 /**
  *
@@ -10,7 +17,16 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
  **/
 
 public class Plugin extends AbstractPlugin{
-
+	public static final String EP_CLIENT_HANDLER ="EP_CLIENT_HANDLER";
+	
+	
+	public Plugin(){
+		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_HANDLER, IClientHandler.class, true));
+		
+		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REMOJAVA,JavaRemotHandler.class);
+		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REST,RestHandler.class);
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()
 	 */
@@ -24,8 +40,7 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		ClientHandlerRegistry.instance.init();
 	}
 
 }

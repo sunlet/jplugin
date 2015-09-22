@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
 import net.jplugin.core.rclient.handler.JavaRemotHandler;
 import net.jplugin.core.rclient.handler.RestHandler;
 
@@ -19,6 +20,7 @@ public class Client <T> {
 	public static final String CLIENT_TOKEN="_clientToken";
 	
 	public static final String PROTOCOL_REST="rest";
+	public static final String PROTOCOL_NIOREST="rest";
 	public static final String PROTOCOL_REMOJAVA="remotejava";
 	
 	ClientInfo clientInfo;
@@ -27,11 +29,11 @@ public class Client <T> {
 	T  object;
 	String protocal;
 	
-	private static Map<String,IClientHandler> handlerMap = new HashMap<String,IClientHandler>(); 
-	static{
-		handlerMap.put(PROTOCOL_REST, new RestHandler());
-		handlerMap.put(PROTOCOL_REMOJAVA, new JavaRemotHandler());
-	}
+//	private static Map<String,IClientHandler> handlerMap = new HashMap<String,IClientHandler>(); 
+//	static{
+//		handlerMap.put(PROTOCOL_REST, new RestHandler());
+//		handlerMap.put(PROTOCOL_REMOJAVA, new JavaRemotHandler());
+//	}
 	
 	Client(Class<T> intf,String serverurl,ClientInfo ci){
 		this.interfaceClazz = intf;
@@ -74,7 +76,9 @@ public class Client <T> {
 			this.protocal = PROTOCOL_REMOJAVA;
 		}
 		
-		IClientHandler handler = handlerMap.get(this.protocal);
+		IClientHandler handler = ClientHandlerRegistry.instance.getClientHandler(this.protocal);
+//		IClientHandler handler = handlerMap.get(this.protocal);
+		
 		if (handler==null) throw new RuntimeException("Error protocal:"+this.protocal);
 		
 		return handler.createProxyObject(this);
