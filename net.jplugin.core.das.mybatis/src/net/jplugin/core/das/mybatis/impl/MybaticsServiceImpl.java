@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.das.api.DataSourceHolder;
+import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
 import net.jplugin.core.service.api.ServiceFactory;
 
 import org.apache.ibatis.mapping.Environment;
@@ -65,6 +66,18 @@ public class MybaticsServiceImpl implements IMybatisService {
 		}
 	}
 
+	@Override
+	public <M,R> R returnWithMapper(Class<M> type,IMapperHandlerForReturn<M,R> handler){
+		SqlSession sess = openSession();
+		try{
+			M mapper = sqlSessionFactory.getConfiguration().getMapper(type, sess);
+			return handler.fetchResult(mapper);
+		}finally{
+			sess.close();
+		}
+	}
+
+	
 	/**
 	 * 注意，这里获取的connection不用关闭，会自动关闭的
 	 */
