@@ -37,6 +37,7 @@ public class MybaticsServiceImpl implements IMybatisService {
 		for (String c:mappers){
 			try {
 				configuration.addMapper(Class.forName(c));
+				MybatsiInterceptorManager.instance.installPlugins(configuration);
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
