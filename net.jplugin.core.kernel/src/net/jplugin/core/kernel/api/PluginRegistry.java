@@ -158,13 +158,11 @@ public class PluginRegistry {
 			IPlugin p = pluginList.get(i);
 			String name = p.getName();
 			if (StringKit.isNull(name)){
-				eList.add(new PluginError("null","plugin name is null,removed"));
-				pluginList.remove(i);
+				eList.add(new PluginError("null","plugin name is null"));
 				continue;
 			}
 			if (tmp.get(name)!=null){
 				eList.add(new PluginError(name,"plugin same name with privious,removed"));
-				eList.remove(i);
 				continue;
 			}
 			tmp.put(name, p);
