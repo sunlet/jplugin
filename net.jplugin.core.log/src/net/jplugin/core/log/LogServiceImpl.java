@@ -9,7 +9,6 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 
-import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -22,7 +21,12 @@ import org.apache.log4j.PropertyConfigurator;
  **/
 
 public class LogServiceImpl implements ILogService {
-	public void init(){
+
+	public LogServiceImpl() {
+        init();
+    }
+
+	private void init(){
 		Properties prop = PropertiesKit.loadProperties(PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties");
 		PropertiesKit.replaceVar(prop, PluginEnvirement.WORK_DIR, System.getProperty(PluginEnvirement.WORK_DIR));
 		PropertyConfigurator.configure(prop);
