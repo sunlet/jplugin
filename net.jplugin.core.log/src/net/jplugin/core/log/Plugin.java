@@ -30,7 +30,7 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.IPlugin#init()
 	 */
 	public void init() {
-		((LogServiceImpl)ServiceFactory.getService(ILogService.class)).init();
+//		((LogServiceImpl)ServiceFactory.getService(ILogService.class)).init();
 	}
 
 }
