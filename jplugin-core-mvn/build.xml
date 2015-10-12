@@ -29,6 +29,7 @@
 			<path path="${basedir}/../net.jplugin.core.rclient/bin" />
 			<path path="${basedir}/../net.jplugin.core.scheduler/bin" />
 			<path path="${basedir}/../net.jplugin.core.service/bin" />
+			<path path="${basedir}/../net.jplugin.core.config/bin" />
 		</foreach>
 	</target>
 
