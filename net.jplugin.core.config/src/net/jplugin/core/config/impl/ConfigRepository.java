@@ -1,4 +1,4 @@
-package net.jplugin.core.config.api;
+package net.jplugin.core.config.impl;
 
 import java.io.File;
 import java.util.HashMap;

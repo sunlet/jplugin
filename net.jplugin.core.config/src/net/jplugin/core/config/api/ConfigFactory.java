@@ -1,6 +1,7 @@
 package net.jplugin.core.config.api;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.impl.ConfigRepository;
 /**
 *
 * @author: LiuHang

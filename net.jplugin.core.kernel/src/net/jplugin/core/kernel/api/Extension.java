@@ -15,7 +15,7 @@ import net.jplugin.core.kernel.impl.PropertyUtil;
  **/
 
 public class Extension {
-
+	public static IPropertyFilter propertyFilter=null;
 	String refExtensionPoint;
 	String name;
 	Class clazz;
@@ -52,9 +52,16 @@ public class Extension {
 		public String getValue() {
 			return value;
 		}
+		public void setValue(String v){
+			value = v;
+		}
+		
 	}
 	
 	public synchronized void load() throws Exception{
+		if (propertyFilter!=null){
+			filterProperty(this.propertyList);
+		}
 		if (this.extensionObject == null){
 			if (clazz.equals(String.class)){
 				//字符串类型采用特殊加载方式
@@ -73,6 +80,12 @@ public class Extension {
 		}
 	}
 	
+	private void filterProperty(Vector<Property> list) {
+		for (Property p:list){
+			p.setValue(propertyFilter.filte(p.getValue()));
+		}
+	}
+
 	/**
 	 * @param extensionObject2
 	 * @param propertyList2
