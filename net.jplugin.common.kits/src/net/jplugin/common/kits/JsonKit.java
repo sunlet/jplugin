@@ -12,7 +12,7 @@ import net.jplugin.common.kits.PritiveKits.Transformer;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
- * Jsonæ“ä½œå·¥å…·ç±?
+ * Jsonæ“ä½œå·¥å…·ï¿½?
  * @author liyy
  * @date 2014-05-20
  */
@@ -31,8 +31,8 @@ public class JsonKit {
 		return writer.toString();
 	}
 
-	public static Object json2Object(String json, Class klass) {
-		Object object = null;
+	public static <T> T json2Object(String json, Class<T> klass) {
+		T object = null;
 		try {
 			if (json != null && json.length() > 0)
 				object = mapper.readValue(json, klass);
@@ -64,12 +64,12 @@ public class JsonKit {
 		return m;
 	}
 	
-	public static List json2ListBean(String json, Class beanClass) {
-		List m = null;
+	public static <T> List<T> json2ListBean(String json, Class<T> beanClass) {
+		List<T> m = null;
 		try {
 			if (json != null && json.length() > 0){
 				JavaType javaType = getCollectionType(ArrayList.class, beanClass);
-				m = (List) mapper.readValue(json, javaType);
+				m = mapper.readValue(json, javaType);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -77,12 +77,12 @@ public class JsonKit {
 		return m;
 	}
 	
-	public static Map json2MapBean(String json, Class keyClass, Class beanClass) {
+	public static <K, V> Map json2MapBean(String json, Class<K> keyClass, Class<V> beanClass) {
 		Map m = null;
 		try {
 			if (json != null && json.length() > 0){
 				JavaType javaType = getCollectionType(HashMap.class, keyClass, beanClass);
-				m = (Map) mapper.readValue(json, javaType);
+				m = mapper.readValue(json, javaType);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -97,10 +97,10 @@ public class JsonKit {
 		System.out.println(object2Json(arr));
 		
 		String json = object2Json(arr);
-		TestBean[] ret  =  (TestBean[]) json2Object(json, TestBean[].class);
+		TestBean[] ret  = json2Object(json, TestBean[].class);
 		System.out.println(object2Json(ret));
 		
-		List list = (List) json2Object(json, java.util.List.class);
+		List list = json2Object(json, java.util.List.class);
 		
 		System.out.println(object2Json(list));
 	}
@@ -137,12 +137,12 @@ public class JsonKit {
 	}
 
 	/**
-	 * ÔöÇ¿ĞÍ×ª»»£¬¶ÔÓÚ»ù±¾ÀàĞÍÖ±½Ó×ª»»×Ö·û´®
+	 * ï¿½ï¿½Ç¿ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½×ªï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 	 * @param val
 	 * @param clz
 	 * @return
 	 */
-	public static Object json2ObjectEx(String val, Class<?> clz) {
+	public static <T> Object json2ObjectEx(String val, Class<T> clz) {
 		if (val==null || val.equals("")){
 			return null;
 		}
