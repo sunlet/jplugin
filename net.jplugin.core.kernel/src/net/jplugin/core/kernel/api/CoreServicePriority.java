@@ -24,4 +24,5 @@ public class CoreServicePriority {
 	public static final int FILE_UPLOAD = 130 + OFFSET;
 	public static final int JOB = 140 + OFFSET;
 	public static final int LOCK = 150 + OFFSET;
+	public static final int CONFIG = 5+OFFSET;
 }
