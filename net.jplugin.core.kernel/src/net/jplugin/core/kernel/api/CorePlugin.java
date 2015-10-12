@@ -21,6 +21,7 @@ public class CorePlugin {
 		addIfExists(ret,"net.jplugin.core.service.Plugin");
 		addIfExists(ret,"net.jplugin.core.das.hib.Plugin");
 		addIfExists(ret,"net.jplugin.core.das.mybatis.Plugin");
+		addIfExists(ret,"net.jplugin.core.config.Plugin");
 
 		//web
 		addIfExists(ret,"net.jplugin.ext.webasic.Plugin");
