@@ -26,11 +26,11 @@ public class RestHandler implements IClientHandler{
 //	static final String REMOTE_EXCEPTION_PREFIX = "$RE#";
 //	static final String OPERATION_KEY = "_o";
 	
-	public <T> T createProxyObject(final Client<T> c) {
-		
-		return (T)Proxy.newProxyInstance(c.getInterfaceClazz().getClassLoader(), new Class[]{c.getInterfaceClazz()}, new InvocationHandler() {
-			
-			public Object invoke(Object proxy, Method method, Object[] args)
+//	public <T> T createProxyObject(final Client<T> c) {
+//		
+//		return (T)Proxy.newProxyInstance(c.getInterfaceClazz().getClassLoader(), new Class[]{c.getInterfaceClazz()}, new InvocationHandler() {
+//			
+			public Object invoke(Client c,Object proxy, Method method, Object[] args)
 					throws Throwable {
 				if (c.getServiceBaseUrl()==null){
 					throw new RuntimeException("Server url is null");
@@ -121,7 +121,7 @@ public class RestHandler implements IClientHandler{
 				}
 				return paramName;
 			}
-		});
-	}
+//		});
+//	}
 
 }

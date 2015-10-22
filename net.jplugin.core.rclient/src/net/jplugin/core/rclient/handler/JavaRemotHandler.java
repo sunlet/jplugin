@@ -24,12 +24,12 @@ public class JavaRemotHandler implements IClientHandler{
 	/**
 	 * @return
 	 */
-	public <T> T createProxyObject(final Client<T> c) {
-		//final ClientInfo clientInfo = c.getClientInfo();
-		
-		return (T)Proxy.newProxyInstance(c.getInterfaceClazz().getClassLoader(), new Class[]{c.getInterfaceClazz()}, new InvocationHandler() {
+//	public <T> T createProxyObject(final Client<T> c) {
+//		//final ClientInfo clientInfo = c.getClientInfo();
+//		
+//		return (T)Proxy.newProxyInstance(c.getInterfaceClazz().getClassLoader(), new Class[]{c.getInterfaceClazz()}, new InvocationHandler() {
 			
-			public Object invoke(Object proxy, Method method, Object[] args)
+			public Object invoke(Client c,Object proxy, Method method, Object[] args)
 					throws Throwable {
 				if (c.getServiceBaseUrl()==null){
 					throw new RuntimeException("Server url is null");
@@ -81,6 +81,6 @@ public class JavaRemotHandler implements IClientHandler{
 				}
 				return retObj;
 			}
-		});
-	}
+//		});
+//	}
 }

@@ -13,4 +13,8 @@ public class ExtendsionClientHelper {
 	public static void addServiceUrlResolverExtension(AbstractPlugin plugin, String protocol, Class clazz) {
 		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_SERVICEURL_RESOLVER, protocol,clazz));
 	}
+	public static void addClientFilterExtension(AbstractPlugin plugin, Class clazz) {
+		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_CLIENT_FILTER, clazz));
+	}
+
 }
