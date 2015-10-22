@@ -55,5 +55,12 @@ public class ClientCallContext {
 		this.endTime = System.currentTimeMillis();
 		this.throwable = th;
 	}
+	public long getStartTime() {
+		return startTime;
+	}
+	public long getEndTime() {
+		return endTime;
+	}
+	
 	
 }
