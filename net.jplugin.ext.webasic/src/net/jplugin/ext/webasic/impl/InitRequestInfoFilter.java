@@ -71,5 +71,7 @@ public class InitRequestInfoFilter implements WebFilter {
 //		info.setClientVersion(req.getParameter(CLIENTVERSION));
 //		return true;
 	}
+	public void doAfter(HttpServletRequest req, HttpServletResponse res, Throwable th) {
+	}
 
 }

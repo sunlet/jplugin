@@ -6,6 +6,7 @@ import java.util.Map;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
 import net.jplugin.core.rclient.handler.JavaRemotHandler;
+import net.jplugin.core.rclient.handler.ClientProxyUtil;
 import net.jplugin.core.rclient.handler.RestHandler;
 
 /**
@@ -80,8 +81,8 @@ public class Client <T> {
 //		IClientHandler handler = handlerMap.get(this.protocal);
 		
 		if (handler==null) throw new RuntimeException("Error protocal:"+this.protocal);
-		
-		return handler.createProxyObject(this);
+		return ClientProxyUtil.createProxyObject(this);
+//		return handler.createProxyObject(this);
 	}
 	
 //	/**

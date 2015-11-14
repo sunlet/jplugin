@@ -17,4 +17,6 @@ public interface WebFilter {
 	 * @return
 	 */
 	public boolean  doFilter(HttpServletRequest req,HttpServletResponse res);
+
+	public void doAfter(HttpServletRequest req, HttpServletResponse res, Throwable th);
 }

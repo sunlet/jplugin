@@ -65,7 +65,13 @@ public class WebDriver {
 			
 			WebContext.initFromRequest(req);
 			if (doWebFilter(req,res)){
-				dohttpThrowEx(req, res);
+				Throwable th = null;
+				try{
+					dohttpThrowEx(req, res);
+				}catch(Throwable t){
+					th = t;
+				}
+				doAfterWebFilter(req,res,th);
 			}
 		}catch(Throwable e){
 			e.printStackTrace();
@@ -75,6 +81,8 @@ public class WebDriver {
 		}
 	}
 	
+
+
 	/**
 	 * 如果有返回false，则中断
 	 * @param req
@@ -90,6 +98,17 @@ public class WebDriver {
 		return true;
 	}
 
+	private void doAfterWebFilter(HttpServletRequest req, HttpServletResponse res,Throwable th) {
+		for (int i=filters.length-1;i>=0;i--){
+			WebFilter filter = filters[i];
+			try{
+				filter.doAfter(req,res,th);
+			}catch(Exception e){
+				e.printStackTrace();
+				ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(req.getRequestURI(),e);
+			}
+		}
+	}
 	/**
 	 * @return 
 	 * 
