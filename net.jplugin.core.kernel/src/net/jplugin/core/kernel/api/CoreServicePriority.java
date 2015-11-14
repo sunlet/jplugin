@@ -10,7 +10,7 @@ public class CoreServicePriority {
 	private static final int OFFSET = -500;
 	public static final int KERNEL = 0 + OFFSET;
 	public static final int SERVICE = 10 + OFFSET;
-	public static final int LOG = 20 + OFFSET;
+	public static final int LOG = 1 + OFFSET;
 	public static final int CTX = 30 + OFFSET;
 	public static final int DAS = 40 + OFFSET;
 	public static final int DAS_HIB = 50 + OFFSET;
