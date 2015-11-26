@@ -8,7 +8,11 @@ import net.jplugin.core.service.api.ServiceFactory;
 public class LazyLogger implements Logger{
 	private String logName;
 	private Logger log = null;
-	public LazyLogger(String name){
+	
+	public static Logger get(String name){
+		return new LazyLogger(name);
+	}
+	private LazyLogger(String name){
 		logName = name;
 	}
 	
