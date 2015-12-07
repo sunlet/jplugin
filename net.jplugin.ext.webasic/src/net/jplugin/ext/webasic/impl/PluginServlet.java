@@ -33,7 +33,7 @@ public class PluginServlet extends HttpServlet{
 		dohttp(req, resp);
 	}
 	
-	public void dohttp(HttpServletRequest req,HttpServletResponse res){
+	public void dohttp(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException{
 //		ThreadLocalContext tlc =null;
 //		try{
 //			tlc = ThreadLocalContextManager.instance.createContext();

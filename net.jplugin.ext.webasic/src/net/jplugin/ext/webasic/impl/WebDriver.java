@@ -1,8 +1,10 @@
 package net.jplugin.ext.webasic.impl;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,7 +60,7 @@ public class WebDriver {
 		
 	}
 
-	public void dohttp(HttpServletRequest req,HttpServletResponse res){
+	public void dohttp(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException{
 		ThreadLocalContext tlc =null;
 		try{
 			tlc = ThreadLocalContextManager.instance.createContext();
@@ -68,16 +70,21 @@ public class WebDriver {
 				Throwable th = null;
 				try{
 					dohttpThrowEx(req, res);
+					doAfterWebFilter(req,res,null);
 				}catch(Throwable t){
 					th = t;
-					th.printStackTrace();
-					getLogger().error("Error for service "+req.getRequestURI(),th);
+					doAfterWebFilter(req,res,th);
 				}
-				doAfterWebFilter(req,res,th);
+				//如果发生异常再次抛出
+				if (th!=null) throw th;
 			}
 		}catch(Throwable e){
 			e.printStackTrace();
 			getLogger().error("Error when service "+req.getRequestURI(),e);
+			//throw exception
+			if (e instanceof ServletException) throw (ServletException)e;
+			else if (e instanceof IOException) throw (IOException)e;
+			else throw (new ServletException(e));
 		}finally{
 			ThreadLocalContextManager.instance.releaseContext();
 		}
