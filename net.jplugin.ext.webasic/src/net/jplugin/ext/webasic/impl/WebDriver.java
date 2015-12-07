@@ -70,6 +70,8 @@ public class WebDriver {
 					dohttpThrowEx(req, res);
 				}catch(Throwable t){
 					th = t;
+					th.printStackTrace();
+					getLogger().error("Error for service "+req.getRequestURI(),th);
 				}
 				doAfterWebFilter(req,res,th);
 			}
