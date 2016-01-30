@@ -31,7 +31,7 @@ public class InitRequestInfoFilter implements WebFilter {
 	 * @see net.luis.plugin.webservice.api.WebFilter#doFilter(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
-		res.addHeader("Access-Control-Allow-Origin","*");
+//		res.addHeader("Access-Control-Allow-Origin","*");
 		
 		ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(req.getParameter("_gid"));
 		String _tk = req.getParameter("_tk");
