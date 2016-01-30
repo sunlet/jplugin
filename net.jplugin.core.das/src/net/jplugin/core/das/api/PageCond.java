@@ -6,9 +6,12 @@ package net.jplugin.core.das.api;
  * @version 创建时间：2015-2-17 下午04:59:13
  **/
 
+
 public class PageCond {
 	private int pageSize;
 	private int pageIndex;
+	private boolean getCount;
+	private long count;
 
 	public PageCond (int aPageSize,int aPageIndex){
 		if (aPageSize<1){
@@ -33,5 +36,17 @@ public class PageCond {
 	public int getPageSize() {
 		return pageSize;
 	}
-
+	
+	public boolean isGetCount() {
+		return getCount;
+	}
+	public void setGetCount(boolean getCount) {
+		this.getCount = getCount;
+	}
+	public long getCount() {
+		return count;
+	}
+	public void setCount(long count) {
+		this.count = count;
+	}
 }
