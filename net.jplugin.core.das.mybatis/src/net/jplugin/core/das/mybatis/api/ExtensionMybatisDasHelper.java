@@ -14,7 +14,11 @@ public class ExtensionMybatisDasHelper {
 	public static void addMappingExtension(AbstractPlugin plugin,Class mappingIntf){
 		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_MAPPER, String.class,new String[][]{{"value",mappingIntf.getName()}}));
 	}
-	
+
+	public static void addMappingExtension(AbstractPlugin plugin,String resource){
+		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_MAPPER, String.class,new String[][]{{"value",resource}}));
+	}
+
 	public static void addInctprorExtension(AbstractPlugin plugin,Class inceptorClass){
 		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_INCEPT, inceptorClass));
 	}

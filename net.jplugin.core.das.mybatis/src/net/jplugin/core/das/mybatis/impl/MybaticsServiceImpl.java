@@ -1,20 +1,23 @@
 package net.jplugin.core.das.mybatis.impl;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import net.jplugin.core.ctx.api.TransactionManager;
-import net.jplugin.core.das.api.DataSourceHolder;
-import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
-import net.jplugin.core.service.api.ServiceFactory;
-
+import org.apache.ibatis.builder.xml.XMLMapperBuilder;
+import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+
+import net.jplugin.core.ctx.api.TransactionManager;
+import net.jplugin.core.das.api.DataSourceHolder;
+import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
+import net.jplugin.core.service.api.ServiceFactory;
 
 public class MybaticsServiceImpl implements IMybatisService {
 	TxManagedDataSource managedDataSource=null;
@@ -36,8 +39,14 @@ public class MybaticsServiceImpl implements IMybatisService {
 		
 		for (String c:mappers){
 			try {
-				configuration.addMapper(Class.forName(c));
-			} catch (ClassNotFoundException e) {
+				if (c.endsWith(".xml")||c.endsWith(".XML")){
+					 InputStream inputStream = Resources.getResourceAsStream(c);
+			         XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, c, configuration.getSqlFragments());
+			         mapperParser.parse();
+				}else{
+					configuration.addMapper(Class.forName(c));
+				}
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
