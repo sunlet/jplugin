@@ -96,7 +96,7 @@ public class DataService4Hibernate implements IDataService{
     	}
     	if (ec!=null && ec.getPageCond()!=null){
     		PageCond pc = ec.getPageCond();
-    		query.setFirstResult(pc.getFirstRow());
+    		query.setFirstResult(pc._getFirstRow());
     		query.setMaxResults(pc.getPageSize());
     	}
     	List list = query.list();
@@ -114,7 +114,7 @@ public class DataService4Hibernate implements IDataService{
     	}
 		if (ec!=null && ec.getPageCond()!=null){
 			PageCond pc = ec.getPageCond();
-			query.setFirstResult(pc.getFirstRow());
+			query.setFirstResult(pc._getFirstRow());
     		query.setMaxResults(pc.getPageSize());
 		}
 		List list = query.list();

@@ -189,7 +189,7 @@ public class PageInterceptor implements Interceptor {
      */
     public StringBuilder buildPageSqlForMysql(String sql, PageCond page) {
         StringBuilder pageSql = new StringBuilder(100);
-        String beginrow = String.valueOf(page.getFirstRow());
+        String beginrow = String.valueOf(page._getFirstRow());
         pageSql.append(sql);
         pageSql.append(" limit " + beginrow + "," + page.getPageSize());
         return pageSql;
@@ -204,8 +204,8 @@ public class PageInterceptor implements Interceptor {
      */
     public StringBuilder buildPageSqlForOracle(String sql, PageCond page) {
         StringBuilder pageSql = new StringBuilder(100);
-        String beginrow = String.valueOf(page.getFirstRow());
-        String endrow = String.valueOf(page.getFirstRow() + page.getPageSize());
+        String beginrow = String.valueOf(page._getFirstRow());
+        String endrow = String.valueOf(page._getFirstRow() + page.getPageSize());
 
         pageSql.append("select * from ( select temp.*, rownum row_id from ( ");
         pageSql.append(sql);
