@@ -4,7 +4,7 @@
 
 	<groupId>net.jplugin.mvn</groupId>
 	<artifactId>jplugin-core</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
+	<version>1.4.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jplugin-core</name>

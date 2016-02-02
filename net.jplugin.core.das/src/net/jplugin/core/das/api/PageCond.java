@@ -12,7 +12,7 @@ import net.jplugin.common.kits.JsonKit;
 public class PageCond {
 	private int pageSize;
 	private int pageIndex;
-	private boolean getCount;
+	private boolean shdCount;
 	private long count;
 
 	public PageCond (){}
@@ -39,18 +39,27 @@ public class PageCond {
 	public int getPageSize() {
 		return pageSize;
 	}
-	
-	public boolean isGetCount() {
-		return getCount;
+	public boolean isShdCount() {
+		return shdCount;
 	}
-	public void setGetCount(boolean getCount) {
-		this.getCount = getCount;
+	public void setShdCount(boolean shdCount) {
+		this.shdCount = shdCount;
 	}
 	public long getCount() {
 		return count;
 	}
 	public void setCount(long count) {
 		this.count = count;
+	}
+	
+	public int getPageIndex() {
+		return pageIndex;
+	}
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 	
 	public static void main(String[] args) {

@@ -90,7 +90,8 @@ public class PageInterceptor implements Interceptor {
                 metaStatementHandler.setValue("delegate.rowBounds.limit", RowBounds.NO_ROW_LIMIT);
                 Connection connection = (Connection) invocation.getArgs()[0];
                 // 重设分页参数里的总页数等
-                setPageParameter(sql, connection, mappedStatement, boundSql, page);
+                if (page.isShdCount())
+                	setPageParameter(sql, connection, mappedStatement, boundSql, page);
             }
         }
         // 将执行权交给下一个拦截器
