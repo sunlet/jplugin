@@ -36,7 +36,7 @@ import net.jplugin.core.das.api.PageCond;
  * 
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
-public class PageInterceptor implements Interceptor {
+public abstract class PageInterceptor implements Interceptor {
     private static final Log logger = LogFactory.getLog(PageInterceptor.class);
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
@@ -159,61 +159,13 @@ public class PageInterceptor implements Interceptor {
     }
 
     /**
-     * 根据数据库类型，生成特定的分页sql
+     * 子类根据数据库类型，生成特定的分页sql
      * 
      * @param sql
      * @param page
      * @return
      */
-    private String buildPageSql(String sql, PageCond page) {
-        if (page != null) {
-            StringBuilder pageSql = new StringBuilder();
-            if ("mysql".equals(dialect)) {
-                pageSql = buildPageSqlForMysql(sql, page);
-            } else if ("oracle".equals(dialect)) {
-                pageSql = buildPageSqlForOracle(sql, page);
-            } else {
-                return sql;
-            }
-            return pageSql.toString();
-        } else {
-            return sql;
-        }
-    }
-
-    /**
-     * mysql的分页语句
-     * 
-     * @param sql
-     * @param page
-     * @return String
-     */
-    public StringBuilder buildPageSqlForMysql(String sql, PageCond page) {
-        StringBuilder pageSql = new StringBuilder(100);
-        String beginrow = String.valueOf(page._getFirstRow());
-        pageSql.append(sql);
-        pageSql.append(" limit " + beginrow + "," + page.getPageSize());
-        return pageSql;
-    }
-
-    /**
-     * 参考hibernate的实现完成oracle的分页
-     * 
-     * @param sql
-     * @param page
-     * @return String
-     */
-    public StringBuilder buildPageSqlForOracle(String sql, PageCond page) {
-        StringBuilder pageSql = new StringBuilder(100);
-        String beginrow = String.valueOf(page._getFirstRow());
-        String endrow = String.valueOf(page._getFirstRow() + page.getPageSize());
-
-        pageSql.append("select * from ( select temp.*, rownum row_id from ( ");
-        pageSql.append(sql);
-        pageSql.append(" ) temp where rownum <= ").append(endrow);
-        pageSql.append(") where row_id > ").append(beginrow);
-        return pageSql;
-    }
+    protected abstract String buildPageSql(String sql, PageCond page);
 
     @Override
     public Object plugin(Object target) {
