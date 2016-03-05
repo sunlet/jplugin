@@ -65,6 +65,10 @@ public class HttpKit{
 	public static boolean isUnitTesting(){
 		return unitTesting;
 	}
+	/**
+	 * ÉèÖÃµ¥Ôª²âÊÔ×´Ì¬
+	 * @param b
+	 */
 	public static void setUnitTesting(boolean b) {
 		unitTesting = b;
 	}
