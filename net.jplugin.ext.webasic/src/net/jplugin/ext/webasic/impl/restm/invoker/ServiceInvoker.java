@@ -9,7 +9,9 @@ import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.JsonResult;
+import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.ObjectDefine;
@@ -103,7 +105,12 @@ public class ServiceInvoker implements IServiceInvoker{
 		
 		try{
 			RestMethodState.reset();
-			Object result = oam.method.invoke(oam.object, paraValue);
+			
+//			Object result = oam.method.invoke(oam.object, paraValue);
+			Object result = null;
+			
+			result = helper.invokeWithRuleSupport(oam,paraValue);
+
 			State state = RestMethodState.get();
 
 //			RuleResult rr = RuleResult.create(RuleResult.OK);

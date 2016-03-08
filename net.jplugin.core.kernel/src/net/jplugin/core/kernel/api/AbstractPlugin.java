@@ -94,7 +94,7 @@ public abstract class AbstractPlugin implements IPlugin {
 				if (errList==null){
 					errList = new ArrayList<PluginError>();
 				}
-				errList.add(new PluginError(this.getName(), "extension load error",e));
+				errList.add(new PluginError(this.getName(), "extension load error."+this.extensions.get(i).getClazz(),e));
 			}
 		}
 		return errList;

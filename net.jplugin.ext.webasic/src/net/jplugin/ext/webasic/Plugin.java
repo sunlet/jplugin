@@ -1,21 +1,15 @@
 package net.jplugin.ext.webasic;
 
-import java.util.Map;
-
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionPoint;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.ext.webasic.api.IController;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
 import net.jplugin.ext.webasic.impl.WebDriver;
-import net.jplugin.ext.webasic.impl.restm.RestMethodController;
-import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet;
 import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.rests.ServiceControllerSet;
 import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet;

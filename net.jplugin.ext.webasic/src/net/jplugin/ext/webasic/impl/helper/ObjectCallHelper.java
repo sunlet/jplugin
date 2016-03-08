@@ -1,5 +1,6 @@
 package net.jplugin.ext.webasic.impl.helper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
@@ -8,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.WebDriver;
 
@@ -167,5 +170,19 @@ public class ObjectCallHelper{
 			ret.append("|").append(c.getName());
 		}
 		return ret.toString();
+	}
+	
+	public Object invokeWithRuleSupport(ObjectAndMethod oam,Object[] paraValue) throws Throwable{
+		if (ObjectDefine.OBJ_BIZLOGIC.equals(getObjeceDefine().getObjType())){
+			//如果是业务逻辑，则不会再判断Rule 
+			return oam.method.invoke(oam.object, paraValue);
+		}else{
+			//普通方法，并且有Rule标记，则需要判断Rule Annotation
+			Rule ruleAnno = oam.method.getAnnotation(Rule.class);
+			if (ruleAnno==null)
+				return oam.method.invoke(oam.object, paraValue);
+			else
+				return new DefaultRuleInvocationHandler().invoke(null, oam.object, oam.method, paraValue, ruleAnno);
+		}
 	}
 }
