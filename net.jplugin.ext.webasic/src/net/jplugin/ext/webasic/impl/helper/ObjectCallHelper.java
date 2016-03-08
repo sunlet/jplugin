@@ -1,11 +1,9 @@
 package net.jplugin.ext.webasic.impl.helper;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Hashtable;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
@@ -13,7 +11,6 @@ import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.ext.webasic.api.ObjectDefine;
-import net.jplugin.ext.webasic.impl.WebDriver;
 
 /**
  *
@@ -130,6 +127,9 @@ public class ObjectCallHelper{
 					} catch (Exception e) {
 						throw new RuntimeException("Can't find method ["+methodName +"] with arg:"+ getString(arg) +" in "+svcObject.getClass().getName());
 					}
+					
+					if (method == null || (Modifier.PUBLIC & method.getModifiers()) ==0)  
+						throw new RuntimeException("Can't find method ["+methodName +"], the method not exists or Not a public method");
 					this.methodMap.put(methodKey, method);
 				}
 			}
