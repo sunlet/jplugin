@@ -49,7 +49,8 @@ public class WebController implements IController{
 		}
 		
 		try{
-			oam.method.invoke(oam.object, new Object[]{req,res});
+//			oam.method.invoke(oam.object, new Object[]{req,res});
+			helper.invokeWithRuleSupport(oam,new Object[]{req,res});
 			//res.getWriter().print(result.getJson());
 		}catch(InvocationTargetException e){
 			throw ((InvocationTargetException)e).getTargetException();

@@ -50,7 +50,9 @@ public class RmethodController implements IController{
 		ObjectAndMethod oam = helper.get(innerPath, paraType);
 		
 		try{
-			Object result = oam.method.invoke(oam.object, paraValue);
+//			Object result = oam.method.invoke(oam.object, paraValue);
+			
+			Object result = helper.invokeWithRuleSupport(oam,paraValue);
 			res.getWriter().print(toResultString(result));
 		}catch(InvocationTargetException e){
 			Object result = REMOTE_EXCEPTION_PREFIX + "  cls="+e.getTargetException().getClass().getName()+" msg="+e.getTargetException().getMessage();
