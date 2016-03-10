@@ -133,4 +133,8 @@ public class ServiceInvoker implements IServiceInvoker{
 			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getTargetException());
 		}
 	}
+
+	public ObjectCallHelper getObjectCallHelper() {
+		return this.helper;
+	}
 }
