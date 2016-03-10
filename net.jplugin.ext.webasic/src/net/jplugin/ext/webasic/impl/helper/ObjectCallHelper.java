@@ -8,6 +8,7 @@ import java.util.Map;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.Rule;
+import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.ext.webasic.api.ObjectDefine;
@@ -178,11 +179,7 @@ public class ObjectCallHelper{
 			return oam.method.invoke(oam.object, paraValue);
 		}else{
 			//普通方法，并且有Rule标记，则需要判断Rule Annotation
-			Rule ruleAnno = oam.method.getAnnotation(Rule.class);
-			if (ruleAnno==null)
-				return oam.method.invoke(oam.object, paraValue);
-			else
-				return new DefaultRuleInvocationHandler().invoke(null, oam.object, oam.method, paraValue, ruleAnno);
+			return RuleProxyHelper.invokeWithRule(oam.object, oam.method, paraValue);
 		}
 	}
 }
