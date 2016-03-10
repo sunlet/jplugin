@@ -15,6 +15,11 @@ public class ClientFactory {
 	public static <T> Client<T> create(Class<T> intf,String serverurl){
 		return new Client<T>(intf,serverurl,null);
 	}
+	/**
+	 * 创建一个指定接口的Proxy
+	 * @param intf
+	 * @return
+	 */
 	public static <T> Client<T> create(Class<T> intf){
 		return new Client<T>(intf,null,null);
 	}
