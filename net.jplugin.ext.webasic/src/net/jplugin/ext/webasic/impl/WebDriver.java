@@ -69,7 +69,14 @@ public class WebDriver {
 			if (doWebFilter(req,res)){
 				Throwable th = null;
 				try{
-					dohttpThrowEx(req, res);
+					//获取ControllerMeta，并执行
+					String path = req.getServletPath();
+					ControllerMeta controllerMeta = this.parseControllerMeta(path);
+					if (controllerMeta!=null)
+						controllerMeta.controllerSet.dohttp(controllerMeta.servicePath, req, res, controllerMeta.operation);
+					else
+						throw new RuntimeException("Can't find controller for :"+path);
+					
 					doAfterWebFilter(req,res,null);
 				}catch(Throwable t){
 					th = t;
@@ -131,12 +138,9 @@ public class WebDriver {
 		}
 		return logger;
 	}
-
 	
-	private void dohttpThrowEx(HttpServletRequest req,HttpServletResponse res) throws Throwable{
-		String path = req.getServletPath();
-		
-		//出去点
+	public ControllerMeta parseControllerMeta(String path){
+		//除去点
 		int dotPos = path.lastIndexOf('.');
 		if ( dotPos >= 0){
 			path = path.substring(0,dotPos);
@@ -144,24 +148,79 @@ public class WebDriver {
 		
 		IControllerSet ctroller = pathMap.get(path);
 
-		if (ctroller!=null){
-			ctroller.dohttp(path,req, res,null);
-			return;
-		}
+		if (ctroller!=null)
+			return new ControllerMeta(ctroller,path,null);
 
 		int splitPos = path.lastIndexOf('/');
+
 		//等于0的时候不适合，只有一个path
 		if (splitPos>0){
 			String prePath = path.substring(0, splitPos);
 			String postPath = path.substring(splitPos+1);
 			ctroller = pathMap.get(prePath);
-			if (ctroller!=null){
-				ctroller.dohttp(prePath,req,res,postPath);
-				return;
-			}
-		}
 			
-		throw new RuntimeException("Can't find controller for :"+path);
-		
+			if (ctroller!=null)
+				return new ControllerMeta(ctroller,prePath,postPath);
+		}
+		return null;
 	}
+	
+	public static class ControllerMeta {
+		IControllerSet controllerSet;
+		String servicePath;
+		String operation;
+
+		ControllerMeta(IControllerSet cs,String s,String o){
+			this.controllerSet = cs;
+			this.servicePath = s;
+			this.operation = o;
+		}
+		
+		public IControllerSet getControllerSet() {
+			return controllerSet;
+		}
+
+
+		public String getServicePath() {
+			return servicePath;
+		}
+
+
+		public String getOperation() {
+			return operation;
+		}
+
+	}
+	
+//	private void dohttpThrowEx(HttpServletRequest req,HttpServletResponse res) throws Throwable{
+//		String path = req.getServletPath();
+//		
+//		//出去点
+//		int dotPos = path.lastIndexOf('.');
+//		if ( dotPos >= 0){
+//			path = path.substring(0,dotPos);
+//		}
+//		
+//		IControllerSet ctroller = pathMap.get(path);
+//
+//		if (ctroller!=null){
+//			ctroller.dohttp(path,req, res,null);
+//			return;
+//		}
+//
+//		int splitPos = path.lastIndexOf('/');
+//		//等于0的时候不适合，只有一个path
+//		if (splitPos>0){
+//			String prePath = path.substring(0, splitPos);
+//			String postPath = path.substring(splitPos+1);
+//			ctroller = pathMap.get(prePath);
+//			if (ctroller!=null){
+//				ctroller.dohttp(prePath,req,res,postPath);
+//				return;
+//			}
+//		}
+//			
+//		throw new RuntimeException("Can't find controller for :"+path);
+//		
+//	}
 }
