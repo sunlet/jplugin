@@ -22,7 +22,8 @@ import java.util.Set;
  */
 public interface IServiceInvokerSet {
 	public void init();
-	
 	public void call(CallParam cp)  throws Throwable;
 	public Set<String> getAcceptPaths();
+	//为了支持ESF添加
+	public IServiceInvoker getServiceInvoker(String path);
 }

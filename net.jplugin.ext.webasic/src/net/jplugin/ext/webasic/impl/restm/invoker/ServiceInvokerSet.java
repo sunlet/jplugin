@@ -13,6 +13,8 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.ext.webasic.api.IController;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.ObjectDefine;
+import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
+import test.net.jplugin.ext.webasic.restclient.IService;
 
 /**
  *
@@ -43,5 +45,14 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 	
 	public void call(CallParam cp)  throws Throwable{
 		serviceMap.get(cp.getPath()).call(cp);
+	}
+	
+	/**
+	 * 为了支持ESF调用引入
+	 * @param path
+	 * @return
+	 */
+	public IServiceInvoker getServiceInvoker(String path){
+		return serviceMap.get(path);
 	}
 }
