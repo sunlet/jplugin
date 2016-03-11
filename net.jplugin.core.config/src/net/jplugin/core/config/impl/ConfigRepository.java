@@ -5,16 +5,18 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import net.jplugin.common.kits.PropertiesKit;
+import net.jplugin.core.config.api.IConfigProvidor;
 /**
 *
 * @author: LiuHang
 * @version 创建时间：2015-10-12 下午01:07:22
 **/
-public class ConfigRepository {
+public class ConfigRepository implements IConfigProvidor{
 	private static final String POSTFIX = ".config.properties";
 	HashMap<String,String> configMap = new HashMap<String,String>();
 	
-	public String getConfig(String key){
+	@Override
+	public String getConfigValue(String key){
 		return configMap.get(key);
 	}
 	
@@ -36,6 +38,13 @@ public class ConfigRepository {
 		for (Object k:prop.keySet()){
 			configMap.put(cfgSection+"."+(String)k, prop.getProperty((String)k));
 		}
+	}
+
+
+
+	@Override
+	public boolean containsConfig(String path) {
+		return configMap.containsKey(path);
 	}
 	
 }

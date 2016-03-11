@@ -9,10 +9,11 @@ import net.jplugin.core.config.impl.ConfigRepository;
 **/
 public class ConfigFactory {
 
-	private static ConfigRepository repository;
+	private static IConfigProvidor localConfigProvidor;
+	private static IConfigProvidor remoteConfigProvidor=null;
 
 	public static String getStringConfig(String path,String def){
-		String val = repository.getConfig(path);
+		String val = _getStringConfig(path);
 		if (StringKit.isNull(val)) return def;
 		else return val;
 	}
@@ -20,7 +21,7 @@ public class ConfigFactory {
 		return getStringConfig(path,null);
 	}
 	public static Long getLongConfig(String path,Long def){
-		String val = repository.getConfig(path);
+		String val = _getStringConfig(path);
 		if (StringKit.isNull(val)) return def;
 		else return Long.parseLong(val);
 	}
@@ -31,7 +32,7 @@ public class ConfigFactory {
 
 	
 	public static Integer getIntConfig(String path,Integer def){
-		String val = repository.getConfig(path);
+		String val = _getStringConfig(path);
 		if (StringKit.isNull(val)) return def;
 		return Integer.parseInt(val);
 	}
@@ -40,10 +41,30 @@ public class ConfigFactory {
 		return getIntConfig(path,null);
 	}
 
+	/**
+	 * <pre>
+	 * 如果本地配置了该key，则返回本地
+	 * 否则如果远程初始化好了，则返回远程，否则返回null。
+	 * 注意：由于初始化顺序原因，访问该方法的时候，提放了远程有没有初始化好的情况！
+	 * </pre>
+	 * @param path
+	 * @return
+	 */
+	private static String _getStringConfig(String path){
+		if (localConfigProvidor.containsConfig(path))
+			return localConfigProvidor.getConfigValue(path);
+		
+		if (remoteConfigProvidor!=null) 
+			return remoteConfigProvidor.getConfigValue(path);
+		
+		return null;
+	}
 
-	public static void setRepository(ConfigRepository repo) {
-		repository = repo;
+	public static void _setLocalConfigProvidor(ConfigRepository repo) {
+		localConfigProvidor = repo;
 	}
 	
-
+	public static void _setRemoteConfigProvidor(ConfigRepository repo) {
+		remoteConfigProvidor = repo;
+	}
 }
