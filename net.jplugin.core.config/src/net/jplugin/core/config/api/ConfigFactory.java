@@ -60,11 +60,11 @@ public class ConfigFactory {
 		return null;
 	}
 
-	public static void _setLocalConfigProvidor(ConfigRepository repo) {
+	public static void _setLocalConfigProvidor(IConfigProvidor repo) {
 		localConfigProvidor = repo;
 	}
 	
-	public static void _setRemoteConfigProvidor(ConfigRepository repo) {
+	public static void _setRemoteConfigProvidor(IConfigProvidor repo) {
 		remoteConfigProvidor = repo;
 	}
 }
