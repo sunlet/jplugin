@@ -15,7 +15,9 @@ import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
 public class Plugin extends AbstractPluginForTest{
 	public Plugin(){
 		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class);
-		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class,"nopara");
+//		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class,"nopara");
+		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class);
+
 		ExtensionWebHelper.addRestMethodExtension(this, "/testrestclient", RestServiceBean.class);
 	}
 

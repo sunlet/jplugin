@@ -106,11 +106,18 @@ public class ObjectCallHelper{
 
 	private Method getMethod(String reqMethodName,Class[] arg) {
 		//ªÒ»°MethodName
-		String methodName = objeceDefine.getMethodName();
+		String methodName;
+		if (StringKit.isNull(reqMethodName))
+			methodName = "index";
+		else 
+			methodName = reqMethodName;
+		
+		/*String methodName = objeceDefine.getMethodName();
 		
 		if (StringKit.isNull(methodName)){
 			methodName = reqMethodName;
-		}
+		}*/
+		
 		if (StringKit.isNull(methodName)){
 			throw new RuntimeException("method name is null for req method name:"+reqMethodName);
 		}
