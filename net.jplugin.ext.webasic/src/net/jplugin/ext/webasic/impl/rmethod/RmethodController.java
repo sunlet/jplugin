@@ -42,6 +42,9 @@ public class RmethodController implements IController{
 		this.helper = new ObjectCallHelper(d);
 	}
 	
+	public ObjectCallHelper getObjectCallHelper(){
+		return helper;
+	}
 
 	public void dohttp(HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
 		
