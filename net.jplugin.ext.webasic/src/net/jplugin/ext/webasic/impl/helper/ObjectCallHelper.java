@@ -29,6 +29,11 @@ public class ObjectCallHelper{
 	Map<String,Method> methodMap = new Hashtable<String, Method>();
 	ObjectDefine objeceDefine;
 	
+	
+	public Object getObject(){
+		initObject();
+		return this.svcObject;
+	}
 	/**
 	 * @param value
 	 */
