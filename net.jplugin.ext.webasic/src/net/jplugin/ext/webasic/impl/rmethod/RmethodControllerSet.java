@@ -41,5 +41,8 @@ public class RmethodControllerSet implements IControllerSet{
 		controllerMap.get(path).dohttp(req, res,innerPath);
 	}
 	
+	public RmethodController getRMethodController(String path){
+		return (RmethodController) controllerMap.get(path);
+	}
 
 }
