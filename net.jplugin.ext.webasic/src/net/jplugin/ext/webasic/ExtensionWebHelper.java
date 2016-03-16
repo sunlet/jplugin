@@ -22,23 +22,25 @@ public class ExtensionWebHelper {
 //	public static void addRestMethodExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
 //	}
-	public static void addRestMethodExtension(AbstractPlugin plugin,String path,String svcName,String method){
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-	}
+//	public static void addRestMethodExtension(AbstractPlugin plugin,String path,String svcName,String method){
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
+//	}
 
 	//add rest service。Hashmap参数
+	@Deprecated
 	public static void addRestServiceExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
 	}
+	@Deprecated
 	public static void addRestServiceExtension(AbstractPlugin plugin,String path,String svcName){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
 	}
 //	public static void addRestServiceExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
 //	}
-	public static void addRestServiceExtension(AbstractPlugin plugin,String path,String svcName,String method){
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-	}
+//	public static void addRestServiceExtension(AbstractPlugin plugin,String path,String svcName,String method){
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
+//	}
 	
 	
 	//add webex controller  扩展的webcontroller
@@ -56,14 +58,16 @@ public class ExtensionWebHelper {
 //	public static void addWebControllerExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
 //	}
-	public static void addWebControllerExtension(AbstractPlugin plugin,String path,String svcName,String method){
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-	}
+//	public static void addWebControllerExtension(AbstractPlugin plugin,String path,String svcName,String method){
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
+//	}
 
 	//add remote call  Java序列化的远程服务
+	@Deprecated
 	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
 	}
+	@Deprecated
 	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,String svcName){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
 	}

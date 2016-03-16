@@ -6,6 +6,7 @@ import java.util.Map;
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.ClientFactory;
+import net.jplugin.core.rclient.proxyfac.ClientProxyFactory;
 import test.net.jplugin.ext.webasic.restclient.RestServiceBean.Bean;
 
 public class TestRestClient {
@@ -26,5 +27,11 @@ public class TestRestClient {
 		AssertKit.assertEqual(2, map.size());
 		AssertKit.assertEqual("lisi", map.get("lisi").name);
 		
+	}
+	
+	public void testProxyFactory() {
+		IService service = ClientProxyFactory.instance.getClientProxy(IService.class);
+		AssertKit.assertEqual(3,service.add(1, 2));
+		AssertKit.assertEqual("12", service.addString("1", "2"));
 	}
 }

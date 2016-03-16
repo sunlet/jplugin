@@ -1,7 +1,11 @@
 package test.net.jplugin.ext.webasic;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.rclient.ExtendsionClientHelper;
+import net.jplugin.core.rclient.api.Client;
+import net.jplugin.core.rclient.api.ClientFactory;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
+import test.net.jplugin.ext.webasic.restclient.IService;
 import test.net.jplugin.ext.webasic.restclient.RestServiceBean;
 import test.net.jplugin.ext.webasic.restclient.TestRestClient;
 import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
@@ -19,6 +23,8 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class);
 
 		ExtensionWebHelper.addRestMethodExtension(this, "/testrestclient", RestServiceBean.class);
+		
+		ExtendsionClientHelper.addClientProxyExtension(this, IService.class,"http://localhost:8080/demo/testrestclient" ,Client.PROTOCOL_REST);
 	}
 
 	@Override
@@ -29,5 +35,6 @@ public class Plugin extends AbstractPluginForTest{
 	public void test() {
 		RestMethod4Pojo.test();
 		new TestRestClient().test();
+		new TestRestClient().testProxyFactory();
 	}
 }
