@@ -22,6 +22,8 @@ public class Client <T> {
 	
 	public static final String PROTOCOL_REST="rest";
 	public static final String PROTOCOL_NIOREST="niorest";
+
+	@Deprecated  
 	public static final String PROTOCOL_REMOJAVA="remotejava";
 	
 	ClientInfo clientInfo;

@@ -13,6 +13,8 @@ import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
 import net.jplugin.core.rclient.handler.JavaRemotHandler;
 import net.jplugin.core.rclient.handler.RestHandler;
 import net.jplugin.core.rclient.handler.ServiceUrlResolverManager;
+import net.jplugin.core.rclient.proxyfac.ClientProxyDefinition;
+import net.jplugin.core.rclient.proxyfac.ClientProxyFactory;
 
 /**
  *
@@ -24,12 +26,14 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_CLIENT_HANDLER ="EP_CLIENT_HANDLER";
 	public static final String EP_CLIENT_FILTER ="EP_CLIENT_FILTER";
 	public static final String EP_SERVICEURL_RESOLVER = "EP_SERVICEURL_RESOLVER";
+	public static final String EP_CLIENT_PROXY = "EP_CLIENT_PROXY";
 	
 	
 	public Plugin(){
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_HANDLER, IClientHandler.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEURL_RESOLVER, IServiceUrlResolver.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_FILTER, IClientFilter.class));
+		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_PROXY,ClientProxyDefinition.class,true ));
 		
 		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REMOJAVA,JavaRemotHandler.class);
 		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REST,RestHandler.class);
@@ -50,6 +54,7 @@ public class Plugin extends AbstractPlugin{
 		ClientHandlerRegistry.instance.init();
 		ClientFilterRegistry.instance.init();
 		ServiceUrlResolverManager.instance.init();
+		ClientProxyFactory.instance.init();
 	}
 
 }
