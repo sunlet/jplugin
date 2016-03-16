@@ -17,6 +17,10 @@ import net.jplugin.ext.webasic.api.Para;
 
 public class RestMethod4Pojo {
 	
+	public void index(){
+		nopara();
+	}
+	
 	public void nopara(){
 	}
 	

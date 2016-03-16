@@ -21,7 +21,7 @@ public class ObjectDefine {
 	String objType;
 	String blName;
 	Class  objClass;
-	String methodName;
+//	String methodName;
 	
 	public String getObjType() {
 		return objType;
@@ -41,12 +41,12 @@ public class ObjectDefine {
 	public void setObjClass(Class objClass) {
 		this.objClass = objClass;
 	}
-	public String getMethodName() {
-		return methodName;
-	}
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
+//	public String getMethodName() {
+//		return methodName;
+//	}
+//	public void setMethodName(String methodName) {
+//		this.methodName = methodName;
+//	}
 
 //	public void setExtensionProperty(List<Extension.Property> list) throws ClassNotFoundException{
 //		for (Property p:list){
