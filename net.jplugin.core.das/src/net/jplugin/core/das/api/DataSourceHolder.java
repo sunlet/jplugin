@@ -3,6 +3,7 @@ package net.jplugin.core.das.api;
 import javax.sql.DataSource;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.das.api.impl.ConfigedDataSource;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -30,7 +31,8 @@ public class DataSourceHolder {
 		}
 	}
 	public DataSource getDataSource(){
-		return  (DataSource) applicationContext.getBean("dataSource");
+//		return  (DataSource) applicationContext.getBean("dataSource");
+		return  (DataSource) ConfigedDataSource.getDataSource("database");
 	}
 
 	/**

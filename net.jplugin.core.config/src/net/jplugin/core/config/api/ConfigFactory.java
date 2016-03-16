@@ -1,5 +1,8 @@
 package net.jplugin.core.config.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.impl.ConfigRepository;
 /**
@@ -41,6 +44,22 @@ public class ConfigFactory {
 		return getIntConfig(path,null);
 	}
 
+	/**
+	 * 本地优先
+	 * @param group
+	 * @return
+	 */
+	public static Map<String,String> getStringConfigInGroup(String group){
+		Map<String,String> ret=null;
+		if (remoteConfigProvidor!=null) 
+			ret = remoteConfigProvidor.getStringConfigInGroup(group);		
+		
+		if (ret==null) 
+			ret = new HashMap<String,String>();
+		
+		ret.putAll(localConfigProvidor.getStringConfigInGroup(group));
+		return ret;
+	}
 	/**
 	 * <pre>
 	 * 如果本地配置了该key，则返回本地

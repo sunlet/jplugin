@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="lib/spring-beans-4.0.9.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-4.0.9.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-expression-4.0.9.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.config"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
