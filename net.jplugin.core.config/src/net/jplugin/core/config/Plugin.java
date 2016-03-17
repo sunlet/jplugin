@@ -19,8 +19,10 @@ public class Plugin extends AbstractPlugin{
 
 	public static final String EP_CONFIG_CHANGE_HANDLER = "EP_CONFIG_CHANGE_HANDLER";
 
+	//务必注意：
+	//本插件是基本插件，在所有后加载插件的构造函数中都可以使用（除了变更通知器之外）
+	//并且因为propertyFilter需要在load阶段使用，所以更只能在构造函数中初始化
 	public Plugin(){
-		//因为propertyFilter需要在load阶段使用，所以只能在构造函数中初始化
 		String cfgdir = PluginEnvirement.getInstance().getConfigDir();
 		ConfigRepository repo = new ConfigRepository();
 		repo.init(cfgdir);
