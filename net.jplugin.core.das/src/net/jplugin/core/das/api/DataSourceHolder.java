@@ -20,19 +20,28 @@ public class DataSourceHolder {
 			return instance;
 		else {
 			synchronized (DataSourceHolder.class) {
-				if (instance != null){
+				if (instance != null) {
 					return instance;
-				}else {
+				} else {
 					instance = new DataSourceHolder();
-					instance.initApplicationContext();
+//					instance.initApplicationContext();
 					return instance;
 				}
 			}
 		}
 	}
-	public DataSource getDataSource(){
-//		return  (DataSource) applicationContext.getBean("dataSource");
-		return  (DataSource) ConfigedDataSource.getDataSource("database");
+
+	DataSource dataSource = null;
+
+	public DataSource getDataSource() {
+		if (dataSource == null) {
+			synchronized (this) {
+				if (dataSource == null)
+					dataSource = ConfigedDataSource.getDataSource("database");
+			}
+		}
+		return dataSource;
+		// return (DataSource) applicationContext.getBean("dataSource");
 	}
 
 	/**
@@ -42,10 +51,9 @@ public class DataSourceHolder {
 		if (applicationContext == null) {
 			synchronized (this.getClass()) {
 				if (applicationContext == null) {
-					String xml = PluginEnvirement.getInstance().getConfigDir()
-							+ "/spring-das.xml";
-//					applicationContext = new FileSystemXmlApplicationContext(
-//							"file:" + xml);
+					String xml = PluginEnvirement.getInstance().getConfigDir() + "/spring-das.xml";
+					// applicationContext = new FileSystemXmlApplicationContext(
+					// "file:" + xml);
 					applicationContext = new ClassPathXmlApplicationContext("net/jplugin/core/das/api/spring-das.xml");
 				}
 			}
