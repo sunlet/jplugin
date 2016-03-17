@@ -1,6 +1,7 @@
 package net.jplugin.core.das.mybatis.impl;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -14,6 +15,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.das.api.DataSourceHolder;
 import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
@@ -44,7 +46,27 @@ public class MybaticsServiceImpl implements IMybatisService {
 			         XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, c, configuration.getSqlFragments());
 			         mapperParser.parse();
 				}else{
-					configuration.addMapper(Class.forName(c));
+					//check xml file exists in classpath
+					String tryFile = StringKit.replaceStr(c, ".", "/") + ".xml";
+					boolean exists = false;
+					InputStream stream = null;
+					try {
+						stream = this.getClass().getClassLoader().getResourceAsStream(tryFile);
+						if (stream != null)
+							exists = true;
+					} finally {
+						if (stream != null)try {stream.close();} catch (Exception e) {}
+					}
+					
+					//load the mapper
+					if (!exists)
+						configuration.addMapper(Class.forName(c));
+					else{
+						 c = tryFile;
+						 InputStream inputStream = Resources.getResourceAsStream(c);
+				         XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, c, configuration.getSqlFragments());
+				         mapperParser.parse();
+					}
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
