@@ -7,7 +7,7 @@ package net.jplugin.core.kernel.api;
  **/
 
 public class CoreServicePriority {
-	private static final int OFFSET = -500;
+	private static final int OFFSET = -10000;
 	public static final int KERNEL = 0 + OFFSET;
 	public static final int SERVICE = 10 + OFFSET;
 	public static final int LOG = 20 + OFFSET;
