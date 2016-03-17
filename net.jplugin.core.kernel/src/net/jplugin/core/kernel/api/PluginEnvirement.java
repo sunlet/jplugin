@@ -130,6 +130,7 @@ public class PluginEnvirement {
 				Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
 				pluginToLoad.addAll(prop.keySet());
 				pluginToLoad.addAll(CorePlugin.get());
+				pluginToLoad.addAll(ExtPlugin.get());
 			}else{
 				pluginToLoad.addAll( plgns);
 			}
