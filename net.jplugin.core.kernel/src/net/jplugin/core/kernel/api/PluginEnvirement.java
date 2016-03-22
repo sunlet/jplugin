@@ -200,7 +200,7 @@ public class PluginEnvirement {
 		try {
 			plugin = Class.forName(cname).newInstance();
 		} catch (Exception e) {
-			throw new RuntimeException("plugin class not found:"+obj, e);
+			throw new RuntimeException("plugin instance create error,"+e.getMessage()+obj, e);
 		}
 		registry.addPlugin((IPlugin) plugin);
 	}
