@@ -26,7 +26,7 @@ public class Plugin extends AbstractPlugin{
 
 	public Plugin(){
 		if (noHib()){
-			System.out.println("Hiberinate env not found,skipped!");
+//			System.out.println("Hiberinate env not found,skipped!");
 			return;
 		}
 		addExtensionPoint(ExtensionPoint.create(EP_DATAMAPPING, IPersistObjDefinition.class));
