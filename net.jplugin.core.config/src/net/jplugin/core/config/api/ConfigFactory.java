@@ -85,5 +85,6 @@ public class ConfigFactory {
 	
 	public static void _setRemoteConfigProvidor(IConfigProvidor repo) {
 		remoteConfigProvidor = repo;
+		System.out.println("$$$ Remote Configigure Providor init:"+repo.getClass().getName());
 	}
 }
