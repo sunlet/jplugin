@@ -1,8 +1,12 @@
 package net.jplugin.ext.webasic.impl;
 
+import java.util.Hashtable;
+import java.util.Map;
+
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.ext.webasic.Plugin;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.impl.WebDriver.ControllerMeta;
-import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
@@ -29,5 +33,19 @@ public class ESFHelper {
 			return rc.getObjectCallHelper().getObject();
 		} else
 			return null;
+	}
+	
+	public static Map<String,Object> getObjectsMap(){
+		Hashtable<String, Object> ret = new Hashtable<String, Object>();
+		Map<String, Object> map = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_RESTMETHOD);
+		for (String path:map.keySet()){
+			ret.put(path, getObject(path));
+		}
+		
+		map = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_REMOTECALL);
+		for (String path:map.keySet()){
+			ret.put(path, getObject(path));
+		}
+		return ret;
 	}
 }

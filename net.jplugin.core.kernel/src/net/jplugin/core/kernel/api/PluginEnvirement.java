@@ -1,5 +1,8 @@
 package net.jplugin.core.kernel.api;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -7,8 +10,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.jplugin.common.kits.PropertiesKit;
+import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.kernel.impl.PluginPrepareHelper;
 
 /**
  * 
@@ -124,6 +129,7 @@ public class PluginEnvirement {
 			return;
 		started = true;
 		try {
+			System.out.println("$$$ ConfigDir="+this.getConfigDir()+" WorkDir="+this.getWorkDir());
 			Set<Object> pluginToLoad = new HashSet<Object>();
 			
 			if (plgns==null){
@@ -143,6 +149,9 @@ public class PluginEnvirement {
 			if ("true".equals(System.getProperty("testAll"))){
 				testAll = true;
 			}
+			
+			PluginPrepareHelper.preparePlugins(pluginToLoad);
+
 			
 			for (Object obj : pluginToLoad) {
 				addPlugin(obj);
@@ -190,6 +199,8 @@ public class PluginEnvirement {
 			throw new PluginRuntimeException(e);
 		}
 	}
+
+
 
 	/**
 	 * @param obj
