@@ -21,7 +21,7 @@ public class Client <T> {
 	public static final String CLIENT_TOKEN="_clientToken";
 	
 	public static final String PROTOCOL_REST="rest";
-	public static final String PROTOCOL_NIOREST="niorest";
+	public static final String PROTOCOL_RPC="niorest";
 
 	@Deprecated  
 	public static final String PROTOCOL_REMOJAVA="remotejava";

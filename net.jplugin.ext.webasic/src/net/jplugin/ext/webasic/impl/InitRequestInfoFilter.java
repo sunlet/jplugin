@@ -39,10 +39,10 @@ public class InitRequestInfoFilter implements WebFilter {
 			ITokenService tksvc = RuleServiceFactory.getRuleService(ITokenService.class);
 			Map<String, String> tkinfo = tksvc.validAndGetTokenInfo(_tk);
 			RequesterInfo info = ThreadLocalContextManager.instance.getContext().getRequesterInfo();
-			info.setToken(_tk);
+			info.setOperatorToken(_tk);
 			info.setClientType(tkinfo.get("_client"));
 			info.setOperatorId(tkinfo.get("_user"));
-			info.setClientVersion(tkinfo.get("_ver"));
+//			info.setClientVersion(tkinfo.get("_ver"));
 			return true;
 		}else{
 			if (dummyAllowed) {
@@ -57,7 +57,7 @@ public class InitRequestInfoFilter implements WebFilter {
 					}
 				}
 				RequesterInfo info = ThreadLocalContextManager.instance.getContext().getRequesterInfo();
-				info.setToken(dummyToken);
+				info.setOperatorToken(dummyToken);
 				info.setOperatorId("dummy");
 				return true;
 			}else

@@ -9,19 +9,15 @@ package net.jplugin.core.kernel.api.ctx;
 public class RequesterInfo {
 	public static final String CLIENT_BROWSER="b";
 	public static final String CLIENT_MBROWSER="mb";
-	
-	String clientVersion;
-	String operatorId;
-	String clientType;
-	String token;
+
 	String requestId;
+	String clientType;
+	String operatorToken;
+	String operatorId;
 	String currentTenantId;
-	public String getClientVersion() {
-		return clientVersion;
-	}
-	public void setClientVersion(String clientVersion) {
-		this.clientVersion = clientVersion;
-	}
+	String clientAppToken;
+	String clientAppCode;
+	
 	public String getOperatorId() {
 		return operatorId;
 	}
@@ -34,11 +30,11 @@ public class RequesterInfo {
 	public void setClientType(String ct) {
 		this.clientType = ct;
 	}
-	public String getToken() {
-		return token;
+	public String getOperatorToken() {
+		return operatorToken;
 	}
-	public void setToken(String token) {
-		this.token = token;
+	public void setOperatorToken(String token) {
+		this.operatorToken = token;
 	}
 	public String getRequestId() {
 		return requestId;
@@ -51,5 +47,17 @@ public class RequesterInfo {
 	}
 	public void setCurrentTenantId(String mtid) {
 		this.currentTenantId = mtid;
+	}
+	public String getClientAppToken() {
+		return clientAppToken;
+	}
+	public void setClientAppToken(String clientAppToken) {
+		this.clientAppToken = clientAppToken;
+	}
+	public String getClientAppCode() {
+		return clientAppCode;
+	}
+	public void setClientAppCode(String clientAppCode) {
+		this.clientAppCode = clientAppCode;
 	}
 }
