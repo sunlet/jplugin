@@ -27,7 +27,14 @@ public class LogServiceImpl implements ILogService {
     }
 
 	private void init(){
-		Properties prop = PropertiesKit.loadProperties(PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties");
+		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
+		Properties prop =null;
+		try{
+			prop = PropertiesKit.loadProperties(path);
+		}catch(Exception e){
+			System.out.println("Log4j.properties not found at:"+path);
+			return;
+		}
 		PropertiesKit.replaceVar(prop, PluginEnvirement.WORK_DIR, PluginEnvirement.getInstance().getWorkDir());
 		PropertyConfigurator.configure(prop);
 	}

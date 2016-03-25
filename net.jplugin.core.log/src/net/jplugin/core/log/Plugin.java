@@ -16,11 +16,9 @@ import net.jplugin.core.service.api.ServiceFactory;
  * @version 创建时间：2015-2-7 下午08:44:40
  **/
 
-@PluginAnnotation(prepareSeq=3)
+@PluginAnnotation(prepareSeq=-2)
 public class Plugin extends AbstractPlugin{
-	/**
-	 * 在HZW远程配置初始化之后初始化，以便能够获取到远程配置
-	 */
+
 	public static void prepare(){
 		LogFactory.init();
 	}
