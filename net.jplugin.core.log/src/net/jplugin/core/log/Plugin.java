@@ -3,7 +3,11 @@ package net.jplugin.core.log;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
+import net.jplugin.core.kernel.api.PluginAnnotation;
 import net.jplugin.core.log.api.ILogService;
+import net.jplugin.core.log.api.LogFactory;
+import net.jplugin.core.log.impl.LogServiceImpl;
+import net.jplugin.core.log.impl.LogServiceImpl4Compatible;
 import net.jplugin.core.service.api.ServiceFactory;
 
 /**
@@ -12,10 +16,17 @@ import net.jplugin.core.service.api.ServiceFactory;
  * @version 创建时间：2015-2-7 下午08:44:40
  **/
 
+@PluginAnnotation(prepareSeq=3)
 public class Plugin extends AbstractPlugin{
-
+	/**
+	 * 在HZW远程配置初始化之后初始化，以便能够获取到远程配置
+	 */
+	public static void prepare(){
+		LogFactory.init();
+	}
+	
 	public Plugin(){
-		this.addExtension(Extension.create(net.jplugin.core.service.api.Constants.EP_SERVICE, ILogService.class.getName(), LogServiceImpl.class));
+		this.addExtension(Extension.create(net.jplugin.core.service.api.Constants.EP_SERVICE, ILogService.class.getName(), LogServiceImpl4Compatible.class));
 	}
 	
 	/* (non-Javadoc)

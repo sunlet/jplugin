@@ -1,8 +1,8 @@
 package net.jplugin.core.ctx.impl;
 
-import net.jplugin.core.log.LogServiceImpl;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
+import net.jplugin.core.log.impl.LogServiceImpl;
 import net.jplugin.core.service.api.ServiceFactory;
 
 /**

@@ -1,4 +1,4 @@
-package net.jplugin.core.log;
+package net.jplugin.core.log.impl;
 
 import net.jplugin.core.log.api.Logger;
 

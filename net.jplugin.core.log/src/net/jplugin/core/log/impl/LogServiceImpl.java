@@ -1,4 +1,4 @@
-package net.jplugin.core.log;
+package net.jplugin.core.log.impl;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -28,7 +28,7 @@ public class LogServiceImpl implements ILogService {
 
 	private void init(){
 		Properties prop = PropertiesKit.loadProperties(PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties");
-		PropertiesKit.replaceVar(prop, PluginEnvirement.WORK_DIR, System.getProperty(PluginEnvirement.WORK_DIR));
+		PropertiesKit.replaceVar(prop, PluginEnvirement.WORK_DIR, PluginEnvirement.getInstance().getWorkDir());
 		PropertyConfigurator.configure(prop);
 	}
 	

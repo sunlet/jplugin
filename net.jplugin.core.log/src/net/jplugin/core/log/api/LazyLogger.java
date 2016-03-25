@@ -17,7 +17,7 @@ public class LazyLogger implements Logger{
 	}
 	
 	private synchronized void initlog() {
-		log = ServiceFactory.getService(ILogService.class).getLogger(logName);
+		log = LogFactory.getLogger(logName);
 	}
 	
 	public void debug(Object message, Throwable t) {

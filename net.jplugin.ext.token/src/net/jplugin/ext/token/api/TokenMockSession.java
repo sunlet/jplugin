@@ -11,7 +11,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 public class TokenMockSession{
 
 	public static Map<String, String> getAllAttributes(){
-		String token=ThreadLocalContextManager.getRequestInfo().getToken();
+		String token=ThreadLocalContextManager.getRequestInfo().getOperatorToken();
 		if (token==null){
 			throw new RuntimeException("token is null");
 		}
@@ -21,7 +21,7 @@ public class TokenMockSession{
 	}
 	
 	public static String getAttribute(String key){
-		String token=ThreadLocalContextManager.getRequestInfo().getToken();
+		String token=ThreadLocalContextManager.getRequestInfo().getOperatorToken();
 		if (token==null){
 			throw new RuntimeException("token is null");
 		}
@@ -30,7 +30,7 @@ public class TokenMockSession{
 		return tkinfo.get(key);
 	}
 	public static void setAttribute(String key,String val){
-		String token=ThreadLocalContextManager.getRequestInfo().getToken();
+		String token=ThreadLocalContextManager.getRequestInfo().getOperatorToken();
 		if (token==null){
 			throw new RuntimeException("token is null");
 		}
@@ -40,7 +40,7 @@ public class TokenMockSession{
 		tksvc.putTokenInfo(token, tkinfo);
 	}
 	public static void removeAttribute(String string) {
-		String token=ThreadLocalContextManager.getRequestInfo().getToken();
+		String token=ThreadLocalContextManager.getRequestInfo().getOperatorToken();
 		if (token==null){
 			throw new RuntimeException("token is null");
 		}
@@ -54,7 +54,7 @@ public class TokenMockSession{
 	}
 
 	public static void removeAttributes(HashSet toRemove) {
-		String token=ThreadLocalContextManager.getRequestInfo().getToken();
+		String token=ThreadLocalContextManager.getRequestInfo().getOperatorToken();
 		if (token==null){
 			throw new RuntimeException("token is null");
 		}

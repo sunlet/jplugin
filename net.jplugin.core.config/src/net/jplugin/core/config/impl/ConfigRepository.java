@@ -2,6 +2,7 @@ package net.jplugin.core.config.impl;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import net.jplugin.common.kits.PropertiesKit;
@@ -45,6 +46,18 @@ public class ConfigRepository implements IConfigProvidor{
 	@Override
 	public boolean containsConfig(String path) {
 		return configMap.containsKey(path);
+	}
+
+	@Override
+	public Map<String, String> getStringConfigInGroup(String group) {
+		String prefix = group+".";
+		HashMap<String, String> ret = new HashMap<String,String>();
+		for (String k:configMap.keySet()){
+			if (k.startsWith(prefix)){
+				ret.put(k.substring(group.length()+1), configMap.get(k));
+			}
+		}
+		return ret;
 	}
 	
 }

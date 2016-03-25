@@ -1,5 +1,8 @@
 package net.jplugin.core.kernel.api;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -7,8 +10,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.jplugin.common.kits.PropertiesKit;
+import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.kernel.impl.PluginPrepareHelper;
 
 /**
  * 
@@ -124,12 +129,14 @@ public class PluginEnvirement {
 			return;
 		started = true;
 		try {
+			System.out.println("$$$ ConfigDir="+this.getConfigDir()+" WorkDir="+this.getWorkDir());
 			Set<Object> pluginToLoad = new HashSet<Object>();
 			
 			if (plgns==null){
 				Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
 				pluginToLoad.addAll(prop.keySet());
 				pluginToLoad.addAll(CorePlugin.get());
+				pluginToLoad.addAll(ExtPlugin.get());
 			}else{
 				pluginToLoad.addAll( plgns);
 			}
@@ -142,6 +149,9 @@ public class PluginEnvirement {
 			if ("true".equals(System.getProperty("testAll"))){
 				testAll = true;
 			}
+			
+			PluginPrepareHelper.preparePlugins(pluginToLoad);
+
 			
 			for (Object obj : pluginToLoad) {
 				addPlugin(obj);
@@ -190,6 +200,8 @@ public class PluginEnvirement {
 		}
 	}
 
+
+
 	/**
 	 * @param obj
 	 */
@@ -199,7 +211,7 @@ public class PluginEnvirement {
 		try {
 			plugin = Class.forName(cname).newInstance();
 		} catch (Exception e) {
-			throw new RuntimeException("plugin class not found:"+obj, e);
+			throw new RuntimeException("plugin instance create error,"+e.getMessage()+obj, e);
 		}
 		registry.addPlugin((IPlugin) plugin);
 	}

@@ -15,9 +15,11 @@
 
 	<target name="foreach_test">
 		<foreach target="cp" param="projname" delimiter=",">
+			<!--
 			<path path="${basedir}/../net.jplugin.ext.token/bin" />
 			<path path="${basedir}/../net.jplugin.ext.webasic/bin" />
 			<path path="${basedir}/../net.jplugin.ext.dict/bin" />
+			-->
 		</foreach>
 	</target>
 
