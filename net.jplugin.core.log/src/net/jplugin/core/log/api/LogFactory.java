@@ -15,6 +15,10 @@ public class LogFactory {
 		logService = new LogServiceImpl();
 	}
 	
+	public static Logger getLogger(Class c){
+		return logService.getLogger(c.getName());
+	}
+	
 	public static Logger getLogger(String name){
 		return logService.getLogger(name);
 	}
