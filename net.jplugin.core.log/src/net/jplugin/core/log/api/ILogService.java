@@ -7,7 +7,7 @@ package net.jplugin.core.log.api;
  **/
 
 public interface ILogService {
-
+	
 	/**
 	 * 获取系统日志Logger
 	 * @param name

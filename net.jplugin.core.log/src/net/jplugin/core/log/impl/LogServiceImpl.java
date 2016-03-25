@@ -1,4 +1,4 @@
-package net.jplugin.core.log;
+package net.jplugin.core.log.impl;
 
 import java.io.IOException;
 import java.util.Hashtable;
