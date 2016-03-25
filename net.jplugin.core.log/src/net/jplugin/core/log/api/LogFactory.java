@@ -36,5 +36,9 @@ public class LogFactory {
 	
 	public static void main(String[] args) {
 		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
 	}
 }
