@@ -8,14 +8,19 @@ public class LogFactory {
 	static boolean inited=false;
 	public static  synchronized void init(){
 		if (inited) {
-			System.out.println("Warnning : LogFactory init a second time!");
 			return ;
 		}
 		inited = true;
 		logService = new LogServiceImpl();
 	}
 	
+	public static Logger getLogger(Class c){
+		init();
+		return logService.getLogger(c.getName());
+	}
+	
 	public static Logger getLogger(String name){
+		init();
 		return logService.getLogger(name);
 	}
 	
@@ -25,10 +30,15 @@ public class LogFactory {
 	 * @return
 	 */
 	public static Logger getSpecicalLogger(String filename){
+		init();
 		return logService.getSpecicalLogger(filename);
 	}
 	
-	public static ILogService getLoggerService(){
-		return logService;
+	public static void main(String[] args) {
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
+		getLogger(LogFactory.class).info("abcdefg");
 	}
 }

@@ -9,6 +9,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -27,7 +28,14 @@ public class LogServiceImpl implements ILogService {
     }
 
 	private void init(){
-		Properties prop = PropertiesKit.loadProperties(PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties");
+		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
+		Properties prop =null;
+		try{
+			prop = PropertiesKit.loadProperties(path);
+		}catch(Exception e){
+			System.out.println("Warnning : Log4j.properties not found at:"+path);
+			return;
+		}
 		PropertiesKit.replaceVar(prop, PluginEnvirement.WORK_DIR, PluginEnvirement.getInstance().getWorkDir());
 		PropertyConfigurator.configure(prop);
 	}

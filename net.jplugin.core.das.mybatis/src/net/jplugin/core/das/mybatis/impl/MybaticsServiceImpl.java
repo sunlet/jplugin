@@ -26,6 +26,11 @@ public class MybaticsServiceImpl implements IMybatisService {
 	SqlSessionFactory sqlSessionFactory;
 	
 	public void init(String[] mappers){
+		if (mappers==null || mappers.length==0) {
+			System.out.println("  No mappers configed.");
+			return;
+		}
+		
 		managedDataSource = new TxManagedDataSource(DataSourceHolder.getInstance().getDataSource());
 		ServiceFactory.getService(TransactionManager.class).addTransactionHandler(managedDataSource);
 
