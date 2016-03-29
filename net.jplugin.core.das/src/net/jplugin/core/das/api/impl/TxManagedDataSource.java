@@ -1,4 +1,4 @@
-package net.jplugin.core.das.mybatis.impl;
+package net.jplugin.core.das.api.impl;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.ctx.api.TransactionHandler;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
@@ -18,11 +17,13 @@ import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
 
 public class TxManagedDataSource implements DataSource, TransactionHandler {
-	private static final String DBCONN_IN_CTX = "DBCONN_IN_CTX";
+	private String DBCONN_IN_CTX;
+	private static final String DBCONN_IN_CTX_PREFIX = "DBCONN_IN_CTX";
 	DataSource inner;
 	
-	public TxManagedDataSource(DataSource in){
+	public TxManagedDataSource(String ds, DataSource in){
 		this.inner = in;
+		this.DBCONN_IN_CTX = DBCONN_IN_CTX_PREFIX +"#"+ds;
 	}
 	
 	//下面是datasource相关的代理方法，只实现了getConnection一个方法

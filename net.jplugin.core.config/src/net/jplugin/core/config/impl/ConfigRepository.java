@@ -2,8 +2,10 @@ package net.jplugin.core.config.impl;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.core.config.api.IConfigProvidor;
@@ -15,6 +17,7 @@ import net.jplugin.core.config.api.IConfigProvidor;
 public class ConfigRepository implements IConfigProvidor{
 	private static final String POSTFIX = ".config.properties";
 	HashMap<String,String> configMap = new HashMap<String,String>();
+	Set<String> groups = new HashSet<String>();
 	
 	@Override
 	public String getConfigValue(String key){
@@ -29,6 +32,7 @@ public class ConfigRepository implements IConfigProvidor{
 			if (fname.endsWith(POSTFIX)){
 				String cfgSection = fname.substring(0,fname.length()-POSTFIX.length());
 				load(f,cfgSection);
+				groups.add(cfgSection);
 			}
 		}
 	}
@@ -58,6 +62,11 @@ public class ConfigRepository implements IConfigProvidor{
 			}
 		}
 		return ret;
+	}
+
+	@Override
+	public Set<String> getGroups() {
+		return groups;
 	}
 	
 }

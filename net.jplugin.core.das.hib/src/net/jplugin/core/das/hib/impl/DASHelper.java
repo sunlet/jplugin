@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.ctx.api.TransactionManager;
-import net.jplugin.core.das.api.DataSourceHolder;
 import net.jplugin.core.das.hib.api.IPersistObjDefinition;
 import net.jplugin.core.das.hib.api.SinglePoDefine;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
