@@ -9,17 +9,22 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleParameter;
 import net.jplugin.core.ctx.api.RuleResult;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
+import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IController;
 import net.jplugin.ext.webasic.api.ObjectDefine;
+import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
 import net.jplugin.ext.webasic.impl.WebDriver;
+import net.jplugin.ext.webasic.impl.RemoteExceptionKits.RemoteExceptionInfo;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 
@@ -58,9 +63,30 @@ public class RmethodController implements IController{
 			Object result = helper.invokeWithRuleSupport(oam,paraValue);
 			res.getWriter().print(toResultString(result));
 		}catch(InvocationTargetException e){
-			Object result = REMOTE_EXCEPTION_PREFIX + "  cls="+e.getTargetException().getClass().getName()+" msg="+e.getTargetException().getMessage();
+			
+			Throwable targetEx = e.getTargetException();
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
+
+
+			Object result = REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
 			res.getWriter().print(toResultString(result));
 			log(e.getTargetException());
+
+			
+//			Object result = REMOTE_EXCEPTION_PREFIX + "  cls="+e.getTargetException().getClass().getName()+" msg="+e.getTargetException().getMessage();
+//			res.getWriter().print(toResultString(result));
+//			log(e.getTargetException());
+//			
+			
+
+			
+			
+			
+			
+			
+			
+			
+			
 		}
 	}
 

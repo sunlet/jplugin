@@ -1,5 +1,6 @@
 package net.jplugin.ext.webasic.impl.restm;
 
+@Deprecated
 public class RestMethodState {
 	
 	public static void reset(){

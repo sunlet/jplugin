@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.http.HttpKit;
@@ -76,7 +77,10 @@ public class JavaRemotHandler implements IClientHandler{
 					if ( ((String)retObj).startsWith(REMOTE_EXCEPTION_PREFIX)){
 						String stemp = (String)retObj;
 						stemp = stemp.substring(REMOTE_EXCEPTION_PREFIX.length());
-						throw new RemoteExecuteException("Remote exception:"+stemp);
+						
+						Map exInfo = JsonKit.json2Map(stemp);
+						throw new RemoteExecuteException((String)exInfo.get("code"),(String)exInfo.get("msg"));
+//						throw new RemoteExecuteException("Remote exception:"+stemp);
 					}
 				}
 				return retObj;

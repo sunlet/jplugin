@@ -11,11 +11,11 @@ import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.rclient.proxyfac.ClientProxyFactory;
 import test.net.jplugin.ext.webasic.restclient.ServiceBean.Bean;
 
-public class TestRestClient {
+public class TestRemoteClient {
 	public void test() {
 		Client<IService> client = ClientFactory.getThreadLocalClient(IService.class);
-		client.setServiceBaseUrl("http://localhost:8080/demo/testrestclient");
-		client.setProtocal(Client.PROTOCOL_REST);
+		client.setServiceBaseUrl("http://localhost:8080/demo/testremoteclient");
+		client.setProtocal(Client.PROTOCOL_REMOJAVA);
 		IService service = client.getObject();
 		
 		AssertKit.assertEqual(3,service.add(1, 2));
@@ -38,16 +38,10 @@ public class TestRestClient {
 			ret = true;
 		}
 		if (!ret) throw new RuntimeException("fail");
-	}
-	
-	public void testProxyFactory() {
-		IService service = ClientProxyFactory.instance.getClientProxy(IService.class);
-		AssertKit.assertEqual(3,service.add(1, 2));
-		AssertKit.assertEqual("12", service.addString("1", "2"));
 		
 		
 		//测试抛出retmoteexception
-		boolean ret=false;
+		ret=false;
 		try{
 			service.remoteEx();
 		}catch(RemoteExecuteException e){
@@ -56,15 +50,7 @@ public class TestRestClient {
 		}
 		if (!ret) throw new RuntimeException("fail");
 		
-		//测试抛出indirect exception
-		ret=false;
-		try{
-			service.indirectEx();
-		}catch(RemoteExecuteException e){
-			AssertKit.assertEqual(e.getCode(), "-100");
-			AssertKit.assertEqual(e.getMessage(), "indirectmsg");
-			ret = true;
-		}
-		if (!ret) throw new RuntimeException("fail");
+		//测试抛出indirect exception,确定这个在remote java模式不支持！！！！
+		service.indirectEx();
 	}
 }

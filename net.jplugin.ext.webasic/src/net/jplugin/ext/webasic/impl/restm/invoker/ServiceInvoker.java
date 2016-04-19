@@ -12,10 +12,14 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
+import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
+import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
+import net.jplugin.ext.webasic.impl.RemoteExceptionKits.RemoteExceptionInfo;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 import net.jplugin.ext.webasic.impl.restm.RestMethodState;
@@ -120,16 +124,20 @@ public class ServiceInvoker implements IServiceInvoker{
 			jr.setSuccess(state.success);
 			
 			HashMap<String, Object> hm = new HashMap();
-			hm.put("return", result);
+			hm.put("result", result);
 			jr.setContent(hm);
 //			rr.setContent("return",result);
 			cp.setResult(jr.toJson());
 		}catch(InvocationTargetException e){
+			Throwable targetEx = e.getTargetException();
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
+
 			JsonResult jr = JsonResult.create();
 			jr.setSuccess(false);
-			jr.setMsg(e.getMessage());
-			jr.setCode("-1");
-			e.getTargetException().printStackTrace();
+			jr.setMsg(exInfo.getMsg());//get message
+			jr.setCode(exInfo.getCode());//get code
+			cp.setResult(jr.toJson());
+
 			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getTargetException());
 		}
 	}
