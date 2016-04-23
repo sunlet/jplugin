@@ -71,10 +71,10 @@ public class RestHandler implements IClientHandler{
 				JsonResult4Client result = (JsonResult4Client) JsonKit.json2Object(ret,JsonResult4Client.class);
 				if (result == null) throw new RuntimeException("parse server response json error:"+ret);
 				if (!result.success){
-					throw new RemoteExecuteException("Code="+result.getCode()+" info="+result.getMsg());
+					throw new RemoteExecuteException(result.getCode(),result.getMsg());
 				}else{
 					Object content = result.getContent();
-					content = ((Map)content).get("return");
+					content = ((Map)content).get("result");
 					Class<?> rettype = method.getReturnType();
 					Type generictype = method.getGenericReturnType();
 					return json2ObjectWithGenericType(JsonKit.object2Json(content),rettype,generictype);

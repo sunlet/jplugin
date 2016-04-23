@@ -1,10 +1,11 @@
 package net.jplugin.core.config.api;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
-import net.jplugin.core.config.impl.ConfigRepository;
 /**
 *
 * @author: LiuHang
@@ -42,6 +43,18 @@ public class ConfigFactory {
 
 	public static Integer getIntConfig(String path){
 		return getIntConfig(path,null);
+	}
+	
+	public static Set<String> getGroups(){
+		Set<String> ret=new HashSet();
+		
+		if (remoteConfigProvidor!=null) {
+			Set<String> temp = remoteConfigProvidor.getGroups();		
+			ret.addAll(temp);
+		}
+		
+		ret.addAll(localConfigProvidor.getGroups());
+		return ret;
 	}
 
 	/**

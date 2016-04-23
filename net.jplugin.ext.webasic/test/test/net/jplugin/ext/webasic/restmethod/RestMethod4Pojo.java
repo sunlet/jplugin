@@ -1,5 +1,6 @@
 package test.net.jplugin.ext.webasic.restmethod;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.http.mock.HttpMock;
+import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.ext.webasic.api.Para;
 
 /**
@@ -43,6 +45,7 @@ public class RestMethod4Pojo {
 		ret.add(a);
 		return ret;
 	}
+
 	
 	/**
 	 * @author Luis
@@ -88,7 +91,7 @@ public class RestMethod4Pojo {
 		mock.request.setPara("arg0",JsonKit.object2JsonEx(item) );
 		mock.invoke();
 		String result = mock.response.getResult();
-		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("return");
+		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("result");
 		AssertKit.assertEqual(((List)ret).size(), 2, null);
 		System.out.println(mock.response.getResult());
 	}
@@ -104,7 +107,7 @@ public class RestMethod4Pojo {
 		mock.request.setPara("b", "2");
 		mock.invoke();
 		String result = mock.response.getResult();
-		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("return");
+		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("result");
 		AssertKit.assertEqual(ret, 3, null);
 		System.out.println(mock.response.getResult());
 	}
@@ -120,7 +123,7 @@ public class RestMethod4Pojo {
 		mock.request.setPara("arg1", "2");
 		mock.invoke();
 		String result = mock.response.getResult();
-		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("return");
+		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("result");
 		AssertKit.assertEqual(ret, 3, null);
 		System.out.println(mock.response.getResult());
 	}
@@ -136,7 +139,7 @@ public class RestMethod4Pojo {
 		mock.request.setPara("arg1", "def");
 		mock.invoke();
 		String result = mock.response.getResult();
-		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("return");
+		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("result");
 		AssertKit.assertEqual(ret, "abcdef", null);
 		System.out.println(mock.response.getResult());
 	}

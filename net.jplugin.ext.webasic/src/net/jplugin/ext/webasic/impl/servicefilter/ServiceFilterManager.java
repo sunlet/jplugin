@@ -1,20 +1,31 @@
 package net.jplugin.ext.webasic.impl.servicefilter;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IServiceFilter;
 import net.jplugin.ext.webasic.api.ServiceFilterContext;
+import net.jplugin.ext.webasic.Plugin;
 
 public class ServiceFilterManager {
 	static List<IServiceFilter> filters;
+	
+	public static void init(){
+		IServiceFilter[] arr = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_SERVICEFILTER,IServiceFilter.class);
+		filters = new ArrayList<IServiceFilter>(arr.length);
+		for (int i=0;i<arr.length;i++){
+			filters.add(arr[i]);
+		}
+	}
+	
 	public static boolean hasFilter(){
 		return filters!=null && !filters.isEmpty();
 	}
 	
-	public static Object executeWithFilter(ServiceFilterContext ctx,IServiceCallback r){
+	public static Object executeWithFilter(ServiceFilterContext ctx,IServiceCallback r) throws Throwable{
 		if (filters==null) return r.run();
 		else{
 			//ÏÈÕýÐòÖ´ÐÐ
@@ -40,16 +51,9 @@ public class ServiceFilterManager {
 			}
 			
 			if (ctx.getTh()==null) return ctx.getResult();
-			else rethrowException(ctx.getTh());
-			
-			return null;//can't reach
+			else throw ctx.getTh();
 		}
 	}
 
-	private static void rethrowException(Throwable th) {
-		if (th instanceof RuntimeException)
-			throw (RuntimeException)th;
-		else
-			throw new RuntimeException(th.getMessage(),th);
-	}
+	
 }

@@ -5,21 +5,31 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
+import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
+import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
+import net.jplugin.ext.webasic.api.ServiceFilterContext;
+import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
+import net.jplugin.ext.webasic.impl.RemoteExceptionKits.RemoteExceptionInfo;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 import net.jplugin.ext.webasic.impl.restm.RestMethodState;
 import net.jplugin.ext.webasic.impl.restm.RestMethodState.State;
+import net.jplugin.ext.webasic.impl.servicefilter.IServiceCallback;
+import net.jplugin.ext.webasic.impl.servicefilter.ServiceFilterManager;
 
 /**
  *
@@ -87,6 +97,14 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	public void call(CallParam cp) throws Throwable{
+		if (cp.getCallType()==CallParam.CALLTYPE_REST)
+			callRest(cp);
+		else if (cp.getCallType()==CallParam.CALLTYPE_RC)
+			callRemteCall(cp);
+		else throw new RuntimeException("known call type");
+	}
+
+	private void callRest(CallParam cp) throws Throwable{
 		ObjectAndMethod oam = helper.get(cp.getOperation(), null);
 		
 		//得到参数annotation
@@ -109,7 +127,8 @@ public class ServiceInvoker implements IServiceInvoker{
 //			Object result = oam.method.invoke(oam.object, paraValue);
 			Object result = null;
 			
-			result = helper.invokeWithRuleSupport(oam,paraValue);
+//			result = helper.invokeWithRuleSupport(oam,paraValue);
+			result = invokeWithServiceFilter(cp.getPath(),oam,paraValue);
 
 			State state = RestMethodState.get();
 
@@ -120,21 +139,94 @@ public class ServiceInvoker implements IServiceInvoker{
 			jr.setSuccess(state.success);
 			
 			HashMap<String, Object> hm = new HashMap();
-			hm.put("return", result);
+			hm.put("result", result);
 			jr.setContent(hm);
 //			rr.setContent("return",result);
 			cp.setResult(jr.toJson());
 		}catch(InvocationTargetException e){
+			Throwable targetEx = e.getTargetException();
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
+
 			JsonResult jr = JsonResult.create();
 			jr.setSuccess(false);
-			jr.setMsg(e.getMessage());
-			jr.setCode("-1");
-			e.getTargetException().printStackTrace();
+			jr.setMsg(exInfo.getMsg());//get message
+			jr.setCode(exInfo.getCode());//get code
+			cp.setResult(jr.toJson());
+
 			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getTargetException());
 		}
+	}
+
+	private Object invokeWithServiceFilter(String servicePath,final ObjectAndMethod oam, final Object[] paraValue) throws Throwable {
+		ServiceFilterContext ctx = new ServiceFilterContext(servicePath,oam.object,oam.method,paraValue);
+
+		return ServiceFilterManager.executeWithFilter(ctx, new IServiceCallback() {
+			public Object run() throws Throwable {
+				return helper.invokeWithRuleSupport(oam,paraValue);
+			}
+		});
 	}
 
 	public ObjectCallHelper getObjectCallHelper() {
 		return this.helper;
 	}
+	
+	//<<<<<<<<<<<<<<<<<<<<<<以下调用RemoteCall
+	private void callRemteCall(CallParam cp) throws Throwable {
+		Class[] paraType = getParaTypes(cp);
+		Object[] paraValue = getParaValues(cp);
+		ObjectAndMethod oam = helper.get(cp.operation, paraType);
+		
+		try{
+//			Object result = oam.method.invoke(oam.object, paraValue);
+//			Object result = helper.invokeWithRuleSupport(oam,paraValue);
+			Object result = invokeWithServiceFilter(cp.getPath(),oam,paraValue);
+			cp.setResult(toResultString(result));
+		}catch(InvocationTargetException e){
+			Throwable targetEx = e.getTargetException();
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
+
+			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
+			cp.setResult(toResultString(result));
+			log(e.getTargetException());
+		}
+	}
+
+	/**
+	 * @param cp
+	 * @return
+	 */
+	private Object[] getParaValues(CallParam cp) {
+		String s = cp.getParamMap().get(CallParam.PARAVALUES);
+		if (StringKit.isNull(s)){
+			throw new RuntimeException("para value is null.");
+		}
+		return (Object[]) SerializKit.deserialFromString(s);
+	}
+	/**
+	 * @param cp
+	 * @return
+	 */
+	private Class[] getParaTypes(CallParam cp) {
+		String s = cp.getParamMap().get(CallParam.PARATYPES);
+		if (StringKit.isNull(s)){
+			throw new RuntimeException("para type is null.");
+		}
+		return (Class[]) SerializKit.deserialFromString(s);
+	}
+	/**
+	 * @param result
+	 * @return
+	 */
+	private String toResultString(Object result) {
+		return SerializKit.encodeToString(result);
+	}
+	/**
+	 * @param targetException
+	 */
+	private void log(Throwable targetException) {
+		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(targetException);
+	}
+	
+	//以上调用RemoteCall>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 }

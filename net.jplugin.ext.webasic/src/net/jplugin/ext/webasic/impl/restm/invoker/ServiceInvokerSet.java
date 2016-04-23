@@ -30,11 +30,26 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 
 	private ServiceInvokerSet(){}
 	
-	public void init() {
-		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
-		serviceMap = new HashMap<String, IServiceInvoker>();
+//	public void init() {
+//		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
+//		serviceMap = new HashMap<String, IServiceInvoker>();
+//		
+//		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+//			serviceMap.put(en.getKey(), new ServiceInvoker(en.getValue()));
+//		}
+//	}
+	public Set<String>  getPathSet(){
+		return serviceMap.keySet();
+	}
+
+	public void addServices(Map<String, ObjectDefine> defs) {
+		if (serviceMap==null)
+			serviceMap = new HashMap<String, IServiceInvoker>();
 		
 		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+			if (serviceMap.get(en.getKey())!=null)
+				throw new RuntimeException("duplicate service path:"+en.getKey());
+			
 			serviceMap.put(en.getKey(), new ServiceInvoker(en.getValue()));
 		}
 	}
@@ -55,4 +70,5 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 	public IServiceInvoker getServiceInvoker(String path){
 		return serviceMap.get(path);
 	}
+
 }

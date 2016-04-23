@@ -7,38 +7,50 @@ package net.jplugin.core.rclient.api;
  **/
 
 public class RemoteExecuteException extends RuntimeException {
+	String code;
 
 	/**
 	 * 
 	 */
-	public RemoteExecuteException() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public RemoteExecuteException(String message, Throwable cause) {
-		super(message, cause);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param message
-	 */
 	public RemoteExecuteException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+	}
+
+//	/**
+//	 * @param message
+//	 * @param cause
+//	 */
+//	public RemoteExecuteException(String message, Throwable cause) {
+//		super(message, cause);
+//		// TODO Auto-generated constructor stub
+//	}
+//
+	/**
+	 * @param message
+	 */
+	public RemoteExecuteException(String aCode,String message) {
+		super(message);
+		this.code = aCode;
 	}
 
 	/**
-	 * @param cause
+	 * @param message
 	 */
-	public RemoteExecuteException(Throwable cause) {
-		super(cause);
-		// TODO Auto-generated constructor stub
+	public RemoteExecuteException(String aCode,String message,Throwable cause) {
+		super(message,cause);
+		this.code = aCode;
 	}
+
+	public String getCode() {
+		return code;
+	}
+
+//	/**
+//	 * @param cause
+//	 */
+//	public RemoteExecuteException(Throwable cause) {
+//		super(cause);
+//		// TODO Auto-generated constructor stub
+//	}
 
 }
