@@ -13,6 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface IController {
 	
-	public void dohttp(HttpServletRequest req,HttpServletResponse res,String innerPath) throws Throwable;
+	public void dohttp(String servicePath,HttpServletRequest req,HttpServletResponse res,String innerPath) throws Throwable;
 	
 }

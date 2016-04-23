@@ -39,6 +39,6 @@ public class ServiceControllerSet implements IControllerSet{
 
 	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath)
 			throws Throwable {
-		controllerMap.get(path).dohttp(req, res,innerPath);
+		controllerMap.get(path).dohttp(path,req, res,innerPath);
 	}
 }

@@ -9,6 +9,7 @@ import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
 import test.net.jplugin.ext.webasic.restclient.TestRemoteClient;
 import test.net.jplugin.ext.webasic.restclient.TestRestClient;
+import test.net.jplugin.ext.webasic.restclient.WebCtrlFilterTest;
 import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
 
 /**
@@ -30,6 +31,7 @@ public class Plugin extends AbstractPluginForTest{
 		ExtendsionClientHelper.addClientProxyExtension(this, IService.class,"http://localhost:8080/demo/testrestclient" ,Client.PROTOCOL_REST);
 		
 		ExtensionWebHelper.addServiceFilterExtension(this, ServiceFilterTest.class);
+		ExtensionWebHelper.addWebCtrlFilterExtension(this, WebCtrlFilterTest.class);
 	}
 
 	@Override

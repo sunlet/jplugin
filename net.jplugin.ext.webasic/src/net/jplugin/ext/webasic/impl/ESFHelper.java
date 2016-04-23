@@ -8,15 +8,15 @@ import java.util.Set;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.ServiceFilterContext;
+import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.impl.WebDriver.ControllerMeta;
+import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
+import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
 import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
 import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
-import net.jplugin.ext.webasic.impl.servicefilter.IServiceCallback;
-import net.jplugin.ext.webasic.impl.servicefilter.ServiceFilterManager;
 
 public class ESFHelper {
 	
@@ -31,9 +31,9 @@ public class ESFHelper {
 	public static Object invokeWithRule(final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
 			ThreadLocalContextManager.instance.createContext();
-			ServiceFilterContext sfc = new ServiceFilterContext(null, obj, method, args);
+			MethodFilterContext sfc = new MethodFilterContext(null, obj, method, args);
 			
-			return ServiceFilterManager.executeWithFilter(sfc,new IServiceCallback() {
+			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
 				public Object run() throws Throwable {
 					return RuleProxyHelper.invokeWithRule(obj, method, args);
 				}

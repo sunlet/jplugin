@@ -39,7 +39,7 @@ public class ServiceController implements IController{
 	}
 	
 
-	public void dohttp(HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
+	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
 		
 		ObjectAndMethod oam = helper.get(innerPath, para);
 			
