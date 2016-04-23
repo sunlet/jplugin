@@ -3,19 +3,20 @@ package net.jplugin.ext.webasic.impl;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import net.jplugin.core.ctx.api.RuleProxyHelper;
-import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
-import net.jplugin.ext.webasic.Plugin;
 import net.jplugin.ext.webasic.api.IControllerSet;
+import net.jplugin.ext.webasic.api.ServiceFilterContext;
 import net.jplugin.ext.webasic.impl.WebDriver.ControllerMeta;
 import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
 import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
-import net.jplugin.ext.webasic.impl.rmethod.RmethodController;
-import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet;
+import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
+import net.jplugin.ext.webasic.impl.servicefilter.IServiceCallback;
+import net.jplugin.ext.webasic.impl.servicefilter.ServiceFilterManager;
 
 public class ESFHelper {
 	
@@ -27,10 +28,16 @@ public class ESFHelper {
 	 * @return
 	 * @throws Throwable
 	 */
-	public static Object invokeWithRule(Object obj, Method method, Object[] args) throws Throwable{
+	public static Object invokeWithRule(final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
 			ThreadLocalContextManager.instance.createContext();
-			return RuleProxyHelper.invokeWithRule(obj, method, args);
+			ServiceFilterContext sfc = new ServiceFilterContext(null, obj, method, args);
+			
+			return ServiceFilterManager.executeWithFilter(sfc,new IServiceCallback() {
+				public Object run() throws Throwable {
+					return RuleProxyHelper.invokeWithRule(obj, method, args);
+				}
+			});
 		}finally{
 			ThreadLocalContextManager.instance.releaseContext();
 		}
@@ -59,28 +66,34 @@ public class ESFHelper {
 		ControllerMeta cm = WebDriver.INSTANCE.parseControllerMeta(uri);
 		
 		IControllerSet cs = cm.getControllerSet();
-		if (cs instanceof RestMethodControllerSet4Invoker) {
+		if (cs instanceof RestMethodControllerSet4Invoker || cs instanceof RmethodControllerSet4Invoker) {
 			IServiceInvoker si = ServiceInvokerSet.instance.getServiceInvoker(cm.getServicePath());
 			return si.getObjectCallHelper().getObject();
-		} else if (cs instanceof RmethodControllerSet) {
-			RmethodControllerSet rcs = (RmethodControllerSet) cm.getControllerSet();
-			RmethodController rc = rcs.getRMethodController(cm.getServicePath());
-			return rc.getObjectCallHelper().getObject();
 		} else
 			return null;
 	}
 	
 	public static Map<String,Object> getObjectsMap(){
+		Set<String> paths = ServiceInvokerSet.instance.getAcceptPaths();
+
 		Hashtable<String, Object> ret = new Hashtable<String, Object>();
-		Map<String, Object> map = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_RESTMETHOD);
-		for (String path:map.keySet()){
-			ret.put(path, getObject(path));
-		}
-		
-		map = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_REMOTECALL);
-		for (String path:map.keySet()){
-			ret.put(path, getObject(path));
+		for (String path:paths){
+			ret.put(path, ServiceInvokerSet.instance.getServiceInvoker(path).getObjectCallHelper().getObject());
 		}
 		return ret;
+//
+//		
+//		
+//		Hashtable<String, Object> ret = new Hashtable<String, Object>();
+//		Map<String, Object> map = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_RESTMETHOD);
+//		for (String path:map.keySet()){
+//			ret.put(path, getObject(path));
+//		}
+//		
+//		map = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_REMOTECALL);
+//		for (String path:map.keySet()){
+//			ret.put(path, getObject(path));
+//		}
+//		return ret;
 	}
 }

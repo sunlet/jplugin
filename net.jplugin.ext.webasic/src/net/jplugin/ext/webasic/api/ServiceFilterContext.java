@@ -13,6 +13,13 @@ public class ServiceFilterContext {
 	Throwable th;
 	Map<String,Object> attributes;
 	
+	public  ServiceFilterContext(String p,Object o,Method m,Object[] a){
+		this.servicePath = p;
+		this.method = m;
+		this.object = o;
+		this.args = a;
+	}
+	
 	public String getServicePath() {
 		return servicePath;
 	}
