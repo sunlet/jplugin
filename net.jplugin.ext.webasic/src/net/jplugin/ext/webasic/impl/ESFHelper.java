@@ -28,10 +28,10 @@ public class ESFHelper {
 	 * @return
 	 * @throws Throwable
 	 */
-	public static Object invokeWithRule(final Object obj, final Method method, final Object[] args) throws Throwable{
+	public static Object invokeWithRule(String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
 			ThreadLocalContextManager.instance.createContext();
-			MethodFilterContext sfc = new MethodFilterContext(null, obj, method, args);
+			MethodFilterContext sfc = new MethodFilterContext(servicePath, obj, method, args);
 			
 			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
 				public Object run() throws Throwable {
