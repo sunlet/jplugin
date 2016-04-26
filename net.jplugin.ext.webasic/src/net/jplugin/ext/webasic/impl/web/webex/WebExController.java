@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.RuleParameter;
+import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.ctx.api.RuleResult;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.log.api.ILogService;
@@ -69,7 +70,7 @@ public class WebExController implements IController{
 			MethodFilterContext mfc = new MethodFilterContext(path, cont, method, args);
 			WebCtrlFilterManager.INSTANCE.executeWithFilter(mfc, new IMethodCallback() {
 				public Object run() throws Throwable {
-					return method.invoke(cont, args );
+					return RuleProxyHelper.invokeWithRule(cont, method, args);
 				}
 			});
 			
