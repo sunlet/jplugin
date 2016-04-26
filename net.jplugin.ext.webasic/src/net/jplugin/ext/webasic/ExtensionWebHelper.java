@@ -3,7 +3,7 @@ package net.jplugin.ext.webasic;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.ext.webasic.api.IServiceFilter;
+import net.jplugin.ext.webasic.api.IMethodFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
@@ -87,4 +87,8 @@ public class ExtensionWebHelper {
 	public static void addServiceFilterExtension(AbstractPlugin plugin,Class sf){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_SERVICEFILTER,"",sf));
 	}
+	public static void addWebCtrlFilterExtension(AbstractPlugin plugin,Class sf){
+		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCTRLFILTER,"",sf));
+	}
+
 }

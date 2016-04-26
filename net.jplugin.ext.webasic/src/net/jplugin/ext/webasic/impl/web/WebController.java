@@ -17,8 +17,11 @@ import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IController;
+import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.WebDriver;
+import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
+import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 
@@ -40,9 +43,9 @@ public class WebController implements IController{
 	}
 	
 
-	public void dohttp(HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
+	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
 		
-		ObjectAndMethod oam = helper.get(innerPath, para);
+		final ObjectAndMethod oam = helper.get(innerPath, para);
 			
 		if (!oam.method.getReturnType().equals(void.class)){
 			throw new RuntimeException("Rule must return void");
@@ -50,7 +53,15 @@ public class WebController implements IController{
 		
 		try{
 //			oam.method.invoke(oam.object, new Object[]{req,res});
-			helper.invokeWithRuleSupport(oam,new Object[]{req,res});
+			
+			final Object[] args = new Object[]{req,res};
+			
+			MethodFilterContext mfc = new MethodFilterContext(path, oam.object, oam.method, args);
+			WebCtrlFilterManager.INSTANCE.executeWithFilter(mfc, new IMethodCallback() {
+				public Object run() throws Throwable {
+					return helper.invokeWithRuleSupport(oam,args);
+				}
+			});
 			//res.getWriter().print(result.getJson());
 		}catch(InvocationTargetException e){
 			throw ((InvocationTargetException)e).getTargetException();

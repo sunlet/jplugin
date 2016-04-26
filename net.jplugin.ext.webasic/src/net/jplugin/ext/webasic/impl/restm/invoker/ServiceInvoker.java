@@ -5,31 +5,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.JsonResult;
-import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
-import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
-import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
-import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
-import net.jplugin.ext.webasic.api.ServiceFilterContext;
+import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits.RemoteExceptionInfo;
+import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
+import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 import net.jplugin.ext.webasic.impl.restm.RestMethodState;
 import net.jplugin.ext.webasic.impl.restm.RestMethodState.State;
-import net.jplugin.ext.webasic.impl.servicefilter.IServiceCallback;
-import net.jplugin.ext.webasic.impl.servicefilter.ServiceFilterManager;
 
 /**
  *
@@ -158,9 +152,9 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	private Object invokeWithServiceFilter(String servicePath,final ObjectAndMethod oam, final Object[] paraValue) throws Throwable {
-		ServiceFilterContext ctx = new ServiceFilterContext(servicePath,oam.object,oam.method,paraValue);
+		MethodFilterContext ctx = new MethodFilterContext(servicePath,oam.object,oam.method,paraValue);
 
-		return ServiceFilterManager.executeWithFilter(ctx, new IServiceCallback() {
+		return ServiceFilterManager.INSTANCE.executeWithFilter(ctx, new IMethodCallback() {
 			public Object run() throws Throwable {
 				return helper.invokeWithRuleSupport(oam,paraValue);
 			}

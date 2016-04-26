@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceFilterContext {
+public class MethodFilterContext {
 	String servicePath;
 	Method method;
 	Object object;
@@ -13,7 +13,7 @@ public class ServiceFilterContext {
 	Throwable th;
 	Map<String,Object> attributes;
 	
-	public  ServiceFilterContext(String p,Object o,Method m,Object[] a){
+	public  MethodFilterContext(String p,Object o,Method m,Object[] a){
 		this.servicePath = p;
 		this.method = m;
 		this.object = o;
