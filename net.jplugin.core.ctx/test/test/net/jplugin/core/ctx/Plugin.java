@@ -1,0 +1,28 @@
+package test.net.jplugin.core.ctx;
+
+import net.jplugin.common.kits.AssertKit;
+import net.jplugin.core.ctx.ExtensionCtxHelper;
+import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.kernel.api.AbstractPluginForTest;
+import net.jplugin.core.kernel.api.CoreServicePriority;
+
+public class Plugin extends AbstractPluginForTest {
+	
+	public Plugin(){
+		ExtensionCtxHelper.addRuleExtension(this,IRuleTest.class, RuleTestImpl.class);
+	}
+
+	@Override
+	public int getPrivority() {
+		return CoreServicePriority.CTX+1;
+	}
+	
+	@Override
+	public void test() throws Throwable {
+		AssertKit.assertNotNull(RuleServiceFactory.getRuleService(IRuleTest.class),"rulesvc");
+		RuleServiceFactory.getRuleService(IRuleTest.class).testNoMeta();
+		RuleServiceFactory.getRuleService(IRuleTest.class).testNoMeta("a");
+		RuleServiceFactory.getRuleService(IRuleTest.class).testNoMeta2();
+	}
+
+}

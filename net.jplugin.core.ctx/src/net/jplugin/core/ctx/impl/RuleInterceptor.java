@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleMetaException;
 
@@ -66,19 +67,19 @@ public class RuleInterceptor implements InvocationHandler {
 					+ " must be interface!");
 		}
 
-		for (Method m : interfaceClass.getMethods()) {
-			
-			Rule meta = m.getAnnotation(Rule.class);
-
-			if (meta == null)
-				throw new RuleMetaException("Can't find meta!" + m);
-		
-			
-//			if (isTransactionedName(m.getName())){
-//				if (meta.methodType()==Rule.TxType.ANY) 
-//					throw new RuleMetaException("methodType not right:"+m);
-//			}
-		}
+//		for (Method m : interfaceClass.getMethods()) {
+//			
+//			Rule meta = m.getAnnotation(Rule.class);
+//
+//			if (meta == null)
+//				throw new RuleMetaException("Can't find meta!" + m);
+//		
+//			
+////			if (isTransactionedName(m.getName())){
+////				if (meta.methodType()==Rule.TxType.ANY) 
+////					throw new RuleMetaException("methodType not right:"+m);
+////			}
+//		}
 	}
 
 	/**
@@ -104,7 +105,10 @@ public class RuleInterceptor implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
 		Rule meta = locator.findMeta(method);
-		return handler.invoke(proxy,oldService,method,args,meta);
+		if (meta!=null)
+			return handler.invoke(proxy,oldService,method,args,meta);
+		else 
+			return method.invoke(oldService, args);
 	}
 	
 	static class MethodMetaLocater {
@@ -130,14 +134,14 @@ public class RuleInterceptor implements InvocationHandler {
 
 			for (Method m : singleMethod) {
 				Rule meta = m.getAnnotation(Rule.class);
-				assert meta != null;
+//				AssertKit.assertNotNull(meta, "meta");
 				singleMetaMap.put(m.getName(), (Rule) m
 						.getAnnotation(Rule.class));
 			}
 
 			for (Method m : dupMethod) {
 				Rule meta = m.getAnnotation(Rule.class);
-				assert meta != null;
+//				AssertKit.assertNotNull(meta, "meta");
 
 				List<MethodParaInfo> list = dupMetaMap.get(m.getName());
 				if (list == null) {
@@ -154,6 +158,8 @@ public class RuleInterceptor implements InvocationHandler {
 			if (ret!=null) return ret;
 			
 			List<MethodParaInfo> list = dupMetaMap.get(m.getName());
+			if (list==null) return null;
+			
 			for (MethodParaInfo record:list){
 				if (typeMatch(record.paraTypes,m.getParameterTypes())){
 					return record.meta;

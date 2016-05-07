@@ -1,6 +1,7 @@
 package net.jplugin.core.rclient.handler;
 
 import java.util.List;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -11,9 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.HttpHostConnectException;
+
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.http.HttpKit;
+import net.jplugin.common.kits.http.HttpStatusException;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.ClientInfo;
 import net.jplugin.core.rclient.api.IClientHandler;
@@ -62,7 +67,7 @@ public class RestHandler implements IClientHandler{
 				}
 				String ret ;
 				String realUrl = ServiceUrlResolverManager.instance.resolveUrl(c.getProtocal(), c.getServiceBaseUrl());
-				ret = HttpKit.post(realUrl+"/"+method.getName()+".do", map);
+				ret = httpKitPost(realUrl+"/"+method.getName()+".do", map);
 
 				if (StringKit.isNull(ret)){
 					throw new RuntimeException("Server return null,perhaps can't find the controller or method not found");
@@ -78,6 +83,18 @@ public class RestHandler implements IClientHandler{
 					Class<?> rettype = method.getReturnType();
 					Type generictype = method.getGenericReturnType();
 					return json2ObjectWithGenericType(JsonKit.object2Json(content),rettype,generictype);
+				}
+			}
+
+			private String httpKitPost(String url, HashMap<String, Object> map) throws IOException, HttpStatusException {
+				try{
+					return HttpKit.post(url, map);
+				}catch(org.apache.http.conn.HttpHostConnectException e){
+					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
+					throw e;
+				}catch(org.apache.http.conn.ConnectTimeoutException e){
+					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
+					throw e;
 				}
 			}
 

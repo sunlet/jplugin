@@ -28,4 +28,7 @@ public class ExtendsionClientHelper {
 		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_CLIENT_FILTER, clazz));
 	}
 
+	public static void addClientFailHandlerExtension(AbstractPlugin plugin, String protocol,Class clazz) {
+		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_CLIENTFAIL_HANDLER, protocol,clazz));
+	}
 }
