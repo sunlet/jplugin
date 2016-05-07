@@ -5,5 +5,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.kernel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits.http"/>
+	<classpathentry kind="lib" path="/net.jplugin.common.kits.http/lib/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="/net.jplugin.common.kits.http/lib/httpcore-4.4.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
