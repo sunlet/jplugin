@@ -196,7 +196,13 @@ public class PluginEnvirement {
 				trigStartListener(e, null);
 			}
 			e.printStackTrace();
-			throw new PluginRuntimeException(e);
+			
+			try{
+				Thread.sleep(3000);
+			}catch(Exception th){}
+			
+			System.exit(-2);
+//			throw new PluginRuntimeException(e);
 		}
 	}
 

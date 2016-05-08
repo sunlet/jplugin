@@ -5,9 +5,11 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.ClientFactory;
+import net.jplugin.core.rclient.api.IClientFailHandler;
 import net.jplugin.core.rclient.api.IClientFilter;
 import net.jplugin.core.rclient.api.IClientHandler;
 import net.jplugin.core.rclient.api.IServiceUrlResolver;
+import net.jplugin.core.rclient.handler.ClientFailHandlerManager;
 import net.jplugin.core.rclient.handler.ClientFilterRegistry;
 import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
 import net.jplugin.core.rclient.handler.JavaRemotHandler;
@@ -27,6 +29,7 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_CLIENT_FILTER ="EP_CLIENT_FILTER";
 	public static final String EP_SERVICEURL_RESOLVER = "EP_SERVICEURL_RESOLVER";
 	public static final String EP_CLIENT_PROXY = "EP_CLIENT_PROXY";
+	public static final String EP_CLIENTFAIL_HANDLER = "EP_CLIENTFAIL_HANDLER";
 	
 	
 	public Plugin(){
@@ -34,6 +37,8 @@ public class Plugin extends AbstractPlugin{
 		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEURL_RESOLVER, IServiceUrlResolver.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_FILTER, IClientFilter.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_PROXY,ClientProxyDefinition.class,true ));
+		//主要用来进行restfule链接失败的通知
+		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENTFAIL_HANDLER,IClientFailHandler.class,true ));
 		
 		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REMOJAVA,JavaRemotHandler.class);
 		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REST,RestHandler.class);
@@ -55,6 +60,7 @@ public class Plugin extends AbstractPlugin{
 		ClientFilterRegistry.instance.init();
 		ServiceUrlResolverManager.instance.init();
 		ClientProxyFactory.instance.init();
+		ClientFailHandlerManager.init();
 	}
 
 }

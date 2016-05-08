@@ -1,121 +1,170 @@
 package net.jplugin.common.kits.http;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.Socket;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import net.jplugin.common.kits.http.mock.HttpMock;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.*;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.ConnectionConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 /**
  * Http操作工具类
  * @author liyy
  * @date 2014-05-20
  */
-public class HttpKit{
+public final class HttpKit{
 	
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024; //8KB
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
 
-    private static int maxConnections = 200; //http请求最大并发连接数
-    private static int maxConnectionsPerRoute = 20; //http请求最大并发连接数
-    private static int socketTimeout = 120; //超时时间，默认20秒
-    private static int maxRetries = 5;//错误尝试次数，错误异常表请在RetryHandler添加
-    private static int httpThreadCount = 3;//http线程池数量
-    
+    private static       int     maxConnections         = 200; //http请求最大并发连接数
+    private static       int     maxConnectionsPerRoute = 20; //http请求最大并发连接数
+    private static       int     socketTimeout          = 6; //超时时间，默认20秒
+    private static       int     maxRetries             = 5;//错误尝试次数，错误异常表请在RetryHandler添加
+    private static       int     httpThreadCount        = 3;//http线程池数量
+	private static final Charset UTF_8                  = Charset.forName("UTF-8");
+
     private static boolean unitTesting=false;
+
+	private static HttpClientBuilder clientBuilder;
+	
+	static{
+		clientBuilder = initHttpClientBuilder();
+	}
+
 	public static boolean isUnitTesting(){
 		return unitTesting;
 	}
-	/**
-	 * 设置单元测试状态
-	 * @param b
-	 */
 	public static void setUnitTesting(boolean b) {
 		unitTesting = b;
 	}
-	private static HttpClient createHttpClient() {
+
+	private static HttpClientBuilder initHttpClientBuilder() {
+		final HttpClientBuilder builder = HttpClientBuilder.create();
 		try {
-			//HttpClients.createDefault();
+			//请求配置
+			RequestConfig config = RequestConfig.custom()
+					.setConnectTimeout(socketTimeout * 1000)
+					.setConnectionRequestTimeout(socketTimeout * 1000)
+					.setSocketTimeout(socketTimeout * 1000).build();
+			builder.setDefaultRequestConfig(config);
+
+			//socket配置
+			SocketConfig socketConfig = SocketConfig.custom()
+					.setTcpNoDelay(true)
+					.build();
+
+			//连接属性配置
+			ConnectionConfig connectionConfig = ConnectionConfig.custom()
+					.setCharset(UTF_8)
+					.setBufferSize(DEFAULT_SOCKET_BUFFER_SIZE)
+					.build();
+
+			// 请求重试处理
+			HttpRequestRetryHandler httpRequestRetryHandler = new HttpRequestRetryHandler() {
+				public boolean retryRequest(IOException exception,
+											int executionCount, HttpContext context) {
+					if (executionCount >= maxRetries) {// 如果已经重试指定次数了，就放弃
+						return false;
+					}
+					if (exception instanceof NoHttpResponseException) {// 如果服务器丢掉了连接，那么就重试
+						return true;
+					}
+					if (exception instanceof SSLHandshakeException) {// 不要重试SSL握手异常
+						return false;
+					}
+					if (exception instanceof ConnectTimeoutException) {// 连接被拒绝
+						return false;
+					}
+					if (exception instanceof InterruptedIOException) {// 超时
+						return false;
+					}
+					if (exception instanceof UnknownHostException) {// 目标服务器不可达
+						return false;
+					}
+					if (exception instanceof SSLException) {// SSL握手异常
+						return false;
+					}
+					HttpClientContext clientContext = HttpClientContext
+							.adapt(context);
+					HttpRequest request = clientContext.getRequest();
+					// 如果请求是幂等的，就再次尝试
+					if (!(request instanceof HttpEntityEnclosingRequest)) {
+						return true;
+					}
+					return false;
+				}
+			};
+
+
 			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 			trustStore.load(null, null);
 
-			SSLSocketFactory sf = new SSLSocketFactoryEx(trustStore);
-			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+					return true;
+				}
+			}).build();
 
-			HttpParams params = new BasicHttpParams();
-			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
-			
-			//ConnManagerParams.setTimeout(params, socketTimeout*1000);
-	        //ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(maxConnectionsPerRoute));
-	        //ConnManagerParams.setMaxTotalConnections(params, maxConnections);
+			Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+					.register("http", PlainConnectionSocketFactory.getSocketFactory())
+					.register("https", new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE)).build();
 
-	        HttpConnectionParams.setTcpNoDelay(params, true);
-	        HttpConnectionParams.setSocketBufferSize(params, DEFAULT_SOCKET_BUFFER_SIZE);
-	        
-	        HttpConnectionParams.setConnectionTimeout(params, socketTimeout*1000);  
-	        HttpConnectionParams.setSoTimeout(params, socketTimeout*1000);  
-
-			HttpProtocolParams.setUseExpectContinue(params, true);
-			/*
-			 * if (requestTimeout > 0)
-			 * HttpConnectionParams.setConnectionTimeout(params, requestTimeout
-			 * * 1000); if (soTimeout > 0)
-			 * HttpConnectionParams.setSoTimeout(params, soTimeout * 1000);
-			 */
-
-			SchemeRegistry registry = new SchemeRegistry();
-			//此处不能直接使用新的Scheme的构造方法，否则会有https的验证问题
-			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			registry.register(new Scheme("https", sf, 443));
-
-			ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(registry);
+			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
 			cm.setMaxTotal(maxConnections);  
-			cm.setDefaultMaxPerRoute(maxConnectionsPerRoute); 
-
-			return new DefaultHttpClient(cm, params);
+			cm.setDefaultMaxPerRoute(maxConnectionsPerRoute);
+			cm.setDefaultSocketConfig(socketConfig);
+			cm.setDefaultConnectionConfig(connectionConfig);
+			builder.setConnectionManager(cm);
+			builder.setRetryHandler(httpRequestRetryHandler);
+			return builder;
 		} catch (Exception e) {
-			return new DefaultHttpClient();
+			e.printStackTrace();
+			return builder;
 		}
+	}
+
+	private static CloseableHttpClient createHttpClient() {
+		return clientBuilder.build();
 	}
 	
 	public static String post(String url, Map<String,Object> datas) throws  IOException, HttpStatusException{
@@ -125,7 +174,7 @@ public class HttpKit{
 			}
 		}
 		
-		HttpClient httpClient = createHttpClient();
+		CloseableHttpClient httpClient = createHttpClient();
 		HttpPost httpPost = new HttpPost(url);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
@@ -137,11 +186,7 @@ public class HttpKit{
 			if(key!=null)
 				params.add(new BasicNameValuePair(key, value.toString()));
 		}
-		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
 		
 		return handleResponse(httpClient, httpPost);
 	}
@@ -156,19 +201,19 @@ public class HttpKit{
 		}
 		return mock.invoke();
 	}
-	public static String get(String url) throws ClientProtocolException, IOException, HttpStatusException {
+	public static String get(String url) throws IOException, HttpStatusException {
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,null);
 			}
 		}
 		
-		HttpClient httpClient = createHttpClient();
+		CloseableHttpClient httpClient = createHttpClient();
 		HttpGet httpGet = new HttpGet(url);
 		return handleResponse(httpClient, httpGet);
 	}
 
-	public static String handleResponse(HttpClient client, HttpRequestBase request) throws ClientProtocolException, IOException, HttpStatusException {
+	public static String handleResponse(CloseableHttpClient client, HttpRequestBase request) throws IOException, HttpStatusException {
 		String responseText = "";
 		request.setHeader("Connection", "close");
 		HttpResponse response = client.execute(request);
@@ -182,62 +227,18 @@ public class HttpKit{
 		}
 		return responseText;
 	}
-	
-	static class SSLSocketFactoryEx extends SSLSocketFactory {
 
-		SSLContext sslContext = SSLContext.getInstance("TLS");
-
-		public SSLSocketFactoryEx(KeyStore truststore)
-				throws NoSuchAlgorithmException, KeyManagementException,
-				KeyStoreException, UnrecoverableKeyException {
-			super(truststore);
-
-			TrustManager tm = new X509TrustManager() {
-				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
-
-				public void checkClientTrusted(
-						java.security.cert.X509Certificate[] chain, String authType)
-						throws java.security.cert.CertificateException {
-				}
-
-				public void checkServerTrusted(
-						java.security.cert.X509Certificate[] chain, String authType)
-						throws java.security.cert.CertificateException {
-				}
-			};
-			sslContext.init(null, new TrustManager[] { tm }, null);
-		}
-
-		@Override
-		public Socket createSocket(Socket socket, String host, int port,
-				boolean autoClose) throws IOException, UnknownHostException {
-			return sslContext.getSocketFactory().createSocket(socket, host, port,
-					autoClose);
-		}
-
-		@Override
-		public Socket createSocket() throws IOException {
-			return sslContext.getSocketFactory().createSocket();
-		}
-	}
-	
-//	public static void writeResponse(HttpServletResponse response, String content){
-//		try {
-//			response.setCharacterEncoding("utf-8");
-//			response.setContentType("text/plain");
-//			response.getWriter().write(content);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-	
 	public static String encodeParam(String param){
 		try {
 			return URLEncoder.encode(param, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void main(String[] args) throws IOException, HttpStatusException {
+//		String s = HttpKit.get("http://localhost:8080/k-rpms-web/role/index.do");
+		String s = HttpKit.get("http://192.133.212.11/32234");
+		System.out.println(s);
 	}
 }
