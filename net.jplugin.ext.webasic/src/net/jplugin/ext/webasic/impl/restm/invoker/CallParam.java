@@ -4,12 +4,14 @@ import java.util.Map;
 
 
 public class CallParam {
-	public static final int CALLTYPE_REST=0;
-	public static final int CALLTYPE_RC=1;
+	public static final int CALLTYPE_STRING_PARAM=0;
+	public static final int CALLTYPE_REMOTE_CALL=1;
+	public static final int CALLTYPE_JSON = 2;
 
-	public static final String PARATYPES = "TYPES";
-	public static final String PARAVALUES = "PARA";
+	public static final String REMOTE_PARATYPES_KEY = "TYPES";
+	public static final String REMOTE_PARAVALUES_KEY = "PARA";
 	public static final String REMOTE_EXCEPTION_PREFIX = "$RE#";
+	public static final String JSON_KEY = "_@@JSON";
 	
 	int callType;
 	String path;
@@ -28,7 +30,7 @@ public class CallParam {
 	
 	public static CallParam create(String path,String operation,Map<String,String> map){
 		CallParam cp = new CallParam();
-		cp.callType = CALLTYPE_REST;
+		cp.callType = CALLTYPE_STRING_PARAM;
 		cp.path = path;
 		cp.operation = operation;
 		cp.paramMap = map;
