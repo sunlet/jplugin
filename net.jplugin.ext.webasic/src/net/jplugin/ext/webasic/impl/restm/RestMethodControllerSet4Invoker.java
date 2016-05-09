@@ -55,7 +55,7 @@ public class RestMethodControllerSet4Invoker implements IControllerSet{
 				int len;
 				is = req.getInputStream();
 				if (is==null){
-					json="{}";
+					json="";
 				}else{
 					while ((len = is.read(buffer)) > 0) {
 						os.write(buffer, 0, len);

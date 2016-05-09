@@ -13,7 +13,7 @@ public class JsonCallHelper {
 	public static void convertToHttp(CallParam cp) {
 		String json = cp.getParamMap().get(CallParam.JSON_KEY);
 		if (StringKit.isNull(json))
-			throw new RuntimeException("json received is null.");
+			return;//不做任何转换，认为没参数
 		
 		Map map = JsonKit.json2Map(json);
 		for (Object key : map.keySet()){
