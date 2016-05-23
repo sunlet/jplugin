@@ -52,9 +52,9 @@ public class RmethodControllerSet4Invoker implements IControllerSet{
 			throws Throwable {
 		
 		HashMap<String, String> map = new HashMap<String, String>();
-		map.put(CallParam.PARATYPES, req.getParameter(CallParam.PARATYPES));
-		map.put(CallParam.PARAVALUES, req.getParameter(CallParam.PARAVALUES));
-		CallParam cp = CallParam.create(CallParam.CALLTYPE_RC,path, innerPath, map);
+		map.put(CallParam.REMOTE_PARATYPES_KEY, req.getParameter(CallParam.REMOTE_PARATYPES_KEY));
+		map.put(CallParam.REMOTE_PARAVALUES_KEY, req.getParameter(CallParam.REMOTE_PARAVALUES_KEY));
+		CallParam cp = CallParam.create(CallParam.CALLTYPE_REMOTE_CALL,path, innerPath, map);
 
 //		controllerMap.get(path).dohttp(req, res,innerPath);
 		

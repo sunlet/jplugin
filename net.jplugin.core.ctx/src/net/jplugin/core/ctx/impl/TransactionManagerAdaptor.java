@@ -22,7 +22,9 @@ public class TransactionManagerAdaptor implements TransactionManager{
 	}
 	public void begin(String desc) {
 		try{
+			TxMgrListenerManager.beforeBegin();
 			inner.begin();
+			TxMgrListenerManager.afterBegin();
 			RuleLoggerHelper.dolog("tx begin success -"+desc);
 		}catch(Exception e){
 			RuleLoggerHelper.dolog("tx begin error. -"+desc,e);
@@ -34,9 +36,12 @@ public class TransactionManagerAdaptor implements TransactionManager{
 	}
 	public void commit(String desc) {
 		try{
+			TxMgrListenerManager.beforeCommit();
 			inner.commit();
+			TxMgrListenerManager.afterCommit(true);
 			RuleLoggerHelper.dolog("tx commit success. -"+desc);
 		}catch(Exception e){
+			TxMgrListenerManager.afterCommit(false);
 			RuleLoggerHelper.dolog("tx commit error. -"+desc,e);
 			rethrow(e);
 		}
@@ -51,6 +56,7 @@ public class TransactionManagerAdaptor implements TransactionManager{
 	}
 	public void rollback(String desc) {
 		try{
+			TxMgrListenerManager.beforeRollback();
 			inner.rollback();
 			RuleLoggerHelper.dolog("tx rollback success. -"+desc);
 		}catch(Exception e){

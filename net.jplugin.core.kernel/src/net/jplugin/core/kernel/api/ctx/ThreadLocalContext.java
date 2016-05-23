@@ -35,7 +35,6 @@ public class ThreadLocalContext {
 	public Object getAttribute(String key){
 		return attributes==null? null:attributes.get(key);
 	}
-
 	/**
 	 * @param ruleContextListener
 	 */
@@ -44,6 +43,13 @@ public class ThreadLocalContext {
 			this.listeners = new ArrayList<ThreadLocalContextListener>();
 		}
 		this.listeners.add(ruleContextListener);
+	}
+	
+	public void addContextListenerOnce(ThreadLocalContextListener ruleContextListener) {
+		if (listeners==null || listeners.contains(ruleContextListener)) 
+			return;
+		else 
+			addContextListener(ruleContextListener);
 	}
 	
 	public void release(){

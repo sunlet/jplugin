@@ -18,5 +18,9 @@ public class ExtensionCtxHelper {
 	public static void addRuleExtension(AbstractPlugin plugin,Class intf,Class impl){
 		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, intf.getName(),RuleServiceDefinition.class,new String[][]{{"interf",intf.getName()},{"impl",impl.getName()}} ));
 	}
+	
+	public static void addTxMgrListenerExtension(AbstractPlugin plugin,Class impl){
+		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_TXMGR_LISTENER, impl ));
+	}
 
 }

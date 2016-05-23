@@ -91,14 +91,23 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	public void call(CallParam cp) throws Throwable{
-		if (cp.getCallType()==CallParam.CALLTYPE_REST)
-			callRest(cp);
-		else if (cp.getCallType()==CallParam.CALLTYPE_RC)
+		int callType = cp.getCallType();
+		if (callType==CallParam.CALLTYPE_STRING_PARAM)
+			callStringParam(cp);
+		else if (callType==CallParam.CALLTYPE_REMOTE_CALL)
 			callRemteCall(cp);
+		else if (callType==CallParam.CALLTYPE_JSON)
+			callJson(cp);
 		else throw new RuntimeException("known call type");
 	}
 
-	private void callRest(CallParam cp) throws Throwable{
+	private void callJson(CallParam cp) throws Throwable {
+		//目前转换为StringParam调用
+		JsonCallHelper.convertToHttp(cp);
+		callStringParam(cp);
+	}
+
+	private void callStringParam(CallParam cp) throws Throwable{
 		ObjectAndMethod oam = helper.get(cp.getOperation(), null);
 		
 		//得到参数annotation
@@ -191,7 +200,7 @@ public class ServiceInvoker implements IServiceInvoker{
 	 * @return
 	 */
 	private Object[] getParaValues(CallParam cp) {
-		String s = cp.getParamMap().get(CallParam.PARAVALUES);
+		String s = cp.getParamMap().get(CallParam.REMOTE_PARAVALUES_KEY);
 		if (StringKit.isNull(s)){
 			throw new RuntimeException("para value is null.");
 		}
@@ -202,7 +211,7 @@ public class ServiceInvoker implements IServiceInvoker{
 	 * @return
 	 */
 	private Class[] getParaTypes(CallParam cp) {
-		String s = cp.getParamMap().get(CallParam.PARATYPES);
+		String s = cp.getParamMap().get(CallParam.REMOTE_PARATYPES_KEY);
 		if (StringKit.isNull(s)){
 			throw new RuntimeException("para type is null.");
 		}

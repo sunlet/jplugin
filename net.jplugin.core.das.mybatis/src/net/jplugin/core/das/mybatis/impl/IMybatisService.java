@@ -8,6 +8,8 @@ import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
 
 public interface IMybatisService {
 
+	public <T> T getMapper(Class<T> t);
+	
 	public abstract SqlSession openSession();
 
 	public abstract <T> void runWithMapper(Class<T> type, IMapperHandler<T> handler);
