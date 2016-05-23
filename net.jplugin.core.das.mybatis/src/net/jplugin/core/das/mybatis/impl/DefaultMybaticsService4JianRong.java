@@ -41,7 +41,11 @@ public class DefaultMybaticsService4JianRong implements IMybatisService{
 		init();
 		return realSvc.getConnection();
 	}
-	
-	
+
+	@Override
+	public <T> T getMapper(Class<T> t) {
+		init();
+		return realSvc.getMapper(t);
+	}
 
 }

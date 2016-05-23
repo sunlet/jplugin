@@ -9,6 +9,7 @@ import test.net.luis.plugin.das.mybatis.annotest.AnnoBaticsTest;
 import test.net.luis.plugin.das.mybatis.annotest.IMybtestMapper;
 import test.net.luis.plugin.das.mybatis.annotest.IRule;
 import test.net.luis.plugin.das.mybatis.annotest.RuleService;
+import test.net.luis.plugin.das.mybatis.sesstest.SessionTest;
 import test.net.luis.plugin.das.mybatis.txtest.ITxTestDB1Mapper;
 import test.net.luis.plugin.das.mybatis.txtest.ITxTestDB2Mapper;
 import test.net.luis.plugin.das.mybatis.txtest.TxTest;
@@ -37,6 +38,8 @@ public class Plugin extends AbstractPluginForTest{
 		new XMLBaticsTest2DB_2().test();
 		
 		new TxTest().test();
+		
+		new SessionTest().test();
 	}
 
 	@Override

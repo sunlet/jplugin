@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.jplugin.common.kits.FileKit;
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -48,7 +49,9 @@ public class PluginServlet extends HttpServlet{
 	public void init() throws ServletException {
 		System.out.println("Servlet init...");
 		try{
-			System.setProperty(PluginEnvirement.WORK_DIR, System.getProperty("user.dir")+"/../nswork");
+			if (StringKit.isNull(System.getProperty(PluginEnvirement.WORK_DIR))){
+				System.setProperty(PluginEnvirement.WORK_DIR, System.getProperty("user.dir")+"/../nswork");
+			}
 			FileKit.makeDirectory(PluginEnvirement.getInstance().getWorkDir());
 			PluginEnvirement.getInstance().startup();
 			PluginEnvirement.getInstance().setWebRootPath(getServletContext().getRealPath("/"));

@@ -14,13 +14,14 @@ public class RuleService implements IRule{
 	@Override
 	public void add(String f1, String f2) {
 		IMybatisService svc = ServiceFactory.getService(IMybatisService.class);
-		svc.runWithMapper(IMybtestMapper.class,new IMapperHandler<IMybtestMapper>(){
-
-			@Override
-			public void run(IMybtestMapper m) {
-				m.add("aaa", "bbb");
-			}
-		} );
+		svc.getMapper(IMybtestMapper.class).add("aaa", "bbb");
+//		svc.runWithMapper(IMybtestMapper.class,new IMapperHandler<IMybtestMapper>(){
+//
+//			@Override
+//			public void run(IMybtestMapper m) {
+//				m.add("aaa", "bbb");
+//			}
+//		} );
 		
 	}
 	

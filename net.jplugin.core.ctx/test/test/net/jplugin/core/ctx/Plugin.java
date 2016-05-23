@@ -10,6 +10,8 @@ public class Plugin extends AbstractPluginForTest {
 	
 	public Plugin(){
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTest.class, RuleTestImpl.class);
+		
+		ExtensionCtxHelper.addTxMgrListenerExtension(this, TxManagerListenerTest.class);
 	}
 
 	@Override

@@ -20,12 +20,16 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
+import net.jplugin.core.das.mybatis.impl.sess.MybatisSessionManager;
 
 public class MybaticsServiceImplNew implements IMybatisService {
 	DataSource dataSource=null;
 	SqlSessionFactory sqlSessionFactory;
+	String theDataSourceName;
 	
 	public void init(String dataSourceName,List<String> mappers,List<Class> interceptors){
+		theDataSourceName = dataSourceName;
+		
 		if (mappers==null || mappers.size()==0) {
 			System.out.println("  No mappers configed.");
 			return;
@@ -101,7 +105,8 @@ public class MybaticsServiceImplNew implements IMybatisService {
 	 */
 	@Override
 	public SqlSession openSession(){
-		return sqlSessionFactory.openSession();
+//		return sqlSessionFactory.openSession();
+		return MybatisSessionManager.getSession(this.theDataSourceName);
 	}
 	
 	/* (non-Javadoc)
@@ -109,6 +114,9 @@ public class MybaticsServiceImplNew implements IMybatisService {
 	 */
 	@Override
 	public <T> void runWithMapper(Class<T> type,IMapperHandler<T> handler){
+		/**
+		 * 记录一下：这里的sess.close()目前是空操作，完全可以删去！
+		 */
 		SqlSession sess = openSession();
 		try{
 			T mapper = sqlSessionFactory.getConfiguration().getMapper(type, sess);
@@ -140,5 +148,14 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public <T> T getMapper(Class<T> t) {
+		return openSession().getMapper(t);
+	}
+
+	public SqlSession _openRealSession() {
+		return sqlSessionFactory.openSession();
 	}
 }

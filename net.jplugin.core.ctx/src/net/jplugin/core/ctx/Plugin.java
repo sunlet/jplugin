@@ -5,9 +5,10 @@ import java.util.Map;
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.api.TransactionHandler;
-import net.jplugin.core.ctx.api.TransactionListener;
+import net.jplugin.core.ctx.api.ITransactionManagerListener;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.ctx.impl.TransactionManagerAdaptor;
+import net.jplugin.core.ctx.impl.TxMgrListenerManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
@@ -29,12 +30,12 @@ public class Plugin extends AbstractPlugin{
 	/*
 	 * TX 定义为一个扩展点，不让别人随别可以获取到，因为我们想增加一个adaptor，用户只能通过TransactionServiceFactory来获取
 	 */
-	public static final String EP_TX_LISTENER="EP_TX_LISTENER";
+	public static final String EP_TXMGR_LISTENER="EP_TXMGR_LISTENER";
 	
 	public Plugin(){
 
 		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, RuleServiceDefinition.class,true));
-		addExtensionPoint(ExtensionPoint.create(EP_TX_LISTENER, TransactionListener.class,false));
+		addExtensionPoint(ExtensionPoint.create(EP_TXMGR_LISTENER, ITransactionManagerListener.class,false));
 		
 		addExtension(Extension.create(Constants.EP_SERVICE, RuleServiceFactory.class.getName(),RuleServiceFactory.class));
 		addExtension(Extension.create(Constants.EP_SERVICE, TransactionManager.class.getName(),TransactionManagerAdaptor.class));
@@ -64,6 +65,8 @@ public class Plugin extends AbstractPlugin{
 //		RuleServiceDefinition[] defs = PluginEnvirement.getInstance().getExtensionObjects(EP_RULE_SERVICE, RuleServiceDefinition.class);
 		Map<String,RuleServiceDefinition> defs = PluginEnvirement.getInstance().getExtensionMap(EP_RULE_SERVICE,RuleServiceDefinition.class);
 		ruleSvcFactory.init(defs);
+		
+		TxMgrListenerManager.init();
 	}
 
 }
