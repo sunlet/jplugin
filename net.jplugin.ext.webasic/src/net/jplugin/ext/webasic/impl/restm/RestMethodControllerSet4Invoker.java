@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.api.ctx.RequesterInfo;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
@@ -45,41 +47,44 @@ public class RestMethodControllerSet4Invoker implements IControllerSet{
 	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath)
 			throws Throwable {
 		CallParam callParam;
-		if (APPLICATION_JSON.equals(req.getContentType())){
-			InputStream is = null;
-			String json;
-			try {
-				req.getInputStream();
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] buffer = new byte[512];
-				int len;
-				is = req.getInputStream();
-				if (is==null){
-					json="";
-				}else{
-					while ((len = is.read(buffer)) > 0) {
-						os.write(buffer, 0, len);
-					}
-					json = os.toString("utf-8");
-				}
-			} catch (IOException e) {
-				throw new RuntimeException("get json error:"+e.getMessage(),e);	
-			} finally{
-				if (is!=null) 
-					is.close();
-			}
-			
+		
+		RequesterInfo requestInfo = ThreadLocalContextManager.getRequestInfo();
+		if (APPLICATION_JSON.equals(requestInfo.getContent().getContentType())){
+//			InputStream is = null;
+//			String json;
+//			try {
+//				req.getInputStream();
+//				ByteArrayOutputStream os = new ByteArrayOutputStream();
+//				byte[] buffer = new byte[512];
+//				int len;
+//				is = req.getInputStream();
+//				if (is==null){
+//					json="";
+//				}else{
+//					while ((len = is.read(buffer)) > 0) {
+//						os.write(buffer, 0, len);
+//					}
+//					json = os.toString("utf-8");
+//				}
+//			} catch (IOException e) {
+//				throw new RuntimeException("get json error:"+e.getMessage(),e);	
+//			} finally{
+//				if (is!=null) 
+//					is.close();
+//			}
+			String json = requestInfo.getContent().getJsonContent();
 			Map<String,String> reqMap = new HashMap<String, String>();
 			reqMap.put(CallParam.JSON_KEY,json );
 			callParam = CallParam.create(CallParam.CALLTYPE_JSON,path,innerPath, reqMap);
 		}else{
-			Enumeration<String> names = req.getParameterNames();
-			String name = null;
-			Map<String,String> reqMap = new HashMap<String, String>();
-			while (names.hasMoreElements()){
-				name = names.nextElement();
-				reqMap.put(name, req.getParameter(name));
-			}
+//			Enumeration<String> names = req.getParameterNames();
+//			String name = null;
+//			Map<String,String> reqMap = new HashMap<String, String>();
+//			while (names.hasMoreElements()){
+//				name = names.nextElement();
+//				reqMap.put(name, req.getParameter(name));
+//			}
+			Map<String,String> reqMap = requestInfo.getContent().getParamContent();
 			callParam = CallParam.create(path,innerPath, reqMap);
 		}
 

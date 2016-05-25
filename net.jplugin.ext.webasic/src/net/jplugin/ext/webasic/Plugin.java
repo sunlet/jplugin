@@ -10,6 +10,7 @@ import net.jplugin.ext.webasic.api.IMethodFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
+import net.jplugin.ext.webasic.impl.InitRequestInfoFilterNew;
 import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
@@ -51,6 +52,8 @@ public class Plugin extends AbstractPlugin{
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCTRLFILTER, IMethodFilter.class,false));
 		
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilter.class));
+		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilterNew.class));
+		
 		this.addExtension(Extension.create(EP_CONTROLLERSET,"",WebControllerSet.class));
 		this.addExtension(Extension.create(EP_CONTROLLERSET,"",ServiceControllerSet.class));
 //		this.addExtension(Extension.create(EP_CONTROLLERSET,"",RmethodControllerSet.class));

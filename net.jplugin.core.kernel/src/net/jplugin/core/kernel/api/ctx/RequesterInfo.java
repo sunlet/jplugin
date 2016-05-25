@@ -1,5 +1,9 @@
 package net.jplugin.core.kernel.api.ctx;
 
+import java.util.Map;
+
+import net.jplugin.common.kits.JsonKit;
+
 /**
  *
  * @author: LiuHang
@@ -17,6 +21,10 @@ public class RequesterInfo {
 	String currentTenantId;
 	String clientAppToken;
 	String clientAppCode;
+	String callerIpAddress;
+	Content content=new Content();
+	//following for request content
+
 	
 	public String getOperatorId() {
 		return operatorId;
@@ -59,5 +67,53 @@ public class RequesterInfo {
 	}
 	public void setClientAppCode(String clientAppCode) {
 		this.clientAppCode = clientAppCode;
+	}
+	
+	public String getCallerIpAddress() {
+		return callerIpAddress;
+	}
+	public void setCallerIpAddress(String callerIpAddress) {
+		this.callerIpAddress = callerIpAddress;
+	}
+	public Content getContent() {
+		return content;
+	}
+
+	/**
+	 * following for request content
+	 */
+	public static class Content{
+		String contentType;
+		Map<String,String> paramContent;
+		String jsonContent;
+		Map mapForJsonContent;
+		
+		
+		public String getContentType() {
+			return contentType;
+		}
+		public void setContentType(String contentType) {
+			this.contentType = contentType;
+		}
+		public Map<String, String> getParamContent() {
+			return paramContent;
+		}
+		public void setParamContent(Map<String, String> paramContent) {
+			this.paramContent = paramContent;
+		}
+		public String getJsonContent() {
+			return jsonContent;
+		}
+		public void setJsonContent(String jsonContent) {
+			this.jsonContent = jsonContent;
+			parseAndCacheJsonContent();
+		}
+		private void parseAndCacheJsonContent() {
+			 this.mapForJsonContent = JsonKit.json2Map(jsonContent);
+		}
+		public Map getMapForJsonContent() {
+			return mapForJsonContent;
+		}
+		
 	}
 }
