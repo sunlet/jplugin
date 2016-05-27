@@ -85,7 +85,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	}
 
 	private void parseContent(Content content, HttpServletRequest req) {
-		content.setContentType(req.getParameter("ContentType"));
+		content.setContentType(req.getContentType());
 		if (APPLICATION_JSON.equals(content.getContentType())) {
 			InputStream is = null;
 			String json;
