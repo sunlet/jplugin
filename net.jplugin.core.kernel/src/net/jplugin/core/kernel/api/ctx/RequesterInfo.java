@@ -22,6 +22,7 @@ public class RequesterInfo {
 	String clientAppToken;
 	String clientAppCode;
 	String callerIpAddress;
+	String requestUrl;
 	Content content=new Content();
 	//following for request content
 
@@ -75,6 +76,12 @@ public class RequesterInfo {
 	public void setCallerIpAddress(String callerIpAddress) {
 		this.callerIpAddress = callerIpAddress;
 	}
+	public String getRequestUrl() {
+		return requestUrl;
+	}
+	public void setRequestUrl(String requestUrl) {
+		this.requestUrl = requestUrl;
+	}
 	public Content getContent() {
 		return content;
 	}
@@ -114,6 +121,5 @@ public class RequesterInfo {
 		public Map getMapForJsonContent() {
 			return mapForJsonContent;
 		}
-		
 	}
 }

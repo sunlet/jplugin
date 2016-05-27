@@ -23,6 +23,7 @@ import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.ClientInfo;
 import net.jplugin.core.rclient.api.IClientHandler;
 import net.jplugin.core.rclient.api.RemoteExecuteException;
+import net.jplugin.core.rclient.proxyfac.TokenFactory;
 import net.jplugin.ext.webasic.api.Para;
 
 public class RestHandler implements IClientHandler{
@@ -56,8 +57,13 @@ public class RestHandler implements IClientHandler{
 				}
 				
 				if (clientInfo!=null){
-					map.put(Client.CLIENT_USERNAME, clientInfo.getUsername());
-					map.put(Client.CLIENT_TOKEN, clientInfo.getToken());
+					if (StringKit.isNotNull(clientInfo.getAppId()))
+						map.put(Client.CLIENT_APPID, clientInfo.getAppId());
+					String token = TokenFactory.getAppToken();
+					if (StringKit.isNotNull(token))
+						map.put(Client.CLIENT_TOKEN, token);
+//					map.put(Client.CLIENT_APPID, clientInfo.getAppId());
+//					map.put(Client.CLIENT_TOKEN, clientInfo.getAppToken());
 					Map<String, String> extPara = clientInfo.getExtParas();
 					if (extPara!=null){
 						for (Entry<String, String> en:extPara.entrySet()){

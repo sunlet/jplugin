@@ -71,7 +71,7 @@ public class ESFHelper {
 			ThreadLocalContextManager.instance.createContext();
 			//fill content
 			ESFRestContextHelper.fillContentForRestful(cp);
-			//fill ipaddress
+			//fill ipaddress and request url
 			ESFRestContext.fill(ctx);
 			//fill other attribute
 			InitRequestInfoFilterNew.fillFromContent(ThreadLocalContextManager.getRequestInfo());

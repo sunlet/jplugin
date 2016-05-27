@@ -26,7 +26,7 @@ public class PluginEnvirement {
 	private static PluginEnvirement instance = new PluginEnvirement();
 	private PluginRegistry registry = new PluginRegistry();
 //	private StartupLogger startupLog = new StartupLogger();
-
+	String workdir=null;
 	public static PluginEnvirement getInstance() {
 		return instance;
 	}
@@ -79,27 +79,40 @@ public class PluginEnvirement {
 		return point.getExtensionObjects(t);
 	}
 
-	public String getWorkDir() {
-		return System.getProperty(WORK_DIR, "./nswork");
+	public void setWorkDir(String dir){
+		workdir = dir;
 	}
+	
+	public String getWorkDir() {
+		if (workdir==null){
+			workdir = System.getProperty(WORK_DIR, "./nswork");
+		}
+		return workdir;
+	}
+	
 
 	String configDir = null;
 	
-	public void setConfigDir(String dir){
-		this.configDir = dir;
-		System.setProperty("plugin-config.path", configDir);
-	}
-
 	public synchronized String getConfigDir() {
 		if (configDir == null) {
 			configDir = PluginEnvirement.class.getClassLoader().getResource("")
 					.getFile()
 					+ "config";
-			System.setProperty("plugin-config.path", configDir);
+//			System.setProperty("plugin-config.path", configDir);
 			//System.out.println("!!!!!!!!!!configdir="+configDir);
 		}
 		return configDir;
 	}
+	
+	public void setConfigDir(String dir){
+//		if (this.configDir==null){
+//			configDir = System.getProperty(dir);
+//		}
+		this.configDir = dir;
+//		System.setProperty("plugin-config.path", configDir);
+	}
+
+
 	
 	String webRootPath = null;
 	public void setWebRootPath(String s){

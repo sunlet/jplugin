@@ -9,6 +9,7 @@ public class ESFRPCContext {
 	String clientAppToken;
 	String clientAppCode;
 	String callerIpAddress;
+	String requestUrl;
 
 	public String getOperatorToken() {
 		return operatorToken;
@@ -41,6 +42,14 @@ public class ESFRPCContext {
 	public void setCallerIpAddress(String callerIpAddress) {
 		this.callerIpAddress = callerIpAddress;
 	}
+	
+	public String getRequestUrl() {
+		return requestUrl;
+	}
+	public void setRequestUrl(String requestUrl) {
+		this.requestUrl = requestUrl;
+	}
+	
 	public static void fill(ESFRPCContext ctx) {
 		RequesterInfo info = ThreadLocalContextManager.getRequestInfo();
 		info.setCallerIpAddress(ctx.getCallerIpAddress());
@@ -48,6 +57,7 @@ public class ESFRPCContext {
 		info.setClientAppToken(ctx.getClientAppToken());
 		info.setOperatorId(ctx.getOperatorId());
 		info.setOperatorToken(ctx.getOperatorToken());
+		info.setRequestUrl(ctx.getRequestUrl());
 	}
 	
 

@@ -15,6 +15,7 @@ import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.ClientInfo;
 import net.jplugin.core.rclient.api.IClientHandler;
 import net.jplugin.core.rclient.api.RemoteExecuteException;
+import net.jplugin.core.rclient.proxyfac.TokenFactory;
 
 public class JavaRemotHandler implements IClientHandler{
 	
@@ -42,8 +43,13 @@ public class JavaRemotHandler implements IClientHandler{
 				map.put(PARAVALUES, SerializKit.encodeToString(args));
 				map.put(OPERATION_KEY, method.getName());
 				if (clientInfo!=null){
-					map.put(Client.CLIENT_USERNAME, clientInfo.getUsername());
-					map.put(Client.CLIENT_TOKEN, clientInfo.getToken());
+					if (StringKit.isNotNull(clientInfo.getAppId()))
+						map.put(Client.CLIENT_APPID, clientInfo.getAppId());
+					
+					String token = TokenFactory.getAppToken();
+					if (StringKit.isNotNull(token))
+						map.put(Client.CLIENT_TOKEN, token);
+					
 					Map<String, String> extPara = clientInfo.getExtParas();
 					if (extPara!=null){
 						for (Entry<String, String> en:extPara.entrySet()){

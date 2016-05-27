@@ -62,7 +62,8 @@ public class PluginServlet extends HttpServlet{
 			String contextPath = this.getServletContext().getContextPath();
 			if ("/".equals(contextPath))
 				contextPath = "/_ROOT";
-			System.setProperty(PluginEnvirement.WORK_DIR,System.getProperty(PluginEnvirement.WORK_DIR)+contextPath);
+			PluginEnvirement.getInstance().setWorkDir(System.getProperty(PluginEnvirement.WORK_DIR)+contextPath);
+//			System.setProperty(PluginEnvirement.WORK_DIR,System.getProperty(PluginEnvirement.WORK_DIR)+contextPath);
 			
 			//make dir if not exists
 			FileKit.makeDirectory(PluginEnvirement.getInstance().getWorkDir());

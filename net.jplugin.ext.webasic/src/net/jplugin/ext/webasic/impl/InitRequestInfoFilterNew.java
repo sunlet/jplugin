@@ -37,9 +37,12 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		//get content
 		parseContent(content, req);
 		
+		//fill request url
+		requestInfo.setRequestUrl(req.getRequestURL().toString());
+		
 		//fill client ip
 		requestInfo.setCallerIpAddress(getClientIp(req));
-
+		
 		//fill other attribute
 		fillFromContent(requestInfo);
 		

@@ -10,21 +10,21 @@ import java.util.Map;
  **/
 
 public class ClientInfo {
-	private String username;
-	private String token;
+	private String appId;
+	private String appToken;
 	private HashMap<String,String> extParas;
 	
-	public String getUsername() {
-		return username;
+	public String getAppId() {
+		return appId;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setAppId(String appId) {
+		this.appId = appId;
 	}
-	public String getToken() {
-		return token;
+	public String getAppToken() {
+		return appToken;
 	}
-	public void setToken(String token) {
-		this.token = token;
+	public void setAppToken(String appToken) {
+		this.appToken = appToken;
 	}
 	public Map<String,String> getExtParas(){
 		return extParas;
