@@ -24,6 +24,11 @@ public class ServiceBean {
 	public String addString(String a,@Para(name="b") String b){
 		return a+b;
 	}
+
+	public String addStringNoRequired(String a,@Para(name="b",required=false) String b){
+		return a+b;
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see test.net.jplugin.ext.webasic.restclient.IService#getBeanList()

@@ -1,4 +1,7 @@
 package test.net.jplugin.ext.webasic;
+import java.io.IOException;
+
+import net.jplugin.common.kits.http.HttpStatusException;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.rclient.ExtendsionClientHelper;
@@ -7,6 +10,7 @@ import net.jplugin.ext.webasic.ExtensionWebHelper;
 import test.net.jplugin.ext.webasic.restclient.IService;
 import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
+import test.net.jplugin.ext.webasic.restclient.TestDefaultValClient;
 import test.net.jplugin.ext.webasic.restclient.TestRemoteClient;
 import test.net.jplugin.ext.webasic.restclient.TestRestClient;
 import test.net.jplugin.ext.webasic.restclient.WebCtrlFilterTest;
@@ -39,10 +43,11 @@ public class Plugin extends AbstractPluginForTest{
 		return CoreServicePriority.WEBSERVICE +1;
 	}
 
-	public void test() {
+	public void test() throws IOException, HttpStatusException {
 		RestMethod4Pojo.test();
 		new TestRestClient().test();
 		new TestRestClient().testProxyFactory();
+		new TestDefaultValClient().test();
 		
 		new TestRemoteClient().test();
 	}

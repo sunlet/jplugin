@@ -55,19 +55,25 @@ public class ServiceInvoker implements IServiceInvoker{
 		Object[] ret = new Object[parameterTypes.length];
 		Map paraMap = req.getParamMap();
 		for (int i=0;i<parameterTypes.length;i++){
-			String paramName = getParameterName(paraAnootation[i],i);
-			ret[i] =  getFromRequest(paraMap,paramName,parameterTypes[i]);
+			ParaInfo paraInfo = getParaInfo(paraAnootation[i],i);
+//			ParaInfo pi = getParaInfo(paraAnootation[i],i);
+			ret[i] =  getFromRequest(paraMap,paraInfo,parameterTypes[i]);
 		}
 		return ret;
 	}
 
-	private Object getFromRequest(Map paraMap, String paramName,
+	static class ParaInfo{
+		String name;
+		boolean required;
+	}
+
+	private Object getFromRequest(Map paraMap, ParaInfo paraInfo,
 			Class<?> clz) {
-		if (!paraMap.containsKey(paramName)){
-			throw new RuntimeException("Can't find http param:"+paramName);
+		if (!paraMap.containsKey(paraInfo.name) && paraInfo.required){
+			throw new RuntimeException("Can't find http param:"+paraInfo.name);
 		}
 		
-		String val=(String) paraMap.get(paramName);
+		String val=(String) paraMap.get(paraInfo.name);
 		
 		if (StringKit.isNull(val)){
 			return null;
@@ -76,18 +82,23 @@ public class ServiceInvoker implements IServiceInvoker{
 		}
 	}
 
-	private String getParameterName(Annotation[] anno,int index) {
+	private ParaInfo getParaInfo(Annotation[] anno,int index) {
+		ParaInfo pi = new ParaInfo();
 		String paramName = null;
 		for (Annotation a:anno){
 			if (a.annotationType() == Para.class){
 				paramName = ((Para)a).name().trim();
+				pi.name = paramName;
+				pi.required= ((Para)a).required();
 				break;
 			}
 		}
 		if (StringKit.isNull(paramName)){
 			paramName = "arg"+index;
+			pi.name = paramName;
+			pi.required= false;
 		}
-		return paramName;
+		return pi;
 	}
 
 	public void call(CallParam cp) throws Throwable{
