@@ -14,6 +14,7 @@
 package net.jplugin.core.ctx.impl;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -107,9 +108,18 @@ public class RuleInterceptor implements InvocationHandler {
 		Rule meta = locator.findMeta(method);
 		if (meta!=null)
 			return handler.invoke(proxy,oldService,method,args,meta);
-		else 
-			return method.invoke(oldService, args);
+		else {
+			try {
+				return method.invoke(oldService, args);
+			} catch (Throwable th) {
+				if (th instanceof InvocationTargetException) {
+					throw ((InvocationTargetException) th).getTargetException();
+				} else 
+					throw th;
+			}
+		}
 	}
+	
 	
 	static class MethodMetaLocater {
 		HashMap<String, Rule> singleMetaMap = new HashMap<String, Rule>();

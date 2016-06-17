@@ -14,4 +14,8 @@ public class RuleTestImpl implements IRuleTest {
 		System.out.println("testNoMeta2");
 	}
 
+	public void testNoMetaWithException() throws Exception {
+		throw new Exception("HAHAHA");
+	}
+
 }

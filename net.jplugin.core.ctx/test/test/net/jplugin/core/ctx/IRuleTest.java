@@ -6,4 +6,6 @@ public interface IRuleTest {
 	public void testNoMeta(String a);
 	
 	public void testNoMeta2();
+	
+	public void testNoMetaWithException() throws Exception;
 }
