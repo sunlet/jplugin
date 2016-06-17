@@ -9,6 +9,7 @@ import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.log.api.ILogService;
@@ -153,6 +154,9 @@ public class ServiceInvoker implements IServiceInvoker{
 			jr.setSuccess(state.success);
 			
 			HashMap<String, Object> hm = new HashMap();
+			if (compatibleReturn()){
+				hm.put("return", result);
+			}
 			hm.put("result", result);
 			jr.setContent(hm);
 //			rr.setContent("return",result);
@@ -169,6 +173,23 @@ public class ServiceInvoker implements IServiceInvoker{
 
 			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getTargetException());
 		}
+	}
+
+	//为了兼容 return节点
+	Boolean restCompatibleReturn;
+	private boolean compatibleReturn() {
+		if (restCompatibleReturn==null){
+			synchronized (this) {
+				String cfg = ConfigFactory.getStringConfig("platform.rest-compatible-return");
+				if (cfg!=null) cfg = cfg.trim();
+				if ("true".equals(cfg)){
+					restCompatibleReturn = true;
+				}else{
+					restCompatibleReturn = false;
+				}
+			}
+		}
+		return restCompatibleReturn;
 	}
 
 	private Object invokeWithServiceFilter(String servicePath,final ObjectAndMethod oam, final Object[] paraValue) throws Throwable {
