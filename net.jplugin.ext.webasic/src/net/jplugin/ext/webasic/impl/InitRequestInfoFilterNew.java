@@ -73,7 +73,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			requestInfo.setClientAppToken(clientAppToken);
 			requestInfo.setOperatorToken(operatorToken);
 			requestInfo.setOperatorId((String) map.get(_OID));
-			requestInfo.setClientAppToken((String) map.get(_AID));
+			requestInfo.setClientAppCode((String) map.get(_AID));
 		}
 	}
 
