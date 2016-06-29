@@ -201,6 +201,11 @@ public class PluginEnvirement {
 				trigStartListener(null,null);
 			}else{
 				trigStartListener(null,registry.getErrors());
+				
+				try{
+					Thread.sleep(3000);
+				}catch(Exception th){}
+				System.exit(-2);
 			}
 		} catch (Exception e) {
 			System.out.println("初始化过程发生错误");
