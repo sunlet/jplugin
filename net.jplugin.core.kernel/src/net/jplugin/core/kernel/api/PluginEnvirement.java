@@ -142,7 +142,7 @@ public class PluginEnvirement {
 			return;
 		started = true;
 		try {
-			System.out.println("$$$ ConfigDir="+this.getConfigDir()+" WorkDir="+this.getWorkDir());
+			System.out.println("$$$ ConfigDir="+this.getConfigDir()+" \n$$$ WorkDir="+this.getWorkDir());
 			Set<Object> pluginToLoad = new HashSet<Object>();
 			
 			if (plgns==null){

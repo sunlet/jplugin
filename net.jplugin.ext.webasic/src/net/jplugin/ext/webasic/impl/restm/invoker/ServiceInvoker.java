@@ -14,12 +14,13 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
+import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits.RemoteExceptionInfo;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
+import net.jplugin.ext.webasic.impl.filter.MethodIllegleAccessException;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
@@ -163,16 +164,21 @@ public class ServiceInvoker implements IServiceInvoker{
 			cp.setResult(jr.toJson());
 		}catch(InvocationTargetException e){
 			Throwable targetEx = e.getTargetException();
-			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
-
-			JsonResult jr = JsonResult.create();
-			jr.setSuccess(false);
-			jr.setMsg(exInfo.getMsg());//get message
-			jr.setCode(exInfo.getCode());//get code
-			cp.setResult(jr.toJson());
-
-			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getTargetException());
+			disposeException(cp, targetEx);
+		}catch(MethodIllegleAccessException e){
+			disposeException(cp, e);
 		}
+	}
+
+	private void disposeException(CallParam cp, Throwable e) {
+		RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e);
+
+		JsonResult jr = JsonResult.create();
+		jr.setSuccess(false);
+		jr.setMsg(exInfo.getMsg());//get message
+		jr.setCode(exInfo.getCode());//get code
+		cp.setResult(jr.toJson());
+		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e);
 	}
 
 	//为了兼容 return节点
@@ -217,13 +223,18 @@ public class ServiceInvoker implements IServiceInvoker{
 //			Object result = helper.invokeWithRuleSupport(oam,paraValue);
 			Object result = invokeWithServiceFilter(cp.getPath(),oam,paraValue);
 			cp.setResult(toResultString(result));
-		}catch(InvocationTargetException e){
-			Throwable targetEx = e.getTargetException();
-			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
+		}catch(InvocationTargetException ite){
+			Throwable targetEx = ite.getTargetException();
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(targetEx);
 
 			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
 			cp.setResult(toResultString(result));
-			log(e.getTargetException());
+			log(targetEx);
+		}catch(MethodIllegleAccessException e){
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e);
+			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
+			cp.setResult(toResultString(result));
+			log(e);
 		}
 	}
 

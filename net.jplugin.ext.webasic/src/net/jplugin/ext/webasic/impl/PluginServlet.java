@@ -55,7 +55,7 @@ public class PluginServlet extends HttpServlet{
 				String catalinaHome = System.getProperty("catalina.home");
 				if (StringKit.isNull(catalinaHome))
 					catalinaHome = new File(".").getAbsolutePath();
-				String workdir = catalinaHome+"/"+"jplugin-work";
+				String workdir = catalinaHome+"/logs/"+"jplugin-work";
 				System.setProperty(PluginEnvirement.WORK_DIR,workdir );
 			}
 			//append context path
