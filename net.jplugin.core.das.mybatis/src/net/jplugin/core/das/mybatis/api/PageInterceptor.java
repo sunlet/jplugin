@@ -111,7 +111,7 @@ public abstract class PageInterceptor implements Interceptor {
     private void setPageParameter(String sql, Connection connection, MappedStatement mappedStatement,
             BoundSql boundSql, PageCond page) {
         // 记录总记录数
-        String countSql = "select count(0) from (" + sql + ") as total";
+        String countSql = "select count(0) from (" + sql + ")  total";
         PreparedStatement countStmt = null;
         ResultSet rs = null;
         try {
