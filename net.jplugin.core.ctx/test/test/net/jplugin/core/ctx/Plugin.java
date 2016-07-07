@@ -25,6 +25,14 @@ public class Plugin extends AbstractPluginForTest {
 		RuleServiceFactory.getRuleService(IRuleTest.class).testNoMeta();
 		RuleServiceFactory.getRuleService(IRuleTest.class).testNoMeta("a");
 		RuleServiceFactory.getRuleService(IRuleTest.class).testNoMeta2();
+		
+		try {
+			RuleServiceFactory.getRuleService(IRuleTest.class).testNoMetaWithException();
+			throw new RuntimeException("can't come here");
+		} catch (Exception e) {
+			AssertKit.assertEqual(e.getMessage(), "HAHAHA");
+		}
+		
 	}
 
 }

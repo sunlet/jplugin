@@ -20,7 +20,11 @@ public class ClientFactory {
 		client.setProtocal(protocol);
 		return client;
 	}
-
+	public static <T> Client<T> create(Class<T> intf,String serverurl,String protocol,ClientInfo ci){
+		Client<T> client = new Client<T>(intf,serverurl,ci);
+		client.setProtocal(protocol);
+		return client;
+	}
 	/**
 	 * 创建一个指定接口的Proxy
 	 * @param intf

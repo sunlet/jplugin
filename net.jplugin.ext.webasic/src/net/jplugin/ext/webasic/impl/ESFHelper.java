@@ -28,6 +28,7 @@ public class ESFHelper {
 	 * @return
 	 * @throws Throwable
 	 */
+	@Deprecated
 	public static Object invokeWithRule(String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
 			ThreadLocalContextManager.instance.createContext();
@@ -42,15 +43,57 @@ public class ESFHelper {
 			ThreadLocalContextManager.instance.releaseContext();
 		}
 	}
-	
+
+	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
+		try{
+			ThreadLocalContextManager.instance.createContext();
+			ESFRPCContext.fill(ctx);
+			
+			MethodFilterContext sfc = new MethodFilterContext(servicePath, obj, method, args);
+			
+			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
+				public Object run() throws Throwable {
+					return RuleProxyHelper.invokeWithRule(obj, method, args);
+				}
+			});
+		}finally{
+			ThreadLocalContextManager.instance.releaseContext();
+		}
+	}
+
 	/**
 	 * Restful调用这个方法
 	 * @param cp
 	 * @throws Throwable
 	 */
+	public static void callRestfulService(ESFRestContext ctx,CallParam cp)  throws Throwable{
+		try{
+			ThreadLocalContextManager.instance.createContext();
+			//fill content
+			ESFRestContextHelper.fillContentForRestful(cp);
+			//fill ipaddress and request url
+			ESFRestContext.fill(ctx);
+			//fill other attribute
+			InitRequestInfoFilterNew.fillFromContent(ThreadLocalContextManager.getRequestInfo());
+			
+			//call the service
+			ServiceInvokerSet.instance.call(cp);
+		}finally{
+			ThreadLocalContextManager.instance.releaseContext();
+		}
+	}
+	@Deprecated
 	public static void callRestfulService(CallParam cp)  throws Throwable{
 		try{
 			ThreadLocalContextManager.instance.createContext();
+			//fill content
+			ESFRestContextHelper.fillContentForRestful(cp);
+			//fill ipaddress
+//			ESFRestContext.fill(ctx);
+			//fill other attribute
+			InitRequestInfoFilterNew.fillFromContent(ThreadLocalContextManager.getRequestInfo());
+			
+			//call the service
 			ServiceInvokerSet.instance.call(cp);
 		}finally{
 			ThreadLocalContextManager.instance.releaseContext();

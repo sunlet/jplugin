@@ -9,16 +9,18 @@ import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
+import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits.RemoteExceptionInfo;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
+import net.jplugin.ext.webasic.impl.filter.MethodIllegleAccessException;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
@@ -55,19 +57,25 @@ public class ServiceInvoker implements IServiceInvoker{
 		Object[] ret = new Object[parameterTypes.length];
 		Map paraMap = req.getParamMap();
 		for (int i=0;i<parameterTypes.length;i++){
-			String paramName = getParameterName(paraAnootation[i],i);
-			ret[i] =  getFromRequest(paraMap,paramName,parameterTypes[i]);
+			ParaInfo paraInfo = getParaInfo(paraAnootation[i],i);
+//			ParaInfo pi = getParaInfo(paraAnootation[i],i);
+			ret[i] =  getFromRequest(paraMap,paraInfo,parameterTypes[i]);
 		}
 		return ret;
 	}
 
-	private Object getFromRequest(Map paraMap, String paramName,
+	static class ParaInfo{
+		String name;
+		boolean required;
+	}
+
+	private Object getFromRequest(Map paraMap, ParaInfo paraInfo,
 			Class<?> clz) {
-		if (!paraMap.containsKey(paramName)){
-			throw new RuntimeException("Can't find http param:"+paramName);
+		if (!paraMap.containsKey(paraInfo.name) && paraInfo.required){
+			throw new RuntimeException("Can't find http param:"+paraInfo.name);
 		}
 		
-		String val=(String) paraMap.get(paramName);
+		String val=(String) paraMap.get(paraInfo.name);
 		
 		if (StringKit.isNull(val)){
 			return null;
@@ -76,18 +84,23 @@ public class ServiceInvoker implements IServiceInvoker{
 		}
 	}
 
-	private String getParameterName(Annotation[] anno,int index) {
+	private ParaInfo getParaInfo(Annotation[] anno,int index) {
+		ParaInfo pi = new ParaInfo();
 		String paramName = null;
 		for (Annotation a:anno){
 			if (a.annotationType() == Para.class){
 				paramName = ((Para)a).name().trim();
+				pi.name = paramName;
+				pi.required= ((Para)a).required();
 				break;
 			}
 		}
 		if (StringKit.isNull(paramName)){
 			paramName = "arg"+index;
+			pi.name = paramName;
+			pi.required= false;
 		}
-		return paramName;
+		return pi;
 	}
 
 	public void call(CallParam cp) throws Throwable{
@@ -142,22 +155,47 @@ public class ServiceInvoker implements IServiceInvoker{
 			jr.setSuccess(state.success);
 			
 			HashMap<String, Object> hm = new HashMap();
+			if (compatibleReturn()){
+				hm.put("return", result);
+			}
 			hm.put("result", result);
 			jr.setContent(hm);
 //			rr.setContent("return",result);
 			cp.setResult(jr.toJson());
 		}catch(InvocationTargetException e){
 			Throwable targetEx = e.getTargetException();
-			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
-
-			JsonResult jr = JsonResult.create();
-			jr.setSuccess(false);
-			jr.setMsg(exInfo.getMsg());//get message
-			jr.setCode(exInfo.getCode());//get code
-			cp.setResult(jr.toJson());
-
-			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getTargetException());
+			disposeException(cp, targetEx);
+		}catch(MethodIllegleAccessException e){
+			disposeException(cp, e);
 		}
+	}
+
+	private void disposeException(CallParam cp, Throwable e) {
+		RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e);
+
+		JsonResult jr = JsonResult.create();
+		jr.setSuccess(false);
+		jr.setMsg(exInfo.getMsg());//get message
+		jr.setCode(exInfo.getCode());//get code
+		cp.setResult(jr.toJson());
+		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e);
+	}
+
+	//为了兼容 return节点
+	Boolean restCompatibleReturn;
+	private boolean compatibleReturn() {
+		if (restCompatibleReturn==null){
+			synchronized (this) {
+				String cfg = ConfigFactory.getStringConfig("platform.rest-compatible-return");
+				if (cfg!=null) cfg = cfg.trim();
+				if ("true".equals(cfg)){
+					restCompatibleReturn = true;
+				}else{
+					restCompatibleReturn = false;
+				}
+			}
+		}
+		return restCompatibleReturn;
 	}
 
 	private Object invokeWithServiceFilter(String servicePath,final ObjectAndMethod oam, final Object[] paraValue) throws Throwable {
@@ -185,13 +223,18 @@ public class ServiceInvoker implements IServiceInvoker{
 //			Object result = helper.invokeWithRuleSupport(oam,paraValue);
 			Object result = invokeWithServiceFilter(cp.getPath(),oam,paraValue);
 			cp.setResult(toResultString(result));
-		}catch(InvocationTargetException e){
-			Throwable targetEx = e.getTargetException();
-			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e.getTargetException());
+		}catch(InvocationTargetException ite){
+			Throwable targetEx = ite.getTargetException();
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(targetEx);
 
 			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
 			cp.setResult(toResultString(result));
-			log(e.getTargetException());
+			log(targetEx);
+		}catch(MethodIllegleAccessException e){
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e);
+			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
+			cp.setResult(toResultString(result));
+			log(e);
 		}
 	}
 

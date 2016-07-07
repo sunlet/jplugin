@@ -380,7 +380,6 @@ public class HttpServletRequestEmpty implements HttpServletRequest{
 	 * @see javax.servlet.ServletRequest#getRemoteAddr()
 	 */
 	public String getRemoteAddr() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

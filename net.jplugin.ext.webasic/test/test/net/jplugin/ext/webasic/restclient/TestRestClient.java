@@ -12,6 +12,7 @@ import net.jplugin.core.rclient.proxyfac.ClientProxyFactory;
 import test.net.jplugin.ext.webasic.restclient.ServiceBean.Bean;
 
 public class TestRestClient {
+	
 	public void test() {
 		Client<IService> client = ClientFactory.getThreadLocalClient(IService.class);
 		client.setServiceBaseUrl("http://localhost:8080/demo/testrestclient");
@@ -39,6 +40,8 @@ public class TestRestClient {
 		}
 		if (!ret) throw new RuntimeException("fail");
 	}
+	
+	
 	
 	public void testProxyFactory() {
 		IService service = ClientProxyFactory.instance.getClientProxy(IService.class);

@@ -11,4 +11,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Para {
 	public String name();
+	public boolean required() default false;
 }

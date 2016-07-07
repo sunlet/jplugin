@@ -1,5 +1,6 @@
 package net.jplugin.ext.webasic.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -49,9 +50,22 @@ public class PluginServlet extends HttpServlet{
 	public void init() throws ServletException {
 		System.out.println("Servlet init...");
 		try{
+			//set the work directory 
 			if (StringKit.isNull(System.getProperty(PluginEnvirement.WORK_DIR))){
-				System.setProperty(PluginEnvirement.WORK_DIR, System.getProperty("user.dir")+"/../nswork");
+				String catalinaHome = System.getProperty("catalina.home");
+				if (StringKit.isNull(catalinaHome))
+					catalinaHome = new File(".").getAbsolutePath();
+				String workdir = catalinaHome+"/logs/"+"jplugin-work";
+				System.setProperty(PluginEnvirement.WORK_DIR,workdir );
 			}
+			//append context path
+			String contextPath = this.getServletContext().getContextPath();
+			if ("/".equals(contextPath))
+				contextPath = "/_ROOT";
+			PluginEnvirement.getInstance().setWorkDir(System.getProperty(PluginEnvirement.WORK_DIR)+contextPath);
+//			System.setProperty(PluginEnvirement.WORK_DIR,System.getProperty(PluginEnvirement.WORK_DIR)+contextPath);
+			
+			//make dir if not exists
 			FileKit.makeDirectory(PluginEnvirement.getInstance().getWorkDir());
 			PluginEnvirement.getInstance().startup();
 			PluginEnvirement.getInstance().setWebRootPath(getServletContext().getRealPath("/"));

@@ -122,6 +122,10 @@ public class HttpServletRequestMock extends HttpServletRequestEmpty{
 	public int getLocalPort() {
 		return 8080;
 	}
+	@Override
+	public String getRemoteAddr() {
+		return "127.0.0.1";
+	}
 	
 	@Override
 	public Enumeration getParameterNames() {

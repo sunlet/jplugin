@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.rclient.api.ClientFactory;
+import net.jplugin.core.rclient.api.ClientInfo;
 
 public class ClientProxyFactory {
 
@@ -35,7 +36,12 @@ public class ClientProxyFactory {
 		Object ret = objectMap.get(localName);
 		if (ret==null){
 			ClientProxyDefinition def = defMap.get(localName);
-			ret = ClientFactory.create(interf, def.getUrl(),def.getProtocol()).getObject();
+			
+			ClientInfo ci = new ClientInfo();
+			ci.setAppId(def.getAppId());
+			ci.setAppToken(def.getAppToken());
+			
+			ret = ClientFactory.create(interf, def.getUrl(),def.getProtocol(),ci).getObject();
 			objectMap.put(localName, ret);
 		}
 		return (T) ret;

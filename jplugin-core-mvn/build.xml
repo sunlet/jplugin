@@ -34,6 +34,27 @@
 			<path path="${basedir}/../net.jplugin.ext.token/bin" />
 			<path path="${basedir}/../net.jplugin.ext.webasic/bin" />
 			<path path="${basedir}/../net.jplugin.ext.dict/bin" />
+
+			<path path="${basedir}/../net.jplugin.common.kits/src" />
+			<path path="${basedir}/../net.jplugin.common.kits.http/src" />
+			<path path="${basedir}/../net.jplugin.core.ctx/src" />
+			<path path="${basedir}/../net.jplugin.core.das/src" />
+			<path path="${basedir}/../net.jplugin.core.das.hib/src" />
+			<path path="${basedir}/../net.jplugin.core.das.mybatis/src" />
+			<path path="${basedir}/../net.jplugin.core.event/src" />
+			<path path="${basedir}/../net.jplugin.core.job/src" />
+			<path path="${basedir}/../net.jplugin.core.kernel/src" />
+			<path path="${basedir}/../net.jplugin.core.lock/src" />
+			<path path="${basedir}/../net.jplugin.core.log/src" />
+			<path path="${basedir}/../net.jplugin.core.rclient/src" />
+			<path path="${basedir}/../net.jplugin.core.scheduler/src" />
+			<path path="${basedir}/../net.jplugin.core.service/src" />
+			<path path="${basedir}/../net.jplugin.core.config/src" />
+			<!-- following get from the old jplugin-web-->
+			<path path="${basedir}/../net.jplugin.ext.token/src" />
+			<path path="${basedir}/../net.jplugin.ext.webasic/src" />
+			<path path="${basedir}/../net.jplugin.ext.dict/src" />
+
 		</foreach>
 	</target>
 
@@ -46,7 +67,7 @@
 
 
 	<property name="jar-file" value="${basedir}/target/${pom.name}-${pom.version}.jar" />
-	<target name="zip" >
+	<target name="zip">
 		<echo message="${basedir}/../jplugin-core-mvn/ant-lib/ant-contrib-1.0b3.jar" />
 		<echo message="##############${jar-file}">
 		</echo>
