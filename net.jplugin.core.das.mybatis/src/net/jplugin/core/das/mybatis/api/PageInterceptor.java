@@ -40,8 +40,8 @@ public abstract class PageInterceptor implements Interceptor {
     private static final Log logger = LogFactory.getLog(PageInterceptor.class);
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-    private static String defaultDialect = "mysql"; // 数据库类型(默认为mysql)
-    private static String defaultPageSqlId = ".*Page$"; // 需要拦截的ID(正则匹配)
+    private static final String defaultDialect = "mysql"; // 数据库类型(默认为mysql)
+    private static final String defaultPageSqlId = ".*Page$"; // 需要拦截的ID(正则匹配)
 //    private static String dialect = ""; // 数据库类型(默认为mysql)
 //    private static String pageSqlId = ""; // 需要拦截的ID(正则匹配)
 
