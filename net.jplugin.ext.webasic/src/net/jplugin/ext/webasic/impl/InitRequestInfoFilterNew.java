@@ -8,9 +8,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -53,6 +55,14 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		//fill other attribute
 		fillFromContent(requestInfo);
 		
+		//fill cookie
+		Cookie[] arr = req.getCookies();
+		if (arr!=null){
+			Cookies cookies = requestInfo.getCookies();
+			for (Cookie c:arr){
+				cookies.setCookie(c.getName(), c.getValue());
+			}
+		}
 		return true;
 	}
 

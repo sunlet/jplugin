@@ -24,6 +24,8 @@ public class RequesterInfo {
 	String callerIpAddress;
 	String requestUrl;
 	Content content=new Content();
+	Cookies cookies=new Cookies();
+	
 	//following for request content
 
 	
@@ -84,6 +86,9 @@ public class RequesterInfo {
 	}
 	public Content getContent() {
 		return content;
+	}
+	public Cookies getCookies(){
+		return cookies;
 	}
 
 	/**
