@@ -51,4 +51,9 @@ public class Plugin extends AbstractPluginForTest{
 		
 		new TestRemoteClient().test();
 	}
+	
+	@Override
+	public void onDestroy() {
+		System.out.println("### on destroy");
+	}
 }

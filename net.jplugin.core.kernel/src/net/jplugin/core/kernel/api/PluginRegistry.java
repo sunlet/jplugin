@@ -180,4 +180,13 @@ public class PluginRegistry {
 		}
 		return ret;
 	}
+
+	public void destroy() {
+		for (int i=0;i<pluginList.size();i++){
+			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
+			try{
+				plugin.onDestroy();
+			}catch(Exception e){e.printStackTrace();}
+		}
+	}
 }

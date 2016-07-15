@@ -21,5 +21,6 @@ public interface IPlugin {
 	public List<Extension>  getExtensions();
 	public int getStatus();
 	public void init();
+	public void onDestroy();
 	public Map<String,String> getConfigures();
 }

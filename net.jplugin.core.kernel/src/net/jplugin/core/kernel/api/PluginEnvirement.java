@@ -30,6 +30,14 @@ public class PluginEnvirement {
 	public static PluginEnvirement getInstance() {
 		return instance;
 	}
+	
+	public void stop(){
+		System.out.println("$$$ now to stop plugin envirment");
+		this.registry.destroy();
+		this.registry = new PluginRegistry();
+		this.started = false;
+		System.out.println("$$$ plugin envirment stopped");
+	}
 
 	public PluginRegistry getPluginRegistry() {
 		return registry;
