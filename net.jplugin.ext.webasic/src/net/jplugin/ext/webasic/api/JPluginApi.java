@@ -17,7 +17,7 @@ public @interface JPluginApi {
 	 * API名称
 	 * @return
 	 */
-	String name();
+	String name() default "";
 	/**
 	 * API控制级别
 	 * @return
