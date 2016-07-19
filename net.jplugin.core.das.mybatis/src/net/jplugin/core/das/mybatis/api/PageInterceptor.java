@@ -63,12 +63,12 @@ public abstract class PageInterceptor implements Interceptor {
         Configuration configuration = (Configuration) metaStatementHandler.getValue("delegate.configuration");
         String dialect = configuration.getVariables().getProperty("dialect");
         if (null == dialect || "".equals(dialect)) {
-            logger.warn("Property dialect is not setted,use default 'mysql' ");
+//            logger.warn("Property dialect is not setted,use default 'mysql' ");
             dialect = defaultDialect;
         }
         String pageSqlId = configuration.getVariables().getProperty("pageSqlId");
         if (null == pageSqlId || "".equals(pageSqlId)) {
-            logger.warn("Property pageSqlId is not setted,use default '.*Page$' ");
+//            logger.warn("Property pageSqlId is not setted,use default '.*Page$' ");
             pageSqlId = defaultPageSqlId;
         }
         MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue("delegate.mappedStatement");
