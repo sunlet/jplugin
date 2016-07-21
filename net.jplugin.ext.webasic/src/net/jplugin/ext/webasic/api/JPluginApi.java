@@ -8,7 +8,7 @@ public @interface JPluginApi {
 	/**
 	 * 调用者类型：CallerType
 	 */
-	public enum CT{APP,USER}
+	public enum CT{APP,USER,SSO}
 	/**
 	 * 限制级别：RestrictLevel
 	 */
