@@ -57,9 +57,13 @@ public class MethodFilterContext {
 	public void setObject(Object object) {
 		this.object = object;
 	}
-	public void sddAttribute(String k,Object v){
+	public void setAttribute(String k,Object v){
 		if (attributes==null) attributes = new HashMap<String, Object>();
 		attributes.put(k, v);
+	}
+	@Deprecated
+	public void sddAttribute(String k,Object v){
+		setAttribute(k, v);
 	}
 	public Object getAttribute(String k){
 		if (attributes==null) return null;
