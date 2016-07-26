@@ -1,5 +1,6 @@
 package net.jplugin.core.kernel.api.ctx;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.jplugin.common.kits.JsonKit;
@@ -122,6 +123,9 @@ public class RequesterInfo {
 		}
 		private void parseAndCacheJsonContent() {
 			 this.mapForJsonContent = JsonKit.json2Map(jsonContent);
+			 //这里做一个容错
+			 if (this.mapForJsonContent==null) 
+				 this.mapForJsonContent = new HashMap<String,String>(0);
 		}
 		public Map getMapForJsonContent() {
 			return mapForJsonContent;
