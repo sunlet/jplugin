@@ -103,7 +103,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 				ip = ip.substring(0,ip.indexOf(","));
 			}
 		}
-		return ip.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ip;
+		return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
 	}
 
 	private void parseContent(Content content, HttpServletRequest req) {
