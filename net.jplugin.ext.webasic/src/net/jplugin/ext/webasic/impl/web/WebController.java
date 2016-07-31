@@ -21,6 +21,7 @@ import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
+import net.jplugin.ext.webasic.impl.filter.MethodIllegleAccessException;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
@@ -63,6 +64,8 @@ public class WebController implements IController{
 				}
 			});
 			//res.getWriter().print(result.getJson());
+		}catch(MethodIllegleAccessException e1){
+			//无权限，返回空内容
 		}catch(InvocationTargetException e){
 			throw ((InvocationTargetException)e).getTargetException();
 		}
