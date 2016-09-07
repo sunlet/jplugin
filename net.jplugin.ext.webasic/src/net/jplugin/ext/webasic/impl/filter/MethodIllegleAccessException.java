@@ -8,7 +8,7 @@ public class MethodIllegleAccessException extends RemoteExecuteException{
 	private MethodFilterContext ctx;
 
 	public MethodIllegleAccessException(MethodFilterContext c) {
-		super(CODE,"Access Forbidded: path="+c.getServicePath()+" method="+c.getMethod().getName()+" clazz="+getObjectName(c));
+		super(CODE,"Access Forbidden: path="+c.getServicePath()+" method="+c.getMethod().getName()+" clazz="+getObjectName(c));
 		this.ctx = c;
 	}
 

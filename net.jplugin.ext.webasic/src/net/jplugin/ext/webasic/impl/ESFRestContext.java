@@ -1,11 +1,14 @@
 package net.jplugin.ext.webasic.impl;
 
+import java.util.HashMap;
+
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 public class ESFRestContext {
 	String callerIpAddress;
 	String requestUrl;
+	HashMap<String,String> cookieMap;
 
 	public String getCallerIpAddress() {
 		return callerIpAddress;
@@ -20,6 +23,7 @@ public class ESFRestContext {
 		RequesterInfo info = ThreadLocalContextManager.getRequestInfo();
 		info.setCallerIpAddress(ctx.getCallerIpAddress());
 		info.setRequestUrl(ctx.getRequestUrl());
+		info.getCookies()._setFromMap(ctx.getCookieMap());
 	}
 
 	public String getRequestUrl() {
@@ -28,6 +32,14 @@ public class ESFRestContext {
 
 	public void setRequestUrl(String requestUrl) {
 		this.requestUrl = requestUrl;
+	}
+
+	public HashMap<String, String> getCookieMap() {
+		return cookieMap;
+	}
+
+	public void setCookieMap(HashMap<String, String> cookieMap) {
+		this.cookieMap = cookieMap;
 	}
 
 }

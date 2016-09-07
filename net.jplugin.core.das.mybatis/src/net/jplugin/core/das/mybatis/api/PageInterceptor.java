@@ -40,10 +40,10 @@ public abstract class PageInterceptor implements Interceptor {
     private static final Log logger = LogFactory.getLog(PageInterceptor.class);
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-    private static String defaultDialect = "mysql"; // 数据库类型(默认为mysql)
-    private static String defaultPageSqlId = ".*Page$"; // 需要拦截的ID(正则匹配)
-    private static String dialect = ""; // 数据库类型(默认为mysql)
-    private static String pageSqlId = ""; // 需要拦截的ID(正则匹配)
+    private static final String defaultDialect = "mysql"; // 数据库类型(默认为mysql)
+    private static final String defaultPageSqlId = ".*Page$"; // 需要拦截的ID(正则匹配)
+//    private static String dialect = ""; // 数据库类型(默认为mysql)
+//    private static String pageSqlId = ""; // 需要拦截的ID(正则匹配)
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -61,14 +61,14 @@ public abstract class PageInterceptor implements Interceptor {
             metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
         }
         Configuration configuration = (Configuration) metaStatementHandler.getValue("delegate.configuration");
-        dialect = configuration.getVariables().getProperty("dialect");
+        String dialect = configuration.getVariables().getProperty("dialect");
         if (null == dialect || "".equals(dialect)) {
-            logger.warn("Property dialect is not setted,use default 'mysql' ");
+//            logger.warn("Property dialect is not setted,use default 'mysql' ");
             dialect = defaultDialect;
         }
-        pageSqlId = configuration.getVariables().getProperty("pageSqlId");
+        String pageSqlId = configuration.getVariables().getProperty("pageSqlId");
         if (null == pageSqlId || "".equals(pageSqlId)) {
-            logger.warn("Property pageSqlId is not setted,use default '.*Page$' ");
+//            logger.warn("Property pageSqlId is not setted,use default '.*Page$' ");
             pageSqlId = defaultPageSqlId;
         }
         MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue("delegate.mappedStatement");

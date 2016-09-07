@@ -75,4 +75,9 @@ public class PluginServlet extends HttpServlet{
 			else throw new RuntimeException(t);
 		}
 	}
+	
+	@Override
+	public void destroy() {
+		PluginEnvirement.getInstance().stop();
+	}
 }

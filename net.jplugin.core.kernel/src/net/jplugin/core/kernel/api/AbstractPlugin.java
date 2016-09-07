@@ -184,4 +184,7 @@ public abstract class AbstractPlugin implements IPlugin {
 	public Map<String,String> getConfigures(){
 		return this.configreus;
 	}
+	
+	public void onDestroy() {
+	}
 }

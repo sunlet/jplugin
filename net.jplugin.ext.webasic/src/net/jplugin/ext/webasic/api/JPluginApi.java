@@ -8,7 +8,7 @@ public @interface JPluginApi {
 	/**
 	 * 调用者类型：CallerType
 	 */
-	public enum CT{APP,USER}
+	public enum CT{APP,USER,SSO}
 	/**
 	 * 限制级别：RestrictLevel
 	 */
@@ -17,7 +17,7 @@ public @interface JPluginApi {
 	 * API名称
 	 * @return
 	 */
-	String name();
+	String name() default "";
 	/**
 	 * API控制级别
 	 * @return

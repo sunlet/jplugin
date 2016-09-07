@@ -8,7 +8,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 public class MybatsiInterceptorManager {
 
 	public static MybatsiInterceptorManager instance = new MybatsiInterceptorManager();
-	static Interceptor[] inceptList = null;
+	Interceptor[] inceptList = null;
 
 	public void init(){
 		 inceptList = PluginEnvirement.getInstance().getExtensionObjects(net.jplugin.core.das.mybatis.Plugin.EP_MYBATIS_INCEPT, Interceptor.class);

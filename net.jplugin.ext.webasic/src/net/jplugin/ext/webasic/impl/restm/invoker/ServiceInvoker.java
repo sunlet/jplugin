@@ -167,6 +167,9 @@ public class ServiceInvoker implements IServiceInvoker{
 			disposeException(cp, targetEx);
 		}catch(MethodIllegleAccessException e){
 			disposeException(cp, e);
+		}catch(Exception e){
+			//有Rule标记的情况下，InvocationTargetException会被去掉，所以只能在这里处理了
+			disposeException(cp, e);
 		}
 	}
 

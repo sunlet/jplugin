@@ -92,6 +92,7 @@ public class AbstractExController {
 		}
 	}
 
+	@Deprecated
 	public void renderJson(String json) {
 		getRes().setContentType("text/html; charset=utf-8");
 		try {
@@ -100,7 +101,8 @@ public class AbstractExController {
 			throw new RuntimeException("render json error" + json, e);
 		}
 	}
-
+	
+	@Deprecated
 	public void renderJson(JsonResult jr){
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
@@ -128,6 +130,7 @@ public class AbstractExController {
 		}
 	}
 	
+	@Deprecated
 	public void renderJson(RuleResult rr) {
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {

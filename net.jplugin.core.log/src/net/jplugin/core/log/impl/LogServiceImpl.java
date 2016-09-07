@@ -14,6 +14,7 @@ import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.RollingFileAppender;
 
 /**
  *
@@ -70,7 +71,7 @@ public class LogServiceImpl implements ILogService {
 	 * @param filename
 	 * @return
 	 */
-	private Logger createLogger(String filename) {
+	private Logger createLoggerOld(String filename) {
 		org.apache.log4j.Logger theSpecifialLog = org.apache.log4j.Logger.getLogger("$"+filename);
 		
 		theSpecifialLog.setAdditivity(false);
@@ -78,6 +79,28 @@ public class LogServiceImpl implements ILogService {
 		DailyRollingFileAppender append;
 		try {
 			append = new DailyRollingFileAppender(new PatternLayout(),PluginEnvirement.getInstance().getWorkDir()+"/logs/"+filename,"'.'yyyy-MM-dd'.log'");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		theSpecifialLog.addAppender(append);
+		return new Logger4Log4j(theSpecifialLog);
+	}
+	/**
+	 * @param filename
+	 * @return
+	 */
+	private Logger createLogger(String filename) {
+		org.apache.log4j.Logger theSpecifialLog = org.apache.log4j.Logger.getLogger("$"+filename);
+		
+		theSpecifialLog.setAdditivity(false);
+		theSpecifialLog.setLevel(Level.DEBUG);
+		RollingFileAppender append;
+		try {
+			PatternLayout layout = new PatternLayout();
+			layout.setConversionPattern("%d %m %n");
+			append = new RollingFileAppender(layout,PluginEnvirement.getInstance().getWorkDir()+"/logs/"+filename);
+			append.setMaxBackupIndex(25);
+			append.setMaxFileSize("20MB");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
