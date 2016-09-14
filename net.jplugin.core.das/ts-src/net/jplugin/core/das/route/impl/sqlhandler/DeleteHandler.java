@@ -9,7 +9,23 @@ import net.jplugin.core.das.route.impl.parser.SqlWordsWalker;
 public class DeleteHandler extends AbstractCommandHandler{
 
 	@Override
-	public SqlHandleResult handle(RouterConnection conn, String sql, List<Object> params, SqlWordsWalker walker) {
+	String walkTableName(SqlWordsWalker walker) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	String getFinalSql(SqlWordsWalker walker, String sourceSql, String finalTableName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	KeyResult walkToGetKeyColumnInfo(SqlWordsWalker walker, String tableName, String keyField) {
 		// TODO Auto-generated method stub
 		return null;
 	}

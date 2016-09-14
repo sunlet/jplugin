@@ -1,20 +1,20 @@
 package net.jplugin.core.das.route.impl.conn;
 
 public class SqlHandleResult {
-	boolean success;
+//	boolean success;
 	String targetDataSourceName;
 	String resultSql;
-	String message;
+//	String message;
 	
 
 
-	public boolean isSuccess() {
-		return success;
-	}
-
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
+//	public boolean isSuccess() {
+//		return success;
+//	}
+//
+//	public void setSuccess(boolean success) {
+//		this.success = success;
+//	}
 
 	public String getTargetDataSourceName() {
 		return targetDataSourceName;
@@ -32,14 +32,14 @@ public class SqlHandleResult {
 		this.resultSql = resultSql;
 	}
 
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
+//	public String getMessage() {
+//		return message;
+//	}
+//
+//	public void setMessage(String message) {
+//		this.message = message;
+//	}
+//	
 	
 
 }

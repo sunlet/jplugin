@@ -1,7 +1,7 @@
 package net.jplugin.core.das.route.impl.conn;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.sql.DataSource;
 
@@ -16,14 +16,21 @@ public class NotPreparedStatementUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static PreparedStatement genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
+	public static Result genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
 		if (sql==null) throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(conn,sql);
 		
 		DataSource tds = DataSourceFactory.getDataSource(shr.getTargetDataSourceName());
 		if (tds==null) 
 			throw new TablesplitException("Can't find target datasource."+shr.getTargetDataSourceName());
-		PreparedStatement stmt = tds.getConnection().prepareStatement("");//这种得到preparedstatement方法不知道正确否
-		return stmt;
+		Result result = new Result();
+		result.statement = tds.getConnection().createStatement();
+		result.resultSql = shr.resultSql;
+		return result;
+	}
+	
+	public static class Result{
+		Statement statement;
+		String resultSql;
 	}
 }

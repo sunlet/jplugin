@@ -25,10 +25,7 @@ public class SqlHandleServiceImpl implements SqlHandleService {
 	
 	@Override
 	public SqlHandleResult handle(RouterConnection conn, String sql, List<Object> params) {
-//		CompondDataSource ds = conn.getDataSource();
-//		CompondDataSourceConfig cfg = ds.getConfig();
-//		//ÕÒ³ötablename ºÍ key
-//		
+
 		if (map==null) init();
 		sql = sql.trim();
 		SqlWordsWalker walker = SqlWordsWalker.createFromSql(sql);
@@ -40,57 +37,12 @@ public class SqlHandleServiceImpl implements SqlHandleService {
 		if (h==null) throw new TablesplitException("Error command:"+walker.word);
 		
 		return h.handle(conn,sql,params,walker);
-				
-//		
-//		String tableName ;
-//		Object key;
-//		FindContext fr = new FindContext(0);
-//		StringMatcher.findNext(fr);
-//		
-//		String command = fr.word;
-//		if ("INSERT".equalsIgnoreCase(command)){
-//			StringMatcher.findUntil(fr,"INTO");
-//			StringMatcher.findNext(fr);
-//			tableName = fr.word;
-//			TableConfig tcfg = cfg.findTableConfig(tableName);
-//			String keyField = tcfg.getKeyField();
-//			
-//			fr.resetIndex();
-//			StringMatcher.findUntil(fr, keyField);
-//			int idx = fr.getIndex();
-//			
-//			StringMatcher.findUntil(fr, "VALUES");
-//			fr.resetIndex();
-//			
-//			StringMatcher.findUntilIndex(fr, idx);
-//			String value = fr.word;
-//			int paramIndex=-1;
-//			if ("?".equals(value)){
-//				fr.clear();
-//				while(true){
-//					StringMatcher.findNext(fr);
-//					if ("?".equals(fr.word)) paramIndex ++;
-//				}
-//				key = params.get(paramIndex);
-//			}else{
-//				throw new RuntimeException("not impl");
-//			}
-//		}else{
-//			throw new RuntimeException("not impl yet");
-//		}
-//		
-//		TsAlgmManager.getResult(conn.getDataSource(), tableName, key);
-//		
-//		ArrayList al;
-//		
-		
 	}
-
-
 
 	@Override
 	public SqlHandleResult handle(RouterConnection conn, String sql) {
-		throw new RuntimeException("not impl");
+		return handle(conn,sql,null);
 	}
+
 
 }
