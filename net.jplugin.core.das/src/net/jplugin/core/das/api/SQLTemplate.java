@@ -98,6 +98,17 @@ public class SQLTemplate {
 	 * @param sql
 	 * @return
 	 */
+	public static void executeDropSql(Connection connection, String sql) {
+		if (printSQL){
+			print(sql,null);
+		}
+		executeAndReturnCount(connection,sql,null,"DROP");
+	}
+	/**
+	 * @param connection
+	 * @param sql
+	 * @return
+	 */
 	public static void executeCreateSql(Connection connection, String sql) {
 		if (printSQL){
 			print(sql,null);

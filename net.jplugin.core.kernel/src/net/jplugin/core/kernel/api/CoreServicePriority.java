@@ -13,6 +13,7 @@ public class CoreServicePriority {
 	public static final int LOG = 20 + OFFSET;
 	public static final int CTX = 30 + OFFSET;
 	public static final int DAS = 40 + OFFSET;
+	public static final int DAS_TS = 45 + OFFSET;
 	public static final int DAS_HIB = 50 + OFFSET;
 	public static final int DAS_IBATIS = 60 + OFFSET;
 	public static final int REMOTECLIENT = 70 + OFFSET;

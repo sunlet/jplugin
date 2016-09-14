@@ -1014,4 +1014,10 @@ public class StringKit {
 		return hcond;
 	}
 
+	public static String repaceFirst(String s, String toReplace, String replacement) {
+		int pos = s.indexOf(toReplace);
+		if (pos<0) return s;
+		return s.substring(0,pos)+replacement + s.substring(pos + toReplace.length());
+	}
+
 }

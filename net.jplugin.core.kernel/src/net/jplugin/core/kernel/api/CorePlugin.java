@@ -11,6 +11,7 @@ public class CorePlugin {
 		// core
 		addIfExists(ret,"net.jplugin.core.ctx.Plugin");
 		addIfExists(ret,"net.jplugin.core.das.Plugin");
+		addIfExists(ret,"net.jplugin.core.das.route.Plugin");
 		addIfExists(ret,"net.jplugin.core.event.Plugin");
 		addIfExists(ret,"net.jplugin.core.job.Plugin");
 		addIfExists(ret,"net.jplugin.core.kernel.Plugin");

@@ -20,6 +20,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 public class DataSourceFactory {
 	public static final String DATABASE_DSKEY="database";
 	private static Map<String ,DataSource> map = new Hashtable<String, DataSource>();
+	private static Map<String ,DataSource> configNameMapping = new Hashtable<String, DataSource>();
 	
 	private static boolean inited=false;
 	public synchronized static void init(){
@@ -45,22 +46,26 @@ public class DataSourceFactory {
 				TxManagedDataSource managedDataSource = new TxManagedDataSource(ds.getKey(),dataSource);
 				map.put(ds.getKey(), managedDataSource);	
 				ServiceFactory.getService(TransactionManager.class).addTransactionHandler(managedDataSource);
+				configNameMapping.put(ds.getValue().getConfigGroupName(), managedDataSource);
 			}else{
 				map.put(ds.getKey(), dataSource);
+				configNameMapping.put(ds.getValue().getConfigGroupName(), dataSource);
 			}
 		}
-		
-		
-
 	}
 	
 	public static Set<String> getDataSourceNames(){
 		return map.keySet();
 	}
-	
+
 	public static DataSource getDataSource(String dataSourceName){
 		DataSource ds = map.get(dataSourceName);
-		if (ds==null) throw new RuntimeException("Can't find datasource config for:"+dataSourceName);
+		
+		if (ds==null) {//如果匹配不到，从配置名匹配 2016-9-12
+			ds = configNameMapping.get(dataSourceName);
+			if (ds == null)
+				throw new RuntimeException("Can't find datasource config for:"+dataSourceName);
+		}
 		return ds;
 	}
 }

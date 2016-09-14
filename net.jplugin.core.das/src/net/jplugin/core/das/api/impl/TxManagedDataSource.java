@@ -31,6 +31,10 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	public PrintWriter getLogWriter() throws SQLException {
 		return inner.getLogWriter();
 	}
+	
+	public DataSource getInner(){
+		return inner;
+	}
 
 	/**
 	 * 获取连接，并负责在release时释放连接
