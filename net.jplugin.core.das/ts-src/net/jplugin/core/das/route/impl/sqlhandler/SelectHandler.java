@@ -54,6 +54,10 @@ public class SelectHandler extends AbstractCommandHandler{
 			}
 		}
 		
+		if (!success){
+			throw new TablesplitException("Can't match the key field. sql:"+w.sql);
+		}
+		
 		KeyResult result = new KeyResult();
 		if (w.next() && "=".equals( w.word )){
 			if (!w.next())throw new TablesplitException("Thesql is not complete. sql:"+w.sql);
@@ -62,7 +66,7 @@ public class SelectHandler extends AbstractCommandHandler{
 				result.keyParamIndex = paramIndex;
 			}else{
 				result.isParamedKey = false;
-				result.keyConstValue = removeSingleQuote(w.word);
+				result.keyConstValue = getConstKeyValueFromSql(w.word);
 			}
 		}else{
 			throw new TablesplitException("The word after key field must be '='. sql:"+w.sql);
@@ -73,7 +77,9 @@ public class SelectHandler extends AbstractCommandHandler{
 
 	@Override
 	String getFinalSql(SqlWordsWalker walker, String sourceSql, String finalTableName) {
-		String finalSql = StringKit.repaceFirst(walker.sql,sourceSql,finalTableName);;
+		String finalSql = StringKit.repaceFirst(walker.sql,sourceSql,finalTableName);
+		//处理带字段的表名
+		finalSql = StringKit.replaceStr(finalSql," "+sourceSql+"."," "+finalTableName+".");
 		return finalSql;
 	}
 }

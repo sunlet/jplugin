@@ -6,17 +6,20 @@ public class HashAlgm extends AbstractAlgm{
 
 	@Override
 	public int getTableIndex(RouterDataSource ds, String tableBaseName, Object key,int splits) {
-		int hashCode;
+		long hashCode;
 		
-		if (key instanceof Integer || key instanceof Long){
-			hashCode =  (int)key;
+		if (key instanceof Integer){
+			hashCode = Long.valueOf((Integer)key);
+		}else if (key instanceof Long){
+			hashCode =  (Long)key;
 		}else if (key instanceof String){
 			hashCode = key.toString().hashCode();
 		}else{
 			throw new RuntimeException("not support algm for key java type:"+key.getClass().getName()+" algm is: "+this.getClass().getName());
 		}
 		
-		int mod = hashCode % splits;
+		//可以假定splits为int范围内
+		int mod = (int) (hashCode % splits);
 		return mod;
 	}
 

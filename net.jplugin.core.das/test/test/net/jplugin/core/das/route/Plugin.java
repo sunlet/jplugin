@@ -16,8 +16,11 @@ public class Plugin extends AbstractPluginForTest {
 	@Override
 	public void test() throws Throwable {
 		DbCreate.create();
-		new TestTable1().test();
-		new TestTable2().test();
+		new InsertSelectTest().test();
+		DbCreate.create();
+		new UpdateTest().test();
+		DbCreate.create();
+		new DeleteTest().test();
 	}
 
 	@Override

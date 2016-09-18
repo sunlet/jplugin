@@ -69,7 +69,7 @@ public class InsertHandler extends AbstractCommandHandler{
 			result.isParamedKey = false;
 			if (!(",".equals(walker.getNextWord())))
 				throw new TablesplitException("key value value only support a Const value or a Parameter."+walker.sql); 
-			result.keyConstValue = removeSingleQuote(walker.word);
+			result.keyConstValue = getConstKeyValueFromSql(walker.word);
 		}
 		
 		return result;

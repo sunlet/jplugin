@@ -14,7 +14,7 @@ public abstract class AbstractCommandHandler{
 
 	protected static class KeyResult {
 		boolean isParamedKey;
-		String keyConstValue;
+		Object keyConstValue;
 		int keyParamIndex;
 	}
 	
@@ -47,7 +47,7 @@ public abstract class AbstractCommandHandler{
 		KeyResult keyResult = walkToGetKeyColumnInfo(walker,tableName,keyField);
 		Object keyValue;
 		if (keyResult.isParamedKey){
-			if (keyResult.keyParamIndex>=params.size()-1)
+			if (keyResult.keyParamIndex>=params.size())
 				throw new TablesplitException("Can't find the params for index "+keyResult.keyParamIndex+" param size="+params.size());
 			keyValue = params.get(keyResult.keyParamIndex);
 		}else{
@@ -70,12 +70,22 @@ public abstract class AbstractCommandHandler{
 		return tableCfg;
 	}
 	
-	protected String removeSingleQuote(String s) {
-		if (s==null) return null;
-		if (s.length()==1) return null;
+	/**
+	 * 'ABC' or  123
+	 * @param s
+	 * @return
+	 */
+	protected Object getConstKeyValueFromSql(String s) {
+		if (s==null) throw new RuntimeException("The const value can't be null");
 		if (s.startsWith("'") && s.endsWith("'")){
-			return s.substring(1, 2);
-		}else
-			return s;
+			if (s.length()<2)
+				throw new RuntimeException("The const value is not correct");
+			return s.substring(1,s.length()-1);
+		}
+		try{
+			return Long.valueOf(s);
+		}catch(NumberFormatException e){
+			throw new RuntimeException("The const must be a int or long style:"+s);
+		}
 	}
 }
