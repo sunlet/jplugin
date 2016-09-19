@@ -137,7 +137,8 @@ public class RouterDataSourceConfig {
 			if (StringKit.isNull(algm))
 				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_ALGM+"  not found");
 			if (StringKit.isNull(splits))
-				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_SPLITS+"  not found");
+				splits = "0";
+//				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_SPLITS+"  not found");
 			if (StringKit.isNull(keyField))
 				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_KEY+"  not found");
 			
@@ -155,26 +156,25 @@ public class RouterDataSourceConfig {
 			String snum = trim(prop.get(DSC_PREFIX+i+"-"+DS_WEIGHT));
 			if (StringKit.isNull(name))
 				throw new RuntimeException("router datasource error,"+DSC_PREFIX+i+"-"+DS_NAME+"  not found.");
-			if (StringKit.isNull(snum))
-				throw new RuntimeException("router datasource error,"+DSC_PREFIX+i+"-"+DS_WEIGHT+"  not found");
+			if (StringKit.isNull(snum)){
+				if (snum == null) snum="0";
+			}
 			
 			int inum = Integer.parseInt(snum);
 			DataSourceConfig dsc = new DataSourceConfig();
 			dsc.dataSourceName = name;
 			
 			dsc.weight = inum;
-			if (dsc.weight<0) 
-				throw new RuntimeException("table num must > 0. "+inum);
-
 			dataSourceCfgs[i] = dsc;
 		}
-		int sum=0;
-		for (DataSourceConfig o:dataSourceCfgs){
-			sum +=o.weight;
-		}
-		if (sum!=100){
-			throw new RuntimeException("The sum of weight must be 100. now is "+sum);
-		}
+
+//		int sum=0;
+//		for (DataSourceConfig o:dataSourceCfgs){
+//			sum +=o.weight;
+//		}
+//		if (sum!=100){
+//			throw new RuntimeException("The sum of weight must be 100. now is "+sum);
+//		}
 	}
 
 

@@ -9,6 +9,7 @@ import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.algms.DateAlgm;
 import net.jplugin.core.das.route.impl.algms.HashAlgm;
+import net.jplugin.core.das.route.impl.algms.WightHashAlgm;
 import net.jplugin.core.das.route.impl.algms.MonthAlgm;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -19,10 +20,9 @@ public class Plugin extends AbstractPlugin {
 	public Plugin(){
 		this.addExtensionPoint(ExtensionPoint.create(EP_TS_ALGM, ITsAlgorithm.class,true));
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"hash", HashAlgm.class);
+		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"weightHash", HashAlgm.class);
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"date", DateAlgm.class);
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"month", MonthAlgm.class);
-
-//		Extension
 	}
 	@Override
 	public void init() {

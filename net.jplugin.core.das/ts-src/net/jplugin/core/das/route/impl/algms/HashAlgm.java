@@ -1,13 +1,19 @@
 package net.jplugin.core.das.route.impl.algms;
 
-import net.jplugin.core.das.route.api.RouterDataSource;
+import java.sql.Date;
 
-public class HashAlgm extends FixedNumberTableAlgm{
+import net.jplugin.common.kits.CalenderKit;
+import net.jplugin.core.das.route.api.ITsAlgorithm;
+import net.jplugin.core.das.route.api.RouterDataSource;
+import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
+import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
+
+public class HashAlgm  implements ITsAlgorithm{
 
 	@Override
-	public int getTableIndex(RouterDataSource ds, String tableBaseName,ValueType vt, Object key,int splits) {
+	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
 		long hashCode;
-		
 		if (vt==ValueType.LONG){
 			hashCode =  (Long)key;
 		}else if (key instanceof String){
@@ -16,15 +22,19 @@ public class HashAlgm extends FixedNumberTableAlgm{
 			throw new RuntimeException("not support algm for key java type:"+key.getClass().getName()+" algm is: "+this.getClass().getName());
 		}
 		
+		int splits = compondDataSource.getConfig().findTableConfig(tableBaseName).getSplits();
+		if (splits==0){
+			throw new TablesplitException("Splits value error ,must >0 ,for table:"+tableBaseName);
+		}
 		//可以假定splits为int范围内
 		int mod = (int) (hashCode % splits);
-		return mod;
+		
+		int dsIndex = mod / compondDataSource.getConfig().getDataSourceConfig().length;
+		
+		Result r = Result.create();
+		r.setDataSource(compondDataSource.getConfig().getDataSourceConfig()[dsIndex].getDataSrouceCfgName());
+		r.setTableName(tableBaseName+"_"+(mod+1));
+		return r;		
 	}
-
-	@Override
-	public String getTableName(RouterDataSource ds, String tableBaseName, int index) {
-		return tableBaseName+"_"+(index+1);
-	}
-
 
 }
