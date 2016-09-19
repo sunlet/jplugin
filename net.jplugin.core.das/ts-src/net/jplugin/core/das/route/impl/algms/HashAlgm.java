@@ -2,15 +2,13 @@ package net.jplugin.core.das.route.impl.algms;
 
 import net.jplugin.core.das.route.api.RouterDataSource;
 
-public class HashAlgm extends AbstractAlgm{
+public class HashAlgm extends FixedNumberTableAlgm{
 
 	@Override
-	public int getTableIndex(RouterDataSource ds, String tableBaseName, Object key,int splits) {
+	public int getTableIndex(RouterDataSource ds, String tableBaseName,ValueType vt, Object key,int splits) {
 		long hashCode;
 		
-		if (key instanceof Integer){
-			hashCode = Long.valueOf((Integer)key);
-		}else if (key instanceof Long){
+		if (vt==ValueType.LONG){
 			hashCode =  (Long)key;
 		}else if (key instanceof String){
 			hashCode = key.toString().hashCode();
@@ -27,4 +25,6 @@ public class HashAlgm extends AbstractAlgm{
 	public String getTableName(RouterDataSource ds, String tableBaseName, int index) {
 		return tableBaseName+"_"+(index+1);
 	}
+
+
 }

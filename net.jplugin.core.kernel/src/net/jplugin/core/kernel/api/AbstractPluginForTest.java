@@ -13,7 +13,7 @@ public abstract class AbstractPluginForTest extends AbstractPlugin{
 			System.out.println("Plugin:"+this.getClass().getName()+" ≤‚ ‘≥…π¶!");
 		}catch(Throwable e){
 			System.out.println("Plugin:"+this.getClass().getName()+" ≤‚ ‘ ß∞‹!");
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	

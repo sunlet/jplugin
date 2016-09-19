@@ -1,4 +1,4 @@
-package test.net.jplugin.core.das.route;
+package test.net.jplugin.core.das.route.stringint;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

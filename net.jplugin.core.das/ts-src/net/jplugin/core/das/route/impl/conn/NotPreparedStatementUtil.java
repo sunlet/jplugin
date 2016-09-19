@@ -16,7 +16,7 @@ public class NotPreparedStatementUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Result genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
+	public static Result genTargetNotPreparedStatement(ExecuteResult er,RouterConnection conn,String sql) throws SQLException {
 		if (sql==null) throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(conn,sql);
 		
@@ -25,6 +25,7 @@ public class NotPreparedStatementUtil {
 			throw new TablesplitException("Can't find target datasource."+shr.getTargetDataSourceName());
 		Result result = new Result();
 		result.statement = tds.getConnection().createStatement();
+		er.set(result.statement);
 		result.resultSql = shr.resultSql;
 		return result;
 	}

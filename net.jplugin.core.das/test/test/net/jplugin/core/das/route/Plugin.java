@@ -3,6 +3,12 @@ package test.net.jplugin.core.das.route;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import test.net.jplugin.core.das.route.date.DateTest;
+import test.net.jplugin.core.das.route.date.DbCreateDate;
+import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
+import test.net.jplugin.core.das.route.stringint.DeleteTest;
+import test.net.jplugin.core.das.route.stringint.InsertSelectTest;
+import test.net.jplugin.core.das.route.stringint.UpdateTest;
 
 public class Plugin extends AbstractPluginForTest {
 
@@ -15,12 +21,14 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
-		DbCreate.create();
+		DbCreateStringInt.create();
 		new InsertSelectTest().test();
-		DbCreate.create();
+		DbCreateStringInt.create();
 		new UpdateTest().test();
-		DbCreate.create();
+		DbCreateStringInt.create();
 		new DeleteTest().test();
+		DbCreateDate.create();
+		new DateTest().test();
 	}
 
 	@Override

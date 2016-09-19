@@ -2,7 +2,11 @@ package net.jplugin.core.das.route.api;
 
 public interface ITsAlgorithm {
 	
-	public Result getResult(RouterDataSource compondDataSource,String tableBaseName,Object key);
+	public Result getResult(RouterDataSource compondDataSource,String tableBaseName,ValueType vt,Object key);
+	
+	public enum ValueType{
+		LONG,STRING,TIMESTAMP,DATE
+	}
 	
 	public static class Result{
 		String dataSource;

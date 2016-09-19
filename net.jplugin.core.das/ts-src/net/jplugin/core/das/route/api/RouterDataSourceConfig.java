@@ -90,7 +90,7 @@ public class RouterDataSourceConfig {
 	
 	public TableConfig findTableConfig(String tableBaseName) {
 		for (TableConfig o:this.tableConfigs){
-			if (tableBaseName.equals(o.getTableName())){
+			if (tableBaseName.equalsIgnoreCase(o.getTableName())){
 				return o;
 			}
 		}

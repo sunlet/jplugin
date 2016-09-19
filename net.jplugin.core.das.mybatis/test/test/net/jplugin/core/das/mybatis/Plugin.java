@@ -5,6 +5,9 @@ import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import test.net.jplugin.core.das.mybatis.ts.DbCreate;
+import test.net.jplugin.core.das.mybatis.ts.RouteTest;
+import test.net.jplugin.core.das.mybatis.ts.TbRoute0Mapper;
 import test.net.luis.plugin.das.mybatis.annotest.AnnoBaticsTest;
 import test.net.luis.plugin.das.mybatis.annotest.IMybtestMapper;
 import test.net.luis.plugin.das.mybatis.annotest.IRule;
@@ -29,7 +32,9 @@ public class Plugin extends AbstractPluginForTest{
 
 		ExtensionMybatisDasHelper.addMappingExtension(this, "testdb",ITxTestDB1Mapper.class);
 		ExtensionMybatisDasHelper.addMappingExtension(this, "database",ITxTestDB2Mapper.class);
-		
+	
+		//这里重用了das模块测试用例的数据源配置
+		ExtensionMybatisDasHelper.addMappingExtension(this,"router-db", TbRoute0Mapper.class);
 	}
 	@Override
 	public void test() throws Throwable {
@@ -40,6 +45,9 @@ public class Plugin extends AbstractPluginForTest{
 		new TxTest().test();
 		
 		new SessionTest().test();
+		
+		DbCreate.create();
+		new RouteTest().test();
 	}
 
 	@Override

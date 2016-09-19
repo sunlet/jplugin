@@ -74,12 +74,6 @@ public abstract class EmptyStatement implements Statement{
 		throw new RuntimeException("not support");
 	}
 
-
-	@Override
-	public boolean getMoreResults() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
 	@Override
 	public void setFetchDirection(int direction) throws SQLException {
 		throw new RuntimeException("not support");

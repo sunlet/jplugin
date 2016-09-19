@@ -62,11 +62,6 @@ public abstract class EmptyPreapredStatement implements PreparedStatement{
 
 
 	@Override
-	public boolean getMoreResults() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	@Override
 	public void setFetchDirection(int direction) throws SQLException {
 		throw new RuntimeException("not support");
 	}

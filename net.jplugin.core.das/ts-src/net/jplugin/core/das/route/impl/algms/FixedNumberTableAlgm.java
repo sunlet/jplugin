@@ -7,7 +7,7 @@ import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 
-public abstract class AbstractAlgm implements ITsAlgorithm{
+public abstract class FixedNumberTableAlgm implements ITsAlgorithm{
 	/**
 	 * first is 0
 	 * @param ds
@@ -16,7 +16,7 @@ public abstract class AbstractAlgm implements ITsAlgorithm{
 	 * @param splits 
 	 * @return
 	 */
-	public abstract int getTableIndex(RouterDataSource ds, String tableBaseName, Object key, int splits);
+	public abstract int getTableIndex(RouterDataSource ds, String tableBaseName, ValueType vt,Object key, int splits);
 	public abstract String getTableName(RouterDataSource ds, String tableBaseName,int index);
 	
 	private Hashtable<String,int[][]> tableMetrixMapping = new Hashtable<String, int[][]>();
@@ -37,15 +37,13 @@ public abstract class AbstractAlgm implements ITsAlgorithm{
 	}
 	
 	@Override
-	public Result getResult(RouterDataSource ds, String tableBaseName, Object key) {
+	public Result getResult(RouterDataSource ds, String tableBaseName,ValueType vt, Object key) {
 		DataSourceConfig[] dscfg = ds.getConfig().getDataSourceConfig();
 		
 		TableConfig tbcfg = ds.getConfig().findTableConfig(tableBaseName);
 		int splits = tbcfg.getSplits();
-
-
 		
-		int mod = getTableIndex(ds,tableBaseName,key,splits);
+		int mod = getTableIndex(ds,tableBaseName,vt,key,splits);
 		
 		int[][] dsBottomTop  = getTableMetrix(ds,tableBaseName);
 		

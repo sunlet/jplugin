@@ -8,6 +8,10 @@ import java.util.Date;
 
 public class CalenderKit {
 
+	private static final String date_pattern_short = "yyMMdd";
+
+	private static final String month_pattern_short = "yyMM";
+
 	public static String split_pattern = "yyyy-MM-dd HH:mm:ss";
 
 	public static String date_pattern = "yyyyMMdd";
@@ -30,6 +34,14 @@ public class CalenderKit {
 	public static String getDateString(long timeLong) {
 		return getFormatedTimeString(timeLong, date_pattern);
 	}
+	
+	public static String getShortDateString(long timeLong) {
+		return getFormatedTimeString(timeLong, date_pattern_short);
+	}
+	public static String getShortMonthString(long timeLong) {
+		return getFormatedTimeString(timeLong, month_pattern_short);
+	}
+
 	public static Date getDateFromString(String dateString) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		sdf.applyPattern(date_pattern);
