@@ -14,9 +14,9 @@ public class Plugin extends AbstractPluginForTest {
 
 	public Plugin(){
 		//已经有着两个数据源 "database","db_2";
-		ExtensionDasHelper.addDataSourceExtension(this,"router-db" , "router-db");
-		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-1" , "router-ds-1");
-		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-2" , "router-ds-2");
+//		ExtensionDasHelper.addDataSourceExtension(this,"router-db" , "router-db");
+//		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-1" , "router-ds-1");
+//		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-2" , "router-ds-2");
 	}
 	
 	@Override

@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ExecuteResult {
-//	private ResultSet rs;
-//	private int updCount = -1;
 	private Statement statement = null;
+	boolean closeCalled = true; //表示上次设置过statement以后有没有调用过clear/close方法，初始true
+	
 	public ResultSet getResult() throws SQLException{
 		if (statement!=null) return statement.getResultSet();
 		else return null;
@@ -18,22 +18,22 @@ public class ExecuteResult {
 	}
 	
 	public void clear() {
-//		rs = null;
-//		updCount = -1;
-		if (statement!=null){
-			try{
-				if (!statement.isClosed()){
+		if (statement!=null){ //让它等于null，也只能是调用过clear方法一次造成的
+			if (!closeCalled){
+				try{
 					statement.close();
+				}catch(Throwable e){
 				}
-			}catch(Throwable e){}
+			}
 			statement = null;
+			closeCalled = true;
 		}
 	}
+	
 	public void set(Statement stmt) throws SQLException{
 		clear();
-//		rs = stmt.getResultSet();
-//		updCount = stmt.getUpdateCount();
 		statement = stmt;
+		closeCalled = false;
 	}
 	public boolean getMoreResults() throws SQLException {
 		if (this.statement!=null) 

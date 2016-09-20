@@ -8,6 +8,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.RouterDataSource;
 
 public class ConfigedDataSource {
@@ -61,6 +62,8 @@ public class ConfigedDataSource {
 			map.remove("dbpassword");
 		}
 		//以上为了更好的迁移以前的配置文件，只修改文件名即可
+		
+		map.remove(DataSourceFactory.IS_TX_MANAGED);
 		
 		if (map.isEmpty()){
 			throw new RuntimeException("Can't find config for database:"+group);
