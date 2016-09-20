@@ -9,11 +9,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.log"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.ctx"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.0.7-bin.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.config"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-dbcp-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.39-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
