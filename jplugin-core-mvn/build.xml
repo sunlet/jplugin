@@ -54,6 +54,7 @@
 			<path path="${basedir}/../net.jplugin.ext.token/src" />
 			<path path="${basedir}/../net.jplugin.ext.webasic/src" />
 			<path path="${basedir}/../net.jplugin.ext.dict/src" />
+			<path path="${basedir}/../net.jplugin.core.das/ts-src" />
 
 		</foreach>
 	</target>
