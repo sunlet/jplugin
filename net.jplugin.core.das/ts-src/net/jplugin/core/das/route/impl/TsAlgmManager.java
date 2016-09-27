@@ -8,6 +8,7 @@ import java.util.Map;
 import net.jplugin.core.das.route.Plugin;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
+import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
@@ -28,7 +29,9 @@ public class TsAlgmManager {
 		if (algm==null)
 			throw new TablesplitException("error algm:"+tc.getSplitAlgm()+" for table:"+tbBaseName);
 		KeyTypeValueRespect vr = convertValueRespect(key);
-		return algm.getResult(compondDataSource,tbBaseName,vr.getValueType(),vr.getValue());
+		Result result = algm.getResult(compondDataSource,tbBaseName,vr.getValueType(),vr.getValue());
+		TableAutoCreation.tryCreate(tc,result,tbBaseName);
+		return result;
 	}
 	
 	private static KeyTypeValueRespect convertValueRespect(Object key) {

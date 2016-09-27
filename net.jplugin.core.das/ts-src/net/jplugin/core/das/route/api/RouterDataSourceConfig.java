@@ -44,6 +44,7 @@ public class RouterDataSourceConfig {
 	private static final String TABLE_PREFIX = "tb-";
 	private static final String TABLE_SPLITS = "splits";
 	private static final String TABLE_KEY = "key";
+	private static final String CREATION_SQL = "creation-sql";
 	
 	public static class DataSourceConfig{
 		String dataSourceName;
@@ -61,6 +62,7 @@ public class RouterDataSourceConfig {
 		String splitAlgm;
 		int splits;
 		String keyField;
+		String creationSql;
 		public String getTableName() {
 			return tableName;
 		}
@@ -73,6 +75,10 @@ public class RouterDataSourceConfig {
 		public String getKeyField() {
 			return this.keyField;
 		}
+		public String getCreationSql() {
+			return creationSql;
+		}
+		
 		
 	}
 	private DataSourceConfig[] dataSourceCfgs;
@@ -131,6 +137,7 @@ public class RouterDataSourceConfig {
 			String algm = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_ALGM));
 			String splits = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_SPLITS));
 			String keyField = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_KEY));
+			String creationSql =  trim(prop.get(TABLE_PREFIX+i+"-"+CREATION_SQL));
 			
 			if (StringKit.isNull(tableName))
 				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_NAME+"  not found.");
@@ -147,6 +154,7 @@ public class RouterDataSourceConfig {
 			tc.tableName = tableName;
 			tc.splits = Integer.parseInt(splits);
 			tc.keyField = keyField;
+			tc.creationSql = creationSql;
 			tableConfigs[i] = tc;
 		}
 		

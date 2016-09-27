@@ -1020,4 +1020,10 @@ public class StringKit {
 		return s.substring(0,pos)+replacement + s.substring(pos + toReplace.length());
 	}
 
+	public static String repaceFirstIgnoreCase(String s, String toReplace, String replacement) {
+		int pos = s.toUpperCase().indexOf(toReplace.toUpperCase());
+		if (pos<0) return s;
+		return s.substring(0,pos)+replacement + s.substring(pos + toReplace.length());
+	}
+
 }

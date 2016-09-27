@@ -15,10 +15,10 @@ public class DbCreateDate {
 			"drop table tb_tisp_1601",
 			"drop table tb_tisp_1602"};
 
-	static String[] creates = { "create table tb_date_160101 (f1 varchar(20) primary key,f2 date)",
+	static String[] creates = {/* auto create "create table tb_date_160101 (f1 varchar(20) primary key,f2 date)",
 			"create table tb_date_160102 (f1 varchar(20) primary key,f2 date)",
 			"create table tb_tisp_1601 (f1 varchar(20) primary key,f2 timestamp)",
-			"create table tb_tisp_1602 (f1 varchar(20) primary key,f2 timestamp)"};
+			"create table tb_tisp_1602 (f1 varchar(20) primary key,f2 timestamp)" */};
 
 	public static void create() throws SQLException {
 		DataSource ds = DataSourceFactory.getDataSource("database");
