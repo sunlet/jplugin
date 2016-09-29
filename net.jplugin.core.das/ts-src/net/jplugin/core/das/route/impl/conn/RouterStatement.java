@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.SqlHandleService;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombineStatementFactory;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
 
 public class RouterStatement extends EmptyStatement {
 	protected RouterConnection connection;
@@ -137,8 +139,6 @@ public class RouterStatement extends EmptyStatement {
 	public  final boolean getMoreResults() throws SQLException {
 		return this.executeResult.getMoreResults();
 	}
-	
-	
 
 	/**
 	 * 这个返回用来执行带sql参数的情况
@@ -149,11 +149,18 @@ public class RouterStatement extends EmptyStatement {
 		if (sql==null) throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(conn,sql);
 		
-		DataSource tds = DataSourceFactory.getDataSource(shr.getTargetDataSourceName());
-		if (tds==null) 
-			throw new TablesplitException("Can't find target datasource."+shr.getTargetDataSourceName());
+		String targetDataSourceName = shr.getTargetDataSourceName();
+		Statement stmt;
+		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){
+			stmt = CombineStatementFactory.createPrepared();
+		}else{
+			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);
+			if (tds==null) 
+				throw new TablesplitException("Can't find target datasource."+shr.getTargetDataSourceName());
+			stmt = tds.getConnection().createStatement();
+		}
 		Result result = new Result();
-		result.statement = tds.getConnection().createStatement();
+		result.statement = stmt;
 		this.executeResult.set(result.statement);
 		result.resultSql = shr.resultSql;
 		return result;

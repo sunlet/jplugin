@@ -4,6 +4,8 @@ public interface ITsAlgorithm {
 	
 	public Result getResult(RouterDataSource compondDataSource,String tableBaseName,ValueType vt,Object key);
 	
+	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName);
+	
 	public enum ValueType{
 		LONG,STRING,TIMESTAMP,DATE
 	}
@@ -28,4 +30,6 @@ public interface ITsAlgorithm {
 			this.tableName = tableName;
 		}
 	}
+
+
 }

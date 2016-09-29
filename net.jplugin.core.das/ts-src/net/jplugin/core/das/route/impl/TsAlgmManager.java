@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.jplugin.core.das.route.Plugin;
 import net.jplugin.core.das.route.api.RouterDataSource;
+import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
@@ -22,6 +23,14 @@ public class TsAlgmManager {
 			return new KeyTypeValueRespect();
 		};
 	};
+	
+	public static DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
+		TableConfig tc = dataSource.getConfig().findTableConfig(tableName);
+		ITsAlgorithm algm = algmMap.get(tc.getSplitAlgm());
+		if (algm==null)
+			throw new TablesplitException("error algm:"+tc.getSplitAlgm()+" for table:"+tableName);
+		return algm.getDataSourceInfos(dataSource,tableName);
+	}
 	
 	public static ITsAlgorithm.Result getResult(RouterDataSource compondDataSource,String tbBaseName,Object key){
 		TableConfig tc = compondDataSource.getConfig().findTableConfig(tbBaseName);
@@ -86,4 +95,6 @@ public class TsAlgmManager {
 			this.value = value;
 		}
 	}
+
+
 }

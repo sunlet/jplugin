@@ -26,6 +26,8 @@ import javax.sql.DataSource;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.SqlHandleService;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombineStatementFactory;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
 import net.jplugin.core.das.route.impl.util.CallableList;
 import net.jplugin.core.das.route.impl.util.MyCallable;
 
@@ -68,11 +70,16 @@ public class RouterPrearedStatement extends RouterStatement  implements Prepared
 			throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(connection, sql, recorder.getList());
 
-		DataSource tds = DataSourceFactory.getDataSource(shr.getTargetDataSourceName());
-		if (tds == null)
-			throw new TablesplitException("Can't find target datasource." + shr.getTargetDataSourceName());
-
-		PreparedStatement stmt = tds.getConnection().prepareStatement(shr.getResultSql());
+		String targetDataSourceName = shr.getTargetDataSourceName();
+		PreparedStatement stmt ;
+		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){
+			stmt = CombineStatementFactory.createPrepared();
+		}else{
+			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);
+			if (tds == null)
+				throw new TablesplitException("Can't find target datasource." + targetDataSourceName);
+			stmt = tds.getConnection().prepareStatement(shr.getResultSql());
+		}
 		executeResult.set(stmt);
 		list.executeWith(stmt);
 		return stmt;

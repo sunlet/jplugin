@@ -27,6 +27,7 @@ public class InsertSelectTest {
 		
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_1"));
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_2"));
+//		AssertKit.assertEqual(6, getCount(conn,"select /*spantable*/ count(*) from tb_route0"));
 		
 		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1='a'"));
 		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1=?",new Object[]{"a"}));

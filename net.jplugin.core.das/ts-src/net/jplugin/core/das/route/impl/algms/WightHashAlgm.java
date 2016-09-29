@@ -2,6 +2,7 @@ package net.jplugin.core.das.route.impl.algms;
 
 import java.util.Hashtable;
 
+import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.TablesplitException;
@@ -123,5 +124,8 @@ public class WightHashAlgm implements ITsAlgorithm{
 			throw new TablesplitException("for weightHash algm, Sum of weights for all datasources ,must be 100. tableName");
 		
 	}
-
+	@Override
+	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
+		throw new RuntimeException("not impl");
+	}
 }

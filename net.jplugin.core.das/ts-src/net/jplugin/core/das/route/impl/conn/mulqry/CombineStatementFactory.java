@@ -10,6 +10,14 @@ import net.jplugin.core.das.api.DataSourceFactory;
 
 public class CombineStatementFactory {
 	
+	
+	public static CombinedStatement create(){
+		return new CombinedStatement();
+	}
+	public static CombinedPreparedStatement createPrepared(){
+		return new CombinedPreparedStatement();
+	}
+	
 //	public static CombinedStatement create(String[] dataSources,String[] sqls){
 //		AssertKit.assertEqual(dataSources.length, sqls.length);
 //		Statement[] arr = new Statement[dataSources.length];

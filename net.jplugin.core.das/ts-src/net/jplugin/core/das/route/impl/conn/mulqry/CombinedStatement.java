@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
+import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.impl.conn.EmptyStatement;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.DataSourceInfo;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 
 public class CombinedStatement extends EmptyStatement implements PreparedStatement{

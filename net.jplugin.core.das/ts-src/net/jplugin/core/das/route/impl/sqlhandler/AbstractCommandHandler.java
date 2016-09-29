@@ -8,6 +8,8 @@ import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.das.route.impl.parser.SqlWordsWalker;
 
 public abstract class AbstractCommandHandler{
@@ -36,8 +38,21 @@ public abstract class AbstractCommandHandler{
 	abstract String getFinalSql(SqlWordsWalker walker, String sourceSql,String finalTableName);
 	
 	public SqlHandleResult handle(RouterConnection conn, String sql, List<Object> params, SqlWordsWalker walker) {
-		
+
+		boolean spanAll = tryWalkSpanAll(walker);
 		String tableName = walkTableName(walker);
+		
+		if (spanAll){
+			CombinedSqlParser.Meta meta = new Meta();
+			meta.setSourceTb(tableName);
+			meta.setDataSourceInfos(TsAlgmManager.getDataSourceInfos(conn.getDataSource(),tableName));
+			String newSql = CombinedSqlParser.combine(sql, meta);
+			SqlHandleResult result = new SqlHandleResult();
+			result.setResultSql(newSql);
+			result.setTargetDataSourceName(CombinedSqlParser.SPANALL_DATASOURCE);
+			return result;
+		}
+		
 		TableConfig tableCfg = getTableCfg(conn,tableName);
 		if (tableCfg==null) 
 			throw new TablesplitException("Table not configed in the router databse."+tableName);
@@ -63,6 +78,19 @@ public abstract class AbstractCommandHandler{
 		return result;
 	}
 
+
+	private boolean tryWalkSpanAll(SqlWordsWalker walker) {
+		if ( "/".equals(walker.getNextWord(1))
+		&& "*".equals(walker.getNextWord(2))
+		&& "spantable".equalsIgnoreCase(walker.getNextWord(3))
+		&& "*".equals(walker.getNextWord(4))
+		&& "/".equals(walker.getNextWord(5))){
+			walker.next(5);
+			return true;
+		}else {
+			return false;
+		}
+	}
 
 	private TableConfig getTableCfg(RouterConnection conn,String tableName) {
 		TableConfig tableCfg = conn.getDataSource().getConfig().findTableConfig(tableName);

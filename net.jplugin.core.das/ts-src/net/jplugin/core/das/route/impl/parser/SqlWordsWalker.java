@@ -30,6 +30,11 @@ public class SqlWordsWalker{
 		word = words[++position];
 		return true;
 	}
+	public boolean next(int n){
+		if (position>=words.length-n) return false;
+		word = words[position+=n];
+		return true;
+	}
 	
 	public boolean nextUntilIgnoreCase(String s){
 		while(next()){
@@ -43,7 +48,14 @@ public class SqlWordsWalker{
 		}
 		return false;
 	}
-	
+
+	public String getNextWord(int n){
+		if (position>=words.length - n){
+			return null;
+		}else 
+			return words[position+n];
+	}
+
 	public String getNextWord(){
 		if (position>=words.length-1){
 			return null;

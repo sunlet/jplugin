@@ -1,9 +1,11 @@
 package net.jplugin.core.das.route.impl.conn.mulqry;
 
 import net.jplugin.common.kits.JsonKit;
+import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
 
 public class CombinedSqlParser {
+	public static final String SPANALL_DATASOURCE = "##SPANALL##";
 	/**
 	 * {..jsoninfo...}##SELECT ....
 	 * 
@@ -19,6 +21,11 @@ public class CombinedSqlParser {
 		pr.sql = sql;
 		pr.meta = JsonKit.json2Object(json, Meta.class);
 		return pr;
+	}
+	
+	public static String combine(String sql,Meta meta){
+		String json = JsonKit.object2Json(meta);
+		return json + "##"+sql;
 	}
 
 	public static class ParseResult {
@@ -48,21 +55,5 @@ public class CombinedSqlParser {
 		}
 		
 	}
-	public static class DataSourceInfo {
-		private String dsName;
-		private String[] destTbs;
-		public String getDsName() {
-			return dsName;
-		}
-		public void setDsName(String dsName) {
-			this.dsName = dsName;
-		}
-		public String[] getDestTbs() {
-			return destTbs;
-		}
-		public void setDestTbs(String[] destTbs) {
-			this.destTbs = destTbs;
-		}
-		
-	}
+
 }

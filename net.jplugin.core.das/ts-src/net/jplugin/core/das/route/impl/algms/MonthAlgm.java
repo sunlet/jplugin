@@ -3,6 +3,7 @@ package net.jplugin.core.das.route.impl.algms;
 import java.sql.Date;
 
 import net.jplugin.common.kits.CalenderKit;
+import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
@@ -33,6 +34,10 @@ public class MonthAlgm  implements ITsAlgorithm{
 
 	private String getTableName(String tableBaseName, long time) {
 		return  tableBaseName+"_"+CalenderKit.getShortMonthString(time);
+	}
+	@Override
+	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
+		throw new RuntimeException("not impl");
 	}
 
 }
