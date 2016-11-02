@@ -43,21 +43,21 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 		//如果能在ctx中找到，则返回ctx中的conn
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance
 				.getContext();
-		Connection conn = (Connection) ctx.getAttribute(DBCONN_IN_CTX);
+		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 		if (conn != null)
 			return conn;
 		
 		//在ctx中获取不到，则创建一个并放置在ctx中，并设置ReleaseListener确保释放
-		conn = inner.getConnection();
+		conn = new TxManagedConnAdaptor(inner.getConnection());
 		ctx.setAttribute(DBCONN_IN_CTX, conn);
 		ctx.addContextListener(new ThreadLocalContextListener() {
 			@Override
 			public void released(ThreadLocalContext rc) {
-				Connection temp = (Connection) ctx.getAttribute(DBCONN_IN_CTX);
+				TxManagedConnAdaptor temp = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 				if (temp != null) {
 					try {
 						if (!temp.isClosed())
-							temp.close();
+							temp.connection().close();
 					} catch (SQLException e) {
 						net.jplugin.core.log.api.Logger logger = ServiceFactory
 								.getService(ILogService.class).getLogger(
@@ -70,9 +70,9 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 		//对于新创建的链接，设置新连接的事物属性
 		TransactionManager txm = ServiceFactory.getService(TransactionManager.class);
 		if (txm.getStatus() != TransactionManager.Status.NOTX){
-			conn.setAutoCommit(false);
+			conn.connection().setAutoCommit(false);
 		}else{
-			conn.setAutoCommit(true);
+			conn.connection().setAutoCommit(true);
 		}
 		return conn;
 	}
@@ -120,9 +120,9 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 		//如果已有连接，则加入事物。事物中新获取的连接，会在获取时考虑
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance
 				.getContext();
-		Connection conn = (Connection) ctx.getAttribute(DBCONN_IN_CTX);
+		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 		if (conn!=null){
-			try{conn.close();}catch(Exception e){}
+			try{conn.connection().close();}catch(Exception e){}
 			ctx.setAttribute(DBCONN_IN_CTX,null);
 		}
 	}
@@ -134,14 +134,14 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	public void doRollback() {
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance
 				.getContext();
-		Connection conn = (Connection) ctx.getAttribute(DBCONN_IN_CTX);
+		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 		if (conn!=null){
 			try {
-				conn.rollback();
+				conn.connection().rollback();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			} finally{
-				try{conn.close();}catch(Exception e){}
+				try{conn.connection().close();}catch(Exception e){}
 				ctx.setAttribute(DBCONN_IN_CTX,null);
 			}
 		}
@@ -154,14 +154,14 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	public void doCommit() {
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance
 				.getContext();
-		Connection conn = (Connection) ctx.getAttribute(DBCONN_IN_CTX);
+		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 		if (conn!=null){
 			try {
-				conn.commit();
+				conn.connection().commit();
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			} finally{
-				try{conn.close();}catch(Exception e){}
+				try{conn.connection().close();}catch(Exception e){}
 				ctx.setAttribute(DBCONN_IN_CTX,null);
 			}
 		}
