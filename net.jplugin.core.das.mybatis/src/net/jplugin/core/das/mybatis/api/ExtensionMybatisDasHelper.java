@@ -12,11 +12,16 @@ import net.jplugin.core.kernel.api.Extension;
  **/
 
 public class ExtensionMybatisDasHelper {
+	public static final String CONFIG_RES_PREFIX = "config://";
+
 	public static void addMappingExtension(AbstractPlugin plugin,Class mappingIntf){
 //		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_MAPPER, String.class,new String[][]{{"value",mappingIntf.getName()}}));
 		addMappingExtension(plugin,DataSourceFactory.DATABASE_DSKEY,mappingIntf);
 	}
 
+	public static void addConfigExtension(AbstractPlugin plugin,String resource){
+		addConfigExtension(plugin,DataSourceFactory.DATABASE_DSKEY, resource);
+	}
 	
 	public static void addMappingExtension(AbstractPlugin plugin,String resource){
 //		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_MAPPER, String.class,new String[][]{{"value",resource}}));
@@ -26,6 +31,10 @@ public class ExtensionMybatisDasHelper {
 	public static void addMappingExtension(AbstractPlugin plugin,String dataSource,Class mappingIntf){
 //		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_MAPPER, dataSource,String.class,new String[][]{{"value",mappingIntf.getName()}}));
 		addMappingExtension(plugin, dataSource,mappingIntf.getName());
+	}
+	
+	public static void addConfigExtension(AbstractPlugin plugin,String dataSource,String resource){
+		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_MAPPER, ExtensionDefinition4Mapping.class,new String[][]{{"dataSource",dataSource},{"interfOrResource",CONFIG_RES_PREFIX+resource}}));
 	}
 	
 	public static void addMappingExtension(AbstractPlugin plugin,String dataSource,String resource){
