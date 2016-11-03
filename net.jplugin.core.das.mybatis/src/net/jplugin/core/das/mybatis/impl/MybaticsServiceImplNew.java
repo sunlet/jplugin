@@ -53,10 +53,12 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		Configuration configuration;
 		
 		//check global config
-		String globalConfigResource = checkGlocalConfigMapper(dataSourceName,mappers);
+		String globalConfigResource = checkGlocalConfigMapper(dataSourceName,mappers,interceptors);
 		if (globalConfigResource!=null){
 			//注意：在global config情况下，通过扩展配置配置的Inteceptor还是会加入的
 			configuration = buildGlobalConfiguration(globalConfigResource);
+			if (configuration.getEnvironment()!=null)
+				throw new RuntimeException("The global config for Mybatis MUST NOT has enviremonent element: "+globalConfigResource);
 			configuration.setEnvironment(environment);
 		}else{
 			configuration = new Configuration(environment);
@@ -93,18 +95,19 @@ public class MybaticsServiceImplNew implements IMybatisService {
 					throw new RuntimeException(e);
 				}
 			}
-		}
+
 //		MybatsiInterceptorManager.instance.installPlugins(configuration);
-		if (interceptors!=null){
-			for (Class clazz:interceptors){
-				Interceptor incept;
-				try {
-					incept = (Interceptor) clazz.newInstance();
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException("create the mybatis interceptor error: "+clazz.getName());
+			if (interceptors!=null){
+				for (Class clazz:interceptors){
+					Interceptor incept;
+					try {
+						incept = (Interceptor) clazz.newInstance();
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new RuntimeException("create the mybatis interceptor error: "+clazz.getName());
+					}
+					configuration.addInterceptor(incept);
 				}
-				configuration.addInterceptor(incept);
 			}
 		}
 		
@@ -136,15 +139,19 @@ public class MybaticsServiceImplNew implements IMybatisService {
 	 * 2.返回：是否启用mybatis全局配置
 	 * @param datasource
 	 * @param mappers
+	 * @param interceptors 
 	 * @return
 	 */
-	private String checkGlocalConfigMapper(String datasource,List<String> mappers) {
+	private String checkGlocalConfigMapper(String datasource,List<String> mappers, List<Class> interceptors) {
 		if (mappers==null) return null;
 		for (String m:mappers){
 			if (m.startsWith(ExtensionMybatisDasHelper.CONFIG_RES_PREFIX)){
-				if (mappers.size()!=1){
+				if (mappers.size()!=1)
 					throw new RuntimeException("Mybatis config error: The global config ["+m+"] for datasource ["+datasource+"] MUST NOT exists with other mappers. total num:"+mappers.size());
-				}
+				
+				if (interceptors!=null && interceptors.size()>0)
+					throw new RuntimeException("Mybatis config error: The global config ["+m+"] for datasource ["+datasource+"] MUST NOT exists with other Interceptors. total num:"+interceptors.size());
+				
 				return m.substring(ExtensionMybatisDasHelper.CONFIG_RES_PREFIX.length());
 			}
 		}
