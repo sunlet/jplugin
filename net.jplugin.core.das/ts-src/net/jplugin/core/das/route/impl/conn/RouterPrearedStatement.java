@@ -73,7 +73,7 @@ public class RouterPrearedStatement extends RouterStatement  implements Prepared
 		String targetDataSourceName = shr.getTargetDataSourceName();
 		PreparedStatement stmt ;
 		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){
-			stmt = CombineStatementFactory.createPrepared();
+			stmt = CombineStatementFactory.createPrepared(this.connection);
 		}else{
 			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);
 			if (tds == null)

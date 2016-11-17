@@ -1,5 +1,6 @@
 package net.jplugin.core.das.route.impl.sqlhandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
@@ -10,6 +11,7 @@ import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.OrderParam;
 import net.jplugin.core.das.route.impl.parser.SqlWordsWalker;
 
 public abstract class AbstractCommandHandler{
@@ -46,6 +48,8 @@ public abstract class AbstractCommandHandler{
 			CombinedSqlParser.Meta meta = new Meta();
 			meta.setSourceTb(tableName);
 			meta.setDataSourceInfos(TsAlgmManager.getDataSourceInfos(conn.getDataSource(),tableName));
+			meta.setOrderParam(getOrderParam(walker));
+			meta.setCountStar(getCountStar(walker)? 1:0);
 			String newSql = CombinedSqlParser.combine(sql, meta);
 			SqlHandleResult result = new SqlHandleResult();
 			result.setResultSql(newSql);
@@ -78,6 +82,57 @@ public abstract class AbstractCommandHandler{
 		return result;
 	}
 
+
+	//当前位置在span 后面，开始检查是否 count(*)  count(0)  count(1)
+	private boolean getCountStar(SqlWordsWalker walker) {
+		int oldPos = walker.getPosition();
+		walker.setPosition(0);
+		if (!walker.nextUntil("/")) throw new RuntimeException("can't be here");
+		if (!walker.nextUntil("/")) throw new RuntimeException("can't be here");
+		//到达  /*spantable*/
+		boolean ret;
+		String w3 = walker.getNextWord(3);
+		if (!("0".equals(w3) || "1".equals(w3) || "*".equals(w3))) 
+			ret = false;
+		else{
+			if  ("count".equalsIgnoreCase(walker.getNextWord(1))
+				&&
+				"(".equals(walker.getNextWord(2))
+				&&
+				")".equals(walker.getNextWord(4))
+				&&
+				"from".equalsIgnoreCase(walker.getNextWord(5))
+				) 
+				ret = true;
+			else ret = false;
+		}
+		walker.setPosition(oldPos);
+		return ret;
+	}
+
+	private List<String> getOrderParam(SqlWordsWalker walker) {
+		List<String> order = null;
+		int oldPos = walker.getPosition();
+		if (walker.nextUntilIgnoreCase("order")){
+			if (walker.next() && walker.word.equalsIgnoreCase("by")){
+				order = new ArrayList<String>();
+				
+				//目前只支持两个字段的orderby,按照语法，后面就是with语句的部分了，或者结束了
+				while (walker.next() && !("with".equalsIgnoreCase(walker.word))){
+					order.add(walker.word);
+				}
+
+			}
+		}
+		
+		//复原position
+		walker.setPosition(oldPos);
+		
+		if (order!=null && order.size()>0) 
+			return order;
+		else
+			return null;
+	}
 
 	private boolean tryWalkSpanAll(SqlWordsWalker walker) {
 		if ( "/".equals(walker.getNextWord(1))

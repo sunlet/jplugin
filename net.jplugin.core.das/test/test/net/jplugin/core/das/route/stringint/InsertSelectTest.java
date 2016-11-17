@@ -3,6 +3,8 @@ package test.net.jplugin.core.das.route.stringint;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -19,15 +21,14 @@ public class InsertSelectTest {
 		Connection conn = dataSource.getConnection();
 		Connection connReal = DataSourceFactory.getDataSource("database").getConnection();
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );
-		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"b",1,"b"} );
-		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"c",1,"c"} );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"b",1,null} );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"c",1,"a"} );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('d',1,'d')",null );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('e',?,'e')",new Object[]{1} );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('f',?,'f')",new Object[]{1});
 		
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_1"));
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_2"));
-//		AssertKit.assertEqual(6, getCount(conn,"select /*spantable*/ count(*) from tb_route0"));
 		
 		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1='a'"));
 		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1=?",new Object[]{"a"}));
@@ -49,6 +50,50 @@ public class InsertSelectTest {
 			}
 		});
 		
+		//multi table test begin>>>>>>>>>
+		
+		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable*/  count(*) from tb_route0"));
+		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable  */  count(0) from tb_route0"));
+		AssertKit.assertEqual(3, getCount(conn,"select  /*spantable  */  count(2) from tb_route0"));
+
+		List<Map<String, String>> list ;
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0", null);
+		print(list);
+		AssertKit.assertEqual(6, list.size());
+
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0 where f1<>'b' order by f1", null);
+		AssertKit.assertEqual(5, list.size());
+		AssertKit.assertEqual(list.get(0).get("f1"), "a");
+		AssertKit.assertEqual(list.get(1).get("f1"), "c");
+		AssertKit.assertEqual(list.get(2).get("f1"), "d");
+		AssertKit.assertEqual(list.get(3).get("f1"), "e");
+		AssertKit.assertEqual(list.get(4).get("f1"), "f");
+
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0 where f1<>'b' order by f1 desc", null);
+		AssertKit.assertEqual(5, list.size());
+		AssertKit.assertEqual(list.get(4).get("f1"), "a");
+		AssertKit.assertEqual(list.get(3).get("f1"), "c");
+		AssertKit.assertEqual(list.get(2).get("f1"), "d");
+		AssertKit.assertEqual(list.get(1).get("f1"), "e");
+		AssertKit.assertEqual(list.get(0).get("f1"), "f");
+
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0 order by f3 asc", null);
+		AssertKit.assertEqual(6, list.size());
+		AssertKit.assertEqual(list.get(0).get("f3"), null);
+		AssertKit.assertEqual(list.get(1).get("f3"), "a");
+
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0 order by f3 desc", null);
+		AssertKit.assertEqual(6, list.size());
+		AssertKit.assertEqual(list.get(5).get("f3"), null);
+		AssertKit.assertEqual(list.get(0).get("f3"), "f");
+		
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0  order by f3,f1", null);
+		AssertKit.assertEqual(6, list.size());
+		AssertKit.assertEqual(list.get(0).get("f1"), "b");
+		AssertKit.assertEqual(list.get(1).get("f1"), "a");
+		AssertKit.assertEqual(list.get(2).get("f1"), "c");
+
+		//multi table test end>>>>>>>>>>>
 		
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route1(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route1(f1,f2,f3) values(?,?,?)",new Object[]{"b",1,"b"} );
@@ -73,6 +118,15 @@ public class InsertSelectTest {
 				AssertKit.assertEqual(6, getCount(conn,"select count(*) from tb_route1 where f3='a'"));
 			}
 		});
+	}
+
+	private void print(List<Map<String, String>> list) {
+		for (Map<String, String> map:list){
+			System.out.println();
+			for (String key:map.keySet()){
+				System.out.print(key+"="+map.get(key)+" , ");
+			}
+		}
 	}
 
 	int getCount(Connection conn,String s){

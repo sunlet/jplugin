@@ -36,6 +36,23 @@ public class SqlWordsWalker{
 		return true;
 	}
 	
+
+	public void setPosition(int pos){
+		if (pos>=-1 && pos<=words.length-1){
+			this.position = pos;
+
+			//注意，position可以是-1,此时初始化为null
+			if (pos!=-1) {
+				word = words[pos];
+			}else 
+				word = null;
+		}
+	}
+	
+	public int getPosition(){
+		return this.position;
+	}
+	
 	public boolean nextUntilIgnoreCase(String s){
 		while(next()){
 			if (s.equalsIgnoreCase(word)) return true;

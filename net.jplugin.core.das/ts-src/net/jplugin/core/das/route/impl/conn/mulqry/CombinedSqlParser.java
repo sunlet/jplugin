@@ -1,5 +1,7 @@
 package net.jplugin.core.das.route.impl.conn.mulqry;
 
+import java.util.List;
+
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
@@ -38,9 +40,22 @@ public class CombinedSqlParser {
 			return meta;
 		}
 	}
+	
 	public static class Meta{
+		public static final int COUNG_STAR_YES = 1;
+		public static final int COUNG_STAR_NO = 0;
+		
 		private String sourceTb;
 		private DataSourceInfo[] dataSourceInfos;
+		private List<String> orderParam;
+		int countStar;
+		
+		public int getCountStar() {
+			return countStar;
+		}
+		public void setCountStar(int countStar) {
+			this.countStar = countStar;
+		}
 		public String getSourceTb() {
 			return sourceTb;
 		}
@@ -53,7 +68,29 @@ public class CombinedSqlParser {
 		public void setDataSourceInfos(DataSourceInfo[] dataSourceInfos) {
 			this.dataSourceInfos = dataSourceInfos;
 		}
-		
+		public List<String> getOrderParam() {
+			return orderParam;
+		}
+		public void setOrderParam(List<String> orderParam) {
+			this.orderParam = orderParam;
+		}
+
 	}
 
+	public static class OrderParam{
+		String col;
+		String direInfo;
+		public String getCol() {
+			return col;
+		}
+		public void setCol(String col) {
+			this.col = col;
+		}
+		public String getDireInfo() {
+			return direInfo;
+		}
+		public void setDireInfo(String direInfo) {
+			this.direInfo = direInfo;
+		}
+	}
 }

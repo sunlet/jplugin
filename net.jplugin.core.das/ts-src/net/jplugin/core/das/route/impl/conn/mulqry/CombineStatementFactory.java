@@ -1,21 +1,19 @@
 package net.jplugin.core.das.route.impl.conn.mulqry;
 
 import java.sql.Connection;
-import java.sql.Statement;
 
-import javax.sql.DataSource;
-
-import net.jplugin.common.kits.AssertKit;
-import net.jplugin.core.das.api.DataSourceFactory;
+import net.jplugin.core.das.route.impl.conn.RouterConnection;
 
 public class CombineStatementFactory {
 	
 	
-	public static CombinedStatement create(){
-		return new CombinedStatement();
+	public static CombinedStatement create(Connection conn){
+		return new CombinedStatement(conn);
 	}
-	public static CombinedPreparedStatement createPrepared(){
-		return new CombinedPreparedStatement();
+	
+	public static CombinedPreparedStatement createPrepared(RouterConnection connection){
+//		return new CombinedPreparedStatement();
+		throw new RuntimeException("not impl yet");
 	}
 	
 //	public static CombinedStatement create(String[] dataSources,String[] sqls){
