@@ -14,12 +14,48 @@ import net.jplugin.ext.webasic.api.ObjectDefine;
 
 public class ExtensionWebHelper {
 	//add rest method .   json 格式的远程方法
+	/**
+	 * Please call [addServiceExportExtension] instead.
+	 * @param plugin
+	 * @param path
+	 * @param beanClz
+	 */
+	@Deprecated
 	public static void addRestMethodExtension(AbstractPlugin plugin,String path,Class beanClz){
+		addServiceExportExtension(plugin, path, beanClz);
+	}
+	
+	/**
+	 * Please call [addServiceExportExtension] instead.
+	 * @param plugin
+	 * @param path
+	 * @param svcName
+	 */
+	@Deprecated
+	public static void addRestMethodExtension(AbstractPlugin plugin,String path,String svcName){
+		addServiceExportExtension(plugin, path, svcName);
+	}
+	
+	/**
+	 * Export a service
+	 * @param plugin 
+	 * @param path
+	 * @param beanClz
+	 */
+	public static void addServiceExportExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
 	}
-	public static void addRestMethodExtension(AbstractPlugin plugin,String path,String svcName){
+	
+	/**
+	 * Export a service
+	 * @param plugin
+	 * @param path
+	 * @param svcName
+	 */
+	public static void addServiceExportExtension(AbstractPlugin plugin,String path,String svcName){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
 	}
+	
 //	public static void addRestMethodExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
 //	}
