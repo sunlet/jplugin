@@ -118,10 +118,16 @@ public class ResultSetForCount extends EmptyQueryableResultSet{
 	public String getString(int columnIndex) throws SQLException {
 		return Long.toString(count);
 	}
+	public String getString(String columnLabel) throws SQLException {
+		return Long.toString(count);
+	}
 	
 	/**
 	 * 一下为delegate实现
 	 */
+	public ResultSetMetaData getMetaData() throws SQLException {
+		return list.getMetaData();
+	}
 	public void close() throws SQLException {
 		list.close();
 	}
@@ -162,9 +168,7 @@ public class ResultSetForCount extends EmptyQueryableResultSet{
 		throw new RuntimeException("not support");
 	}
 
-	public String getString(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
+
 
 	public boolean getBoolean(String columnLabel) throws SQLException {
 		throw new RuntimeException("not support");
@@ -210,9 +214,7 @@ public class ResultSetForCount extends EmptyQueryableResultSet{
 		return list.getCursorName();
 	}
 
-	public ResultSetMetaData getMetaData() throws SQLException {
-		return list.getMetaData();
-	}
+
 
 	public int findColumn(String columnLabel) throws SQLException {
 		return list.findColumn(columnLabel);

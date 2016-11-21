@@ -82,32 +82,39 @@ public abstract class AbstractCommandHandler{
 		return result;
 	}
 
-
-	//当前位置在span 后面，开始检查是否 count(*)  count(0)  count(1)
+	//判断是否是select count(*) from 。。。模式
 	private boolean getCountStar(SqlWordsWalker walker) {
-		int oldPos = walker.getPosition();
-		walker.setPosition(0);
-		if (!walker.nextUntil("/")) throw new RuntimeException("can't be here");
-		if (!walker.nextUntil("/")) throw new RuntimeException("can't be here");
-		//到达  /*spantable*/
-		boolean ret;
-		String w3 = walker.getNextWord(3);
-		if (!("0".equals(w3) || "1".equals(w3) || "*".equals(w3))) 
-			ret = false;
-		else{
-			if  ("count".equalsIgnoreCase(walker.getNextWord(1))
-				&&
-				"(".equals(walker.getNextWord(2))
-				&&
-				")".equals(walker.getNextWord(4))
-				&&
-				"from".equalsIgnoreCase(walker.getNextWord(5))
-				) 
-				ret = true;
-			else ret = false;
+		if (!"select".equalsIgnoreCase(walker.wordAt(0)))
+				return false;
+		boolean hasCount = false;
+		int pos=1;
+		while (pos < walker.size()) {
+			String w = walker.wordAt(pos);
+			if (w.startsWith("/*") && w.endsWith("*/")) {
+				//注释忽略
+				pos++;
+			}else if (",".equals(w)){
+				//逗号忽略
+				pos ++;
+			}else if ("from".equalsIgnoreCase(w)){
+				//碰到from 跳出循环
+				return hasCount;
+			} else if ("count".equalsIgnoreCase(w)) {
+				//碰到count，进行判断
+				String posAdd2 = walker.wordAt(pos + 2);
+				if (!("0".equals(posAdd2) || "1".equals(posAdd2) || "*".equals(posAdd2)))
+					return false;
+				if (!("(".equals(walker.wordAt(pos + 1)) && ")".equals(walker.wordAt(pos + 3))))
+					return false;
+				hasCount = true;//存在 count
+				pos += 4; //跳过 count(1/*/0) 
+			}else{
+				//都不是，则false
+				return false;
+			}
 		}
-		walker.setPosition(oldPos);
-		return ret;
+		//应该到不了这里，除非：SELECT from之间，除了注释和逗号，没有其他的
+		throw new RuntimeException("Sql illegal:"+walker.sql);
 	}
 
 	private List<String> getOrderParam(SqlWordsWalker walker) {
@@ -118,10 +125,9 @@ public abstract class AbstractCommandHandler{
 				order = new ArrayList<String>();
 				
 				//目前只支持两个字段的orderby,按照语法，后面就是with语句的部分了，或者结束了
-				while (walker.next() && !("with".equalsIgnoreCase(walker.word))){
+				while (walker.next() &&  !(")".equals(walker.word)) && !("with".equalsIgnoreCase(walker.word))){
 					order.add(walker.word);
 				}
-
 			}
 		}
 		
@@ -134,19 +140,22 @@ public abstract class AbstractCommandHandler{
 			return null;
 	}
 
+	/**
+	 * 16-11-18修改为从全串检索，不能只看第一个select后面。因为select可能会被框架自动添加select count(*) from (XXXX)
+	 * @param walker
+	 * @return
+	 */
 	private boolean tryWalkSpanAll(SqlWordsWalker walker) {
-		if ( "/".equals(walker.getNextWord(1))
-		&& "*".equals(walker.getNextWord(2))
-		&& "spantable".equalsIgnoreCase(walker.getNextWord(3))
-		&& "*".equals(walker.getNextWord(4))
-		&& "/".equals(walker.getNextWord(5))){
-			walker.next(5);
-			return true;
-		}else {
-			return false;
+		for (int i=0;i<walker.size();i++){
+			if (walker.wordAt(i).startsWith("/*")){
+				String tmp = walker.wordAt(i);
+				if (tmp.endsWith("*/") && tmp.length()>5 && tmp.substring(2, tmp.length()-2).trim().equalsIgnoreCase("spantable"))
+					return true;
+			}
 		}
+		return false;
 	}
-
+	
 	private TableConfig getTableCfg(RouterConnection conn,String tableName) {
 		TableConfig tableCfg = conn.getDataSource().getConfig().findTableConfig(tableName);
 		if (tableCfg ==null) new TablesplitException("The table is configed as a splate table."+tableName);

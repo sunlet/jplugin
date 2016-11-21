@@ -34,21 +34,23 @@ public class CombinedStatement extends EmptyStatement{
 	@Override
 	public ResultSet executeQuery(String sql) throws SQLException {
 		if (this.closed) throw new TablesplitException("can't call in a closed statement");
-		
 		ParseResult pr = CombinedSqlParser.parse(sql);
-		ResultSetList resultSetList = new ResultSetList(this);
 		
-		genResultSetList(pr, resultSetList);
+		//获取resultList
+		ResultSetList resutSet = genResultSetList(pr);
 		
+		//根据count(*)模式返回不同的值
 		if (pr.getMeta().getCountStar()==1){
-			this.theResultSet = new ResultSetForCount(resultSetList);
+			this.theResultSet = new ResultSetForCount(resutSet);
 			return this.theResultSet;
 		}else{
-			this.theResultSet = resultSetList;
-			return resultSetList;
+			this.theResultSet = resutSet;
+			return theResultSet;
 		}
 	}
-	private void genResultSetList(ParseResult pr, ResultSetList resultSetList) throws SQLException {
+	
+	private ResultSetList genResultSetList(ParseResult pr) throws SQLException {
+		List<ResultSet> tempList = new ArrayList<ResultSet>();
 		try{
 			for (DataSourceInfo dsi:pr.getMeta().getDataSourceInfos()){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
@@ -56,18 +58,20 @@ public class CombinedStatement extends EmptyStatement{
 					Statement stmt = conn.createStatement();
 					statementList.add(stmt);
 					ResultSet resultSet = stmt.executeQuery(StringKit.repaceFirst(pr.getSql(), pr.getMeta().getSourceTb(), destTbName));
-					resultSetList.add(resultSet);
+					tempList.add(resultSet);
 				}
 			}
-			//初始化orderby
-			resultSetList.prepareFetch(pr.getMeta().getOrderParam());
+			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
+			return ret;
 		}catch(Exception e){
 			//发生异常的情况下，statement 会在本statement关闭的时候关闭，但是resultSet不会，需要处理一下
-			for (ResultSet r:resultSetList.getList()){
+			for (ResultSet r:tempList){
 				try{
 					r.close();
 				}catch(Exception e1){}
 			}
+			if (e instanceof RuntimeException) throw (RuntimeException)e;
+			else throw new TablesplitException(e.getMessage(),e);
 		}
 	}
 

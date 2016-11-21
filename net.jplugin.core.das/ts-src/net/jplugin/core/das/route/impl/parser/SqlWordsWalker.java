@@ -1,6 +1,7 @@
 package net.jplugin.core.das.route.impl.parser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SqlWordsWalker{
 	String[] words;
@@ -9,7 +10,7 @@ public class SqlWordsWalker{
 	public String sql;
 	
 	public static SqlWordsWalker createFromSql(String sql){
-		ArrayList<String> words = SqlStrLexerTool.parse(sql);
+		List<String> words = new SqlStrLexerToolNew(sql).parse();
 		String[] arr = new String[words.size()];
 		SqlWordsWalker sw = new SqlWordsWalker((String[]) words.toArray(arr));
 		sw.sql = sql;
@@ -20,6 +21,26 @@ public class SqlWordsWalker{
 		words = w;
 		reset();
 	}
+	
+	/**
+	 * 这两个直接查询数组
+	 * @param start
+	 * @param s
+	 * @return
+	 */
+	public int positionFrom(int start,String s){
+		for (int i=start;i<words.length;i++){
+			if (s.equals(words[i])) return i;
+		}
+		return -1;
+	}
+	public String wordAt(int i){
+		return words[i];
+	}
+	public int size(){
+		return words.length;
+	}
+	
 	public void reset(){
 		position = -1;
 		word = null;

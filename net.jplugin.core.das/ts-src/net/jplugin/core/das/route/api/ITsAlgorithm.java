@@ -2,8 +2,22 @@ package net.jplugin.core.das.route.api;
 
 public interface ITsAlgorithm {
 	
+	/**
+	 * Get the corresponded datasource and tablename for the given key. 
+	 * @param compondDataSource
+	 * @param tableBaseName
+	 * @param vt
+	 * @param key
+	 * @return
+	 */
 	public Result getResult(RouterDataSource compondDataSource,String tableBaseName,ValueType vt,Object key);
 	
+	/**
+	 * The method only need be implemented when you want use Span Table Query.
+	 * @param dataSource
+	 * @param tableName
+	 * @return
+	 */
 	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName);
 	
 	public enum ValueType{

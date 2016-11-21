@@ -11,9 +11,8 @@ public class CombineStatementFactory {
 		return new CombinedStatement(conn);
 	}
 	
-	public static CombinedPreparedStatement createPrepared(RouterConnection connection){
-//		return new CombinedPreparedStatement();
-		throw new RuntimeException("not impl yet");
+	public static CombinedPreparedStatement createPrepared(RouterConnection connection,String sql){
+		return new CombinedPreparedStatement(connection,sql);
 	}
 	
 //	public static CombinedStatement create(String[] dataSources,String[] sqls){

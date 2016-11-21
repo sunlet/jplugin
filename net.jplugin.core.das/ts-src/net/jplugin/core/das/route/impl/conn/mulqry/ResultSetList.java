@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.das.route.impl.conn.mulqry.ResultSetOrderByTool.OrderComparor;
 
 /**
@@ -43,10 +44,14 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	private Statement stmt=null;
 	private boolean closed;
 	ResultSetOrderByTool orderByTool;
+
+	private ResultSetMetaData metadata;
 	
 	
-	ResultSetList(Statement s){
+	ResultSetList(Statement s, List<ResultSet> rsList, List<String> orderParam){
 		this.stmt = s;
+		this.list.addAll(rsList);
+		prepareFetch(orderParam);
 	}
 	
 	public List<ResultSet> getList(){
@@ -55,7 +60,7 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	public void add(ResultSet resultSet) {
 		list.add(resultSet);
 	}
-	public void prepareFetch(List<String> orderParam) {
+	private void prepareFetch(List<String> orderParam) {
 		if (list.size()==0) 
 			throw new RuntimeException("list size is 0");
 		this.orderByTool = new ResultSetOrderByTool(orderParam,list.get(0));
@@ -170,7 +175,12 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	public boolean isClosed() throws SQLException {
 		return this.closed;
 	}
-	
+	public ResultSetMetaData getMetaData() throws SQLException {
+		if (metadata==null)
+			metadata = list.get(0).getMetaData();
+		return metadata;
+	}
+
 	@Override
 	public boolean isBeforeFirst() throws SQLException {
 		throw new RuntimeException("Not support");
@@ -330,9 +340,6 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	}
 	public String getCursorName() throws SQLException {
 		return o.getCursorName();
-	}
-	public ResultSetMetaData getMetaData() throws SQLException {
-		return o.getMetaData();
 	}
 	public Object getObject(int columnIndex) throws SQLException {
 		return o.getObject(columnIndex);

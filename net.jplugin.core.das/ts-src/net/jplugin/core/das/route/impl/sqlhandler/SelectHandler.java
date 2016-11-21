@@ -14,6 +14,14 @@ public class SelectHandler extends AbstractCommandHandler{
 			throw new TablesplitException("Can't find TableName in insert sql."+walker.sql);
 		if (StringKit.isNull(walker.word)) 
 			throw new TablesplitException("Found null TableName in insert sql."+walker.sql);
+		if ("(".equals(walker.word)){
+			//如果碰到(，找下一个，但不会循环找
+			walker.nextUntilIgnoreCase("FROM");
+			if (!walker.next())
+				throw new TablesplitException("Can't find TableName in insert sql."+walker.sql);
+			if (StringKit.isNull(walker.word)) 
+				throw new TablesplitException("Found null TableName in insert sql."+walker.sql);
+		}
 		String tableName = walker.word;
 		return tableName;
 	}
