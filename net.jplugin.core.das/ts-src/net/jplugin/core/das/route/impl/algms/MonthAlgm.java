@@ -1,6 +1,12 @@
 package net.jplugin.core.das.route.impl.algms;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.jplugin.common.kits.CalenderKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
@@ -11,6 +17,11 @@ import net.jplugin.core.das.route.api.TablesplitException;
 
 public class MonthAlgm  implements ITsAlgorithm{
 
+	int trackMonths = 6;
+	protected void setTrackMonths(int m){
+		this.trackMonths = m;
+	}
+	
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
 		long time;
@@ -35,9 +46,11 @@ public class MonthAlgm  implements ITsAlgorithm{
 	private String getTableName(String tableBaseName, long time) {
 		return  tableBaseName+"_"+CalenderKit.getShortMonthString(time);
 	}
+
+	
 	@Override
 	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
-		throw new RuntimeException("not impl");
+		return TimeBasedSpanUtil.get(this, dataSource, tableName, this.trackMonths,(ld,units)->ld.minusMonths(units));
 	}
 
 }

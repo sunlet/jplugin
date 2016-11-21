@@ -3,6 +3,7 @@ package net.jplugin.common.kits;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -356,5 +357,13 @@ public class CalenderKit {
 		ParsePosition pos = new ParsePosition(0);
 		Date date = formatter.parse(timeString, pos);
 		return date.getTime();
+	}
+	/**
+	 * 这个转换有一点笨，看未来有没有更好的
+	 * @param date
+	 * @return
+	 */
+	public static java.sql.Date convertToSqlDate(LocalDate date) {
+		return new java.sql.Date(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
 	}
 }

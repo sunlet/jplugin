@@ -3,6 +3,8 @@ package test.net.jplugin.core.das.route.date;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -31,6 +33,10 @@ public class DateTest {
 
 		AssertKit.assertEqual(getCount(connReal,"select count(*) from tb_tisp_1601"), 2);
 //		AssertKit.assertEqual(getCount(connReal,"select count(*) from tb_tisp_1602"), 0);
+		
+//		
+//		List<Map<String, String>> list = SQLTemplate.executeSelect(conn,"select count(*) /*spantable*/ from tb_date",null);
+//		
 		
 	}
 	

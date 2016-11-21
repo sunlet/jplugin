@@ -50,17 +50,31 @@ public class InsertSelectTest {
 			}
 		});
 		
-		//multi table test begin>>>>>>>>>
+		//multi table test for Statement begin>>>>>>>>>
+		List<Map<String, String>> list ;
+		list = SQLTemplate.executeSelect(conn,"select * from (select *  from tb_route0 where f1='a') bb",null);
+		AssertKit.assertEqual(1,list.size());
+		
 		
 		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable*/  count(*) from tb_route0"));
 		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable  */  count(0) from tb_route0"));
 		AssertKit.assertEqual(3, getCount(conn,"select  /*spantable  */  count(2) from tb_route0"));
 
-		List<Map<String, String>> list ;
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ count(*) from (select  *  from tb_route0) tb1", null);
+		AssertKit.assertEqual("6", list.get(0).get("count(*)"));
+		list = SQLTemplate.executeSelect(conn, "select  count(*)/*spantable*/ from (select  *  from tb_route0) tb1", null);
+		AssertKit.assertEqual("6", list.get(0).get("count(*)"));
+
+		list = SQLTemplate.executeSelect(conn, "select count(*) from (select /*spantable*/ *  from tb_route0) tb1", null);
+		AssertKit.assertEqual("6", list.get(0).get("count(*)"));
+
 		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0", null);
 		print(list);
 		AssertKit.assertEqual(6, list.size());
 
+		list = SQLTemplate.executeSelect(conn, "select * from (select /*spantable*/ *  from tb_route0 where f1<>'b' order by f3) t1", null);
+		AssertKit.assertEqual(5, list.size());
+		
 		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0 where f1<>'b' order by f1", null);
 		AssertKit.assertEqual(5, list.size());
 		AssertKit.assertEqual(list.get(0).get("f1"), "a");
@@ -93,7 +107,24 @@ public class InsertSelectTest {
 		AssertKit.assertEqual(list.get(1).get("f1"), "a");
 		AssertKit.assertEqual(list.get(2).get("f1"), "c");
 
-		//multi table test end>>>>>>>>>>>
+		//multi table for statement test end>>>>>>>>>>>
+		
+		//multi table test for Prepared Statement begin>>>>>>>>>
+		list = SQLTemplate.executeSelect(conn,"select * from (select *  from tb_route0 where f1=?) bb",new Object[]{"a"});
+		AssertKit.assertEqual(1,list.size());
+		
+		
+		list = SQLTemplate.executeSelect(conn, "select * from (select /*spantable*/ *  from tb_route0 where f1<>? order by f3) t1", new Object[]{"b"});
+		AssertKit.assertEqual(5, list.size());
+		
+		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ *  from tb_route0 where f1<>? order by f1", new Object[]{"b"});
+		AssertKit.assertEqual(5, list.size());
+		AssertKit.assertEqual(list.get(0).get("f1"), "a");
+		AssertKit.assertEqual(list.get(1).get("f1"), "c");
+		AssertKit.assertEqual(list.get(2).get("f1"), "d");
+		AssertKit.assertEqual(list.get(3).get("f1"), "e");
+		AssertKit.assertEqual(list.get(4).get("f1"), "f");
+		//multi table for prepared statement test end>>>>>>>>>>>
 		
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route1(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route1(f1,f2,f3) values(?,?,?)",new Object[]{"b",1,"b"} );

@@ -11,6 +11,11 @@ import net.jplugin.core.das.route.api.TablesplitException;
 
 public class DateAlgm  implements ITsAlgorithm{
 
+	private int trackDays = 14;
+
+	protected void setTrackDays(int m){
+		this.trackDays = m;
+	}
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
 		long time;
@@ -34,9 +39,10 @@ public class DateAlgm  implements ITsAlgorithm{
 		return tableBaseName+"_"+CalenderKit.getShortDateString(time);
 	}
 
+
 	@Override
 	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
-		throw new RuntimeException("not impl");
+		return TimeBasedSpanUtil.get(this, dataSource, tableName, this.trackDays,(ld,units)->ld.minusDays(units));
 	}
 
 }
