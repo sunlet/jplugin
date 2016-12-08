@@ -12,7 +12,7 @@ import net.jplugin.core.ctx.api.Rule;
  * @version 创建时间：2015-2-12 下午04:11:52
  **/
 
-public class InvocationContext {
+public class RuleInvocationContext {
 
 	private Method method;
 	private Object[] args;

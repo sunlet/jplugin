@@ -20,7 +20,7 @@ import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.AbstractExController;
 import net.jplugin.ext.webasic.api.IController;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
+import net.jplugin.ext.webasic.api.InvocationContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
@@ -68,7 +68,7 @@ public class WebExController implements IController{
 		try{
 			final Object[] args = new Object[]{};
 			
-			MethodFilterContext mfc = new MethodFilterContext(path, cont, method, args);
+			InvocationContext mfc = new InvocationContext(path, cont, method, args);
 			WebCtrlFilterManager.INSTANCE.executeWithFilter(mfc, new IMethodCallback() {
 				public Object run() throws Throwable {
 					return RuleProxyHelper.invokeWithRule(cont, method, args);

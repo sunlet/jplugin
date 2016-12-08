@@ -8,8 +8,8 @@ import java.util.Set;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.IMethodAwareService;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
+import net.jplugin.ext.webasic.api.IDynamicService;
+import net.jplugin.ext.webasic.api.InvocationContext;
 import net.jplugin.ext.webasic.impl.WebDriver.ControllerMeta;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
@@ -32,11 +32,11 @@ public class ESFHelper {
 	@Deprecated
 	public static Object invokeWithRule(String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
-			if (obj instanceof IMethodAwareService) 
+			if (obj instanceof IDynamicService) 
 				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
 			
 			ThreadLocalContextManager.instance.createContext();
-			MethodFilterContext sfc = new MethodFilterContext(servicePath, obj, method, args);
+			InvocationContext sfc = new InvocationContext(servicePath, obj, method, args);
 			
 			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
 				public Object run() throws Throwable {
@@ -50,13 +50,13 @@ public class ESFHelper {
 
 	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
-			if (obj instanceof IMethodAwareService) 
+			if (obj instanceof IDynamicService) 
 				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
 			
 			ThreadLocalContextManager.instance.createContext();
 			ESFRPCContext.fill(ctx);
 			
-			MethodFilterContext sfc = new MethodFilterContext(servicePath, obj, method, args);
+			InvocationContext sfc = new InvocationContext(servicePath, obj, method, args);
 			
 			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
 				public Object run() throws Throwable {

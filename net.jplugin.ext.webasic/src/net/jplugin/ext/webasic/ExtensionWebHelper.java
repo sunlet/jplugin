@@ -3,7 +3,7 @@ package net.jplugin.ext.webasic;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.ext.webasic.api.IMethodFilter;
+import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**

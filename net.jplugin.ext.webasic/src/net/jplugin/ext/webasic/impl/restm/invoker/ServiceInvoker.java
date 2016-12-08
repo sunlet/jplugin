@@ -14,8 +14,8 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
-import net.jplugin.ext.webasic.api.IMethodAwareService;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
+import net.jplugin.ext.webasic.api.IDynamicService;
+import net.jplugin.ext.webasic.api.InvocationContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
 import net.jplugin.ext.webasic.impl.RemoteExceptionKits;
@@ -122,15 +122,15 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 	private void callStringParam(CallParam cp) throws Throwable{
 		Object o = helper.getObject();
-		if (o instanceof IMethodAwareService){
+		if (o instanceof IDynamicService){
 			callStringParamForDynamic(cp);
 		}else
 			callStringParamForConcreate(cp);
 	}
 	
 	private void callStringParamForDynamic(CallParam cp) throws Throwable{
-		IMethodAwareService o = (IMethodAwareService) helper.getObject();
-		MethodFilterContext mfc = new MethodFilterContext(cp.getPath(), o, cp.getOperation());
+		IDynamicService o = (IDynamicService) helper.getObject();
+		InvocationContext mfc = new InvocationContext(cp.getPath(), o, cp.getOperation());
 		try{
 			RestMethodState.reset();
 			
@@ -138,7 +138,7 @@ public class ServiceInvoker implements IServiceInvoker{
 			Object result = null;
 			
 //			result = helper.invokeWithRuleSupport(oam,paraValue);
-			result = o.execute(mfc);
+			result = o.execute(mfc,mfc.getDynamicPath());
 
 			State state = RestMethodState.get();
 
@@ -246,7 +246,7 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	private Object invokeWithServiceFilter(String servicePath,final ObjectAndMethod oam, final Object[] paraValue) throws Throwable {
-		MethodFilterContext ctx = new MethodFilterContext(servicePath,oam.object,oam.method,paraValue);
+		InvocationContext ctx = new InvocationContext(servicePath,oam.object,oam.method,paraValue);
 
 		return ServiceFilterManager.INSTANCE.executeWithFilter(ctx, new IMethodCallback() {
 			public Object run() throws Throwable {

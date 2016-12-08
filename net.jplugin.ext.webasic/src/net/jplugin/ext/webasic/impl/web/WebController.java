@@ -17,7 +17,7 @@ import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IController;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
+import net.jplugin.ext.webasic.api.InvocationContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
@@ -57,7 +57,7 @@ public class WebController implements IController{
 			
 			final Object[] args = new Object[]{req,res};
 			
-			MethodFilterContext mfc = new MethodFilterContext(path, oam.object, oam.method, args);
+			InvocationContext mfc = new InvocationContext(path, oam.object, oam.method, args);
 			WebCtrlFilterManager.INSTANCE.executeWithFilter(mfc, new IMethodCallback() {
 				public Object run() throws Throwable {
 					return helper.invokeWithRuleSupport(oam,args);

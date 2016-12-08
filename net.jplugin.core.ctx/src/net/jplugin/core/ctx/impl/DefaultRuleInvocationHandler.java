@@ -32,7 +32,7 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	public Object invokeWithLog(Object proxyObj, Object oldService, Method method,
 			Object[] args, Rule meta) throws Throwable {
 		Throwable throwable = null;
-		InvocationContext invokCtx = new InvocationContext();
+		RuleInvocationContext invokCtx = new RuleInvocationContext();
 		invokCtx.begin(method, args, meta);
 		try {
 			return method.invoke(oldService, args);

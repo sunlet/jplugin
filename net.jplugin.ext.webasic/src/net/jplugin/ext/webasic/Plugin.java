@@ -6,7 +6,7 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.IMethodFilter;
+import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
@@ -48,8 +48,8 @@ public class Plugin extends AbstractPlugin{
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBEXCONTROLLER, ClassDefine.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_REMOTECALL, ObjectDefine.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_RESTMETHOD, ObjectDefine.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEFILTER, IMethodFilter.class,false));
-		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCTRLFILTER, IMethodFilter.class,false));
+		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEFILTER, IInvocationFilter.class,false));
+		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCTRLFILTER, IInvocationFilter.class,false));
 		
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilter.class));
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilterNew.class));

@@ -1,16 +1,16 @@
 package test.net.jplugin.ext.webasic.restclient;
 
-import net.jplugin.ext.webasic.api.IMethodFilter;
-import net.jplugin.ext.webasic.api.MethodFilterContext;
+import net.jplugin.ext.webasic.api.IInvocationFilter;
+import net.jplugin.ext.webasic.api.InvocationContext;
 
-public class WebCtrlFilterTest implements IMethodFilter {
+public class WebCtrlFilterTest implements IInvocationFilter {
 
-	public boolean before(MethodFilterContext ctx) {
+	public boolean before(InvocationContext ctx) {
 		System.out.println("$$$Before controller for:"+ctx.getServicePath()+" "+ctx.getMethod().getName());
 		return true;
 	}
 
-	public void after(MethodFilterContext ctx) {
+	public void after(InvocationContext ctx) {
 		System.out.println("$$$After controller for:"+ctx.getServicePath());
 	}
 

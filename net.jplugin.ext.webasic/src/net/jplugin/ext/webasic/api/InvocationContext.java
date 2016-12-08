@@ -8,14 +8,14 @@ import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
-public class MethodFilterContext {
+public class InvocationContext {
 	String servicePath;
 	/**
 	 * method 和 dynamicMethodName只有一个有值。
 	 * 当method有值时，args才有值。
 	 */
 	Method method;
-	String dynamicMethodName;
+	String dynamicPath;
 	Object object;
 	Object[] args;
 	Object result;
@@ -23,8 +23,8 @@ public class MethodFilterContext {
 	Map<String,Object> attributes;
 	RequesterInfo requestInfo;
 	
-	private MethodFilterContext(){}
-	public  MethodFilterContext(String p,Object o,Method m,Object[] a){
+	private InvocationContext(){}
+	public  InvocationContext(String p,Object o,Method m,Object[] a){
 		this.servicePath = p;
 		this.method = m;
 		this.object = o;
@@ -33,19 +33,19 @@ public class MethodFilterContext {
 		//在这里预先设置一下，懒加载可能导致用户启动了线程里面获取不到
 		this.requestInfo = ThreadLocalContextManager.getRequestInfo();
 	}
-	public  MethodFilterContext(String p,Object o,String aDynamicMethodName){
+	public  InvocationContext(String p,Object o,String aDynamicMethodName){
 		this.servicePath = p;
 //		this.method = m;
-		this.dynamicMethodName = aDynamicMethodName;
+		this.dynamicPath = aDynamicMethodName;
 		this.object = o;
 //		this.args = a;
 		
 		//在这里预先设置一下，懒加载可能导致用户启动了线程里面获取不到
 		this.requestInfo = ThreadLocalContextManager.getRequestInfo();
 	}
-	
-	public String getDynamicMethodName() {
-		return dynamicMethodName;
+
+	public String getDynamicPath() {
+		return dynamicPath;
 	}
 	public RequesterInfo getRequestInfo() {
 		return requestInfo;
