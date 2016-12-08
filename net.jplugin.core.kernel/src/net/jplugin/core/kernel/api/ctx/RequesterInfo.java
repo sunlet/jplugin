@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.StringKit;
 
 /**
  *
@@ -99,7 +100,7 @@ public class RequesterInfo {
 		String contentType;
 		Map<String,String> paramContent;
 		String jsonContent;
-		Map mapForJsonContent;
+//		Map mapForJsonContent;
 		
 		
 		public String getContentType() {
@@ -119,16 +120,35 @@ public class RequesterInfo {
 		}
 		public void setJsonContent(String jsonContent) {
 			this.jsonContent = jsonContent;
-			parseAndCacheJsonContent();
+			fillItemsToParamContent();
+////2016-12-08注释掉			parseAndCacheJsonContent();
 		}
-		private void parseAndCacheJsonContent() {
-			 this.mapForJsonContent = JsonKit.json2Map(jsonContent);
-			 //这里做一个容错
-			 if (this.mapForJsonContent==null) 
-				 this.mapForJsonContent = new HashMap<String,String>(0);
+		
+		private void fillItemsToParamContent() {
+			if (paramContent==null) 
+				paramContent = new HashMap<String,String>();
+			
+			if (StringKit.isNull(this.jsonContent))
+				return;//不做任何转换，认为没参数
+			
+			Map map = JsonKit.json2Map(this.jsonContent);
+			for (Object key : map.keySet()){
+				if (!(key instanceof String)){
+					throw new RuntimeException("the first level key must be String type now. "+jsonContent);
+				}
+				paramContent.put((String)key,JsonKit.object2JsonEx(map.get(key)));
+			}
 		}
-		public Map getMapForJsonContent() {
-			return mapForJsonContent;
-		}
+		
+//2016-12-08下面内容被注掉，因为需要把json模式下参数直接加入 paramContent，以备服务实现中访问
+//		private void parseAndCacheJsonContent() {
+//			 this.mapForJsonContent = JsonKit.json2Map(jsonContent);
+//			 //这里做一个容错
+//			 if (this.mapForJsonContent==null) 
+//				 this.mapForJsonContent = new HashMap<String,String>(0);
+//		}
+//		public Map getMapForJsonContent() {
+//			return mapForJsonContent;
+//		}
 	}
 }

@@ -3,10 +3,15 @@ package net.jplugin.common.kits;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
 public class CalenderKit {
+
+	private static final String date_pattern_short = "yyMMdd";
+
+	private static final String month_pattern_short = "yyMM";
 
 	public static String split_pattern = "yyyy-MM-dd HH:mm:ss";
 
@@ -30,6 +35,14 @@ public class CalenderKit {
 	public static String getDateString(long timeLong) {
 		return getFormatedTimeString(timeLong, date_pattern);
 	}
+	
+	public static String getShortDateString(long timeLong) {
+		return getFormatedTimeString(timeLong, date_pattern_short);
+	}
+	public static String getShortMonthString(long timeLong) {
+		return getFormatedTimeString(timeLong, month_pattern_short);
+	}
+
 	public static Date getDateFromString(String dateString) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		sdf.applyPattern(date_pattern);
@@ -344,5 +357,13 @@ public class CalenderKit {
 		ParsePosition pos = new ParsePosition(0);
 		Date date = formatter.parse(timeString, pos);
 		return date.getTime();
+	}
+	/**
+	 * 这个转换有一点笨，看未来有没有更好的
+	 * @param date
+	 * @return
+	 */
+	public static java.sql.Date convertToSqlDate(LocalDate date) {
+		return new java.sql.Date(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
 	}
 }

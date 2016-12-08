@@ -8,6 +8,8 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.api.DataSourceFactory;
+import net.jplugin.core.das.route.api.RouterDataSource;
 
 public class ConfigedDataSource {
 	/**
@@ -34,9 +36,22 @@ public class ConfigedDataSource {
 	 */
 	public static DataSource getDataSource(String group){
 		
-		org.apache.commons.dbcp.BasicDataSource ds = new BasicDataSource();
 		Map<String, String> map = ConfigFactory.getStringConfigInGroup(group);
+		String routeFlag = map.get("route-datasource-flag");
+		if (routeFlag!=null) routeFlag.trim();
 		
+		if ("true".equalsIgnoreCase(routeFlag)){
+			RouterDataSource ds = new RouterDataSource();
+			ds.config(map);
+			return ds;
+		}else{
+			DataSource ds = createJdbcDataSource(group, map);
+			return ds;
+		}
+	}
+
+	private static DataSource createJdbcDataSource(String group, Map<String, String> map) {
+		org.apache.commons.dbcp.BasicDataSource ds = new BasicDataSource();
 		//为了兼容以前的配置文件，支持dbuser、dbpassword两个参数
 		if (map.containsKey("dbuser")){
 			map.put("username", map.get("dbuser"));
@@ -47,6 +62,8 @@ public class ConfigedDataSource {
 			map.remove("dbpassword");
 		}
 		//以上为了更好的迁移以前的配置文件，只修改文件名即可
+		
+		map.remove(DataSourceFactory.IS_TX_MANAGED);
 		
 		if (map.isEmpty()){
 			throw new RuntimeException("Can't find config for database:"+group);

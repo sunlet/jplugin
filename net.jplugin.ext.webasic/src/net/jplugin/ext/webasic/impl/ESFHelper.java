@@ -8,6 +8,7 @@ import java.util.Set;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.IControllerSet;
+import net.jplugin.ext.webasic.api.IMethodAwareService;
 import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.impl.WebDriver.ControllerMeta;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
@@ -31,6 +32,9 @@ public class ESFHelper {
 	@Deprecated
 	public static Object invokeWithRule(String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
+			if (obj instanceof IMethodAwareService) 
+				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
+			
 			ThreadLocalContextManager.instance.createContext();
 			MethodFilterContext sfc = new MethodFilterContext(servicePath, obj, method, args);
 			
@@ -46,6 +50,9 @@ public class ESFHelper {
 
 	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
+			if (obj instanceof IMethodAwareService) 
+				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
+			
 			ThreadLocalContextManager.instance.createContext();
 			ESFRPCContext.fill(ctx);
 			

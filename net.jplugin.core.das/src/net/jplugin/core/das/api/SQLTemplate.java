@@ -3,8 +3,13 @@ package net.jplugin.core.das.api;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.jplugin.common.kits.JsonKit;
 
@@ -98,6 +103,17 @@ public class SQLTemplate {
 	 * @param sql
 	 * @return
 	 */
+	public static void executeDropSql(Connection connection, String sql) {
+		if (printSQL){
+			print(sql,null);
+		}
+		executeAndReturnCount(connection,sql,null,"DROP");
+	}
+	/**
+	 * @param connection
+	 * @param sql
+	 * @return
+	 */
 	public static void executeCreateSql(Connection connection, String sql) {
 		if (printSQL){
 			print(sql,null);
@@ -118,7 +134,34 @@ public class SQLTemplate {
 		}
 		return executeAndReturnCount(connection,sql,param,"INSERT");
 	}
-
+	
+	public static List<Map<String,String>> executeSelect(Connection conn,String sql,Object[] p){
+		List ret = new ArrayList<>();
+		executeSelect(conn, sql,new IResultDisposer() {
+			List<String> columns=null;
+			@Override
+			public void readRow(ResultSet rs) throws SQLException {
+//				rs.getMetaData().getColumnCount();
+				if (columns==null){
+					initcolumns(rs);
+				}
+				Map<String,String>  map = new HashMap<>();
+				for (String s:columns){
+					map.put(s, rs.getString(s));
+				}
+				ret.add(map);
+			}
+			private void initcolumns(ResultSet rs) throws SQLException {
+				ResultSetMetaData m = rs.getMetaData();
+				int cnt = m.getColumnCount();
+				columns = new ArrayList<String>();
+				for (int i=1;i<=cnt;i++){
+					columns.add(m.getColumnLabel(i));
+				}
+			}
+		},p);
+		return ret;
+	}
 	/**
 	 * @param sql
 	 * @param rd

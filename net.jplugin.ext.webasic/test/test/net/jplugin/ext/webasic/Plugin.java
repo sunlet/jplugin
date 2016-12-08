@@ -7,6 +7,8 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.rclient.ExtendsionClientHelper;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
+import test.net.jplugin.ext.webasic.dynamicmethod.DynamicMethodTest;
+import test.net.jplugin.ext.webasic.dynamicmethod.TestDynamicMethodClient;
 import test.net.jplugin.ext.webasic.restclient.IService;
 import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
@@ -36,6 +38,8 @@ public class Plugin extends AbstractPluginForTest{
 		
 		ExtensionWebHelper.addServiceFilterExtension(this, ServiceFilterTest.class);
 		ExtensionWebHelper.addWebCtrlFilterExtension(this, WebCtrlFilterTest.class);
+		
+		ExtensionWebHelper.addServiceExportExtension(this, "/dynamic-method", DynamicMethodTest.class);
 	}
 
 	@Override
@@ -50,6 +54,8 @@ public class Plugin extends AbstractPluginForTest{
 		new TestDefaultValClient().test();
 		
 		new TestRemoteClient().test();
+		new TestDynamicMethodClient().test();
+		new TestPathSearch().test();
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
+import net.jplugin.ext.webasic.api.IMethodAwareService;
 import net.jplugin.ext.webasic.api.MethodFilterContext;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.Para;
@@ -115,12 +116,55 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	private void callJson(CallParam cp) throws Throwable {
-		//目前转换为StringParam调用
+		//目前转换为StringParam调用,因为初始设置的时候参数已经Merge，这里不需要转换了。2016-12-08
 		JsonCallHelper.convertToHttp(cp);
 		callStringParam(cp);
 	}
-
 	private void callStringParam(CallParam cp) throws Throwable{
+		Object o = helper.getObject();
+		if (o instanceof IMethodAwareService){
+			callStringParamForDynamic(cp);
+		}else
+			callStringParamForConcreate(cp);
+	}
+	
+	private void callStringParamForDynamic(CallParam cp) throws Throwable{
+		IMethodAwareService o = (IMethodAwareService) helper.getObject();
+		MethodFilterContext mfc = new MethodFilterContext(cp.getPath(), o, cp.getOperation());
+		try{
+			RestMethodState.reset();
+			
+//			Object result = oam.method.invoke(oam.object, paraValue);
+			Object result = null;
+			
+//			result = helper.invokeWithRuleSupport(oam,paraValue);
+			result = o.execute(mfc);
+
+			State state = RestMethodState.get();
+
+//			RuleResult rr = RuleResult.create(RuleResult.OK);
+			JsonResult jr = JsonResult.create();
+			jr.setCode(state.code);
+			jr.setMsg(state.message);
+			jr.setSuccess(state.success);
+			
+			HashMap<String, Object> hm = new HashMap();
+			if (compatibleReturn()){
+				hm.put("return", result);
+			}
+			hm.put("result", result);
+			jr.setContent(hm);
+//			rr.setContent("return",result);
+			cp.setResult(jr.toJson());
+		}catch(MethodIllegleAccessException e){
+			disposeException(cp, e);
+		}catch(Exception e){
+			//有Rule标记的情况下，InvocationTargetException会被去掉，所以只能在这里处理了
+			disposeException(cp, e);
+		}
+	}
+	
+	private void callStringParamForConcreate(CallParam cp) throws Throwable{
 		ObjectAndMethod oam = helper.get(cp.getOperation(), null);
 		
 		//得到参数annotation

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.net.jplugin.core.das.mybatis.ts.TbRoute0Mapper">
+	<select id="add">
+		INSERT INTO tb_route0 (f1,f2,f3) values( #{f1},#{f2},#{f3})
+	</select>
+	<select id="find" resultType="test.net.jplugin.core.das.mybatis.ts.TbRoute0">
+		SELECT * FROM TB_ROUTE0 where f1=#{f1}
+	</select>
+	<update id="update">
+		update TB_ROUTE0 set f2=#{f2},f3=#{f3} where f1=#{f1}
+	</update>
+	<delete id="delete">
+		DELETE FROM tb_route0 where f1=#{f1}
+	</delete>
+</mapper>
