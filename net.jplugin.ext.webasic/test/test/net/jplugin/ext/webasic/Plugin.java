@@ -55,6 +55,7 @@ public class Plugin extends AbstractPluginForTest{
 		
 		new TestRemoteClient().test();
 		new TestDynamicMethodClient().test();
+		new TestPathSearch().test();
 	}
 	
 	@Override

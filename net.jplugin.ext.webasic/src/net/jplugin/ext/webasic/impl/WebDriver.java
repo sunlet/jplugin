@@ -139,6 +139,12 @@ public class WebDriver {
 		return logger;
 	}
 	
+	/**
+	 * 路径查找规则：先完全匹配，在匹配最后一个/以前（前面为了兼容以前的实现）。如果都匹配不上，从前开始往后匹配，一级一级找。
+	 * 这样实现为了在动态服务实现时候，可以传递多级/X/X/X当做dynamicMethodName
+	 * @param path
+	 * @return
+	 */
 	public ControllerMeta parseControllerMeta(String path){
 		//除去点
 		int dotPos = path.lastIndexOf('.');
@@ -161,10 +167,42 @@ public class WebDriver {
 			
 			if (ctroller!=null)
 				return new ControllerMeta(ctroller,prePath,postPath);
+			else 
+				return searchFromStartToEnd3(path);
 		}
 		return null;
 	}
 	
+	/**
+	 * 从前往后，找到倒数第二级为止
+	 * @param path
+	 * @return
+	 */
+	private ControllerMeta searchFromStartToEnd3(String path) {
+		//计算最后一个 / 的位置
+		int lastPos = path.lastIndexOf('/');
+		if (lastPos<=0) //如果等于0说明只有一个/，也不同再找了 
+			return null;
+		
+		int pos =1;
+		while(true){
+			pos = path.indexOf('/',pos);
+			if (pos>=lastPos) 
+				return null;
+			if (pos<0) //极端，只有一个/时候会到这里，因为是从1开始找的
+				return null;
+			
+			String prePath = path.substring(0, pos);
+			IControllerSet ctroller = pathMap.get(prePath);
+			if (ctroller!=null){
+				String postPath = path.substring(pos+1);
+				return new ControllerMeta(ctroller,prePath,postPath);
+			}
+			
+			pos++;
+		}
+	}
+
 	public static class ControllerMeta {
 		IControllerSet controllerSet;
 		String servicePath;
