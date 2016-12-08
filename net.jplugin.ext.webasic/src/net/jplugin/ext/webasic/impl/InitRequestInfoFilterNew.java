@@ -70,11 +70,13 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		Content content = requestInfo.getContent();
 		
 		Map map;
-		if (APPLICATION_JSON.equals(content.getContentType())) {
-			map = content.getMapForJsonContent();
-		} else {
-			map = content.getParamContent();
-		}
+		//2016-12-08 因为把jsonContent解析放入paramContent，不需要区分了
+//		if (APPLICATION_JSON.equals(content.getContentType())) {
+//			map = content.getMapForJsonContent();
+//		} else {
+//			map = content.getParamContent();
+//		}
+		map = content.getParamContent();
 
 		String clientAppToken = (String) map.get(_ATK);
 		String operatorToken = (String) map.get(_OTK);

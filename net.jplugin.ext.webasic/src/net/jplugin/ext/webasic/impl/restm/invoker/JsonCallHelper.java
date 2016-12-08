@@ -7,21 +7,28 @@ import javax.sql.rowset.JoinRowSet;
 
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 public class JsonCallHelper {
 
 	public static void convertToHttp(CallParam cp) {
-		String json = cp.getParamMap().get(CallParam.JSON_KEY);
-		if (StringKit.isNull(json))
-			return;//不做任何转换，认为没参数
+		//因为Value已经Merge到ParamContent当中，所以这里直接从ParamContent获取即可。
+		Map<String, String> map = ThreadLocalContextManager.getRequestInfo().getContent().getParamContent();
+		cp.getParamMap().clear();
+		cp.getParamMap().putAll(map);
+
 		
-		Map map = JsonKit.json2Map(json);
-		for (Object key : map.keySet()){
-			if (!(key instanceof String)){
-				throw new RuntimeException("the first level key must be String type."+json);
-			}
-			cp.getParamMap().put((String)key,JsonKit.object2JsonEx(map.get(key)));
-		}
+//		String json = cp.getParamMap().get(CallParam.JSON_KEY);
+//		if (StringKit.isNull(json))
+//			return;//不做任何转换，认为没参数
+//		
+//		Map map = JsonKit.json2Map(json);
+//		for (Object key : map.keySet()){
+//			if (!(key instanceof String)){
+//				throw new RuntimeException("the first level key must be String type."+json);
+//			}
+//			cp.getParamMap().put((String)key,JsonKit.object2JsonEx(map.get(key)));
+//		}
 	}
 	
 	public static void main(String[] args) {
