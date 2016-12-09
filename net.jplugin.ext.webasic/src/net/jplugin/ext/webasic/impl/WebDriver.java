@@ -139,69 +139,109 @@ public class WebDriver {
 		return logger;
 	}
 	
+//	/**
+//	 * 路径查找规则：先完全匹配，在匹配最后一个/以前（前面为了兼容以前的实现）。如果都匹配不上，从前开始往后匹配，一级一级找。
+//	 * 这样实现为了在动态服务实现时候，可以传递多级/X/X/X当做dynamicMethodName
+//	 * @param path
+//	 * @return
+//	 */
+//	public ControllerMeta parseControllerMeta(String path){
+//		//除去点
+//		int dotPos = path.lastIndexOf('.');
+//		if ( dotPos >= 0){
+//			path = path.substring(0,dotPos);
+//		}
+//		
+//		IControllerSet ctroller = pathMap.get(path);
+//
+//		if (ctroller!=null)
+//			return new ControllerMeta(ctroller,path,null);
+//
+//		int splitPos = path.lastIndexOf('/');
+//
+//		//等于0的时候不适合，只有一个path
+//		if (splitPos>0){
+//			String prePath = path.substring(0, splitPos);
+//			String postPath = path.substring(splitPos+1);
+//			ctroller = pathMap.get(prePath);
+//			
+//			if (ctroller!=null)
+//				return new ControllerMeta(ctroller,prePath,postPath);
+//			else 
+//				return searchFromStartToEnd3(path);
+//		}
+//		return null;
+//	}
+	
 	/**
-	 * 路径查找规则：先完全匹配，在匹配最后一个/以前（前面为了兼容以前的实现）。如果都匹配不上，从前开始往后匹配，一级一级找。
-	 * 这样实现为了在动态服务实现时候，可以传递多级/X/X/X当做dynamicMethodName
+	 * 从前往后找
 	 * @param path
 	 * @return
 	 */
-	public ControllerMeta parseControllerMeta(String path){
+	public ControllerMeta parseControllerMeta(String path) {
 		//除去点
 		int dotPos = path.lastIndexOf('.');
 		if ( dotPos >= 0){
 			path = path.substring(0,dotPos);
 		}
-		
-		IControllerSet ctroller = pathMap.get(path);
-
-		if (ctroller!=null)
-			return new ControllerMeta(ctroller,path,null);
-
-		int splitPos = path.lastIndexOf('/');
-
-		//等于0的时候不适合，只有一个path
-		if (splitPos>0){
-			String prePath = path.substring(0, splitPos);
-			String postPath = path.substring(splitPos+1);
-			ctroller = pathMap.get(prePath);
-			
-			if (ctroller!=null)
-				return new ControllerMeta(ctroller,prePath,postPath);
-			else 
-				return searchFromStartToEnd3(path);
+				
+		//对全局 /做特殊处理
+		if (pathMap.get("/")!=null){
+			return new ControllerMeta(pathMap.get("/"),"/",path.substring(1));
 		}
-		return null;
-	}
-	
-	/**
-	 * 从前往后，找到倒数第二级为止
-	 * @param path
-	 * @return
-	 */
-	private ControllerMeta searchFromStartToEnd3(String path) {
-		//计算最后一个 / 的位置
-		int lastPos = path.lastIndexOf('/');
-		if (lastPos<=0) //如果等于0说明只有一个/，也不同再找了 
-			return null;
 		
+		//从1开始查找
 		int pos =1;
 		while(true){
 			pos = path.indexOf('/',pos);
-			if (pos>=lastPos) 
-				return null;
-			if (pos<0) //极端，只有一个/时候会到这里，因为是从1开始找的
-				return null;
-			
+			if (pos<0) {
+				//到末尾，整串匹配
+				IControllerSet ctroller = pathMap.get(path);
+				if (ctroller!=null)
+					return new ControllerMeta(ctroller,path,null);
+				else
+					return null;
+			}
 			String prePath = path.substring(0, pos);
 			IControllerSet ctroller = pathMap.get(prePath);
 			if (ctroller!=null){
 				String postPath = path.substring(pos+1);
 				return new ControllerMeta(ctroller,prePath,postPath);
 			}
-			
 			pos++;
 		}
 	}
+
+//	
+//	/**
+//	 * 从前往后，找到倒数第二级为止
+//	 * @param path
+//	 * @return
+//	 */
+//	private ControllerMeta searchFromStartToEnd3(String path) {
+//		//计算最后一个 / 的位置
+//		int lastPos = path.lastIndexOf('/');
+//		if (lastPos<=0) //如果等于0说明只有一个/，也不同再找了 
+//			return null;
+//		
+//		int pos =1;
+//		while(true){
+//			pos = path.indexOf('/',pos);
+//			if (pos>=lastPos) 
+//				return null;
+//			if (pos<0) //极端，只有一个/时候会到这里，因为是从1开始找的
+//				return null;
+//			
+//			String prePath = path.substring(0, pos);
+//			IControllerSet ctroller = pathMap.get(prePath);
+//			if (ctroller!=null){
+//				String postPath = path.substring(pos+1);
+//				return new ControllerMeta(ctroller,prePath,postPath);
+//			}
+//			
+//			pos++;
+//		}
+//	}
 
 	public static class ControllerMeta {
 		IControllerSet controllerSet;
