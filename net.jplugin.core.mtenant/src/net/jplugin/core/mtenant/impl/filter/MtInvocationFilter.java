@@ -5,7 +5,18 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.InvocationContext;
-
+/**
+ * <pre>
+ * #HTTP请求中租户参数位置
+ *  mtenant.req-param-at=BOTH|SESSION|COOKIE
+ *  
+ * #HTTP请求中租户参数名称，参数中的名称、cookie中的名称都用这个配置，必须是相同的
+ * mtenant.req-param-name=xxxxx
+ *  
+ * </pre>
+ * @author LiuHang
+ *
+ */
 public class MtInvocationFilter implements IInvocationFilter{
 	enum ReqParamAt{BOTH,SESSION,REQUEST}
 	private ReqParamAt paraAt;
@@ -24,14 +35,6 @@ public class MtInvocationFilter implements IInvocationFilter{
 		paraAt = ReqParamAt.valueOf(reqParamAt);
 	}
 	/**
-	 * <pre>
-	 * #HTTP请求中租户参数位置
-	 *  mtenant.req-param-at=BOTH|SESSION|COOKIE
-	 *  
-	 * #HTTP请求中租户参数名称，参数中的名称、cookie中的名称都用这个配置，必须是相同的
-	 * mtenant.req-param-name=xxxxx
-	 *  
-	 * </pre>
 	 */
 	@Override
 	public boolean before(InvocationContext ctx) {
