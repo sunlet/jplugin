@@ -33,7 +33,7 @@ public class Plugin extends AbstractPlugin{
 	 * mtenant.datasource.ds2.exclude=table1,table2
 	 * 
 	 * #说明一下
-	 * #如果碰到忽略多租户处理的注释，则忽略该SQL的处理：\/* IGNORE-TANANT *\/
+	 * #如果碰到忽略多租户处理的注释，则忽略该SQL的处理：\/* IGNORE-TANENT *\/
 	 * </pre>
 	 */
 	public Plugin(){
