@@ -1,4 +1,4 @@
-package net.jplugin.core.mtanant.impl;
+package net.jplugin.core.mtenant.impl;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import net.jplugin.core.mtanant.impl.kit.SqlMultiTenantHanlderKit;
+import net.jplugin.core.mtenant.impl.kit.SqlMultiTenantHanlderKit;
 
 /**
  * 实现说明，对于PrepareStatement直接在这里处理好，对于Statement在StatementWrapperForMt中处理

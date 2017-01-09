@@ -1,4 +1,4 @@
-package net.jplugin.core.mtanant.impl.kit;
+package net.jplugin.core.mtenant.impl.kit;
 
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 

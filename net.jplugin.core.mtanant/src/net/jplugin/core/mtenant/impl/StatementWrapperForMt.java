@@ -1,4 +1,4 @@
-package net.jplugin.core.mtanant.impl;
+package net.jplugin.core.mtenant.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
-import net.jplugin.core.mtanant.impl.kit.SqlMultiTenantHanlderKit;
+import net.jplugin.core.mtenant.impl.kit.SqlMultiTenantHanlderKit;
 
 public class StatementWrapperForMt implements Statement{
 

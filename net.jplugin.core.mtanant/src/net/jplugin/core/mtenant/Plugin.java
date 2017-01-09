@@ -1,9 +1,9 @@
-package net.jplugin.core.mtanant;
+package net.jplugin.core.mtenant;
 
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
-import net.jplugin.core.mtanant.impl.MtDataSourceWrapperService;
+import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
 
 public class Plugin extends AbstractPlugin{
 	

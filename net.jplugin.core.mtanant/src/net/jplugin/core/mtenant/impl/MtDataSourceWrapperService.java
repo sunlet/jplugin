@@ -1,4 +1,4 @@
-package net.jplugin.core.mtanant.impl;
+package net.jplugin.core.mtenant.impl;
 
 import java.sql.Connection;
 
