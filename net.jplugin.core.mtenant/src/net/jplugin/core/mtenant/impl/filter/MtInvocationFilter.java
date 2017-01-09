@@ -6,14 +6,6 @@ import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.InvocationContext;
 /**
- * <pre>
- * #HTTP请求中租户参数位置
- *  mtenant.req-param-at=BOTH|SESSION|COOKIE
- *  
- * #HTTP请求中租户参数名称，参数中的名称、cookie中的名称都用这个配置，必须是相同的
- * mtenant.req-param-name=xxxxx
- *  
- * </pre>
  * @author LiuHang
  *
  */
