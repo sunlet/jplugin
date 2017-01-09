@@ -15,6 +15,7 @@ import net.jplugin.core.das.Plugin;
 import net.jplugin.core.das.api.impl.ConfigedDataSource;
 import net.jplugin.core.das.api.impl.DataSourceAutoFindUtil;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
+import net.jplugin.core.das.api.impl.DataSourceWrapper;
 import net.jplugin.core.das.api.impl.TxManagedDataSource;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -61,10 +62,10 @@ public class DataSourceFactory {
 			DataSource dataSource = ConfigedDataSource.getDataSource(ds.getValue().getConfigGroupName());
 			if (ds.getValue().getManaged()){
 				TxManagedDataSource managedDataSource = new TxManagedDataSource(ds.getKey(),dataSource);
-				map.put(ds.getKey(), managedDataSource);	
+				map.put(ds.getKey(), new DataSourceWrapper(ds.getKey(),managedDataSource));	
 				ServiceFactory.getService(TransactionManager.class).addTransactionHandler(managedDataSource);
 			}else{
-				map.put(ds.getKey(), dataSource);
+				map.put(ds.getKey(), new DataSourceWrapper(ds.getKey(),dataSource));
 			}
 		}
 	}
