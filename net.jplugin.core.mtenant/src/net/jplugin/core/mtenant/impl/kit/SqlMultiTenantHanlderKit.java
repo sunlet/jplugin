@@ -20,7 +20,6 @@ public class SqlMultiTenantHanlderKit {
 	 * @param sql
 	 * @return
 	 */
-	private static ConcurrentHashMap<String, Object> params = null;
 	private static ConcurrentHashMap<String, List<String>> ignores = null;
 
 	public static String handle(String dataSourceName, String sql) {
@@ -34,10 +33,13 @@ public class SqlMultiTenantHanlderKit {
 			return sql;
 		}
 
-		if (params == null) {
-			params = new ConcurrentHashMap<>();
-			params.put(ConfigFactory.getStringConfig("mtenant.field"), ThreadLocalContextManager.getRequestInfo().getCurrentTenantId());
+		String tenantId = ThreadLocalContextManager.getRequestInfo().getCurrentTenantId();
+		if (tenantId == null || tenantId.trim().length() == 0) {
+			throw new IllegalArgumentException("tenantId is empty"); 
 		}
+
+		ConcurrentHashMap<String, Object> params = new ConcurrentHashMap<>();
+		params.put(ConfigFactory.getStringConfig("mtenant.field"), tenantId);
 
 		String datasource = ConfigFactory.getStringConfig("mtenant.datasource");
 		if (ignores == null) {
