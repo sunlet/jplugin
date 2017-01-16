@@ -21,9 +21,9 @@ public class HttpClientFilterChain {
 			validate(ctx);
 			//call
 			if (ctx.getMethod()==HttpFilterContext.Method.POST){
-				return HttpKit._post(ctx.getUrl(), ctx.getParams());
+				return HttpKit._post(ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
 			}else{
-				return HttpKit._get(ctx.getUrl());
+				return HttpKit._get(ctx.getUrl(),ctx.getHeaders());
 			}
 		}else{
 			return this.next.filter.filter(this.next,ctx);

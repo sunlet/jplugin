@@ -7,6 +7,7 @@ public class HttpFilterContext {
 	Method method;
 	String url;
 	Map<String,Object> params;
+	Map<String,String> headers;
 	
 	public HttpFilterContext(Method m,String u,Map<String,Object> p){
 		this.method = m;
@@ -30,6 +31,14 @@ public class HttpFilterContext {
 
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
 	}
 	
 }

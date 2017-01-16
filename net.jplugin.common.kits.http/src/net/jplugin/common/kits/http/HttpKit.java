@@ -171,7 +171,7 @@ public final class HttpKit{
 		return clientBuilder.build();
 	}
 	
-	public static String _post(String url, Map<String,Object> datas) throws  IOException, HttpStatusException{
+	public static String _post(String url, Map<String,Object> datas,Map<String,String> extHeaders) throws  IOException, HttpStatusException{
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,datas);
@@ -191,6 +191,12 @@ public final class HttpKit{
 				params.add(new BasicNameValuePair(key, value.toString()));
 		}
 		httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
+		//…Ë÷√headers
+		if (extHeaders!=null){
+			for (Entry<String, String> en:extHeaders.entrySet()){
+				httpPost.setHeader(en.getKey(),en.getValue());
+			}
+		}
 		
 		return handleResponse(httpClient, httpPost);
 	}
@@ -205,7 +211,7 @@ public final class HttpKit{
 		}
 		return mock.invoke();
 	}
-	public static String _get(String url) throws IOException, HttpStatusException {
+	public static String _get(String url,Map<String,String> extHeaders) throws IOException, HttpStatusException {
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,null);
@@ -214,6 +220,14 @@ public final class HttpKit{
 		
 		CloseableHttpClient httpClient = createHttpClient();
 		HttpGet httpGet = new HttpGet(url);
+		
+		//…Ë÷√headers
+		if (extHeaders!=null){
+			for (Entry<String, String> en:extHeaders.entrySet()){
+				httpGet.setHeader(en.getKey(),en.getValue());
+			}
+		}
+		
 		return handleResponse(httpClient, httpGet);
 	}
 
