@@ -10,7 +10,7 @@ import net.jplugin.ext.webasic.api.InvocationContext;
  *
  */
 public class MtInvocationFilterHandler{
-	public static MtInvocationFilterHandler instance = new MtInvocationFilterHandler();
+	public static MtInvocationFilterHandler instance ;
 	
 	enum ReqParamAt{BOTH,COOKIE,REQUEST}
 	private ReqParamAt paraAt;
@@ -58,6 +58,10 @@ public class MtInvocationFilterHandler{
 			}
 		}
 //		return true;
+	}
+	public static void init() {
+		instance = new MtInvocationFilterHandler();
+		
 	}
 
 //	@Override
