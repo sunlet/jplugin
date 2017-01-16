@@ -12,6 +12,7 @@ import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilterNew;
+import net.jplugin.ext.webasic.impl.MtInvocationFilterHandler;
 import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
@@ -82,6 +83,8 @@ public class Plugin extends AbstractPlugin{
 		WebCtrlFilterManager.INSTANCE.init();
 		
 		HttpFilterManager.addFilter(new HttpRequestIdChain());
+		
+		MtInvocationFilterHandler.init();
 
 	}
 }
