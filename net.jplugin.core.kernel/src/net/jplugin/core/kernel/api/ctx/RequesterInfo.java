@@ -27,6 +27,7 @@ public class RequesterInfo {
 	String requestUrl;
 	Content content=new Content();
 	Cookies cookies=new Cookies();
+	Headers headers=new Headers();
 	
 	//following for request content
 
@@ -92,6 +93,12 @@ public class RequesterInfo {
 	public Cookies getCookies(){
 		return cookies;
 	}
+	
+
+	public Headers getHeaders() {
+		return headers;
+	}
+
 
 	/**
 	 * following for request content
