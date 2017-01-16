@@ -6,8 +6,6 @@ import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
-import net.jplugin.core.mtenant.impl.filter.MtInvocationFilter;
-import net.jplugin.ext.webasic.ExtensionWebHelper;
 
 public class Plugin extends AbstractPlugin{
 	/**
@@ -17,7 +15,7 @@ public class Plugin extends AbstractPlugin{
 	 * mtenant.enable=FALSE|TRUE
 	 * 
 	 * #HTTP请求中租户参数位置
-	 *  mtenant.req-param-at=BOTH|SESSION|COOKIE
+	 *  mtenant.req-param-at=BOTH|COOKIE|REQUEST
 	 *  
 	 * #HTTP请求中租户参数名称，参数中的名称、cookie中的名称都用这个配置，必须是相同的
 	 * mtenant.req-param-name=xxxxx
@@ -40,8 +38,8 @@ public class Plugin extends AbstractPlugin{
 	public Plugin(){
 		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
 			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
-			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
-			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
+//			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
+//			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
 		}else{
 			System.out.println("@@@ mtenant ignore!");
 		}

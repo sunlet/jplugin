@@ -21,32 +21,32 @@ import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
 
 public class ESFHelper {
 	
-	/**
-	 * RPC调用这个方法
-	 * @param obj
-	 * @param method
-	 * @param args
-	 * @return
-	 * @throws Throwable
-	 */
-	@Deprecated
-	public static Object invokeWithRule(String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
-		try{
-			if (obj instanceof IDynamicService) 
-				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
-			
-			ThreadLocalContextManager.instance.createContext();
-			InvocationContext sfc = new InvocationContext(servicePath, obj, method, args);
-			
-			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
-				public Object run() throws Throwable {
-					return RuleProxyHelper.invokeWithRule(obj, method, args);
-				}
-			});
-		}finally{
-			ThreadLocalContextManager.instance.releaseContext();
-		}
-	}
+//	/**
+//	 * RPC调用这个方法
+//	 * @param obj
+//	 * @param method
+//	 * @param args
+//	 * @return
+//	 * @throws Throwable
+//	 */
+//	@Deprecated
+//	public static Object invokeWithRule(String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
+//		try{
+//			if (obj instanceof IDynamicService) 
+//				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
+//			
+//			ThreadLocalContextManager.instance.createContext();
+//			InvocationContext sfc = new InvocationContext(servicePath, obj, method, args);
+//			
+//			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
+//				public Object run() throws Throwable {
+//					return RuleProxyHelper.invokeWithRule(obj, method, args);
+//				}
+//			});
+//		}finally{
+//			ThreadLocalContextManager.instance.releaseContext();
+//		}
+//	}
 
 	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		try{
@@ -77,11 +77,10 @@ public class ESFHelper {
 		try{
 			ThreadLocalContextManager.instance.createContext();
 			//fill content
-			ESFRestContextHelper.fillContentForRestful(cp);
-			//fill ipaddress and request url
-			ESFRestContext.fill(ctx);
+			ESFRestContextHelper.fillContentForRestful(cp,ctx);
+			
 			//fill other attribute
-			InitRequestInfoFilterNew.fillFromContent(ThreadLocalContextManager.getRequestInfo());
+			InitRequestInfoFilterNew.fillFromBasicReqInfo(ThreadLocalContextManager.getRequestInfo());
 			
 			//call the service
 			ServiceInvokerSet.instance.call(cp);
@@ -89,23 +88,23 @@ public class ESFHelper {
 			ThreadLocalContextManager.instance.releaseContext();
 		}
 	}
-	@Deprecated
-	public static void callRestfulService(CallParam cp)  throws Throwable{
-		try{
-			ThreadLocalContextManager.instance.createContext();
-			//fill content
-			ESFRestContextHelper.fillContentForRestful(cp);
-			//fill ipaddress
-//			ESFRestContext.fill(ctx);
-			//fill other attribute
-			InitRequestInfoFilterNew.fillFromContent(ThreadLocalContextManager.getRequestInfo());
-			
-			//call the service
-			ServiceInvokerSet.instance.call(cp);
-		}finally{
-			ThreadLocalContextManager.instance.releaseContext();
-		}
-	}
+//	@Deprecated
+//	public static void callRestfulService(CallParam cp)  throws Throwable{
+//		try{
+//			ThreadLocalContextManager.instance.createContext();
+//			//fill content
+//			ESFRestContextHelper.fillContentForRestful(cp);
+//			//fill ipaddress
+////			ESFRestContext.fill(ctx);
+//			//fill other attribute
+//			InitRequestInfoFilterNew.fillFromBasicReqInfo(ThreadLocalContextManager.getRequestInfo());
+//			
+//			//call the service
+//			ServiceInvokerSet.instance.call(cp);
+//		}finally{
+//			ThreadLocalContextManager.instance.releaseContext();
+//		}
+//	}
 	/**
 	 * 根据URI获取到对应的JavaBean
 	 * @param cm

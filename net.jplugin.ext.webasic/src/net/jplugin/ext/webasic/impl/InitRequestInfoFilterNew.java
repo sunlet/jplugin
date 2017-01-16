@@ -11,6 +11,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.omg.PortableInterceptor.RequestInfo;
+
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
@@ -32,7 +34,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
-	private static final String _GREQID = "_greqid_";
+	public static final String _GREQID = "_greqid_";
 	private static final String APPLICATION_JSON = "application/json";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
@@ -43,20 +45,30 @@ public class InitRequestInfoFilterNew implements WebFilter {
 //		}
 		
 		RequesterInfo requestInfo = ThreadLocalContextManager.getRequestInfo();
-		Content content = requestInfo.getContent();
 		
-		//get content
-		parseContent(content, req);
+		//parse content
+		parseContent(requestInfo, req);
+		//parse cookies
+		parseCookies(requestInfo,req);
+		//parse headers
+		parseHeaders(requestInfo,req);
 		
 		//fill request url
 		requestInfo.setRequestUrl(req.getRequestURL().toString());
-		
 		//fill client ip
 		requestInfo.setCallerIpAddress(getClientIp(req));
 		
-		//fill other attribute
-		fillFromContent(requestInfo);
+		//fill other attribute from content,cookie,header
+		fillFromBasicReqInfo(requestInfo);
 		
+		return true;
+	}
+
+	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
+		requestInfo.getHeaders().setHeader(_GREQID, req.getHeader(_GREQID));
+	}
+
+	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
 		//fill cookie
 		Cookie[] arr = req.getCookies();
 		if (arr!=null){
@@ -65,10 +77,9 @@ public class InitRequestInfoFilterNew implements WebFilter {
 				cookies.setCookie(c.getName(), c.getValue());
 			}
 		}
-		return true;
 	}
 
-	public static void fillFromContent(RequesterInfo requestInfo) {
+	public static void fillFromBasicReqInfo(RequesterInfo requestInfo) {
 		Content content = requestInfo.getContent();
 		
 		Map map;
@@ -91,10 +102,14 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		}
 		
 		//…Ë÷√reqId
-		String reqId = (String) map.get(_GREQID);
+		String reqId = (String) requestInfo.getHeaders().getHeader(_GREQID);
 		if (StringKit.isNull(reqId))
 			reqId = RequestIdUtil.newRequestId();
 		requestInfo.setRequestId(reqId);
+		
+		//…Ë÷√tenant
+		MtInvocationFilterHandler.instance.handle(requestInfo);
+		
 	}
 
 	private String getClientIp(HttpServletRequest request) {
@@ -116,7 +131,8 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
 	}
 
-	private void parseContent(Content content, HttpServletRequest req) {
+	private void parseContent(RequesterInfo reqInfo, HttpServletRequest req) {
+		Content content = reqInfo.getContent();
 		content.setContentType(req.getContentType());
 		if (APPLICATION_JSON.equals(content.getContentType())) {
 			InputStream is = null;

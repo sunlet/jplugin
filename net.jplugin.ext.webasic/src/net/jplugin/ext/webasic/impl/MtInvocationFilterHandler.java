@@ -1,4 +1,4 @@
-package net.jplugin.core.mtenant.impl.filter;
+package net.jplugin.ext.webasic.impl;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
@@ -9,12 +9,14 @@ import net.jplugin.ext.webasic.api.InvocationContext;
  * @author LiuHang
  *
  */
-public class MtInvocationFilter implements IInvocationFilter{
-	enum ReqParamAt{BOTH,SESSION,REQUEST}
+public class MtInvocationFilterHandler{
+	public static MtInvocationFilterHandler instance = new MtInvocationFilterHandler();
+	
+	enum ReqParamAt{BOTH,COOKIE,REQUEST}
 	private ReqParamAt paraAt;
 	private String reqParamName;
 
-	public MtInvocationFilter(){
+	public MtInvocationFilterHandler(){
 		String reqParamAt = ConfigFactory.getStringConfig("mtenant.req-param-at");
 		reqParamName = ConfigFactory.getStringConfig("mtenant.req-param-name");
 		if (StringKit.isNull(reqParamAt)) throw new RuntimeException("config mtenant.req-param-at is  null");
@@ -28,9 +30,9 @@ public class MtInvocationFilter implements IInvocationFilter{
 	}
 	/**
 	 */
-	@Override
-	public boolean before(InvocationContext ctx) {
-		RequesterInfo reqInfo = ctx.getRequestInfo();
+//	@Override
+	public void handle(RequesterInfo reqInfo) {
+//		RequesterInfo reqInfo = ctx.getRequestInfo();
 		
 		if (paraAt==ReqParamAt.REQUEST){
 			String v1 = reqInfo.getContent().getParamContent().get(reqParamName);
@@ -38,7 +40,7 @@ public class MtInvocationFilter implements IInvocationFilter{
 				reqInfo.setCurrentTenantId(v1);
 			}
 		}
-		if (paraAt==ReqParamAt.SESSION){
+		if (paraAt==ReqParamAt.COOKIE){
 			String v1 = reqInfo.getCookies().getCookie(reqParamName);
 			if (!StringKit.isNull(v1)){
 				reqInfo.setCurrentTenantId(v1);
@@ -55,11 +57,11 @@ public class MtInvocationFilter implements IInvocationFilter{
 				}
 			}
 		}
-		return true;
+//		return true;
 	}
 
-	@Override
-	public void after(InvocationContext ctx) {
-	}
+//	@Override
+//	public void after(InvocationContext ctx) {
+//	}
 
 }
