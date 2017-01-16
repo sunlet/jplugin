@@ -1,5 +1,7 @@
 package net.jplugin.common.kits.http;
 
+import net.jplugin.common.kits.http.filter.HttpFilterContext;
+import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.common.kits.http.mock.HttpMock;
 import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -30,6 +32,8 @@ import org.apache.http.util.EntityUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
+import javax.swing.text.html.FormSubmitEvent.MethodType;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
@@ -167,7 +171,7 @@ public final class HttpKit{
 		return clientBuilder.build();
 	}
 	
-	public static String post(String url, Map<String,Object> datas) throws  IOException, HttpStatusException{
+	public static String _post(String url, Map<String,Object> datas) throws  IOException, HttpStatusException{
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,datas);
@@ -201,7 +205,7 @@ public final class HttpKit{
 		}
 		return mock.invoke();
 	}
-	public static String get(String url) throws IOException, HttpStatusException {
+	public static String _get(String url) throws IOException, HttpStatusException {
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,null);
@@ -240,5 +244,13 @@ public final class HttpKit{
 //		String s = HttpKit.get("http://localhost:8080/k-rpms-web/role/index.do");
 		String s = HttpKit.get("http://192.133.212.11/32234");
 		System.out.println(s);
+	}
+	public static String post(String url, Map<String, Object> params) throws IOException, HttpStatusException {
+		HttpFilterContext ctx = new HttpFilterContext(HttpFilterContext.Method.POST, url, params);
+		return HttpFilterManager.execute(ctx);
+	}
+	public static String get(String url) throws IOException, HttpStatusException {
+		HttpFilterContext ctx = new HttpFilterContext(HttpFilterContext.Method.GET, url, null);
+		return HttpFilterManager.execute(ctx);
 	}
 }

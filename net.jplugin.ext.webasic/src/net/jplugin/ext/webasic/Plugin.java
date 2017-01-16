@@ -1,5 +1,6 @@
 package net.jplugin.ext.webasic;
 
+import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -9,6 +10,7 @@ import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
+import net.jplugin.ext.webasic.impl.HttpRequestIdChain;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilterNew;
 import net.jplugin.ext.webasic.impl.WebDriver;
@@ -78,5 +80,8 @@ public class Plugin extends AbstractPlugin{
 		WebDriver.INSTANCE.init();
 		ServiceFilterManager.INSTANCE.init();
 		WebCtrlFilterManager.INSTANCE.init();
+		
+		HttpFilterManager.addFilter(new HttpRequestIdChain());
+
 	}
 }

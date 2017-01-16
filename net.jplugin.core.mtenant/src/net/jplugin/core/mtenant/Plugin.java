@@ -1,5 +1,6 @@
 package net.jplugin.core.mtenant;
 
+import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
@@ -48,6 +49,9 @@ public class Plugin extends AbstractPlugin{
 	
 	@Override
 	public void init() {
+		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
+			HttpFilterManager.addFilter(new MTenantChain());
+		}
 	}
 
 	@Override

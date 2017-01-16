@@ -3,7 +3,6 @@ package net.jplugin.ext.webasic.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +11,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.ext.webasic.api.RequestIdUtil;
 import net.jplugin.ext.webasic.api.WebFilter;
 
 /**
@@ -31,6 +32,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
+	private static final String _GREQID = "_greqid_";
 	private static final String APPLICATION_JSON = "application/json";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
@@ -87,6 +89,12 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			requestInfo.setOperatorId((String) map.get(_OID));
 			requestInfo.setClientAppCode((String) map.get(_AID));
 		}
+		
+		//…Ë÷√reqId
+		String reqId = (String) map.get(_GREQID);
+		if (StringKit.isNull(reqId))
+			reqId = RequestIdUtil.newRequestId();
+		requestInfo.setRequestId(reqId);
 	}
 
 	private String getClientIp(HttpServletRequest request) {
