@@ -31,7 +31,7 @@ public class SqlHelper {
 	        return sourceSql.toLowerCase().trim();
 	    }
 
-	    public static String toSql(List<String> list) {
+	 public static String toSql(List<String> list) {
 	        StringBuilder sb = new StringBuilder();
 	        for (String s : list) {
 	            sb.append(s).append(" ");
@@ -46,7 +46,24 @@ public class SqlHelper {
 	        }
 	        sql = StringUtils.replaceAll(sql, "\\( ", "(");
 	        sql = StringUtils.replaceAll(sql, " \\)", ")");
+	        sql = StringUtils.replaceAll(sql, " \\(", "(");
 	        sql = StringUtils.replaceAll(sql, " , ", ", ");
+
+	        if(sql.startsWith("select")){
+	            sql = StringUtils.replaceAll(sql, " in\\(", " in (");
+	        }
+
+	        if(sql.startsWith("insert")){
+	            sql = StringUtils.replaceAll(sql, " values\\(", " values (");
+	        }
+
+	        if(sql.startsWith("delete")){
+	            sql = StringUtils.replaceAll(sql, " in\\(", " in (");
+	        }
+
+	        if(sql.startsWith("update")){
+	            sql = StringUtils.replaceAll(sql, " in\\(", " in (");
+	        }
 	        return sql;
 	    }
 
