@@ -61,7 +61,7 @@ public class SelectSqlParser implements SqlParser {
 	    }
 
 
-	    private void checkTable(String[] sqlArray, int pos, List<String> ignoreTables, TreeMap<Integer, String> map, TreeMap<Integer, List<String>> tablemap, Map<String, String> aliasmap) {
+	 private void checkTable(String[] sqlArray, int pos, List<String> ignoreTables, TreeMap<Integer, String> map, TreeMap<Integer, List<String>> tablemap, Map<String, String> aliasmap) {
 	        List<String> list = new ArrayList<>();
 	        StringBuilder sb = new StringBuilder();
 	        boolean flag = true;
@@ -69,7 +69,6 @@ public class SelectSqlParser implements SqlParser {
 	        int position = 0;
 	        for (int i = pos; i < sqlArray.length; i++) {
 	            if ("where".equals(sqlArray[i])) {
-	                flag = false;
 	                where = true;
 	                position = i + 1;
 	                break;
@@ -79,8 +78,7 @@ public class SelectSqlParser implements SqlParser {
 	                flag = false;
 	            }
 
-	            if (")".equals(sqlArray[i])) {
-	                flag = false;
+	            if (")".equals(sqlArray[i]) || "limit".equals(sqlArray[i]) || ("order".equals(sqlArray[i])) && "by".equals(sqlArray[i + 1])) {
 	                position = i;
 	                break;
 	            }
@@ -89,7 +87,7 @@ public class SelectSqlParser implements SqlParser {
 	            }
 	        }
 
-	        if (flag) {
+	        if (!where && position == 0) {
 	            position = sqlArray.length;
 	        }
 
