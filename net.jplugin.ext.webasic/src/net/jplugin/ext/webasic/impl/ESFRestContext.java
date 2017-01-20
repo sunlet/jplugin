@@ -20,7 +20,7 @@ public class ESFRestContext {
 	}
 
 	public HashMap<String, String> getHeaderMap() {
-		return getHeaderMap();
+		return headerMap;
 	}
 
 	public String getRequestUrl() {
