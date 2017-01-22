@@ -38,5 +38,9 @@ public class ESFRestContext {
 	public void setCookieMap(HashMap<String, String> cookieMap) {
 		this.cookieMap = cookieMap;
 	}
+	
+	public void setHeaderMap(HashMap<String, String> map) {
+		this.headerMap = map;
+	}
 
 }
