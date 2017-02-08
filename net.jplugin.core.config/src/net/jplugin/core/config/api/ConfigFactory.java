@@ -24,6 +24,12 @@ public class ConfigFactory {
 	public static String getStringConfig(String path){
 		return getStringConfig(path,null);
 	}
+	public static String getStringConfigWithTrim(String path){
+		String v = getStringConfig(path,null);
+		if (v!=null) 
+			v = v.trim();
+		return v;
+	}
 	public static Long getLongConfig(String path,Long def){
 		String val = _getStringConfig(path);
 		if (StringKit.isNull(val)) return def;

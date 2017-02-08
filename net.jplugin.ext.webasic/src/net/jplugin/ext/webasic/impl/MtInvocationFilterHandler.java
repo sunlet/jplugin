@@ -15,16 +15,19 @@ public class MtInvocationFilterHandler{
 	enum ReqParamAt{BOTH,COOKIE,REQUEST}
 	private ReqParamAt paraAt;
 	private String reqParamName;
+	private String reqDefaultTenant;
 
 	public MtInvocationFilterHandler(){
-		String reqParamAt = ConfigFactory.getStringConfig("mtenant.req-param-at");
-		reqParamName = ConfigFactory.getStringConfig("mtenant.req-param-name");
+		String reqParamAt = ConfigFactory.getStringConfigWithTrim("mtenant.req-param-at");
+		reqParamName = ConfigFactory.getStringConfigWithTrim("mtenant.req-param-name");
+		reqDefaultTenant = ConfigFactory.getStringConfigWithTrim("mtenant.req-default-tenant");
 		if (StringKit.isNull(reqParamAt)) throw new RuntimeException("config mtenant.req-param-at is  null");
 		if (StringKit.isNull(reqParamName)) {
 			reqParamAt = "BOTH";
 		}
 		System.out.println("@@@mtenant.req-param-at="+reqParamAt);
 		System.out.println("@@@mtenant.req-param-name="+reqParamName);
+		System.out.println("@@@mtenant.req-default-tenant="+reqDefaultTenant);
 		
 		paraAt = ReqParamAt.valueOf(reqParamAt);
 	}
@@ -56,6 +59,10 @@ public class MtInvocationFilterHandler{
 					reqInfo.setCurrentTenantId(v1);
 				}
 			}
+		}
+		//set default
+		if (StringKit.isNull(reqInfo.getCurrentTenantId())){
+			reqInfo.setCurrentTenantId(reqDefaultTenant);
 		}
 //		return true;
 	}
