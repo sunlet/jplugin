@@ -16,8 +16,13 @@ public class MtInvocationFilterHandler{
 	private ReqParamAt paraAt;
 	private String reqParamName;
 	private String reqDefaultTenant;
+	private boolean enable;
 
 	public MtInvocationFilterHandler(){
+		enable = "true".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("mtenant.enable"));
+		if (!enable)
+			return;
+		
 		String reqParamAt = ConfigFactory.getStringConfigWithTrim("mtenant.req-param-at");
 		reqParamName = ConfigFactory.getStringConfigWithTrim("mtenant.req-param-name");
 		reqDefaultTenant = ConfigFactory.getStringConfigWithTrim("mtenant.req-default-tenant");
@@ -36,6 +41,8 @@ public class MtInvocationFilterHandler{
 //	@Override
 	public void handle(RequesterInfo reqInfo) {
 //		RequesterInfo reqInfo = ctx.getRequestInfo();
+		if (!enable) 
+			return;
 		
 		if (paraAt==ReqParamAt.REQUEST){
 			String v1 = reqInfo.getContent().getParamContent().get(reqParamName);
