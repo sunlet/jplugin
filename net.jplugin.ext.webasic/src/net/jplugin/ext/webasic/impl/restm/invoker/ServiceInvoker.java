@@ -138,7 +138,7 @@ public class ServiceInvoker implements IServiceInvoker{
 			Object result = null;
 			
 //			result = helper.invokeWithRuleSupport(oam,paraValue);
-			result = o.execute(mfc,mfc.getDynamicPath());
+			result = o.execute(mfc.getRequestInfo(),mfc.getDynamicPath());
 
 			State state = RestMethodState.get();
 
