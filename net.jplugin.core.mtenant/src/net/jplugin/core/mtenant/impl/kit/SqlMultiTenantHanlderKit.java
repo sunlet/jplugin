@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.log.api.LogFactory;
+import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.mtenant.impl.kit.parser.SqlParser;
 import net.jplugin.core.mtenant.impl.kit.parser.impl.DeleteSqlParser;
 import net.jplugin.core.mtenant.impl.kit.parser.impl.InsertSqlParser;
@@ -22,8 +24,19 @@ public class SqlMultiTenantHanlderKit {
 	 * @return
 	 */
 	private static ConcurrentHashMap<String, List<String>> ignores = null;
+	private static Logger logger = LogFactory.getLogger(SqlMultiTenantHanlderKit.class);
 
 	public static String handle(String dataSourceName, String sql) {
+		String result = handleInner(dataSourceName, sql);
+		if (logger.isDebugEnabled()){
+			if (!sql.equals(result)){
+				logger.debug("BeforeSQL = "+sql);
+				logger.debug("AfterSQL = "+result);
+			}
+		}
+		return result;
+	}
+	public static String handleInner(String dataSourceName, String sql) {
 		if ("false".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable", "FALSE"))) {
 			return sql;
 		}
