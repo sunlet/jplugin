@@ -30,8 +30,8 @@ public class Plugin extends AbstractPluginForTest {
 			result = SqlMultiTenantHanlderKit.handle("mt-ds", "select * from tb1");
 			AssertKit.assertEqual(result, "select * from tb1 where _tenant_='1001'");
 			result = SqlMultiTenantHanlderKit.handle("mt-ds", "select * from (select * from tb1)");
-			AssertKit.assertEqual(result, "select * from (select * from tb1 where _tenant_='1001')");
-
+			AssertKit.assertEqual(result, "select * from(select * from tb1 where _tenant_='1001')");
+			
 			ThreadLocalContextManager.getRequestInfo().setCurrentTenantId("test111");
 			// test post
 			HashMap<String, Object> map = new HashMap<String, Object>();
