@@ -9,8 +9,8 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
-//import javax.servlet.AsyncContext;
-//import javax.servlet.DispatcherType;
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,8 +21,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-//import javax.servlet.http.HttpUpgradeHandler;
-//import javax.servlet.http.Part;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -464,15 +464,15 @@ public class HttpServletRequestEmpty implements HttpServletRequest{
 		
 	}
 
-//	public AsyncContext getAsyncContext() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	public DispatcherType getDispatcherType() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public AsyncContext getAsyncContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public DispatcherType getDispatcherType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public ServletContext getServletContext() {
 		// TODO Auto-generated method stub
@@ -489,33 +489,33 @@ public class HttpServletRequestEmpty implements HttpServletRequest{
 		return false;
 	}
 
-//	public AsyncContext startAsync() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public AsyncContext startAsync() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public boolean authenticate(HttpServletResponse arg0) throws IOException,
 			ServletException {
 		// TODO Auto-generated method stub
 		return false;
 	}
-//
-//	public Part getPart(String arg0) throws IOException, IllegalStateException,
-//			ServletException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	public Collection<Part> getParts() throws IOException,
-//			IllegalStateException, ServletException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+
+	public Part getPart(String arg0) throws IOException, IllegalStateException,
+			ServletException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Collection<Part> getParts() throws IOException,
+			IllegalStateException, ServletException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public void login(String arg0, String arg1) throws ServletException {
 		// TODO Auto-generated method stub
@@ -537,10 +537,10 @@ public class HttpServletRequestEmpty implements HttpServletRequest{
 		return null;
 	}
 
-//	public <T extends HttpUpgradeHandler> T upgrade(Class<T> arg0)
-//			throws IOException, ServletException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public <T extends HttpUpgradeHandler> T upgrade(Class<T> arg0)
+			throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
