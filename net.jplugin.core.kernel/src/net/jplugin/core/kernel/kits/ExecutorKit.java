@@ -133,7 +133,7 @@ public final class ExecutorKit {
      **/
 
     /**
-     * 普通线程池
+     * 支持自动维护ThreadLocalContext的普通线程池
      */
     private static class TheadLocalContextExecutorService extends ThreadPoolExecutor {
 
@@ -146,13 +146,18 @@ public final class ExecutorKit {
         }
 
         @Override
-        public void execute(Runnable command) {
-            super.execute(new TheadLocalContextRunner(command));
+        protected void beforeExecute(Thread t, Runnable r) {
+            ThreadLocalContextManager.instance.createContext();
+        }
+
+        @Override
+        protected void afterExecute(Runnable r, Throwable t) {
+            ThreadLocalContextManager.instance.releaseContext();
         }
     }
 
     /**
-     * 支持周期调度的线程池
+     * 支持自动维护ThreadLocalContext的支持周期调度的线程池
      */
     private static class ScheduledTheadLocalContextExecutorService extends ScheduledThreadPoolExecutor {
 
@@ -165,32 +170,13 @@ public final class ExecutorKit {
         }
 
         @Override
-        public void execute(Runnable command) {
-            super.execute(new TheadLocalContextRunner(command));
-        }
-    }
-
-    /**
-     * 执行器包装类，实现自动维护ThreadLocalContext
-     */
-    private static class TheadLocalContextRunner implements Runnable {
-
-        private final Runnable runnable;
-
-        public TheadLocalContextRunner(Runnable runnable) {
-            this.runnable = runnable;
+        protected void beforeExecute(Thread t, Runnable r) {
+            ThreadLocalContextManager.instance.createContext();
         }
 
         @Override
-        public void run() {
-            try {
-                ThreadLocalContextManager.instance.createContext();
-                this.runnable.run();
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            } finally {
-                ThreadLocalContextManager.instance.releaseContext();
-            }
+        protected void afterExecute(Runnable r, Throwable t) {
+            ThreadLocalContextManager.instance.releaseContext();
         }
     }
 
