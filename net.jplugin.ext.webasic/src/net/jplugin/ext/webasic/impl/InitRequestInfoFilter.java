@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
@@ -33,8 +34,9 @@ public class InitRequestInfoFilter implements WebFilter {
 	 */
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
 //		res.addHeader("Access-Control-Allow-Origin","*");
-		if (isAccessControlAllowOrigin())
-			res.addHeader("Access-Control-Allow-Origin","*");
+		String acaoCfg = getAccessControlAllowOrigin();
+		if (StringKit.isNotNull(acaoCfg))
+			res.addHeader("Access-Control-Allow-Origin",acaoCfg);
 		
 		ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(req.getParameter("_gid"));
 		String _tk = req.getParameter("_tk");
@@ -76,11 +78,11 @@ public class InitRequestInfoFilter implements WebFilter {
 	}
 	
 	boolean cfgInit=false;
-	boolean accessControlAllowOrigin;
-	private boolean isAccessControlAllowOrigin() {
+	String accessControlAllowOrigin;
+	private String getAccessControlAllowOrigin() {
 		if (cfgInit == false){
 			cfgInit = true;
-			accessControlAllowOrigin = "true".equalsIgnoreCase(ConfigFactory.getStringConfig("platform.access-control-allow-arigin"));
+			accessControlAllowOrigin = ConfigFactory.getStringConfigWithTrim("platform.access-control-allow-arigin");
 			System.out.println("Init access-control-allow-arigin = "+accessControlAllowOrigin);
 		}
 		return accessControlAllowOrigin;
