@@ -42,6 +42,10 @@ public class PluginEnvirement {
 	public PluginRegistry getPluginRegistry() {
 		return registry;
 	}
+	
+	public boolean getStarted(){
+		return this.started;
+	}
 
 	public boolean hasExtensionPoint(String pointName){
 		ExtensionPoint point = this.registry.getExtensionPointMap().get(
