@@ -15,6 +15,10 @@ public class PluginApp {
 			return;
 		}
 		
+		String path = new File("./src/main/resources/config").getAbsolutePath();
+		System.out.println(path);
+		System.out.println(FileKit.existsFile("./src/main/resources/config"));
+		
 		String cfgDir = System.getProperty("plugin-config.path");
 		String workDir = System.getProperty("work-dir");
 		

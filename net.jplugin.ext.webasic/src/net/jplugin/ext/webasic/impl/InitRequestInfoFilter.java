@@ -82,8 +82,8 @@ public class InitRequestInfoFilter implements WebFilter {
 	private String getAccessControlAllowOrigin() {
 		if (cfgInit == false){
 			cfgInit = true;
-			accessControlAllowOrigin = ConfigFactory.getStringConfigWithTrim("platform.access-control-allow-arigin");
-			System.out.println("Init access-control-allow-arigin = "+accessControlAllowOrigin);
+			accessControlAllowOrigin = ConfigFactory.getStringConfigWithTrim("platform.access-control-allow-origin");
+			System.out.println("Init access-control-allow-origin = "+accessControlAllowOrigin);
 		}
 		return accessControlAllowOrigin;
 	}
