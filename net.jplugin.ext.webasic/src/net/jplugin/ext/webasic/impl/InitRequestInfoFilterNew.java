@@ -66,6 +66,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 
 	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
 		requestInfo.getHeaders().setHeader(_GREQID, req.getHeader(_GREQID));
+		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
 	}
 
 	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
