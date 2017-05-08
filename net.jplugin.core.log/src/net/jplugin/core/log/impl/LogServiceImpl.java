@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
@@ -32,7 +33,10 @@ public class LogServiceImpl implements ILogService {
 		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
 		Properties prop =null;
 		try{
-			prop = PropertiesKit.loadProperties(path);
+			if (FileKit.existsFile(path))
+				prop = PropertiesKit.loadProperties(path);
+			else
+				prop = PropertiesKit.loadFromClassPath(this.getClass(),"log4j.properties");
 		}catch(Exception e){
 			System.out.println("Warnning : Log4j.properties not found at:"+path);
 			return;
