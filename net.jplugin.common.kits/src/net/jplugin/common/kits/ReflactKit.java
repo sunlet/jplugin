@@ -1,6 +1,7 @@
 package net.jplugin.common.kits;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -227,6 +228,39 @@ public class ReflactKit {
 	public static Method getGetterMethod(Class c,String attr) throws SecurityException, NoSuchMethodException {
 		String pName = "get"+Character.toUpperCase(attr.charAt(0)) + attr.substring(1);
 		return c.getMethod(pName);
+	}
+
+	public static List<Field> getAllFields(Object obj) {
+		List l = new ArrayList();
+		Class<? extends Object> clazz = obj.getClass();
+		
+		for (;clazz!=Object.class;clazz = clazz.getSuperclass()){
+			for (Field f:clazz.getDeclaredFields()){
+				l.add(f);
+			}
+		}
+		return l;
+	}
+
+	public static Object getFieldValueForce(Field field,Object o) {
+		try {
+			return field.get(o);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException("Get field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Get field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		}
+	}
+
+	public static void setFieldValueForce(Field field,Object o, Object v) {
+		try {
+			field.setAccessible(true);
+			field.set(o, v);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException("Set field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Set field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		}
 	}
 
 

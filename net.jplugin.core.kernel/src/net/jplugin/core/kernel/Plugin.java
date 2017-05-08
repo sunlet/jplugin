@@ -3,6 +3,7 @@ package net.jplugin.core.kernel;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionPoint;
+import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
 import net.jplugin.core.kernel.api.IStartup;
 
 /**
@@ -14,9 +15,11 @@ import net.jplugin.core.kernel.api.IStartup;
 public class Plugin extends AbstractPlugin{
 
 	public static final String EP_STARTUP = "EP_STARTUP";
+	public static final String EP_ANNO_FOR_ATTR = "EP_ANNO_FOR_ATTR";
 
 	public Plugin(){
 		addExtensionPoint(ExtensionPoint.create(EP_STARTUP, IStartup.class));
+		addExtensionPoint(ExtensionPoint.create(EP_ANNO_FOR_ATTR, IAnnoForAttrHandler.class));
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.AbstractPlugin#getPrivority()

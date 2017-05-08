@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.Plugin;
@@ -158,10 +159,13 @@ public class PluginEnvirement {
 			Set<Object> pluginToLoad = new HashSet<Object>();
 			
 			if (plgns==null){
-				Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
-				pluginToLoad.addAll(prop.keySet());
+				if (FileKit.existsFile(getConfigDir() + "/plugin.cfg")){
+					Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
+					pluginToLoad.addAll(prop.keySet());
+				}
 				pluginToLoad.addAll(CorePlugin.get());
 				pluginToLoad.addAll(ExtPlugin.get());
+				pluginToLoad.addAll(PluginAutoDetect.get(pluginToLoad));
 			}else{
 				pluginToLoad.addAll( plgns);
 			}
@@ -176,7 +180,7 @@ public class PluginEnvirement {
 			}
 			
 			PluginPrepareHelper.preparePlugins(pluginToLoad);
-
+			
 			
 			for (Object obj : pluginToLoad) {
 				addPlugin(obj);
@@ -198,6 +202,7 @@ public class PluginEnvirement {
 			registry.sort();
 			registry.valid();
 			registry.load();
+			registry.contrib();
 			registry.wire();
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{

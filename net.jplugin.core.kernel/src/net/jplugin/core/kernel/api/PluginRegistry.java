@@ -1,6 +1,7 @@
 package net.jplugin.core.kernel.api;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -108,16 +109,41 @@ public class PluginRegistry {
 	 * 只处理状态正常的plugin，不正常的忽略掉
 	 * @return 
 	 */
-	public void wire(){
+	public void contrib(){
 		//valid的时候曾经放置过extensionPointMap,要全部清理掉
 		this.extensionPointMap.clear();
 		
 		for (int i=0;i<pluginList.size();i++){
 			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
 			if (plugin.getStatus() == IPlugin.STAT_LOADED){
-				plugin.wire(this,this.errorList);
+				plugin.contrib(this,this.errorList);
 			}
 		}
+	}
+	
+	/**
+	 * 对Extension处理annotation的属性值
+	 */
+	public void wire() {
+		IAnnoForAttrHandler[] handlers = getExtensionPointMap().get(net.jplugin.core.kernel.Plugin.EP_ANNO_FOR_ATTR).getExtensionObjects(IAnnoForAttrHandler.class);
+		
+		//valid
+		HashSet checkSet = new HashSet();
+		for (IAnnoForAttrHandler h:handlers){
+			if (checkSet.contains(h.getAnnoClass())){
+				throw new RuntimeException("Duplicate handler for annotation class:"+h.getAnnoClass().getName());
+			}else{
+				checkSet.add(h.getAnnoClass());
+			}
+		}
+		//
+		for (int i=0;i<pluginList.size();i++){
+			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
+			if (plugin.getStatus() == IPlugin.STAT_LOADED){
+				plugin.wire(handlers,errorList);
+			}
+		}
+		
 	}
 	
 	
@@ -189,4 +215,6 @@ public class PluginRegistry {
 			}catch(Exception e){e.printStackTrace();}
 		}
 	}
+
+
 }
