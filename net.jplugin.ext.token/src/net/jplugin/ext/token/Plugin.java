@@ -24,12 +24,18 @@ public class Plugin extends AbstractPlugin {
 	}
 
 	@Override
-	public void init() {
+	public void onCreateServices() {
 	}
 
 	@Override
 	public int getPrivority() {
 		return CoreServicePriority.TOKEN;
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

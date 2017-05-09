@@ -1,15 +1,20 @@
 package net.jplugin.ext.webasic;
 
+import java.util.Collection;
+import java.util.List;
+
 import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionPoint;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
+import net.jplugin.ext.webasic.impl.ESFHelper;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilterNew;
 import net.jplugin.ext.webasic.impl.MtInvocationFilterHandler;
@@ -77,7 +82,7 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		WebDriver.INSTANCE.init();
 		ServiceFilterManager.INSTANCE.init();
 		WebCtrlFilterManager.INSTANCE.init();
@@ -86,5 +91,10 @@ public class Plugin extends AbstractPlugin{
 		
 		MtInvocationFilterHandler.init();
 
+	}
+
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 }

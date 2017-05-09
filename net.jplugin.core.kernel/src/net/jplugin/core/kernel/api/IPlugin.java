@@ -20,6 +20,7 @@ public interface IPlugin {
 	public List<ExtensionPoint> getExtensionPoints();
 	public List<Extension>  getExtensions();
 	public int getStatus();
+	public void onCreateServices();
 	public void init();
 	public void onDestroy();
 	public Map<String,String> getConfigures();

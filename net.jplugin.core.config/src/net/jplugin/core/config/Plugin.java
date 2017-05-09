@@ -3,11 +3,13 @@ package net.jplugin.core.config;
 import net.jplugin.core.config.api.ConfigChangeManager;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.IConfigChangeHandler;
+import net.jplugin.core.config.impl.AnnoForAttrHandler;
 import net.jplugin.core.config.impl.ConfigRepository;
 import net.jplugin.core.config.impl.PropertyFilter;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
+import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginAnnotation;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -35,9 +37,10 @@ public class Plugin extends AbstractPlugin{
 	public Plugin(){
 		//add point
 		this.addExtensionPoint(ExtensionPoint.create(EP_CONFIG_CHANGE_HANDLER, IConfigChangeHandler.class,true));
+		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this,AnnoForAttrHandler.class );
 	}
 	@Override
-	public void init() {
+	public void onCreateServices() {
 		//load config
 		ConfigChangeManager.instance.init();
 	}
@@ -45,6 +48,12 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public int getPrivority() {
 		return CoreServicePriority.CONFIG;
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

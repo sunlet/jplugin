@@ -1,10 +1,19 @@
 package test.net.jplugin.core.das.mybatis;
 
 import net.jplugin.core.ctx.ExtensionCtxHelper;
+import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
+import net.jplugin.core.das.route.ExtensionDasRouteHelper;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.rclient.ExtendsionClientHelper;
+import net.jplugin.core.service.ExtensionServiceHelper;
+import net.jplugin.core.service.api.ServiceFactory;
+import test.net.jplugin.core.das.mybatis.anno.IRuleTestForMybatisAnno;
+import test.net.jplugin.core.das.mybatis.anno.IServiceForAnno;
+import test.net.jplugin.core.das.mybatis.anno.RuleTestForMybatisAnno;
+import test.net.jplugin.core.das.mybatis.anno.ServiceImplForAnno;
 import test.net.jplugin.core.das.mybatis.ts.DbCreate;
 import test.net.jplugin.core.das.mybatis.ts.RouteTest;
 import test.net.jplugin.core.das.mybatis.ts.TbRoute0Mapper;
@@ -35,9 +44,16 @@ public class Plugin extends AbstractPluginForTest{
 	
 		//这里重用了das模块测试用例的数据源配置
 		ExtensionMybatisDasHelper.addMappingExtension(this,"router-db", TbRoute0Mapper.class);
+		
+		//测试anno
+		ExtensionCtxHelper.addRuleExtension(this, IRuleTestForMybatisAnno.class, RuleTestForMybatisAnno.class);
+		ExtensionServiceHelper.addServiceExtension(this, IServiceForAnno.class.getName(), ServiceImplForAnno.class);
 	}
 	@Override
 	public void test() throws Throwable {
+		RuleServiceFactory.getRuleService(IRuleTestForMybatisAnno.class).test();
+		ServiceFactory.getService(IServiceForAnno.class).test();
+		
 		new AnnoBaticsTest().test();
 		new XMLBaticsTest().test();
 		new XMLBaticsTest2DB_2().test();

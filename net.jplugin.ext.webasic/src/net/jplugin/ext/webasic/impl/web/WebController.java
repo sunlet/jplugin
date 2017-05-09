@@ -43,6 +43,9 @@ public class WebController implements IController{
 		this.helper = new ObjectCallHelper(d);
 	}
 	
+	public Object getObject(){
+		return this.helper.getObject();
+	}
 
 	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
 		

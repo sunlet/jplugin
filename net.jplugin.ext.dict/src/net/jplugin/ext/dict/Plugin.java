@@ -24,7 +24,7 @@ public class Plugin extends AbstractPlugin{
 	}
 	
 	@Override
-	public void init() {
+	public void onCreateServices() {
 		DictionaryServiceImpl svc = (DictionaryServiceImpl) ServiceFactory.getService(IDictionaryService.class);
 		svc.init(PluginEnvirement.getInstance().getExtensionMap(EP_DICT_PROVIDER,IDictProvidor.class));
 	}
@@ -32,5 +32,11 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public int getPrivority() {
 		return CoreServicePriority.DICT;
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 }

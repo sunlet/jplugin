@@ -38,13 +38,17 @@ public class Plugin extends AbstractPlugin{
 		return CoreServicePriority.EVENT;
 	}
 
-	public void init() {
+	public void onCreateServices() {
 		String[] eventTypes = PluginEnvirement.getInstance().getExtensionObjects(EP_EVENT_TYPES,String.class);
 		EventAliasDefine[] typeAliases = PluginEnvirement.getInstance().getExtensionObjects(EP_EVENT_TYPE_ALIAS,EventAliasDefine.class);
 		EventConsumer[] eventConsumers = PluginEnvirement.getInstance().getExtensionObjects(EP_EVENT_CONSUMER,EventConsumer.class);
 		
 		ChannelFacade channel = (ChannelFacade) ServiceFactory.getService(Channel.class.getName(),Channel.class);
 		channel.init(eventTypes, typeAliases,eventConsumers);
+	}
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

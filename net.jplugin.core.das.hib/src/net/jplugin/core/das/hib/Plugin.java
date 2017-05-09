@@ -55,7 +55,7 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		if (noHib()){
 			System.out.println("Hiberinate env not found,not init!");
 			return;
@@ -70,6 +70,12 @@ public class Plugin extends AbstractPlugin{
 		
 		MtDataService mtsvc = (MtDataService) ServiceFactory.getService(IMtDataService.class);
 		mtsvc.initDataService(ServiceFactory.getService(IDataService.class));
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

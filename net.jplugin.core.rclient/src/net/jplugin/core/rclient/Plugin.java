@@ -60,13 +60,18 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		ClientHandlerRegistry.instance.init();
 		ClientFilterRegistry.instance.init();
 		ServiceUrlResolverManager.instance.init();
 		ClientProxyFactory.instance.init();
 		ClientFailHandlerManager.init();
 		TokenFactory.init();
+	}
+
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

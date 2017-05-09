@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import net.jplugin.core.kernel.api.PluginEnvirement;
+
 /**
  *
  * @author: LiuHang
@@ -30,4 +32,10 @@ public class ServiceFactory {
 	public static void init(Map<String, Object> map) {
 		serviceMap.putAll(map);
 	}
+//	/**
+//	 * ≥ı ºªØannotation
+//	 */
+//	public static void initAnnotation(){
+//		PluginEnvirement.getInstance().getAnnotationResolveHelper().resolveAnnotation(serviceMap.values());
+//	}
 }

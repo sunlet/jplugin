@@ -32,7 +32,13 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
+	public void onCreateServices() {
+		
+	}
+	
+	@Override
 	public void init() {
+		// TODO Auto-generated method stub
 		
 	}
 

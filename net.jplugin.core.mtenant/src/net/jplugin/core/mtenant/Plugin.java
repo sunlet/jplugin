@@ -47,7 +47,7 @@ public class Plugin extends AbstractPlugin{
 	}
 	
 	@Override
-	public void init() {
+	public void onCreateServices() {
 		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
 			HttpFilterManager.addFilter(new MTenantChain());
 		}
@@ -56,6 +56,12 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public int getPrivority() {
 		return CoreServicePriority.MULTI_TANANT;
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

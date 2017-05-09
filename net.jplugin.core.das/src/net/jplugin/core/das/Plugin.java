@@ -25,9 +25,16 @@ public class Plugin extends AbstractPlugin {
 		return CoreServicePriority.DAS;
 	}
 	
-	public void init() {
+	public void onCreateServices() {
 		DataSourceFactory.init();
 		ConnectionWrapperManager.init();
+	}
+
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

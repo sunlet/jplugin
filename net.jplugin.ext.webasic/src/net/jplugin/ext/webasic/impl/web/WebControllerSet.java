@@ -22,16 +22,20 @@ import net.jplugin.ext.webasic.impl.rests.ServiceController;
  **/
 
 public class WebControllerSet implements IControllerSet{
-	private Map<String, IController> controllerMap;
+	private Map<String, WebController> controllerMap;
 
 	public void init() {
 		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,ObjectDefine.class);
 		
-		controllerMap = new ConcurrentHashMap<String, IController>();
+		controllerMap = new ConcurrentHashMap<String, WebController>();
 		
 		for (Entry<String, ObjectDefine> en:defs.entrySet()){
 			controllerMap.put(en.getKey(), new WebController(en.getValue()));
 		}
+	}
+	
+	public Map<String,WebController> getControllerMap(){
+		return this.controllerMap;
 	}
 	
 	public Set<String> getAcceptPaths() {

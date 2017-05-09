@@ -2,6 +2,7 @@ package net.jplugin.core.kernel.api;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -26,8 +27,16 @@ public abstract class AbstractPlugin implements IPlugin {
 	private int status = IPlugin.STAT_INIT;
 	private Hashtable<String,String> configreus = new Hashtable<String, String>();
 
+	@Override
+	public void onCreateServices() {
+	}
 
-	
+//	@Override
+//	public void init() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//	
 	public void addExtensionPoint(ExtensionPoint ep) {
 		this.extensionPoints.add(ep);
 	}
@@ -109,7 +118,7 @@ public abstract class AbstractPlugin implements IPlugin {
 	 * @param pluginRegistry
 	 * @param errorList 
 	 */
-	public void contrib(PluginRegistry pluginRegistry, List<PluginError> errorList) {
+	public void wire(PluginRegistry pluginRegistry, List<PluginError> errorList) {
 		for (int i=0;i<this.getExtensionPoints().size();i++){
 			ExtensionPoint ep = this.getExtensionPoints().get(i);
 			pluginRegistry.getExtensionPointMap().put(ep.getName(), ep);
@@ -190,44 +199,4 @@ public abstract class AbstractPlugin implements IPlugin {
 	public void onDestroy() {
 	}
 
-	/**
-	 * 处理annotation标记过的属性
-	 */
-	public void wire(IAnnoForAttrHandler[] handlers,List<PluginError> errorList) {
-		Class[] annoClassArr = new Class[handlers.length];
-		for (int i=0;i<handlers.length;i++){
-			annoClassArr[i] = handlers[i].getAnnoClass();
-		}
-		
-		for (Extension ext:this.extensions){
-			Object obj = ext.getObject();
-			if(!String.class.getName().equals(obj.getClass().getName())){
-				List<Field> fields = ReflactKit.getAllFields(obj);
-				for (Field field:fields){
-					for (int i=0;i<annoClassArr.length;i++){
-						if (field.isAnnotationPresent(annoClassArr[i])){
-							handleAnnoted(obj,field,handlers[i],errorList);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void handleAnnoted(Object obj, Field field, IAnnoForAttrHandler h, List<PluginError> errorList) {
-		Object oldV;
-		oldV = ReflactKit.getFieldValueForce(field,obj);
-		if (oldV!=null) 
-			errorList.add(new PluginError(this.getName(), "JPlugin annotated attribute value must be null"));
-		
-		if (!h.getAttrClass().isAssignableFrom(oldV.getClass()))
-			errorList.add(new PluginError(this.getName(), "The type of annotated attribute "+h.getAnnoClass().getName()+" must be subclass of "+h.getAttrClass()+" ,"+obj.getClass().getName()+"."+field.getName()));
-		
-		Object newV = h.getValue(field.getType(),field.getAnnotation(h.getAnnoClass()));
-		if (newV==null) 
-			errorList.add(new PluginError(this.getName(), "Annotated attribute value retrived null: "+h.getAnnoClass().getName()+" ,"+obj.getClass().getName()+"."+field.getName()));
-		else{
-			ReflactKit.setFieldValueForce(field,obj,newV);
-		}
-	}
 }

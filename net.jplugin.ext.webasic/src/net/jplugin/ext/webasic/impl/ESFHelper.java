@@ -1,7 +1,9 @@
 package net.jplugin.ext.webasic.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +20,8 @@ import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
 import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
 import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
+import net.jplugin.ext.webasic.impl.web.WebController;
+import net.jplugin.ext.webasic.impl.web.WebControllerSet;
 
 public class ESFHelper {
 	
@@ -122,6 +126,7 @@ public class ESFHelper {
 			return null;
 	}
 	
+	
 	public static Map<String,Object> getObjectsMap(){
 		Set<String> paths = ServiceInvokerSet.instance.getAcceptPaths();
 
@@ -144,5 +149,23 @@ public class ESFHelper {
 //			ret.put(path, getObject(path));
 //		}
 //		return ret;
+	}
+	
+	/**
+	 * 特别强调：由于WebExController在每次执行都需要创建一个新的，所有不能获取到静态的列表。
+	 * @return
+	 */
+	public static List<Object> getWebControllerObjects(){
+		IControllerSet[] css = WebDriver.INSTANCE.getControllerSet();
+		List<Object> result = new ArrayList();
+		for (IControllerSet cs:css){
+			if (cs instanceof WebControllerSet){
+				WebControllerSet wcs = (WebControllerSet) cs;
+				for (WebController o:wcs.getControllerMap().values()){
+					result.add(o.getObject());
+				}
+			}
+		}
+		return result;
 	}
 }

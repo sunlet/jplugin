@@ -34,11 +34,20 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		ExtensionPoint servicesPoint = PluginEnvirement.getInstance().getExtensionPoint(Constants.EP_SERVICE);
 		
 		Map<String, Object> map  = servicesPoint.getExtensionMap();
 		ServiceFactory.init(map);
 	}
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+//	@Override
+//	public void init() {
+//		ServiceFactory.initAnnotation();
+//	}
 	
 }

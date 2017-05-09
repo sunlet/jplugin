@@ -59,6 +59,10 @@ public class WebDriver {
 		}
 		
 	}
+	
+	public IControllerSet[] getControllerSet(){
+		return this.controllerSets;
+	}
 
 	public void dohttp(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException{
 		ThreadLocalContext tlc =null;

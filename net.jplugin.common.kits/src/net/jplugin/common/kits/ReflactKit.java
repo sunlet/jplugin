@@ -244,6 +244,7 @@ public class ReflactKit {
 
 	public static Object getFieldValueForce(Field field,Object o) {
 		try {
+			field.setAccessible(true);
 			return field.get(o);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException("Get field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);

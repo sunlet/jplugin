@@ -14,6 +14,7 @@ import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
 import net.jplugin.core.kernel.impl.PluginPrepareHelper;
 
 /**
@@ -23,13 +24,29 @@ import net.jplugin.core.kernel.impl.PluginPrepareHelper;
  **/
 
 public class PluginEnvirement {
+	public static final int STAT_LEVEL_PREPAREING=0;
+	public static final int STAT_LEVEL_LOADING=10;
+	public static final int STAT_LEVEL_WIRING=20;
+	public static final int STAT_LEVEL_INITING=30;
+	public static final int STAT_LEVEL_WORKING=40;
+	
 	public static final String WORK_DIR = "work-dir";
-	private static PluginEnvirement instance = new PluginEnvirement();
+	public static PluginEnvirement INSTANCE = new PluginEnvirement();
 	private PluginRegistry registry = new PluginRegistry();
 //	private StartupLogger startupLog = new StartupLogger();
 	String workdir=null;
+	private AnnotationResolveHelper annoResolveHelper=new AnnotationResolveHelper(this);
+	private int stateLevel=STAT_LEVEL_PREPAREING;
+	
+
+	
+	
 	public static PluginEnvirement getInstance() {
-		return instance;
+		return INSTANCE;
+	}
+	
+	public int getStateLevel(){
+		return this.stateLevel;
 	}
 	
 	public void stop(){
@@ -201,9 +218,14 @@ public class PluginEnvirement {
 
 			registry.sort();
 			registry.valid();
+			this.stateLevel = STAT_LEVEL_LOADING;
 			registry.load();
-			registry.contrib();
+			this.stateLevel = STAT_LEVEL_WIRING;
 			registry.wire();
+			registry.makeServices();
+			this.stateLevel = STAT_LEVEL_INITING;
+			this.annoResolveHelper.resolveHistory();
+
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
 					ThreadLocalContextManager.instance.createContext();
@@ -224,6 +246,7 @@ public class PluginEnvirement {
 				}catch(Exception th){}
 				System.exit(-2);
 			}
+			this.stateLevel = STAT_LEVEL_WORKING;
 		} catch (Exception e) {
 			System.out.println("初始化过程发生错误");
 			logError(e);
@@ -296,6 +319,10 @@ public class PluginEnvirement {
 				System.out.println(e.toString());
 			}
 		}
+	}
+
+	public void resolveRefAnnotation(Object o) {
+		this.annoResolveHelper.resolveOne(o);
 	}
 	
 
