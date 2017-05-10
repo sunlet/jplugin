@@ -12,6 +12,8 @@ import net.jplugin.core.service.ExtensionServiceHelper;
 import net.jplugin.core.service.api.ServiceFactory;
 import test.net.jplugin.core.das.mybatis.anno.IRuleTestForMybatisAnno;
 import test.net.jplugin.core.das.mybatis.anno.IServiceForAnno;
+import test.net.jplugin.core.das.mybatis.anno.RefAnnoDemo;
+import test.net.jplugin.core.das.mybatis.anno.RefAnnoDemo2;
 import test.net.jplugin.core.das.mybatis.anno.RuleTestForMybatisAnno;
 import test.net.jplugin.core.das.mybatis.anno.ServiceImplForAnno;
 import test.net.jplugin.core.das.mybatis.ts.DbCreate;
@@ -53,6 +55,8 @@ public class Plugin extends AbstractPluginForTest{
 	public void test() throws Throwable {
 		RuleServiceFactory.getRuleService(IRuleTestForMybatisAnno.class).test();
 		ServiceFactory.getService(IServiceForAnno.class).test();
+		new RefAnnoDemo().test();
+		new RefAnnoDemo2().test();
 		
 		new AnnoBaticsTest().test();
 		new XMLBaticsTest().test();
