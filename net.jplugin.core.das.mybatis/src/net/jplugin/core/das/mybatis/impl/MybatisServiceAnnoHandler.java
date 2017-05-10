@@ -1,6 +1,7 @@
-package net.jplugin.core.das.mybatis.api;
+package net.jplugin.core.das.mybatis.impl;
 
-import net.jplugin.core.das.mybatis.impl.IMybatisService;
+import net.jplugin.core.das.mybatis.api.MyBatisServiceFactory;
+import net.jplugin.core.das.mybatis.api.RefMybatisService;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
 
 public class MybatisServiceAnnoHandler implements IAnnoForAttrHandler<RefMybatisService> {
