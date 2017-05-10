@@ -13,6 +13,7 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.log.api.ILogService;
+import net.jplugin.core.rclient.handler.RestHandler;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IDynamicService;
 import net.jplugin.ext.webasic.api.InvocationContext;
@@ -60,7 +61,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		for (int i=0;i<parameterTypes.length;i++){
 			ParaInfo paraInfo = getParaInfo(paraAnootation[i],i);
 //			ParaInfo pi = getParaInfo(paraAnootation[i],i);
-			ret[i] =  getFromRequest(paraMap,paraInfo,parameterTypes[i]);
+			ret[i] =  getFromRequest(paraMap,paraInfo,parameterTypes[i],i);
 		}
 		return ret;
 	}
@@ -71,12 +72,18 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	private Object getFromRequest(Map paraMap, ParaInfo paraInfo,
-			Class<?> clz) {
+			Class<?> clz, int idx) {
 		if (!paraMap.containsKey(paraInfo.name) && paraInfo.required){
 			throw new RuntimeException("Can't find http param:"+paraInfo.name);
 		}
 		
 		String val=(String) paraMap.get(paraInfo.name);
+		if (val==null){
+			//判断是否混合参数名称模式
+			if (RestHandler.MIX_PARA_VALUE.equals(paraMap.get(RestHandler.MIX_PARA))){
+				val = (String) paraMap.get("arg"+idx);
+			}
+		}
 		
 		if (StringKit.isNull(val)){
 			return null;

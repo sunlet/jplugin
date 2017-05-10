@@ -32,7 +32,10 @@ public class RestHandler implements IClientHandler{
 //	static final String REMOTE_EXCEPTION_PREFIX = "$RE#";
 //	static final String OPERATION_KEY = "_o";
 	
-//	public <T> T createProxyObject(final Client<T> c) {
+public static final String MIX_PARA = "_MIX_PARA_";
+public static final Object MIX_PARA_VALUE = "1";
+
+			//	public <T> T createProxyObject(final Client<T> c) {
 //		
 //		return (T)Proxy.newProxyInstance(c.getInterfaceClazz().getClassLoader(), new Class[]{c.getInterfaceClazz()}, new InvocationHandler() {
 //			
@@ -46,6 +49,7 @@ public class RestHandler implements IClientHandler{
 				ClientInfo clientInfo = c.getClientInfo();
 				
 				HashMap< String, Object> map = new HashMap<String, Object>();
+				map.put(MIX_PARA,MIX_PARA_VALUE );
 				Annotation[][] paraAnootation = method.getParameterAnnotations();
 				if (args!=null){
 					for (int i=0; i<args.length;i++){
