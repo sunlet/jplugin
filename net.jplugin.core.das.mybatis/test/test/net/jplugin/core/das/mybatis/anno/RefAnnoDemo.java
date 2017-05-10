@@ -34,7 +34,7 @@ public class RefAnnoDemo extends RefAnnotationSupport{
 	 * 静态变量只赋值一次
 	 */
 	@RefLogger
-	private static Logger logger2=LogFactory.getLogger(String.class);
+	private static Logger logger2;
 	
 	public void test() {
 		AssertKit.assertTrue(m1!=null);
