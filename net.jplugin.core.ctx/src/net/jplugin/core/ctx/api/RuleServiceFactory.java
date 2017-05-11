@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInterceptor;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  *
@@ -41,6 +42,7 @@ public class RuleServiceFactory {
 			try {
 				def.valid();
 				realImpl = def.getImpl().newInstance();
+				PluginEnvirement.INSTANCE.resolveRefAnnotation(realImpl);
 			} catch (Exception e){
 				throw new CtxRuntimeException("Create proxy failed",e);
 			}

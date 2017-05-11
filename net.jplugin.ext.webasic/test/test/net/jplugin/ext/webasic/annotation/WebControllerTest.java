@@ -12,7 +12,7 @@ import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
 
-public class WebControllerTest extends RefAnnotationSupport{
+public class WebControllerTest {
 	@RefLogger
 	private Logger logger;
 	@RefLogger

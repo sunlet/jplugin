@@ -34,6 +34,7 @@ public class RefAnnoDemo2{
 	@RefRuleService
 	IRuleTestForMybatisAnno rule1;
 	
+	
 	/**
 	 * 静态变量只赋值一次
 	 */

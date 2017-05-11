@@ -31,6 +31,9 @@ public class ServiceFactory {
 	 */
 	public static void init(Map<String, Object> map) {
 		serviceMap.putAll(map);
+		for (Object v:map.values()){
+			PluginEnvirement.INSTANCE.resolveRefAnnotation(v);
+		}
 	}
 //	/**
 //	 * ≥ı ºªØannotation

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
@@ -14,7 +15,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  * <pre>
- * 
+ * 能够自动
  * JPlugin支持的引用模式的annotation包括：
  * @RefLogger
  * @RefMybatis
@@ -36,10 +37,17 @@ public class AnnotationResolveHelper {
 	}
 
 	public void resolveHistory(){
+		/**
+		 * 这里用一个set做一个排重。为了避免用户加了调用了resolve方法，同时框架也处理了。对冲突进行避免。
+		 */
+		Set<Object> set = new HashSet();
 		for (Object o:toResolveList){
+			if (set.contains(o)) continue;
+			set.add(o);
 			resolveOne(o);
 		}
 		toResolveList.clear();
+		set.clear();
 	}
 	
 	public final void valid(){
@@ -112,7 +120,7 @@ public class AnnotationResolveHelper {
 			if ( Modifier.isStatic(field.getModifiers()))
 				return;
 			else
-				throw new RuntimeException( "None static JPlugin annotated attribute value must be init as null");
+				throw new RuntimeException( "None static JPlugin annotated attribute value must be init as null."+obj.getClass().getName());
 		}
 		
 		if (!h.getAttrClass().isAssignableFrom(field.getType()))

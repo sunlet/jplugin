@@ -12,7 +12,7 @@ import net.jplugin.ext.webasic.api.AbstractExController;
 
 public class WebExControllerTest extends AbstractExController{
 	public WebExControllerTest(){
-		PluginEnvirement.INSTANCE.resolveRefAnnotation(this);
+//		PluginEnvirement.INSTANCE.resolveRefAnnotation(this);
 	}
 	@RefConfig(path="test1.c1")
 	String cfg1;

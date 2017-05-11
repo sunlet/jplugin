@@ -15,6 +15,7 @@ import net.jplugin.core.ctx.api.RuleParameter;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.ctx.api.RuleResult;
 import net.jplugin.core.kernel.api.ClassDefine;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -38,6 +39,7 @@ import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 public class WebExController implements IController{
 	private ClassDefine define;
 	private static Class[] para=new Class[]{};
+	private AbstractExController object;
 	
 	/**
 	 * @param value
@@ -47,12 +49,20 @@ public class WebExController implements IController{
 		if (!ReflactKit.isTypeOf(classDefine.getClazz(), AbstractExController.class)){
 			throw new RuntimeException("The Object must extend the AbstractExController class");
 		}
+		try {
+			this.object = (AbstractExController) this.define.getClazz().newInstance();
+			PluginEnvirement.INSTANCE.resolveRefAnnotation(object);
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 
 	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
 		
-		final AbstractExController cont = (AbstractExController) this.define.getClazz().newInstance();
+		final AbstractExController cont = object;
 		cont._init(req, res);
 //		String mname = req.getParameter(WebDriver.OPERATION_KEY);
 		String mname = innerPath;

@@ -9,7 +9,7 @@ import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
 
-public class RuleTestForMybatisAnno extends RefAnnotationSupport implements IRuleTestForMybatisAnno{
+public class RuleTestForMybatisAnno implements IRuleTestForMybatisAnno{
 	@RefMybatisService
 	IMybatisService m1;
 	

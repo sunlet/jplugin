@@ -8,7 +8,7 @@ import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
 
-public class ServiceImplForAnno  extends RefAnnotationSupport implements IServiceForAnno {
+public class ServiceImplForAnno implements IServiceForAnno {
 	
 	@RefMybatisService
 	IMybatisService m1;

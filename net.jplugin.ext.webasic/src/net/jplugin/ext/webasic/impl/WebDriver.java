@@ -42,6 +42,9 @@ public class WebDriver {
 	public void init() {
 		controllerSets = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_CONTROLLERSET,IControllerSet.class);
 		filters = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_WEBFILTER,WebFilter.class);
+		for (WebFilter f:filters){
+			PluginEnvirement.INSTANCE.resolveRefAnnotation(f);
+		}
 		
 		for ( int i=0;i<controllerSets.length;i++){
 			controllerSets[i].init();

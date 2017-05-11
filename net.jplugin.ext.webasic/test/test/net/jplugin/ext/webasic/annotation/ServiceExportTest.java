@@ -6,7 +6,7 @@ import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
 
-public class ServiceExportTest extends RefAnnotationSupport{
+public class ServiceExportTest {
 	@RefLogger
 	private Logger logger;
 	@RefLogger

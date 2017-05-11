@@ -11,6 +11,8 @@ import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.ext.webasic.Plugin;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
@@ -39,6 +41,7 @@ public class ObjectCallHelper{
 	 */
 	public ObjectCallHelper(ObjectDefine d) {
 		this.objeceDefine = d;
+		initObject();
 	}
 	
 	
@@ -67,6 +70,7 @@ public class ObjectCallHelper{
 			synchronized (this) {
 				if (svcObject == null){
 					svcObject = createObject(objeceDefine);	
+					PluginEnvirement.INSTANCE.resolveRefAnnotation(svcObject);
 				}
 			}
 		}

@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,19 +13,24 @@ import net.jplugin.common.kits.MD5Kit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleResult;
+import net.jplugin.core.kernel.api.ctx.RequesterInfo;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 public class AbstractExController {
 	private static final String WA_CK = "wa_ck";
 	private static final String WA_MD5 = "wa_md5";
 	private static final String WA_CH = "wa_ch";
 	public static final String JSP_BASE = "/WEB-INF/classes/";
+	private static final String HTTP_REQ = "HTTP_REQ";
+	private static final String HTTP_RES = "HTTP_RES";
 
-	private HttpServletRequest req;
-	private HttpServletResponse res;
+//	private HttpServletRequest req;
+//	private HttpServletResponse res;
 
 	public final void _init(HttpServletRequest req, HttpServletResponse res) {
-		this.req = req;
-		this.res = res;
+		ThreadLocalContextManager.instance.getContext().setAttribute(HTTP_REQ, req);
+		ThreadLocalContextManager.instance.getContext().setAttribute(HTTP_RES, res);
+		
 		Enumeration nms = req.getParameterNames();
 		while (nms.hasMoreElements()) {
 			String name = (String) nms.nextElement();
@@ -33,24 +39,24 @@ public class AbstractExController {
 	}
 
 	public HttpServletRequest getReq() {
-		return req;
+		return (HttpServletRequest) ThreadLocalContextManager.instance.getContext().getAttribute(HTTP_REQ);
 	}
 
 	public HttpServletResponse getRes() {
-		return res;
+		return (HttpServletResponse) ThreadLocalContextManager.instance.getContext().getAttribute(HTTP_RES);
 	}
 
 	public String getParam(String nm) {
-		return req.getParameter(nm);
+		return getReq().getParameter(nm);
 	}
 
 	public Object getAttr(String nm) {
-		return req.getAttribute(nm);
+		return getReq().getAttribute(nm);
 	}
 
 	public Set<String> getAttrNames() {
 		HashSet<String> ret = new HashSet<String>();
-		Enumeration<String> nms = req.getAttributeNames();
+		Enumeration<String> nms = getReq().getAttributeNames();
 
 		while (nms.hasMoreElements()) {
 			String key = nms.nextElement();
@@ -60,16 +66,17 @@ public class AbstractExController {
 	}
 
 	public String getStringAttr(String nm) {
-		return (String) req.getAttribute(nm);
+		return (String) getReq().getAttribute(nm);
 	}
 
 	public void setAttr(String nm, Object o) {
-		req.setAttribute(nm, o);
+		getReq().setAttribute(nm, o);
 	}
 
 	public void forward(String path) {
 		try {
-			req.getRequestDispatcher(path).forward(req, res);
+			ServletRequest req=getReq();
+			req.getRequestDispatcher(path).forward(req, getRes());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(),e);
 		}
@@ -104,6 +111,7 @@ public class AbstractExController {
 	
 	@Deprecated
 	public void renderJson(JsonResult jr){
+		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
 			// 为了减少一遍序列化,先假定wa_ch=true,再取MD5,然后再替换之
@@ -132,6 +140,7 @@ public class AbstractExController {
 	
 	@Deprecated
 	public void renderJson(RuleResult rr) {
+		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
 			// 为了减少一遍序列化,先假定wa_ch=true,再取MD5,然后再替换之
@@ -159,14 +168,17 @@ public class AbstractExController {
 	}
 
 	public void invalidSession() {
+		HttpServletRequest req=getReq();
 		req.getSession().invalidate();
 	}
 
 	public void setSessAttr(String k, Object v) {
+		HttpServletRequest req = getReq();
 		req.getSession().setAttribute(k, v);
 	}
 
 	public void sendRedirect(String path) {
+		HttpServletResponse res = getRes();
 		try {
 			res.sendRedirect(path);
 		} catch (IOException e) {
