@@ -7,6 +7,7 @@ import java.util.Properties;
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.kits.KernelKit;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 
@@ -30,7 +31,8 @@ public class LogServiceImpl implements ILogService {
     }
 
 	private void init(){
-		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
+//		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
+		String path = KernelKit.getConfigFilePath("log4j.properties");
 		Properties prop =null;
 		try{
 			if (FileKit.existsFile(path))

@@ -325,5 +325,9 @@ public class PluginEnvirement {
 		this.annoResolveHelper.resolveOne(o);
 	}
 	
+	public String getEnvType(){
+		return System.getProperty("plugin.env");
+	}
+	
 
 }

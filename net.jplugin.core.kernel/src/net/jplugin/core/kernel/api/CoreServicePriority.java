@@ -27,4 +27,5 @@ public class CoreServicePriority {
 	public static final int LOCK = 150 + OFFSET;
 	public static final int CONFIG = 5+OFFSET;
 	public static final int MULTI_TANANT = 105 + OFFSET;
+	public static final int STATIC_WEB = 5+OFFSET;
 }

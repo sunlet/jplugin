@@ -6,6 +6,8 @@
  */
 package net.jplugin.common.kits;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,6 +28,9 @@ import java.util.Properties;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class FileKit {
+
+//	private static final long MAX_FILE_LEN_SUPPORT = 1024 * 1024 * 20;
+
 
 	public static void string2File(String string, String filename,String encode)
 			throws Exception {
@@ -234,5 +239,37 @@ public class FileKit {
 	public static boolean existsFile(String filepath) {
 		return new File(filepath).exists();
 	}
+
+	public static boolean existsAndIsFile(String filepath) {
+		File f = new File(filepath);
+		return f.exists() && f.isFile();
+	}
+	public static boolean existsAndIsDir(String path) {
+		File f = new File(path);
+		return f.exists() && f.isDirectory();
+	}
+	public static byte[] file2Bytes(String path) {
+		byte[] buffer = new byte[4096];
+		
+		ByteArrayOutputStream baos=new ByteArrayOutputStream();
+		FileInputStream fis=null;
+		try {
+			fis = new FileInputStream(path);
+			
+			int len;
+			while( (len =	fis.read(buffer))>0){
+				baos.write(buffer, 0, len);
+			}
+			
+			return baos.toByteArray();
+		}catch(Exception e){
+			throw new RuntimeException("Read file error:"+path,e);
+		}finally{
+			if (fis!=null) try{fis.close();}catch(Throwable t){}
+		}
+	}
+
+
+	
 
 }
