@@ -232,7 +232,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		jr.setMsg(exInfo.getMsg());//get message
 		jr.setCode(exInfo.getCode());//get code
 		cp.setResult(jr.toJson());
-		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e);
+		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getMessage(),e);
 	}
 
 	//为了兼容 return节点
