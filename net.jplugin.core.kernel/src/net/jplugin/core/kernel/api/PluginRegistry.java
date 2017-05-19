@@ -122,7 +122,7 @@ public class PluginRegistry {
 	}
 
 	public void makeServices() {
-		System.out.println("==Now to create services==");
+		PluginEnvirement.INSTANCE.getStartLogger().log("==Now to create services==");
 		for (int i=0;i<pluginList.size();i++){
 			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
 			if (plugin.getStatus() == IPlugin.STAT_LOADED){
@@ -138,12 +138,12 @@ public class PluginRegistry {
 	 * @param testTarget 
 	 */
 	public void start(boolean testAll, String testTarget){
-		System.out.println("==Now to init plugins==");
+		PluginEnvirement.INSTANCE.getStartLogger().log("==Now to init plugins==");
 		for (int i=0;i<pluginList.size();i++){
 			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
 			if (plugin.getStatus() == IPlugin.STAT_LOADED){
 				try{
-					System.out.println("StartPlugin :["+i+"] "+plugin.getName());
+					PluginEnvirement.INSTANCE.getStartLogger().log("StartPlugin :["+i+"] "+plugin.getName());
 					plugin.init();
 					
 					//如果不是全部测试，并且启动到目标插件，则停止
@@ -157,7 +157,7 @@ public class PluginRegistry {
 				}
 			}
 		}
-		System.out.println("Total "+pluginList.size()+" plugin started!");
+		PluginEnvirement.INSTANCE.getStartLogger().log("Total "+pluginList.size()+" plugin started!");
 	}
 	
 	/**
@@ -198,7 +198,9 @@ public class PluginRegistry {
 			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
 			try{
 				plugin.onDestroy();
-			}catch(Exception e){e.printStackTrace();}
+			}catch(Exception e){
+				PluginEnvirement.INSTANCE.getStartLogger().log(e.getMessage(),e);
+				}
 		}
 	}
 

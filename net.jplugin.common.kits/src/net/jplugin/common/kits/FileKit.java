@@ -17,7 +17,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.Properties;
 
@@ -267,6 +269,72 @@ public class FileKit {
 		}finally{
 			if (fis!=null) try{fis.close();}catch(Throwable t){}
 		}
+	}
+
+
+	public static long getFileSize(String f) {
+		return new File(f).length();
+	}
+
+
+	public static void createEmptyFile(String filename) {
+		FileOutputStream fop=null;
+		try{
+			fop = new FileOutputStream(filename);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(filename,e);
+		}finally{
+			if (fop!=null) try{fop.close();} catch (Exception e){}
+		}
+		
+	}
+
+
+	public static boolean removeFile(String name) {
+		return new File(name).delete();
+	}
+
+
+	public static boolean renameFile(String from, String to) {
+		return new File(from).renameTo(new File(to));
+	}
+
+
+	public static void appendFile(String filename, String string) {
+		if (!FileKit.existsFile(filename)){
+			FileKit.makeDirectory(new File(filename).getParent());
+			createEmptyFile(filename);
+		}
+		FileOutputStream fop=null;
+		OutputStreamWriter osw=null;
+		try {
+			fop = new FileOutputStream(filename,true);
+			osw = new OutputStreamWriter(fop,"utf-8");
+			osw.write(string);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException("FileNotFound",e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("IOException",e);
+		}finally{
+			if (osw!=null) try{osw.close();}catch(Exception e){}
+			if (fop!=null) try{fop.close();}catch(Exception e){}
+		}
+	}
+
+
+	public static void appendStackTrace(String file, Throwable th) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PrintWriter pw = new PrintWriter(os);
+		th.printStackTrace(pw);
+		pw.close();
+		try {
+			appendFile(file,os.toString("utf-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 
 

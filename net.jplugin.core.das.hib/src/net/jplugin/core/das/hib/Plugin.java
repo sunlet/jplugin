@@ -26,7 +26,6 @@ public class Plugin extends AbstractPlugin{
 
 	public Plugin(){
 		if (noHib()){
-//			System.out.println("Hiberinate env not found,skipped!");
 			return;
 		}
 		addExtensionPoint(ExtensionPoint.create(EP_DATAMAPPING, IPersistObjDefinition.class));
@@ -57,7 +56,7 @@ public class Plugin extends AbstractPlugin{
 	 */
 	public void onCreateServices() {
 		if (noHib()){
-			System.out.println("Hiberinate env not found,not init!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("Hiberinate env not found,not init!");
 			return;
 		}
 		
@@ -74,7 +73,6 @@ public class Plugin extends AbstractPlugin{
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 

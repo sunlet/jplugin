@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.token.api.ITokenService;
@@ -83,7 +84,7 @@ public class InitRequestInfoFilter implements WebFilter {
 		if (cfgInit == false){
 			cfgInit = true;
 			accessControlAllowOrigin = ConfigFactory.getStringConfigWithTrim("platform.access-control-allow-origin");
-			System.out.println("Init access-control-allow-origin = "+accessControlAllowOrigin);
+			PluginEnvirement.INSTANCE.getStartLogger().log("Init access-control-allow-origin = "+accessControlAllowOrigin);
 		}
 		return accessControlAllowOrigin;
 	}

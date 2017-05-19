@@ -12,8 +12,8 @@ public class PluginApp {
 	
 	private static final String JPLUGIN_HOME_PROP="jplugin.home";
 	private static final String MAVEN_CONFIG_RELPATH = "/src/main/resources/config";
-	private static final String CONFIG_RELPATH = "/config";
-	private static final String WEB_RELPATH = "/web";
+	private static final String CONFIG_RELPATH = "/application/config";
+	private static final String WEB_RELPATH = "/application/web";
 	private static final String MAVEN_WEB_RELPATH = "/src/main/webapp";
 	
 
@@ -25,7 +25,7 @@ public class PluginApp {
 		String jpluginHome = System.getProperty(JPLUGIN_HOME_PROP,".");
 		jpluginHome = new File(jpluginHome).getAbsolutePath();
 		PluginEnvirement.INSTANCE.setWorkDir(jpluginHome);
-		System.out.println("$$$ plugin.home="+PluginEnvirement.INSTANCE.getWorkDir());
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ plugin.home="+PluginEnvirement.INSTANCE.getWorkDir());
 		//configĿ¼
 		String configDir = jpluginHome +CONFIG_RELPATH;
 		if (!FileKit.existsAndIsDir(configDir)){

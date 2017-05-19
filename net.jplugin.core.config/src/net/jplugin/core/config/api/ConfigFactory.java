@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 /**
 *
 * @author: LiuHang
@@ -104,6 +105,6 @@ public class ConfigFactory {
 	
 	public static void _setRemoteConfigProvidor(IConfigProvidor repo) {
 		remoteConfigProvidor = repo;
-		System.out.println("$$$ Remote Configigure Providor init:"+repo.getClass().getName());
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Remote Configigure Providor init:"+repo.getClass().getName());
 	}
 }

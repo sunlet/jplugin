@@ -14,6 +14,7 @@ import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.ExtensionServiceHelper;
 
 public class Plugin extends AbstractPlugin{
@@ -23,7 +24,7 @@ public class Plugin extends AbstractPlugin{
 
 	public Plugin(){
 		if (noMybatis()){
-			System.out.println("Mybatis env not found,skipped!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("Mybatis env not found,skipped!");
 			return;
 		}
 		this.addExtensionPoint(ExtensionPoint.create(EP_MYBATIS_MAPPER, ExtensionDefinition4Mapping.class));
@@ -45,10 +46,10 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public void onCreateServices() {
 		if (noMybatis()){
-			System.out.println("Mybatis env not found,not init!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("Mybatis env not found,not init!");
 			return;
 		}else{
-			System.out.println("now to init mybatis");
+			PluginEnvirement.INSTANCE.getStartLogger().log("now to init mybatis");
 		}
 		
 		MyBatisServiceFactory.init();

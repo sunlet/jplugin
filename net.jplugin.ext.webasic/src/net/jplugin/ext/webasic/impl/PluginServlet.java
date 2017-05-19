@@ -48,7 +48,7 @@ public class PluginServlet extends HttpServlet{
 
 	@Override
 	public void init() throws ServletException {
-		System.out.println("Servlet init...");
+		PluginEnvirement.INSTANCE.getStartLogger().log("Servlet init...");
 		try{
 			//set the work directory 
 			if (StringKit.isNull(System.getProperty(PluginEnvirement.WORK_DIR))){
@@ -70,7 +70,7 @@ public class PluginServlet extends HttpServlet{
 			PluginEnvirement.getInstance().startup();
 			PluginEnvirement.getInstance().setWebRootPath(getServletContext().getRealPath("/"));
 		}catch(Throwable t){
-			t.printStackTrace();
+			PluginEnvirement.getInstance().getStartLogger().log(t.getMessage(),t);;
 			if (t instanceof RuntimeException) throw (RuntimeException)t;
 			else throw new RuntimeException(t);
 		}

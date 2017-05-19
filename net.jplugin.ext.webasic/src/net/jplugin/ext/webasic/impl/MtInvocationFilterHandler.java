@@ -2,6 +2,7 @@ package net.jplugin.ext.webasic.impl;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.InvocationContext;
@@ -30,9 +31,9 @@ public class MtInvocationFilterHandler{
 		if (StringKit.isNull(reqParamName)) {
 			reqParamAt = "BOTH";
 		}
-		System.out.println("@@@mtenant.req-param-at="+reqParamAt);
-		System.out.println("@@@mtenant.req-param-name="+reqParamName);
-		System.out.println("@@@mtenant.req-default-tenant="+reqDefaultTenant);
+		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.req-param-at="+reqParamAt);
+		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.req-param-name="+reqParamName);
+		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.req-default-tenant="+reqDefaultTenant);
 		
 		paraAt = ReqParamAt.valueOf(reqParamAt);
 	}

@@ -1,8 +1,5 @@
 package net.jplugin.core.kernel.api;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +8,11 @@ import java.util.Set;
 
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
-import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
 import net.jplugin.core.kernel.impl.PluginPrepareHelper;
+import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
 
 /**
  * 
@@ -38,6 +35,7 @@ public class PluginEnvirement {
 	private AnnotationResolveHelper annoResolveHelper=new AnnotationResolveHelper(this);
 	private int stateLevel=STAT_LEVEL_PREPAREING;
 	
+	private IStartLogger startLogger = new StartUpLoggerImpl();
 
 	
 	
@@ -45,16 +43,20 @@ public class PluginEnvirement {
 		return INSTANCE;
 	}
 	
+	public IStartLogger getStartLogger() {
+		return startLogger;
+	}
+	
 	public int getStateLevel(){
 		return this.stateLevel;
 	}
 	
 	public void stop(){
-		System.out.println("$$$ now to stop plugin envirment");
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ now to stop plugin envirment");
 		this.registry.destroy();
 		this.registry = new PluginRegistry();
 		this.started = false;
-		System.out.println("$$$ plugin envirment stopped");
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ plugin envirment stopped");
 	}
 
 	public PluginRegistry getPluginRegistry() {
@@ -172,7 +174,8 @@ public class PluginEnvirement {
 			return;
 		started = true;
 		try {
-			System.out.println("$$$ ConfigDir="+this.getConfigDir()+" \n$$$ WorkDir="+this.getWorkDir());
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ ConfigDir="+this.getConfigDir());
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ WorkDir="+this.getWorkDir());
 			Set<Object> pluginToLoad = new HashSet<Object>();
 			
 			if (plgns==null){
@@ -248,12 +251,12 @@ public class PluginEnvirement {
 			}
 			this.stateLevel = STAT_LEVEL_WORKING;
 		} catch (Exception e) {
-			System.out.println("初始化过程发生错误");
+			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误");
 			logError(e);
 			if (PluginEnvirement.getInstance().hasExtensionPoint(Plugin.EP_STARTUP)){
 				trigStartListener(e, null);
 			}
-			e.printStackTrace();
+			getStartLogger().log(e.getMessage(),e);
 			
 			try{
 				Thread.sleep(3000);
@@ -312,11 +315,11 @@ public class PluginEnvirement {
 	 */
 	private void logStart(List<PluginError> errors) {
 		if (errors == null || errors.size() == 0) {
-			System.out.println("@@Plugin Loaded successfully!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@Plugin Loaded successfully!");
 		} else {
-			System.out.println("@@Plugin Loaded with errors ");
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@Plugin Loaded with errors ");
 			for (PluginError e : errors) {
-				System.out.println(e.toString());
+				PluginEnvirement.INSTANCE.getStartLogger().log(e.toString());
 			}
 		}
 	}
@@ -327,6 +330,10 @@ public class PluginEnvirement {
 	
 	public String getEnvType(){
 		return System.getProperty("plugin.env");
+	}
+	
+	public String getLogDir(){
+		return this.getWorkDir()+"/logs";
 	}
 	
 

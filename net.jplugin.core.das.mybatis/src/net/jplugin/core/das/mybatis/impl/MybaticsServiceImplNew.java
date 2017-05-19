@@ -23,6 +23,7 @@ import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
 import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
 import net.jplugin.core.das.mybatis.impl.sess.MybatisSessionManager;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 
 public class MybaticsServiceImplNew implements IMybatisService {
 	DataSource dataSource=null;
@@ -33,7 +34,7 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		theDataSourceName = dataSourceName;
 		
 		if (mappers==null || mappers.size()==0) {
-			System.out.println("  No mappers configed.");
+			PluginEnvirement.INSTANCE.getStartLogger().log("  No mappers configed.");
 			return;
 		}
 		

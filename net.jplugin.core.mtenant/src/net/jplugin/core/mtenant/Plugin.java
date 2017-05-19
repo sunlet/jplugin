@@ -5,6 +5,7 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
 
 public class Plugin extends AbstractPlugin{
@@ -40,9 +41,9 @@ public class Plugin extends AbstractPlugin{
 			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
 //			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
-			System.out.println("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
 		}else{
-			System.out.println("@@@ mtenant ignore!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ignore!");
 		}
 	}
 	
