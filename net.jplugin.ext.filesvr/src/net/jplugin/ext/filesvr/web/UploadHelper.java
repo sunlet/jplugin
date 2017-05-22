@@ -19,12 +19,11 @@ import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.filesvr.Plugin;
 import net.jplugin.ext.filesvr.api.FileTypes;
 import net.jplugin.ext.filesvr.api.IStorePathGenerator;
+import net.jplugin.org.apache.log.Logger;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
-import com.lh.org.apache.log.Logger;
 
 /**
  *

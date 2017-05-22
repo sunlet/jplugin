@@ -5,6 +5,7 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.PluginAnnotation;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.impl.LogAnnoAttrHandler;
@@ -42,12 +43,11 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.IPlugin#init()
 	 */
 	public void onCreateServices() {
-//		((LogServiceImpl)ServiceFactory.getService(ILogService.class)).init();
+		PluginEnvirement.getInstance().getStartLogger().log("Now to create common logging service.....");
+		LogFactory.initCommonLoggerService();
 	}
 
 	public void init() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
