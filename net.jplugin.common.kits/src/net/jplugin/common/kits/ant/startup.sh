@@ -17,9 +17,6 @@ JVM_OPTION=
 #Uncomment for set memory
 JVM_OPTION="${JVM_OPTION} -Xms512m -Xmx1500m"
 
-#Uncomment for product mode,use configures for product
-#JVM_OPTION="${JVM_OPTION} -Dplugin.env=product"
-
 #Uncomment for remote debug
 #JVM_OPTION="${JVM_OPTION} -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8797,server=y,suspend=y"
 

@@ -13,7 +13,6 @@ endlocal&set classpath=%classpath%
 set JVM_OPTION=
 rem set JVM_OPTION=%JVM_OPTION% -Xms512m -Xmx1024m
 rem set JVM_OPTION=%JVM_OPTION% -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8797,server=y,suspend=y
-rem set JVM_OPTION=%JVM_OPTION% -Dplugin.env=product
 
 @echo on
 java -Djplugin.home=%jplugin.home% %JVM_OPTION% -cp %CLASSPATH%  -server net.jplugin.core.kernel.PluginApp
