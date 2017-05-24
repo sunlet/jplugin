@@ -8,13 +8,13 @@ public class MD5Kit {
         char hexDigits[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};       
         try {
             byte[] btInput = s.getBytes();
-            // »ñµÃMD5ÕªÒªËã·¨µÄ MessageDigest ¶ÔÏó
+            // è·å¾—MD5æ‘˜è¦ç®—æ³•çš„ MessageDigest å¯¹è±¡
             MessageDigest mdInst = MessageDigest.getInstance("MD5");
-            // Ê¹ÓÃÖ¸¶¨µÄ×Ö½Ú¸üĞÂÕªÒª
+            // ä½¿ç”¨æŒ‡å®šçš„å­—èŠ‚æ›´æ–°æ‘˜è¦
             mdInst.update(btInput);
-            // »ñµÃÃÜÎÄ
+            // è·å¾—å¯†æ–‡
             byte[] md = mdInst.digest();
-            // °ÑÃÜÎÄ×ª»»³ÉÊ®Áù½øÖÆµÄ×Ö·û´®ĞÎÊ½
+            // æŠŠå¯†æ–‡è½¬æ¢æˆåå…­è¿›åˆ¶çš„å­—ç¬¦ä¸²å½¢å¼
             int j = md.length;
             char str[] = new char[j * 2];
             int k = 0;

@@ -3,7 +3,7 @@ package net.jplugin.common.kits;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÏÂÎç08:48:01
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸‹åˆ08:48:01
  **/
 
 public class ObjectRef<T> {

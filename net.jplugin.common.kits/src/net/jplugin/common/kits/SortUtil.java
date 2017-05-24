@@ -7,14 +7,14 @@ import java.util.List;
 /**
  * @author LiuHang
  *
- * TODO Òª¸ü¸Ä´ËÉú³ÉµÄÀàĞÍ×¢ÊÍµÄÄ£°å£¬Çë×ªÖÁ
- * ´°¿Ú £­ Ê×Ñ¡Ïî £­ Java £­ ´úÂëÑùÊ½ £­ ´úÂëÄ£°å
+ * TODO è¦æ›´æ”¹æ­¤ç”Ÿæˆçš„ç±»å‹æ³¨é‡Šçš„æ¨¡æ¿ï¼Œè¯·è½¬è‡³
+ * çª—å£ ï¼ é¦–é€‰é¡¹ ï¼ Java ï¼ ä»£ç æ ·å¼ ï¼ ä»£ç æ¨¡æ¿
  */
 public class SortUtil {
 
 	/**
-	 * Ã°ÅİÅÅĞòµÄ±¿·½·¨£¨¿ÉÒÔ½øÒ»²½ÓÅ»¯£©
-	 * nxn ¿ÉÒÔÓÅ»¯Îª nxn/2
+	 * å†’æ³¡æ’åºçš„ç¬¨æ–¹æ³•ï¼ˆå¯ä»¥è¿›ä¸€æ­¥ä¼˜åŒ–ï¼‰
+	 * nxn å¯ä»¥ä¼˜åŒ–ä¸º nxn/2
 	 * @param arr
 	 * @param comparor
 	 */
@@ -36,7 +36,7 @@ public class SortUtil {
 	 * @param comparor
 	 */
 	public static void sort(List list, Comparor comparor) {
-		//Ä¿Ç°ÏÈÓÃÒ»¸öÂıËÙµÄÊµÏÖ£¬ºóĞøÔÙÓÅ»¯
+		//ç›®å‰å…ˆç”¨ä¸€ä¸ªæ…¢é€Ÿçš„å®ç°ï¼Œåç»­å†ä¼˜åŒ–
 		Object[] data = new Object[list.size()];
 		for (int i=0;i<list.size();i++){
 			data[i] = list.get(i);

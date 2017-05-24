@@ -3,7 +3,7 @@ package net.jplugin.common.kits;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-1 ÏÂÎç07:25:32
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-1 ä¸‹åˆ07:25:32
  **/
 
 public class YesNo {

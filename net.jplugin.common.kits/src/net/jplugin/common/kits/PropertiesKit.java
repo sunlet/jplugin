@@ -8,7 +8,7 @@ import java.util.Properties;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-8 ÉÏÎç01:42:24
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-8 ä¸Šåˆ01:42:24
  **/
 
 public class PropertiesKit {

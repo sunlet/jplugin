@@ -3,7 +3,7 @@ package net.jplugin.common.kits;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÏÂÎç04:58:41
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸‹åˆ04:58:41
  **/
 
 public class AssertKit {

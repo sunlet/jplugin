@@ -10,7 +10,7 @@ import net.jplugin.common.kits.Base64Kit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-11 ÏÂÎç02:02:39
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-11 ä¸‹åˆ02:02:39
  **/
 
 public class SerializKit {

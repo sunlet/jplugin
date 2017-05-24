@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-22 ÏÂÎç02:09:16
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸‹åˆ02:09:16
  **/
 
 public class ReflactKit {
@@ -117,7 +117,7 @@ public class ReflactKit {
 			if ((modf & Modifier.STATIC)!=0)
 				continue;
 			
-			//ObjectÀàµÄ·½·¨²»¿¼ÂÇ
+			//Objectç±»çš„æ–¹æ³•ä¸è€ƒè™‘
 			if (m.getDeclaringClass()==Object.class){
 				continue;
 			}
@@ -139,7 +139,7 @@ public class ReflactKit {
 		String nm = c.getName();
 		int pos = nm.lastIndexOf('.');
 		if (pos<0) {
-			//ÎŞ°üÃû
+			//æ— åŒ…å
 			return nm;
 		}
 		return nm.substring(pos+1);
