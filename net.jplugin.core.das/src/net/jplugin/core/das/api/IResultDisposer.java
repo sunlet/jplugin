@@ -6,7 +6,7 @@ import java.sql.SQLException;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-8 ÏÂÎç11:16:58
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-8 ä¸‹åˆ11:16:58
  **/
 
 public interface IResultDisposer {

@@ -30,7 +30,7 @@ public class AnnoTest {
 		 r = HttpKit.post("http://localhost:8080/demo/webanno/webex/test.do",para );
 		 AssertKit.assertEqual("1", r);
 		 
-		 //在调用一次，因为每次创建新的
+		 //鍦ㄨ皟鐢ㄤ竴娆★紝鍥犱负姣忔鍒涘缓鏂扮殑
 		 r = HttpKit.post("http://localhost:8080/demo/webanno/webex/test.do",para );
 		 AssertKit.assertEqual("1", r);
 		

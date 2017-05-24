@@ -3,7 +3,7 @@ package net.jplugin.core.event.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÉÏÎç08:42:38
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸Šåˆ08:42:38
  **/
 
 public class EventAliasDefine {

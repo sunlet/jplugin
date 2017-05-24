@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 
 /**
- * 仅仅是一个代理的数据源，不能setAutoCommit，不能commit、不能roolback、不能close，都无效
+ * 浠呬粎鏄竴涓唬鐞嗙殑鏁版嵁婧愶紝涓嶈兘setAutoCommit锛屼笉鑳絚ommit銆佷笉鑳絩oolback銆佷笉鑳絚lose锛岄兘鏃犳晥
  * @author Administrator
  *
  */

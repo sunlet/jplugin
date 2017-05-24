@@ -6,7 +6,7 @@ import net.jplugin.core.event.api.Event;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÉÏÎç11:47:59
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸Šåˆ11:47:59
  **/
 
 public class SyncChannel extends Channel{

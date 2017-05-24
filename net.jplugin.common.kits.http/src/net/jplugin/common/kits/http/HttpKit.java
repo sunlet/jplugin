@@ -50,7 +50,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Http²Ù×÷¹¤¾ßÀà
+ * Httpæ“ä½œå·¥å…·ç±»
  * @author liyy
  * @date 2014-05-20
  */
@@ -60,11 +60,11 @@ public final class HttpKit{
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
 
-    private static       int     maxConnections         = 200; //httpÇëÇó×î´ó²¢·¢Á¬½ÓÊı
-    private static       int     maxConnectionsPerRoute = 20; //httpÇëÇó×î´ó²¢·¢Á¬½ÓÊı
-    private static       int     socketTimeout          = 6; //³¬Ê±Ê±¼ä£¬Ä¬ÈÏ20Ãë
-    private static       int     maxRetries             = 5;//´íÎó³¢ÊÔ´ÎÊı£¬´íÎóÒì³£±íÇëÔÚRetryHandlerÌí¼Ó
-    private static       int     httpThreadCount        = 3;//httpÏß³Ì³ØÊıÁ¿
+    private static       int     maxConnections         = 200; //httpè¯·æ±‚æœ€å¤§å¹¶å‘è¿æ¥æ•°
+    private static       int     maxConnectionsPerRoute = 20; //httpè¯·æ±‚æœ€å¤§å¹¶å‘è¿æ¥æ•°
+    private static       int     socketTimeout          = 6; //è¶…æ—¶æ—¶é—´ï¼Œé»˜è®¤20ç§’
+    private static       int     maxRetries             = 5;//é”™è¯¯å°è¯•æ¬¡æ•°ï¼Œé”™è¯¯å¼‚å¸¸è¡¨è¯·åœ¨RetryHandleræ·»åŠ 
+    private static       int     httpThreadCount        = 3;//httpçº¿ç¨‹æ± æ•°é‡
 	private static final Charset UTF_8                  = Charset.forName("UTF-8");
 
     private static boolean unitTesting=false;
@@ -85,53 +85,53 @@ public final class HttpKit{
 	private static HttpClientBuilder initHttpClientBuilder() {
 		final HttpClientBuilder builder = HttpClientBuilder.create();
 		try {
-			//ÇëÇóÅäÖÃ
+			//è¯·æ±‚é…ç½®
 			RequestConfig config = RequestConfig.custom()
 					.setConnectTimeout(socketTimeout * 1000)
 					.setConnectionRequestTimeout(socketTimeout * 1000)
 					.setSocketTimeout(socketTimeout * 1000).build();
 			builder.setDefaultRequestConfig(config);
 
-			//socketÅäÖÃ
+			//socketé…ç½®
 			SocketConfig socketConfig = SocketConfig.custom()
 					.setTcpNoDelay(true)
 					.build();
 
-			//Á¬½ÓÊôĞÔÅäÖÃ
+			//è¿æ¥å±æ€§é…ç½®
 			ConnectionConfig connectionConfig = ConnectionConfig.custom()
 					.setCharset(UTF_8)
 					.setBufferSize(DEFAULT_SOCKET_BUFFER_SIZE)
 					.build();
 
-			// ÇëÇóÖØÊÔ´¦Àí
+			// è¯·æ±‚é‡è¯•å¤„ç†
 			HttpRequestRetryHandler httpRequestRetryHandler = new HttpRequestRetryHandler() {
 				public boolean retryRequest(IOException exception,
 											int executionCount, HttpContext context) {
-					if (executionCount >= maxRetries) {// Èç¹ûÒÑ¾­ÖØÊÔÖ¸¶¨´ÎÊıÁË£¬¾Í·ÅÆú
+					if (executionCount >= maxRetries) {// å¦‚æœå·²ç»é‡è¯•æŒ‡å®šæ¬¡æ•°äº†ï¼Œå°±æ”¾å¼ƒ
 						return false;
 					}
-					if (exception instanceof NoHttpResponseException) {// Èç¹û·şÎñÆ÷¶ªµôÁËÁ¬½Ó£¬ÄÇÃ´¾ÍÖØÊÔ
+					if (exception instanceof NoHttpResponseException) {// å¦‚æœæœåŠ¡å™¨ä¸¢æ‰äº†è¿æ¥ï¼Œé‚£ä¹ˆå°±é‡è¯•
 						return true;
 					}
-					if (exception instanceof SSLHandshakeException) {// ²»ÒªÖØÊÔSSLÎÕÊÖÒì³£
+					if (exception instanceof SSLHandshakeException) {// ä¸è¦é‡è¯•SSLæ¡æ‰‹å¼‚å¸¸
 						return false;
 					}
-					if (exception instanceof ConnectTimeoutException) {// Á¬½Ó±»¾Ü¾ø
+					if (exception instanceof ConnectTimeoutException) {// è¿æ¥è¢«æ‹’ç»
 						return false;
 					}
-					if (exception instanceof InterruptedIOException) {// ³¬Ê±
+					if (exception instanceof InterruptedIOException) {// è¶…æ—¶
 						return false;
 					}
-					if (exception instanceof UnknownHostException) {// Ä¿±ê·şÎñÆ÷²»¿É´ï
+					if (exception instanceof UnknownHostException) {// ç›®æ ‡æœåŠ¡å™¨ä¸å¯è¾¾
 						return false;
 					}
-					if (exception instanceof SSLException) {// SSLÎÕÊÖÒì³£
+					if (exception instanceof SSLException) {// SSLæ¡æ‰‹å¼‚å¸¸
 						return false;
 					}
 					HttpClientContext clientContext = HttpClientContext
 							.adapt(context);
 					HttpRequest request = clientContext.getRequest();
-					// Èç¹ûÇëÇóÊÇÃİµÈµÄ£¬¾ÍÔÙ´Î³¢ÊÔ
+					// å¦‚æœè¯·æ±‚æ˜¯å¹‚ç­‰çš„ï¼Œå°±å†æ¬¡å°è¯•
 					if (!(request instanceof HttpEntityEnclosingRequest)) {
 						return true;
 					}
@@ -191,7 +191,7 @@ public final class HttpKit{
 				params.add(new BasicNameValuePair(key, value.toString()));
 		}
 		httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
-		//ÉèÖÃheaders
+		//è®¾ç½®headers
 		if (extHeaders!=null){
 			for (Entry<String, String> en:extHeaders.entrySet()){
 				httpPost.setHeader(en.getKey(),en.getValue());
@@ -221,7 +221,7 @@ public final class HttpKit{
 		CloseableHttpClient httpClient = createHttpClient();
 		HttpGet httpGet = new HttpGet(url);
 		
-		//ÉèÖÃheaders
+		//è®¾ç½®headers
 		if (extHeaders!=null){
 			for (Entry<String, String> en:extHeaders.entrySet()){
 				httpGet.setHeader(en.getKey(),en.getValue());

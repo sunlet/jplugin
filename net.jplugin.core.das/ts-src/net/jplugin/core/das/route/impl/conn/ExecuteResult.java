@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 public class ExecuteResult {
 	private Statement statement = null;
-	boolean closeCalled = true; //±íÊ¾ÉÏ´ÎÉèÖÃ¹ıstatementÒÔºóÓĞÃ»ÓĞµ÷ÓÃ¹ıclear/close·½·¨£¬³õÊ¼true
+	boolean closeCalled = true; //è¡¨ç¤ºä¸Šæ¬¡è®¾ç½®è¿‡statementä»¥åæœ‰æ²¡æœ‰è°ƒç”¨è¿‡clear/closeæ–¹æ³•ï¼Œåˆå§‹true
 	
 	public ResultSet getResult() throws SQLException{
 		if (statement!=null) return statement.getResultSet();
@@ -18,7 +18,7 @@ public class ExecuteResult {
 	}
 	
 	public void clear() {
-		if (statement!=null){ //ÈÃËüµÈÓÚnull£¬Ò²Ö»ÄÜÊÇµ÷ÓÃ¹ıclear·½·¨Ò»´ÎÔì³ÉµÄ
+		if (statement!=null){ //è®©å®ƒç­‰äºnullï¼Œä¹Ÿåªèƒ½æ˜¯è°ƒç”¨è¿‡clearæ–¹æ³•ä¸€æ¬¡é€ æˆçš„
 			if (!closeCalled){
 				try{
 					statement.close();

@@ -5,7 +5,7 @@ import net.jplugin.core.das.hib.api.Entity;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç03:15:53
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ03:15:53
  **/
 @Entity(idField="fileId")
 public class DBCloudFile {

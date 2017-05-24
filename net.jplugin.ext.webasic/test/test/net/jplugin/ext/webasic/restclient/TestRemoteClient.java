@@ -29,7 +29,7 @@ public class TestRemoteClient {
 		AssertKit.assertEqual(2, map.size());
 		AssertKit.assertEqual("lisi", map.get("lisi").name);
 		
-		//²âÊÔÅ×³öÆÕÍ¨exception
+		//æµ‹è¯•æŠ›å‡ºæ™®é€šexception
 		boolean ret=false;
 		try{
 			service.ex();
@@ -40,7 +40,7 @@ public class TestRemoteClient {
 		if (!ret) throw new RuntimeException("fail");
 		
 		
-		//²âÊÔÅ×³öretmoteexception
+		//æµ‹è¯•æŠ›å‡ºretmoteexception
 		ret=false;
 		try{
 			service.remoteEx();
@@ -50,7 +50,7 @@ public class TestRemoteClient {
 		}
 		if (!ret) throw new RuntimeException("fail");
 		
-		//²âÊÔÅ×³öindirect exception,È·¶¨Õâ¸öÔÚremote javaÄ£Ê½²»Ö§³Ö£¡£¡£¡£¡
+		//æµ‹è¯•æŠ›å‡ºindirect exception,ç¡®å®šè¿™ä¸ªåœ¨remote javaæ¨¡å¼ä¸æ”¯æŒï¼ï¼ï¼ï¼
 		service.indirectEx();
 	}
 }

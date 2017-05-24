@@ -29,10 +29,10 @@ import org.apache.ibatis.session.RowBounds;
 import net.jplugin.core.das.api.PageCond;
 
 /**
- * Í¨¹ıÀ¹½Ø<code>StatementHandler</code>µÄ<code>prepare</code>·½·¨£¬ÖØĞ´sqlÓï¾äÊµÏÖÎïÀí·ÖÒ³¡£
- * ÀÏ¹æ¾Ø£¬Ç©ÃûÀïÒªÀ¹½ØµÄÀàĞÍÖ»ÄÜÊÇ½Ó¿Ú¡£
+ * é€šè¿‡æ‹¦æˆª<code>StatementHandler</code>çš„<code>prepare</code>æ–¹æ³•ï¼Œé‡å†™sqlè¯­å¥å®ç°ç‰©ç†åˆ†é¡µã€‚
+ * è€è§„çŸ©ï¼Œç­¾åé‡Œè¦æ‹¦æˆªçš„ç±»å‹åªèƒ½æ˜¯æ¥å£ã€‚
  * 
- * @author ºşÅÏÎ¢·ç
+ * @author æ¹–ç•”å¾®é£
  * 
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
@@ -40,22 +40,22 @@ public abstract class PageInterceptor implements Interceptor {
     private static final Log logger = LogFactory.getLog(PageInterceptor.class);
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
-    private static final String defaultDialect = "mysql"; // Êı¾İ¿âÀàĞÍ(Ä¬ÈÏÎªmysql)
-    private static final String defaultPageSqlId = ".*Page$"; // ĞèÒªÀ¹½ØµÄID(ÕıÔòÆ¥Åä)
-//    private static String dialect = ""; // Êı¾İ¿âÀàĞÍ(Ä¬ÈÏÎªmysql)
-//    private static String pageSqlId = ""; // ĞèÒªÀ¹½ØµÄID(ÕıÔòÆ¥Åä)
+    private static final String defaultDialect = "mysql"; // æ•°æ®åº“ç±»å‹(é»˜è®¤ä¸ºmysql)
+    private static final String defaultPageSqlId = ".*Page$"; // éœ€è¦æ‹¦æˆªçš„ID(æ­£åˆ™åŒ¹é…)
+//    private static String dialect = ""; // æ•°æ®åº“ç±»å‹(é»˜è®¤ä¸ºmysql)
+//    private static String pageSqlId = ""; // éœ€è¦æ‹¦æˆªçš„ID(æ­£åˆ™åŒ¹é…)
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
         MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
                 DEFAULT_OBJECT_WRAPPER_FACTORY);
-        // ·ÖÀë´úÀí¶ÔÏóÁ´(ÓÉÓÚÄ¿±êÀà¿ÉÄÜ±»¶à¸öÀ¹½ØÆ÷À¹½Ø£¬´Ó¶øĞÎ³É¶à´Î´úÀí£¬Í¨¹ıÏÂÃæµÄÁ½´ÎÑ­»·¿ÉÒÔ·ÖÀë³ö×îÔ­Ê¼µÄµÄÄ¿±êÀà)
+        // åˆ†ç¦»ä»£ç†å¯¹è±¡é“¾(ç”±äºç›®æ ‡ç±»å¯èƒ½è¢«å¤šä¸ªæ‹¦æˆªå™¨æ‹¦æˆªï¼Œä»è€Œå½¢æˆå¤šæ¬¡ä»£ç†ï¼Œé€šè¿‡ä¸‹é¢çš„ä¸¤æ¬¡å¾ªç¯å¯ä»¥åˆ†ç¦»å‡ºæœ€åŸå§‹çš„çš„ç›®æ ‡ç±»)
         while (metaStatementHandler.hasGetter("h")) {
             Object object = metaStatementHandler.getValue("h");
             metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
         }
-        // ·ÖÀë×îºóÒ»¸ö´úÀí¶ÔÏóµÄÄ¿±êÀà
+        // åˆ†ç¦»æœ€åä¸€ä¸ªä»£ç†å¯¹è±¡çš„ç›®æ ‡ç±»
         while (metaStatementHandler.hasGetter("target")) {
             Object object = metaStatementHandler.getValue("target");
             metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
@@ -72,7 +72,7 @@ public abstract class PageInterceptor implements Interceptor {
             pageSqlId = defaultPageSqlId;
         }
         MappedStatement mappedStatement = (MappedStatement) metaStatementHandler.getValue("delegate.mappedStatement");
-        // Ö»ÖØĞ´ĞèÒª·ÖÒ³µÄsqlÓï¾ä¡£Í¨¹ıMappedStatementµÄIDÆ¥Åä£¬Ä¬ÈÏÖØĞ´ÒÔPage½áÎ²µÄMappedStatementµÄsql
+        // åªé‡å†™éœ€è¦åˆ†é¡µçš„sqlè¯­å¥ã€‚é€šè¿‡MappedStatementçš„IDåŒ¹é…ï¼Œé»˜è®¤é‡å†™ä»¥Pageç»“å°¾çš„MappedStatementçš„sql
         if (mappedStatement.getId().matches(pageSqlId)) {
             BoundSql boundSql = (BoundSql) metaStatementHandler.getValue("delegate.boundSql");
             Object parameterObject = boundSql.getParameterObject();
@@ -82,25 +82,25 @@ public abstract class PageInterceptor implements Interceptor {
                 PageCond page = (PageCond) metaStatementHandler
                         .getValue("delegate.boundSql.parameterObject.page");
                 String sql = boundSql.getSql();
-                // ÖØĞ´sql
+                // é‡å†™sql
                 String pageSql = buildPageSql(sql, page);
                 metaStatementHandler.setValue("delegate.boundSql.sql", pageSql);
-                // ²ÉÓÃÎïÀí·ÖÒ³ºó£¬¾Í²»ĞèÒªmybatisµÄÄÚ´æ·ÖÒ³ÁË£¬ËùÒÔÖØÖÃÏÂÃæµÄÁ½¸ö²ÎÊı
+                // é‡‡ç”¨ç‰©ç†åˆ†é¡µåï¼Œå°±ä¸éœ€è¦mybatisçš„å†…å­˜åˆ†é¡µäº†ï¼Œæ‰€ä»¥é‡ç½®ä¸‹é¢çš„ä¸¤ä¸ªå‚æ•°
                 metaStatementHandler.setValue("delegate.rowBounds.offset", RowBounds.NO_ROW_OFFSET);
                 metaStatementHandler.setValue("delegate.rowBounds.limit", RowBounds.NO_ROW_LIMIT);
                 Connection connection = (Connection) invocation.getArgs()[0];
-                // ÖØÉè·ÖÒ³²ÎÊıÀïµÄ×ÜÒ³ÊıµÈ
+                // é‡è®¾åˆ†é¡µå‚æ•°é‡Œçš„æ€»é¡µæ•°ç­‰
                 if (page.isShdCount())
                 	setPageParameter(sql, connection, mappedStatement, boundSql, page);
             }
         }
-        // ½«Ö´ĞĞÈ¨½»¸øÏÂÒ»¸öÀ¹½ØÆ÷
+        // å°†æ‰§è¡Œæƒäº¤ç»™ä¸‹ä¸€ä¸ªæ‹¦æˆªå™¨
         return invocation.proceed();
     }
 
     /**
-     * ´ÓÊı¾İ¿âÀï²éÑ¯×ÜµÄ¼ÇÂ¼Êı²¢¼ÆËã×ÜÒ³Êı£¬»ØĞ´½ø·ÖÒ³²ÎÊı<code>PageParameter</code>,ÕâÑùµ÷ÓÃÕß¾Í¿ÉÓÃÍ¨¹ı ·ÖÒ³²ÎÊı
-     * <code>PageParameter</code>»ñµÃÏà¹ØĞÅÏ¢¡£
+     * ä»æ•°æ®åº“é‡ŒæŸ¥è¯¢æ€»çš„è®°å½•æ•°å¹¶è®¡ç®—æ€»é¡µæ•°ï¼Œå›å†™è¿›åˆ†é¡µå‚æ•°<code>PageParameter</code>,è¿™æ ·è°ƒç”¨è€…å°±å¯ç”¨é€šè¿‡ åˆ†é¡µå‚æ•°
+     * <code>PageParameter</code>è·å¾—ç›¸å…³ä¿¡æ¯ã€‚
      * 
      * @param sql
      * @param connection
@@ -110,7 +110,7 @@ public abstract class PageInterceptor implements Interceptor {
      */
     private void setPageParameter(String sql, Connection connection, MappedStatement mappedStatement,
             BoundSql boundSql, PageCond page) {
-        // ¼ÇÂ¼×Ü¼ÇÂ¼Êı
+        // è®°å½•æ€»è®°å½•æ•°
         String countSql = "select count(0) from (" + sql + ")  total";
         PreparedStatement countStmt = null;
         ResultSet rs = null;
@@ -144,7 +144,7 @@ public abstract class PageInterceptor implements Interceptor {
     }
 
     /**
-     * ¶ÔSQL²ÎÊı(?)ÉèÖµ
+     * å¯¹SQLå‚æ•°(?)è®¾å€¼
      * 
      * @param ps
      * @param mappedStatement
@@ -159,7 +159,7 @@ public abstract class PageInterceptor implements Interceptor {
     }
 
     /**
-     * ×ÓÀà¸ù¾İÊı¾İ¿âÀàĞÍ£¬Éú³ÉÌØ¶¨µÄ·ÖÒ³sql
+     * å­ç±»æ ¹æ®æ•°æ®åº“ç±»å‹ï¼Œç”Ÿæˆç‰¹å®šçš„åˆ†é¡µsql
      * 
      * @param sql
      * @param page
@@ -169,7 +169,7 @@ public abstract class PageInterceptor implements Interceptor {
 
     @Override
     public Object plugin(Object target) {
-        // µ±Ä¿±êÀàÊÇStatementHandlerÀàĞÍÊ±£¬²Å°ü×°Ä¿±êÀà£¬·ñÕßÖ±½Ó·µ»ØÄ¿±ê±¾Éí,¼õÉÙÄ¿±ê±»´úÀíµÄ´ÎÊı
+        // å½“ç›®æ ‡ç±»æ˜¯StatementHandlerç±»å‹æ—¶ï¼Œæ‰åŒ…è£…ç›®æ ‡ç±»ï¼Œå¦è€…ç›´æ¥è¿”å›ç›®æ ‡æœ¬èº«,å‡å°‘ç›®æ ‡è¢«ä»£ç†çš„æ¬¡æ•°
         if (target instanceof StatementHandler) {
             return Plugin.wrap(target, this);
         } else {

@@ -7,7 +7,7 @@ import net.jplugin.common.kits.JsonKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç11:51:32
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ11:51:32
  **/
 
 public class HttpMock {

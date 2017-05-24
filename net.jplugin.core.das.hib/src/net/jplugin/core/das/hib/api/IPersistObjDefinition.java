@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç05:22:56
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ05:22:56
  **/
 
 public interface IPersistObjDefinition {

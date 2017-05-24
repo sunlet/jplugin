@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç10:17:16
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ10:17:16
  **/
 
 public class RuleParameter {

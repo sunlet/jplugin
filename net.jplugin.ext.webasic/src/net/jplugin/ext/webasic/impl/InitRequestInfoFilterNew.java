@@ -22,8 +22,8 @@ import net.jplugin.ext.webasic.api.RequestIdUtil;
 import net.jplugin.ext.webasic.api.WebFilter;
 
 /**
- * This filter must not conflict with InitRequestInfoFilter¡£This is two seperate
- * method¡£
+ * This filter must not conflict with InitRequestInfoFilterã€‚This is two seperate
+ * methodã€‚
  * 
  * @author Administrator
  *
@@ -84,7 +84,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		Content content = requestInfo.getContent();
 		
 		Map map;
-		//2016-12-08 ÒòÎª°ÑjsonContent½âÎö·ÅÈëparamContent£¬²»ĞèÒªÇø·ÖÁË
+		//2016-12-08 å› ä¸ºæŠŠjsonContentè§£ææ”¾å…¥paramContentï¼Œä¸éœ€è¦åŒºåˆ†äº†
 //		if (APPLICATION_JSON.equals(content.getContentType())) {
 //			map = content.getMapForJsonContent();
 //		} else {
@@ -94,7 +94,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 
 		String clientAppToken = (String) map.get(_ATK);
 		String operatorToken = (String) map.get(_OTK);
-		//Èç´ËÅĞ¶Ï£¬±ÜÃâºÍInitRequestInfoFilter³åÍ»ÁË
+		//å¦‚æ­¤åˆ¤æ–­ï¼Œé¿å…å’ŒInitRequestInfoFilterå†²çªäº†
 		if (clientAppToken!=null  || operatorToken!=null){
 			requestInfo.setClientAppToken(clientAppToken);
 			requestInfo.setOperatorToken(operatorToken);
@@ -102,13 +102,13 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			requestInfo.setClientAppCode((String) map.get(_AID));
 		}
 		
-		//ÉèÖÃreqId
+		//è®¾ç½®reqId
 		String reqId = (String) requestInfo.getHeaders().getHeader(_GREQID);
 		if (StringKit.isNull(reqId))
 			reqId = RequestIdUtil.newRequestId();
 		requestInfo.setRequestId(reqId);
 		
-		//ÉèÖÃtenant
+		//è®¾ç½®tenant
 		MtInvocationFilterHandler.instance.handle(requestInfo);
 		
 	}

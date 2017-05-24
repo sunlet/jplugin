@@ -8,7 +8,7 @@ import org.apache.log4j.Priority;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç11:35:49
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ11:35:49
  **/
 
 public class Logger4Log4j implements Logger {

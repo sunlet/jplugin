@@ -11,29 +11,29 @@ import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
 public class Plugin extends AbstractPlugin{
 	/**
 	 * <pre>
-	 * #¶à×â»§ÅäÖÃÁĞ±í
-	 * #±íÊ¾ÊÇ·ñÆôÓÃ¶à×â»§Ä£Ê½£¬Ä¬ÈÏFALSE
+	 * #å¤šç§Ÿæˆ·é…ç½®åˆ—è¡¨
+	 * #è¡¨ç¤ºæ˜¯å¦å¯ç”¨å¤šç§Ÿæˆ·æ¨¡å¼ï¼Œé»˜è®¤FALSE
 	 * mtenant.enable=FALSE|TRUE
 	 * 
-	 * #HTTPÇëÇóÖĞ×â»§²ÎÊıÎ»ÖÃ
+	 * #HTTPè¯·æ±‚ä¸­ç§Ÿæˆ·å‚æ•°ä½ç½®
 	 *  mtenant.req-param-at=BOTH|COOKIE|REQUEST
 	 *  
-	 * #HTTPÇëÇóÖĞ×â»§²ÎÊıÃû³Æ£¬²ÎÊıÖĞµÄÃû³Æ¡¢cookieÖĞµÄÃû³Æ¶¼ÓÃÕâ¸öÅäÖÃ£¬±ØĞëÊÇÏàÍ¬µÄ
+	 * #HTTPè¯·æ±‚ä¸­ç§Ÿæˆ·å‚æ•°åç§°ï¼Œå‚æ•°ä¸­çš„åç§°ã€cookieä¸­çš„åç§°éƒ½ç”¨è¿™ä¸ªé…ç½®ï¼Œå¿…é¡»æ˜¯ç›¸åŒçš„
 	 * mtenant.req-param-name=xxxxx
 	 * 
 	 * 
-	 * #Ö¸¶¨Çø·Ö¶à×â»§×Ö¶ÎµÄÃû³Æ.Èç¹ûmtenant.enable=TRUE,ÔòÕâÏî±ØĞëÅäÖÃ
+	 * #æŒ‡å®šåŒºåˆ†å¤šç§Ÿæˆ·å­—æ®µçš„åç§°.å¦‚æœmtenant.enable=TRUE,åˆ™è¿™é¡¹å¿…é¡»é…ç½®
 	 * mtenant.field=field1
 	 * 
-	 * #ÆôÓÃ¶à×â»§µÄÊı¾İÔ´£¬Ä¬ÈÏALL¡£¿ÉÑ¡ÅäÖÃ¡£
+	 * #å¯ç”¨å¤šç§Ÿæˆ·çš„æ•°æ®æºï¼Œé»˜è®¤ALLã€‚å¯é€‰é…ç½®ã€‚
 	 * mtenant.datasource=ALL|ds1,ds2,ds3
 	 * 
-	 * #Ö¸¶¨¸÷¸öÊı¾İÔ´ÖĞ²»Ö§³Ö¶à×â»§µÄ±í£¨ÀıÍâ±í£©¡£¿ÉÑ¡ÅäÖÃ
+	 * #æŒ‡å®šå„ä¸ªæ•°æ®æºä¸­ä¸æ”¯æŒå¤šç§Ÿæˆ·çš„è¡¨ï¼ˆä¾‹å¤–è¡¨ï¼‰ã€‚å¯é€‰é…ç½®
 	 * mtenant.datasource.ds1.exclude=table1,table2
 	 * mtenant.datasource.ds2.exclude=table1,table2
 	 * 
-	 * #ËµÃ÷Ò»ÏÂ
-	 * #Èç¹ûÅöµ½ºöÂÔ¶à×â»§´¦ÀíµÄ×¢ÊÍ£¬ÔòºöÂÔ¸ÃSQLµÄ´¦Àí£º\/* IGNORE-TANENT *\/
+	 * #è¯´æ˜ä¸€ä¸‹
+	 * #å¦‚æœç¢°åˆ°å¿½ç•¥å¤šç§Ÿæˆ·å¤„ç†çš„æ³¨é‡Šï¼Œåˆ™å¿½ç•¥è¯¥SQLçš„å¤„ç†ï¼š\/* IGNORE-TANENT *\/
 	 * </pre>
 	 */
 	public Plugin(){

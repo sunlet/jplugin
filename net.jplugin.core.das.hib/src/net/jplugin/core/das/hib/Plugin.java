@@ -16,7 +16,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÉÏÎç08:35:48
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸Šåˆ08:35:48
  **/
 
 public class Plugin extends AbstractPlugin{

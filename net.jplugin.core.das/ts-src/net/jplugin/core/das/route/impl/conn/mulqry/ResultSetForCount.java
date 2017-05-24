@@ -123,7 +123,7 @@ public class ResultSetForCount extends EmptyQueryableResultSet{
 	}
 	
 	/**
-	 * 一下为delegate实现
+	 * 涓�涓嬩负delegate瀹炵幇
 	 */
 	public ResultSetMetaData getMetaData() throws SQLException {
 		return list.getMetaData();

@@ -10,7 +10,7 @@ import net.jplugin.core.ctx.api.Rule.TxType;
 public interface ITokenService {
 
 	/**
-	 * Ò»¸öidentifierÔÚÒ»¸örealmÖĞÖ»ÄÜÓĞÒ»¸ötoken´æÔÚ£¬ºóÃæ´´½¨µÄtoken½«»á×Ô¶¯¼·³öÒÔÇ°´´½¨µÄ¡£
+	 * ä¸€ä¸ªidentifieråœ¨ä¸€ä¸ªrealmä¸­åªèƒ½æœ‰ä¸€ä¸ªtokenå­˜åœ¨ï¼Œåé¢åˆ›å»ºçš„tokenå°†ä¼šè‡ªåŠ¨æŒ¤å‡ºä»¥å‰åˆ›å»ºçš„ã€‚
 	 * @param tkInfo
 	 * @param identifier
 	 * @param realm
@@ -19,14 +19,14 @@ public interface ITokenService {
 	@Rule(methodType=TxType.REQUIRED)
 	public String createToken(Map<String,String> tkInfo,String identifier,String realm);
 	/**
-	 * Èç¹ûkey²»´æÔÚ£¬Å×³öÒì³£
+	 * å¦‚æœkeyä¸å­˜åœ¨ï¼ŒæŠ›å‡ºå¼‚å¸¸
 	 * @param tk
 	 * @param info
 	 */
 	@Rule(methodType=TxType.REQUIRED)
 	public void putTokenInfo(String tk,Map<String,String> info); 
 	/**
-	 * Èç¹ûkey²»´æÔÚ£¬Å×³öÒì³£
+	 * å¦‚æœkeyä¸å­˜åœ¨ï¼ŒæŠ›å‡ºå¼‚å¸¸
 	 * @param tk
 	 * @param keys
 	 */
@@ -34,7 +34,7 @@ public interface ITokenService {
 	public void removeTokenInfo(String tk,Set<String> keys);
 	
 	/**
-	 * Èç¹ûkey²»´æÔÚ£¬·µ»Ønull£»Èç¹ûkey´æÔÚµ«ÊÇÎŞĞÅÏ¢£¬·µ»Ø¿Õmap
+	 * å¦‚æœkeyä¸å­˜åœ¨ï¼Œè¿”å›nullï¼›å¦‚æœkeyå­˜åœ¨ä½†æ˜¯æ— ä¿¡æ¯ï¼Œè¿”å›ç©ºmap
 	 * @param tk
 	 * @return
 	 */

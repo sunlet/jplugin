@@ -6,18 +6,18 @@ import java.util.Set;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 /**
   * 
- * <P>¸Ã½Ó¿ÚÓÃ»§ÒÑÎÄ±¾ĞÎÊ½µ÷ÓÃÒ»¸öÒÑ¾­·¢²¼µÄRest·şÎñ£¬²¢µÃµ½·µ»Ø½á¹û¡£<br>
- * ¿ÉÒÔ°´ÕÕÈçÏÂ·½Ê½»ñÈ¡¸Ã½Ó¿Úµ¥ÀıÊµÀı£º ServiceInvokerSet.instance;
- * µ÷ÓÃµÄ·½·¨£¬µ÷ÓÃcall·½·¨¡£ ServiceInvokerSet.instance.call( callParam)
+ * <P>è¯¥æ¥å£ç”¨æˆ·å·²æ–‡æœ¬å½¢å¼è°ƒç”¨ä¸€ä¸ªå·²ç»å‘å¸ƒçš„RestæœåŠ¡ï¼Œå¹¶å¾—åˆ°è¿”å›ç»“æœã€‚<br>
+ * å¯ä»¥æŒ‰ç…§å¦‚ä¸‹æ–¹å¼è·å–è¯¥æ¥å£å•ä¾‹å®ä¾‹ï¼š ServiceInvokerSet.instance;
+ * è°ƒç”¨çš„æ–¹æ³•ï¼Œè°ƒç”¨callæ–¹æ³•ã€‚ ServiceInvokerSet.instance.call( callParam)
  * <br>
- * ²ÎÊıCallParam¿ÉÒÔÓÃÈçÏÂ·½·¨¹¹Ôì : CallParam.create(path,operation,map);
- * ÆäÖĞ,¸÷²ÎÊıÈçÏÂ£º
- * 		<li>path:·şÎñÇëÇóÂ·¾¶±ÈÈç  /svc/cust</li>
- * 		<li>operation:·şÎñÇëÇóµÄ·½·¨Ãû£¬±ÈÈç addCustomer</li>
- * 		<li>map:´«ÈëµÄ²ÎÊı £¬·Ö±ğ¶ÔÓ¦µ½Java·½·¨µÄÃ¿¸ö²ÎÊı£¬¸´ÔÓÀàĞÍ²ÉÓÃJSON¸ñÊ½</li>
+ * å‚æ•°CallParamå¯ä»¥ç”¨å¦‚ä¸‹æ–¹æ³•æ„é€  : CallParam.create(path,operation,map);
+ * å…¶ä¸­,å„å‚æ•°å¦‚ä¸‹ï¼š
+ * 		<li>path:æœåŠ¡è¯·æ±‚è·¯å¾„æ¯”å¦‚  /svc/cust</li>
+ * 		<li>operation:æœåŠ¡è¯·æ±‚çš„æ–¹æ³•åï¼Œæ¯”å¦‚ addCustomer</li>
+ * 		<li>map:ä¼ å…¥çš„å‚æ•° ï¼Œåˆ†åˆ«å¯¹åº”åˆ°Javaæ–¹æ³•çš„æ¯ä¸ªå‚æ•°ï¼Œå¤æ‚ç±»å‹é‡‡ç”¨JSONæ ¼å¼</li>
  * <br>
  * <br>
- * ·µ»ØÖµºÍÄ¿Ç°restful·şÎñ·µ»Ø½á¹¹ÏàÍ¬£¬¿ÉÒÔ²ÎÕÕ¾ÉÎÄµµ¡£
+ * è¿”å›å€¼å’Œç›®å‰restfulæœåŠ¡è¿”å›ç»“æ„ç›¸åŒï¼Œå¯ä»¥å‚ç…§æ—§æ–‡æ¡£ã€‚
  *  
  * @author Luis LiuHang
 * 
@@ -27,7 +27,7 @@ public interface IServiceInvokerSet {
 	public Set<String>  getPathSet();
 	public void call(CallParam cp)  throws Throwable;
 	public Set<String> getAcceptPaths();
-	//ÎªÁËÖ§³ÖESFÌí¼Ó
+	//ä¸ºäº†æ”¯æŒESFæ·»åŠ 
 	public IServiceInvoker getServiceInvoker(String path);
 	public void addServices(Map<String, ObjectDefine> defs);
 }

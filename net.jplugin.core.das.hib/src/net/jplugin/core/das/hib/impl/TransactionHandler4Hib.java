@@ -10,7 +10,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÉÏÎç11:48:52
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸Šåˆ11:48:52
  **/
 
 public class TransactionHandler4Hib implements TransactionHandler {
@@ -26,9 +26,9 @@ public class TransactionHandler4Hib implements TransactionHandler {
 
 	/*
 	 * <pre>
-	 * <li>Èç¹ûÒÑÓĞsession£¬Ôò´´½¨transaction¡£
-	 * <li>ÔÚ²éÕÒsessionµÄÊ±ºò£¬Èç¹ûÔÚtxÖĞ£¬ÔòÍ¬Ê±´´½¨tx¡£
-	 * <li>Èç´ËÈ·±££ºÈç¹ûÊÇÓĞÊÂÎï×´Ì¬£¬ÔòÕâÀïÒ²ÊÇÓĞtxµÄ¡£
+	 * <li>å¦‚æœå·²æœ‰sessionï¼Œåˆ™åˆ›å»ºtransactionã€‚
+	 * <li>åœ¨æŸ¥æ‰¾sessionçš„æ—¶å€™ï¼Œå¦‚æœåœ¨txä¸­ï¼Œåˆ™åŒæ—¶åˆ›å»ºtxã€‚
+	 * <li>å¦‚æ­¤ç¡®ä¿ï¼šå¦‚æœæ˜¯æœ‰äº‹ç‰©çŠ¶æ€ï¼Œåˆ™è¿™é‡Œä¹Ÿæ˜¯æœ‰txçš„ã€‚
 	 * </pre>
 	 * @see net.luis.plugin.ctx.api.TransactionHandler#doBegin()
 	 */
@@ -40,7 +40,7 @@ public class TransactionHandler4Hib implements TransactionHandler {
 			throw new HibDasException("tx begin a second time");
 		}
 
-		// Èç¹ûÒÑ¾­ÓĞsession£¬Ôò¿ªÆôÊÂÎï
+		// å¦‚æœå·²ç»æœ‰sessionï¼Œåˆ™å¼€å¯äº‹ç‰©
 		helper.clearSessionAndTx(tlc);
 		
 		
@@ -53,7 +53,7 @@ public class TransactionHandler4Hib implements TransactionHandler {
 	}
 
 	/*
-	 * Èç¹ûÄÜÕÒµ½transaction£¬ÔòÌá½»Ëü£¬session»Ø¹éµ½×Ô¶¯Ìá½»Ä£Ê½
+	 * å¦‚æœèƒ½æ‰¾åˆ°transactionï¼Œåˆ™æäº¤å®ƒï¼Œsessionå›å½’åˆ°è‡ªåŠ¨æäº¤æ¨¡å¼
 	 * @see net.luis.plugin.ctx.api.TransactionHandler#doCommit()
 	 */
 	public void doCommit() {

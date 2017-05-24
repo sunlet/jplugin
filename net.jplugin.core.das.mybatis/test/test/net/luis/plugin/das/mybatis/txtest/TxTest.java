@@ -17,12 +17,12 @@ public class TxTest {
 		IMybatisService testdbSvc = MyBatisServiceFactory.getService("testdb");
 		IMybatisService defaultSvc = MyBatisServiceFactory.getService("database");
 		
-		//清理数据
+		//娓呯悊鏁版嵁
 		clearData(testdbSvc,defaultSvc);
 		
 		testError(testdbSvc,defaultSvc);
 		
-		//清理数据
+		//娓呯悊鏁版嵁
 		clearData(testdbSvc,defaultSvc);
 		testOK(testdbSvc,defaultSvc);
 	}

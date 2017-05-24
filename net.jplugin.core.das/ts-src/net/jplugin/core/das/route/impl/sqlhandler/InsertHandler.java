@@ -20,7 +20,7 @@ public class InsertHandler extends AbstractCommandHandler{
 
 	@Override
 	KeyResult walkToGetKeyColumnInfo(SqlWordsWalker walker, String tableName,String keyField) {
-		//Åöµ½ ) ¾ÍÍ£Ö¹
+		//ç¢°åˆ° ) å°±åœæ­¢
 		if (!walker.nextUntil("(")) throw new TablesplitException("Can't found fields segment in sql."+walker.sql); 
 		
 		boolean success = false;
@@ -48,7 +48,7 @@ public class InsertHandler extends AbstractCommandHandler{
 		int paramIndex = 0;
 		while (walker.next()){
 			if (index == keyFieldIndex){
-				break;//´ËÊ±¸ÕºÃwalkerµ½Õâ¸öfieldµÄÖµÁË£¡
+				break;//æ­¤æ—¶åˆšå¥½walkeråˆ°è¿™ä¸ªfieldçš„å€¼äº†ï¼
 			}
 			if ("?".equals(walker.word)){
 				paramIndex ++;
@@ -63,7 +63,7 @@ public class InsertHandler extends AbstractCommandHandler{
 		
 		KeyResult result= new KeyResult();
 		if (walker.word.equals("?")){
-			result.isParamedKey = true;//´ËÊ± paramIndex±íÊ¾ÎÊºÅµÄ´ÎĞò£¬0±íÊ¾µÚÒ»¸ö
+			result.isParamedKey = true;//æ­¤æ—¶ paramIndexè¡¨ç¤ºé—®å·çš„æ¬¡åºï¼Œ0è¡¨ç¤ºç¬¬ä¸€ä¸ª
 			result.keyParamIndex = paramIndex;
 		}else{
 			result.isParamedKey = false;

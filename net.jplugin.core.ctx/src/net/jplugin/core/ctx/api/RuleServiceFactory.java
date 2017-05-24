@@ -11,7 +11,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÉÏÎç09:07:30
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸Šåˆ09:07:30
  **/
 
 public class RuleServiceFactory {

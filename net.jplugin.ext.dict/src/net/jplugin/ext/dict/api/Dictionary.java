@@ -1,8 +1,8 @@
 package net.jplugin.ext.dict.api;
 
 public class Dictionary {
-	String value;//ֵ
-	String label;//�ı�
+	String value;//值
+	String label;//文本
 	
 	public Dictionary(String v,String l){
 		this.value = v;

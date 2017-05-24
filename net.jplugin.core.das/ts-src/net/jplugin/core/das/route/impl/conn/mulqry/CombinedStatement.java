@@ -36,10 +36,10 @@ public class CombinedStatement extends EmptyStatement{
 		if (this.closed) throw new TablesplitException("can't call in a closed statement");
 		ParseResult pr = CombinedSqlParser.parse(sql);
 		
-		//»ñÈ¡resultList
+		//è·å–resultList
 		ResultSetList resutSet = genResultSetList(pr);
 		
-		//¸ù¾İcount(*)Ä£Ê½·µ»Ø²»Í¬µÄÖµ
+		//æ ¹æ®count(*)æ¨¡å¼è¿”å›ä¸åŒçš„å€¼
 		if (pr.getMeta().getCountStar()==1){
 			this.theResultSet = new ResultSetForCount(resutSet);
 			return this.theResultSet;
@@ -64,7 +64,7 @@ public class CombinedStatement extends EmptyStatement{
 			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
 			return ret;
 		}catch(Exception e){
-			//·¢ÉúÒì³£µÄÇé¿öÏÂ£¬statement »áÔÚ±¾statement¹Ø±ÕµÄÊ±ºò¹Ø±Õ£¬µ«ÊÇresultSet²»»á£¬ĞèÒª´¦ÀíÒ»ÏÂ
+			//å‘ç”Ÿå¼‚å¸¸çš„æƒ…å†µä¸‹ï¼Œstatement ä¼šåœ¨æœ¬statementå…³é—­çš„æ—¶å€™å…³é—­ï¼Œä½†æ˜¯resultSetä¸ä¼šï¼Œéœ€è¦å¤„ç†ä¸€ä¸‹
 			for (ResultSet r:tempList){
 				try{
 					r.close();

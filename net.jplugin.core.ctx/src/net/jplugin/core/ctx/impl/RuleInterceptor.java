@@ -42,7 +42,7 @@ public class RuleInterceptor implements InvocationHandler {
 	}
 
 	/**
-	 * »ñÈ¡Ò»¸öPROXYµÄÊµÀý
+	 * èŽ·å–ä¸€ä¸ªPROXYçš„å®žä¾‹
 	 * @param clazz
 	 * @param service
 	 * @return
@@ -59,7 +59,7 @@ public class RuleInterceptor implements InvocationHandler {
 	}
 
 	/**
-	 * ÕýÈ·ÐÔ¼ì²é
+	 * æ­£ç¡®æ€§æ£€æŸ¥
 	 */
 	public void valid() {
 		//
@@ -91,7 +91,7 @@ public class RuleInterceptor implements InvocationHandler {
 		if (name.startsWith("get") || name.startsWith("query")|| name.startsWith("list") ||name.startsWith("find")
 				|| name.startsWith("common"))
 			return false;
-		// ÅÐ¶ÏµÚÒ»¸öµ¥´ÊÎªIS
+		// åˆ¤æ–­ç¬¬ä¸€ä¸ªå•è¯ä¸ºIS
 		if (name.startsWith("is")) {
 			char c2 = name.charAt(2);
 			if (c2 >= 'A' && c2 <= 'Z')

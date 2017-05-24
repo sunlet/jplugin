@@ -15,12 +15,12 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç07:14:05
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ07:14:05
  **/
 
 public class DownloadHelper {
 
-	// Ö§³ÖÔÚÏß´ò¿ª
+	// æ”¯æŒåœ¨çº¿æ‰“å¼€
 	public static void downLoad(String filePath,String downloadName, HttpServletResponse response,
 			boolean isOnLine){
 		File f = new File(filePath);
@@ -33,14 +33,14 @@ public class DownloadHelper {
 			byte[] buf = new byte[1024];
 			int len = 0;
 
-			response.reset(); // ·Ç³£ÖØÒª
-			if (isOnLine) { // ÔÚÏß´ò¿ª·½Ê½
+			response.reset(); // éå¸¸é‡è¦
+			if (isOnLine) { // åœ¨çº¿æ‰“å¼€æ–¹å¼
 				URL u = new URL("file:///" + filePath);
 				response.setContentType(u.openConnection().getContentType());
 				response.setHeader("Content-Disposition", "inline; filename="
 						+ downloadName);
-				// ÎÄ¼şÃûÓ¦¸Ã±àÂë³ÉUTF-8
-			} else { // ´¿ÏÂÔØ·½Ê½
+				// æ–‡ä»¶ååº”è¯¥ç¼–ç æˆUTF-8
+			} else { // çº¯ä¸‹è½½æ–¹å¼
 				response.setContentType("application/x-msdownload");
 				response.setHeader("Content-Disposition",
 						"attachment; filename=" + java.net.URLEncoder.encode(downloadName, "UTF-8"));
@@ -64,7 +64,7 @@ public class DownloadHelper {
 			try{
 				s.close();
 			}catch(Exception e){
-				ServiceFactory.getService(ILogService.class).getLogger(DownloadHelper.class.getName()).error("¹Ø±ÕÁ÷Òì³£",e);
+				ServiceFactory.getService(ILogService.class).getLogger(DownloadHelper.class.getName()).error("å…³é—­æµå¼‚å¸¸",e);
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public class DownloadHelper {
 			try{
 				s.close();
 			}catch(Exception e){
-				ServiceFactory.getService(ILogService.class).getLogger(DownloadHelper.class.getName()).error("¹Ø±ÕÁ÷Òì³£",e);
+				ServiceFactory.getService(ILogService.class).getLogger(DownloadHelper.class.getName()).error("å…³é—­æµå¼‚å¸¸",e);
 			}
 		}
 	}

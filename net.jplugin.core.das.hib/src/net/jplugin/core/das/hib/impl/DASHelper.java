@@ -24,7 +24,7 @@ import org.hibernate.classic.Session;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÏÂÎç08:39:35
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸‹åˆ08:39:35
  **/
 
 public class DASHelper {
@@ -62,7 +62,7 @@ public class DASHelper {
 		sessionFactory = cfg.buildSessionFactory();
 		
 		
-		//ÒòÎªdas²å¼ş»¹Ã»ÓĞÆô¶¯ºÃ£¬ËùÒÔÖ»ÄÜ»ñÈ¡Êı¾İÔ´µÄÁ¬½Ó£¬²»ÄÜµ÷ÓÃDataService·½·¨
+		//å› ä¸ºdasæ’ä»¶è¿˜æ²¡æœ‰å¯åŠ¨å¥½ï¼Œæ‰€ä»¥åªèƒ½è·å–æ•°æ®æºçš„è¿æ¥ï¼Œä¸èƒ½è°ƒç”¨DataServiceæ–¹æ³•
 		Connection conn = null;
 		try{
 			conn = ds.getConnection();
@@ -86,13 +86,13 @@ public class DASHelper {
 	private void addEntities(Configuration cfg, IPersistObjDefinition[] podefs,
 			SinglePoDefine[] singlePoDefs) {
 
-		//Ôö¼Ópo¼¯ºÏµÄ×¢²á
+		//å¢åŠ poé›†åˆçš„æ³¨å†Œ
 		for (IPersistObjDefinition podef : podefs) {
 			for (Class c : podef.getClasses()) {
 				addPOClass(cfg,c);
 			}
 		}
-		//Ôö¼Óµ¥¸öpoµÄ×¢²á
+		//å¢åŠ å•ä¸ªpoçš„æ³¨å†Œ
 		for (SinglePoDefine s:singlePoDefs){
 			addPOClass(cfg,s.getPoClass());
 		}
@@ -142,7 +142,7 @@ public class DASHelper {
 		}
 		sess = createSessionInCtx(ctx);
 		
-		//ÅĞ¶ÏÊÂÎï×´Ì¬
+		//åˆ¤æ–­äº‹ç‰©çŠ¶æ€
 		TransactionManager txm = ServiceFactory.getService(TransactionManager.class);
 		if (txm.getStatus() != TransactionManager.Status.NOTX){
 			Transaction tx = sess.beginTransaction();

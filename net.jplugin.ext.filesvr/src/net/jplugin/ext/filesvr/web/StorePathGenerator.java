@@ -9,7 +9,7 @@ import net.jplugin.ext.filesvr.api.IStorePathGenerator;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç05:59:43
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ05:59:43
  **/
 
 public class StorePathGenerator implements IStorePathGenerator{

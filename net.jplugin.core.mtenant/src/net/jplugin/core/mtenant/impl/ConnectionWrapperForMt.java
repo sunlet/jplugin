@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 import net.jplugin.core.mtenant.impl.kit.SqlMultiTenantHanlderKit;
 
 /**
- * ÊµÏÖËµÃ÷£¬¶ÔÓÚPrepareStatementÖ±½ÓÔÚÕâÀï´¦ÀíºÃ£¬¶ÔÓÚStatementÔÚStatementWrapperForMtÖĞ´¦Àí
+ * å®ç°è¯´æ˜ï¼Œå¯¹äºPrepareStatementç›´æ¥åœ¨è¿™é‡Œå¤„ç†å¥½ï¼Œå¯¹äºStatementåœ¨StatementWrapperForMtä¸­å¤„ç†
  * @author Administrator
  *
  */
@@ -34,7 +34,7 @@ public class ConnectionWrapperForMt implements Connection {
 		this.inner = i;
 		this.dataSourceName = dsname;
 	}
-	//¶ÔÓÚStatment·½·¨£¬¶ÔÓÚStatementÔÚStatementWrapperForMtÖĞ´¦Àí
+	//å¯¹äºStatmentæ–¹æ³•ï¼Œå¯¹äºStatementåœ¨StatementWrapperForMtä¸­å¤„ç†
 	public Statement createStatement() throws SQLException {
 		return new StatementWrapperForMt(this.dataSourceName,inner.createStatement());
 	}
@@ -48,7 +48,7 @@ public class ConnectionWrapperForMt implements Connection {
 		return new StatementWrapperForMt(this.dataSourceName,inner.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability));
 	}
 
-	//¶ÔÓÚPrepareStatementÖ±½ÓÔÚÕâÀï´¦ÀíºÃ
+	//å¯¹äºPrepareStatementç›´æ¥åœ¨è¿™é‡Œå¤„ç†å¥½
 	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
 			int resultSetHoldability) throws SQLException {
 		sql = SqlMultiTenantHanlderKit.handle(this.dataSourceName,sql);
@@ -81,7 +81,7 @@ public class ConnectionWrapperForMt implements Connection {
 		return inner.prepareStatement(sql);
 	}
 
-	// ÒÔÏÂÎªdelegate·½·¨
+	// ä»¥ä¸‹ä¸ºdelegateæ–¹æ³•
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return inner.unwrap(iface);
 	}

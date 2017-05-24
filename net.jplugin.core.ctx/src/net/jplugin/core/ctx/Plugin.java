@@ -25,14 +25,14 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÉÏÎç09:02:06
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸Šåˆ09:02:06
  **/
 
 public class Plugin extends AbstractPlugin{
 	public static final String EP_RULE_SERVICE="EP_RULE_SERVICE";
 	
 	/*
-	 * TX ¶¨ÒåÎªÒ»¸öÀ©Õ¹µã£¬²»ÈÃ±ğÈËËæ±ğ¿ÉÒÔ»ñÈ¡µ½£¬ÒòÎªÎÒÃÇÏëÔö¼ÓÒ»¸öadaptor£¬ÓÃ»§Ö»ÄÜÍ¨¹ıTransactionServiceFactoryÀ´»ñÈ¡
+	 * TX å®šä¹‰ä¸ºä¸€ä¸ªæ‰©å±•ç‚¹ï¼Œä¸è®©åˆ«äººéšåˆ«å¯ä»¥è·å–åˆ°ï¼Œå› ä¸ºæˆ‘ä»¬æƒ³å¢åŠ ä¸€ä¸ªadaptorï¼Œç”¨æˆ·åªèƒ½é€šè¿‡TransactionServiceFactoryæ¥è·å–
 	 */
 	public static final String EP_TXMGR_LISTENER="EP_TXMGR_LISTENER";
 	

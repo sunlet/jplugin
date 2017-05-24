@@ -16,8 +16,8 @@ public class LogFactory {
 		}
 		inited = true;
 		logService = new BridgedLoggerService();
-		//ÎªÁË±ÜÃâµÚÈı·½Èí¼şÖĞÖ±½Óµ÷ÓÃLOG4J½Ó¿ÚµÄÇé¿ö´òÓ¡ÕÒ²»µ½ÅäÖÃºìÉ«ĞÅÏ¢£¬ÏÈÅäÖÃÒ»¸ö»ù´¡µÄ
-		//´ıÏµÍ³Æô¶¯¹ı³ÌÖĞÖØĞÂ¼ÓÔØlogÅäÖÃ
+		//ä¸ºäº†é¿å…ç¬¬ä¸‰æ–¹è½¯ä»¶ä¸­ç›´æ¥è°ƒç”¨LOG4Jæ¥å£çš„æƒ…å†µæ‰“å°æ‰¾ä¸åˆ°é…ç½®çº¢è‰²ä¿¡æ¯ï¼Œå…ˆé…ç½®ä¸€ä¸ªåŸºç¡€çš„
+		//å¾…ç³»ç»Ÿå¯åŠ¨è¿‡ç¨‹ä¸­é‡æ–°åŠ è½½logé…ç½®
 		org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
         rootLogger.setLevel(org.apache.log4j.Level.ERROR);
         rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
@@ -38,7 +38,7 @@ public class LogFactory {
 	}
 	
 	/**
-	 * »ñÈ¡ÌØÊâµÄ×¨ÓÃLogger£ºÃû×ÖÊÇÌØÊâµÄ£¬²¢ÇÒadditive=false£¬level=debug
+	 * è·å–ç‰¹æ®Šçš„ä¸“ç”¨Loggerï¼šåå­—æ˜¯ç‰¹æ®Šçš„ï¼Œå¹¶ä¸”additive=falseï¼Œlevel=debug
 	 * @param filename
 	 * @return
 	 */

@@ -31,7 +31,7 @@ import net.jplugin.ext.webasic.impl.web.webex.WebExControllerSet;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-2 ÏÂÎç04:57:02
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-2 ä¸‹åˆ04:57:02
  **/
 
 public class Plugin extends AbstractPlugin{

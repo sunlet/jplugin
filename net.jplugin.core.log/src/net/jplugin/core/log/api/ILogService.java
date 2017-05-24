@@ -3,20 +3,20 @@ package net.jplugin.core.log.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-8 ÉÏÎç12:22:40
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-8 ä¸Šåˆ12:22:40
  **/
 
 public interface ILogService {
 	
 	/**
-	 * »ñÈ¡ÏµÍ³ÈÕÖ¾Logger
+	 * è·å–ç³»ç»Ÿæ—¥å¿—Logger
 	 * @param name
 	 * @return
 	 */
 	public abstract Logger getLogger(String name);
 
 	/**
-	 * »ñÈ¡ÌØÊâµÄ×¨ÓÃLogger£ºÃû×ÖÊÇÌØÊâµÄ£¬²¢ÇÒadditive=false£¬level=debug
+	 * è·å–ç‰¹æ®Šçš„ä¸“ç”¨Loggerï¼šåå­—æ˜¯ç‰¹æ®Šçš„ï¼Œå¹¶ä¸”additive=falseï¼Œlevel=debug
 	 * @param filename
 	 * @return
 	 */

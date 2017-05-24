@@ -2,21 +2,21 @@ package net.jplugin.core.kernel.api;
 
 public interface IAnnoForAttrHandler <T> {
 	/**
-	 * ±ê¼Ç¸ÃHandler¶ÔÓ¦µÄAnnoClass
+	 * æ ‡è®°è¯¥Handlerå¯¹åº”çš„AnnoClass
 	 * @return
 	 */
 	public Class<T> getAnnoClass();
 	
 	/**
-	 * ÓÃÀ´×öĞ£Ñé£¬¶ÔÓ¦µÄannotation¶ÔÓ¦ÕâĞ©ÊôĞÔÀàĞÍ
+	 * ç”¨æ¥åšæ ¡éªŒï¼Œå¯¹åº”çš„annotationå¯¹åº”è¿™äº›å±æ€§ç±»å‹
 	 * @return
 	 */
 	public Class getAttrClass();
 
 	/**
-	 * »ñÈ¡Öµ
-	 * @param fieldType AttrµÄÊµ¼ÊÀàĞÍ
-	 * @param anno  anno¶ÔÏó
+	 * è·å–å€¼
+	 * @param fieldType Attrçš„å®é™…ç±»å‹
+	 * @param anno  annoå¯¹è±¡
 	 * @return 
 	 */
 	public Object  getValue(Object theObject,Class fieldType,T anno);

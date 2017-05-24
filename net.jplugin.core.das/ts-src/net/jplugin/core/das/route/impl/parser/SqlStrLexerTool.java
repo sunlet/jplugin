@@ -19,7 +19,7 @@ public class SqlStrLexerTool {
 			while(true){
 				if (state == STATE_STR_CONST){
 					if (cmc.word == '\\'){
-						cmc.next(); //°ÑÏÂÒ»¸öÖ±½Ó¹ıµô
+						cmc.next(); //æŠŠä¸‹ä¸€ä¸ªç›´æ¥è¿‡æ‰
 						if (!cmc.next()) break;
 					}else if (cmc.word == '\''){
 						list.add(sqlStr.substring(startPos, cmc.position+1));
@@ -37,11 +37,11 @@ public class SqlStrLexerTool {
 						if (!cmc.next()) break;
 					}else if (isOperator(cmc.word)){
 						if (isOperatorSet(sqlStr,startPos,cmc.position)){
-							//×éºÏ×÷ÎªÒ»¸ö£¬×´Ì¬±ä»¯
+							//ç»„åˆä½œä¸ºä¸€ä¸ªï¼ŒçŠ¶æ€å˜åŒ–
 							list.add(sqlStr.substring(startPos,cmc.position+1));
 							state = STATE_SPACING;
 						}else{
-							//°ÑÉÏÒ»¸ö¼ÇÂ¼ÏÂÀ´£¬×´Ì¬²»±ä
+							//æŠŠä¸Šä¸€ä¸ªè®°å½•ä¸‹æ¥ï¼ŒçŠ¶æ€ä¸å˜
 							list.add(sqlStr.substring(startPos,cmc.position));
 							startPos = cmc.position;
 						}
@@ -92,7 +92,7 @@ public class SqlStrLexerTool {
 				}	
 			}
 		
-		//×îºóÒ»¶Î
+		//æœ€åä¸€æ®µ
 		if (state!=STATE_SPACING && startPos<=sqlStr.length()-1){
 			list.add(sqlStr.substring(startPos));
 		}

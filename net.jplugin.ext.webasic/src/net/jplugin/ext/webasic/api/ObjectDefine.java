@@ -10,7 +10,7 @@ import net.jplugin.core.kernel.api.Extension.Property;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÏÂÎç02:16:58
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸‹åˆ02:16:58
  **/
 
 public class ObjectDefine {

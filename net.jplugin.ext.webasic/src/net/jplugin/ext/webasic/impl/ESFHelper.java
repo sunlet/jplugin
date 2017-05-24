@@ -26,7 +26,7 @@ import net.jplugin.ext.webasic.impl.web.WebControllerSet;
 public class ESFHelper {
 	
 //	/**
-//	 * RPCµ÷ÓÃÕâ¸ö·½·¨
+//	 * RPCè°ƒç”¨è¿™ä¸ªæ–¹æ³•
 //	 * @param obj
 //	 * @param method
 //	 * @param args
@@ -73,7 +73,7 @@ public class ESFHelper {
 	}
 
 	/**
-	 * Restfulµ÷ÓÃÕâ¸ö·½·¨
+	 * Restfulè°ƒç”¨è¿™ä¸ªæ–¹æ³•
 	 * @param cp
 	 * @throws Throwable
 	 */
@@ -110,7 +110,7 @@ public class ESFHelper {
 //		}
 //	}
 	/**
-	 * ¸ù¾İURI»ñÈ¡µ½¶ÔÓ¦µÄJavaBean
+	 * æ ¹æ®URIè·å–åˆ°å¯¹åº”çš„JavaBean
 	 * @param cm
 	 * @param arg
 	 * @return
@@ -152,7 +152,7 @@ public class ESFHelper {
 	}
 	
 	/**
-	 * ÌØ±ğÇ¿µ÷£ºÓÉÓÚWebExControllerÔÚÃ¿´ÎÖ´ĞĞ¶¼ĞèÒª´´½¨Ò»¸öĞÂµÄ£¬ËùÓĞ²»ÄÜ»ñÈ¡µ½¾²Ì¬µÄÁĞ±í¡£
+	 * ç‰¹åˆ«å¼ºè°ƒï¼šç”±äºWebExControlleråœ¨æ¯æ¬¡æ‰§è¡Œéƒ½éœ€è¦åˆ›å»ºä¸€ä¸ªæ–°çš„ï¼Œæ‰€æœ‰ä¸èƒ½è·å–åˆ°é™æ€çš„åˆ—è¡¨ã€‚
 	 * @return
 	 */
 	public static List<Object> getWebControllerObjects(){

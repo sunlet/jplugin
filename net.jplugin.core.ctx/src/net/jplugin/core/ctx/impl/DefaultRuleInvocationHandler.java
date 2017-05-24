@@ -14,7 +14,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-12 ÉÏÎç09:08:37
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-12 ä¸Šåˆ09:08:37
  **/
 
 public class DefaultRuleInvocationHandler implements RuleInvocationHandler {

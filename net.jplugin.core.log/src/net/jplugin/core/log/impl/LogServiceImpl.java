@@ -24,7 +24,7 @@ import org.apache.log4j.RollingFileAppender;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç11:34:28
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ11:34:28
  **/
 
 public class LogServiceImpl implements ILogService {

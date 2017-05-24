@@ -7,7 +7,7 @@ import net.jplugin.core.kernel.api.Extension;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-6 ÏÂÎç06:03:04
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-6 ä¸‹åˆ06:03:04
  **/
 
 public class ExtensionEventHelper {

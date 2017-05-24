@@ -7,7 +7,7 @@ import net.jplugin.common.kits.StringKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÏÂÎç03:42:20
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸‹åˆ03:42:20
  **/
 
 public class FileTypes {

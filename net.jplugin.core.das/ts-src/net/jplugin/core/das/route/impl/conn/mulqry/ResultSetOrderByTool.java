@@ -18,7 +18,7 @@ public class ResultSetOrderByTool {
 	TreeSet<OrderComparor> comparorSet;
 	
 	public ResultSetOrderByTool(List<String> orderParam, ResultSet aResultSet) {
-		//ÏÂÃæ³õÊ¼»¯columnMetas
+		//ä¸‹é¢åˆå§‹åŒ–columnMetas
 		if (orderParam!=null && orderParam.size()>0){
 			try {
 				initColumnMetas(orderParam,aResultSet);
@@ -26,7 +26,7 @@ public class ResultSetOrderByTool {
 				throw new TablesplitException(e.getMessage(),e);
 			}
 		}
-		//ÏÂÃæ³õÊ¼»¯comparorSet
+		//ä¸‹é¢åˆå§‹åŒ–comparorSet
 		if (orderParam!=null && orderParam.size()>0)
 			comparorSet = new TreeSet<OrderComparor>(new Comparator<OrderComparor>() {
 				@Override
@@ -46,11 +46,11 @@ public class ResultSetOrderByTool {
 						if (result!=0 && cm.getDirection()==Direction.DESC){
 							result = - result;
 						}
-						//Ê¤¸º·Ö³öÀ´ÁË£¬Ôò·µ»Ø
+						//èƒœè´Ÿåˆ†å‡ºæ¥äº†ï¼Œåˆ™è¿”å›
 						if (result!=0) 
 							return result;
 					}
-					//µ½ÕâÀï¿ÉÄÜÃ»ÓĞ±È½Ï³ö´óĞ¡£¬Ò»¶¨ÊÇÏàµÈ
+					//åˆ°è¿™é‡Œå¯èƒ½æ²¡æœ‰æ¯”è¾ƒå‡ºå¤§å°ï¼Œä¸€å®šæ˜¯ç›¸ç­‰
 					return 0;
 				}
 			});
@@ -64,14 +64,14 @@ public class ResultSetOrderByTool {
 	}
 
 	private void initColumnMetas(List<String> orderParam, ResultSet aResultSet) throws SQLException {
-		//Êı×é³¤¶ÈÊÇ¶ººÅ¸öÊı+1
+		//æ•°ç»„é•¿åº¦æ˜¯é€—å·ä¸ªæ•°+1
 		int cnt=0;
 		for(String s:orderParam){
 			if (",".equals(s)) cnt++;
 		}
-		//´´½¨Êı×é
+		//åˆ›å»ºæ•°ç»„
 		this.columnMetas = new ColumnMeta[cnt+1];
-		//Ìî³äname ºÍdirection
+		//å¡«å……name å’Œdirection
 		ResultSetMetaData rsMeta = aResultSet.getMetaData();
 		String colName,colDirection;
 		int pos = 0 ;
@@ -82,11 +82,11 @@ public class ResultSetOrderByTool {
 				throw new TablesplitException(" [,] is not expected here. order params="+ toString(orderParam));
 			}
 			
-			//µÚÒ»¸öÎªcolName
+			//ç¬¬ä¸€ä¸ªä¸ºcolName
 			colName = first;
 			colDirection = null;
 			
-			//Èç¹ûºóÃæµÄÒ»¸ö²»ÊÇ ",",ÄÇÃ´¾ÍÊÇ direction£¬²¢ÇÒposÏòÇ°ÍÆ¶¯
+			//å¦‚æœåé¢çš„ä¸€ä¸ªä¸æ˜¯ ",",é‚£ä¹ˆå°±æ˜¯ directionï¼Œå¹¶ä¸”poså‘å‰æ¨åŠ¨
 			if  ((pos<orderParam.size()-1) && !",".equals(orderParam.get(pos+1))){
 				pos++;
 				colDirection = orderParam.get(pos);
@@ -95,14 +95,14 @@ public class ResultSetOrderByTool {
 			cm.setColumnName(colName);
 			cm.setDirection("desc".equalsIgnoreCase(colDirection)? Direction.DESC:Direction.ASC);
 			
-			//Ìî³äindex
+			//å¡«å……index
 			int colIndex = getColumnIndex(cm.getColumnName(),rsMeta);
 			if (colIndex!=-1){
 				cm.setColumnIndex(colIndex);
 			}else{
 				throw new TablesplitException("The order by column ["+cm.getColumnName()+"] can't be found in the resultSet");
 			}
-			//Ìî³ätype
+			//å¡«å……type
 			OrderColumnType  colType = getColunType(rsMeta,colIndex);
 			if (colType!=null){
 				cm.setColumnType(colType);
@@ -111,7 +111,7 @@ public class ResultSetOrderByTool {
 			}
 			
 			columnMetas[metaIndex++]=cm;
-			//°ÑposÏòÇ°ÍÆ2,ÒòÎªÈç¹ûÓĞÏÂÒ»¸öÒ»¶¨ÊÇ,
+			//æŠŠposå‘å‰æ¨2,å› ä¸ºå¦‚æœæœ‰ä¸‹ä¸€ä¸ªä¸€å®šæ˜¯,
 			pos+=2;
 		}
 	}
@@ -156,7 +156,7 @@ public class ResultSetOrderByTool {
 			if (name.endsWith(columnName)){
 				int nameLen = name.length();
 				int columnNameLen = columnName.length();
-				//¹æÔò£ºÏàµÈ  »òÕß  ÊÇ .ºóÃæµÄºó×º
+				//è§„åˆ™ï¼šç›¸ç­‰  æˆ–è€…  æ˜¯ .åé¢çš„åç¼€
 				if ((nameLen == columnNameLen) ||(name.charAt(nameLen - columnNameLen-1)=='.')){
 					index = i;
 					break;
@@ -166,15 +166,15 @@ public class ResultSetOrderByTool {
 		return index;
 	}
 
-	//È¡³ö
+	//å–å‡º
 	public OrderComparor pollFirst(){
 		return comparorSet.pollFirst();
 	}
 	
-	//·ÅÈë
+	//æ”¾å…¥
 	public void refreshAndAdd(OrderComparor oc,ResultSet rs){
 		try{
-			//·ÅÈë£¬ÖØĞÂÅÅĞò
+			//æ”¾å…¥ï¼Œé‡æ–°æ’åº
 			update(oc,rs);
 			comparorSet.add(oc);
 		}catch(SQLException s){
@@ -184,7 +184,7 @@ public class ResultSetOrderByTool {
 	
 	private void update(OrderComparor oc, ResultSet rs) throws SQLException {
 		if (columnMetas==null || columnMetas.length==0){
-			//²»ĞèÒªupdate
+			//ä¸éœ€è¦update
 			return;
 		}
 		
@@ -217,7 +217,7 @@ public class ResultSetOrderByTool {
 			}
 			values[i]= value;
 			
-			//ÉèÖÃ
+			//è®¾ç½®
 			oc.setComparorValue(values);
 		}
 	}

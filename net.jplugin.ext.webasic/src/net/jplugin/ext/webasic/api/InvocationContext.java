@@ -11,8 +11,8 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 public class InvocationContext {
 	String servicePath;
 	/**
-	 * method ºÍ dynamicMethodNameÖ»ÓĞÒ»¸öÓĞÖµ¡£
-	 * µ±methodÓĞÖµÊ±£¬args²ÅÓĞÖµ¡£
+	 * method å’Œ dynamicMethodNameåªæœ‰ä¸€ä¸ªæœ‰å€¼ã€‚
+	 * å½“methodæœ‰å€¼æ—¶ï¼Œargsæ‰æœ‰å€¼ã€‚
 	 */
 	Method method;
 	String dynamicPath;
@@ -30,7 +30,7 @@ public class InvocationContext {
 		this.object = o;
 		this.args = a;
 		
-		//ÔÚÕâÀïÔ¤ÏÈÉèÖÃÒ»ÏÂ£¬ÀÁ¼ÓÔØ¿ÉÄÜµ¼ÖÂÓÃ»§Æô¶¯ÁËÏß³ÌÀïÃæ»ñÈ¡²»µ½
+		//åœ¨è¿™é‡Œé¢„å…ˆè®¾ç½®ä¸€ä¸‹ï¼Œæ‡’åŠ è½½å¯èƒ½å¯¼è‡´ç”¨æˆ·å¯åŠ¨äº†çº¿ç¨‹é‡Œé¢è·å–ä¸åˆ°
 		this.requestInfo = ThreadLocalContextManager.getRequestInfo();
 	}
 	public  InvocationContext(String p,Object o,String aDynamicMethodName){
@@ -40,7 +40,7 @@ public class InvocationContext {
 		this.object = o;
 //		this.args = a;
 		
-		//ÔÚÕâÀïÔ¤ÏÈÉèÖÃÒ»ÏÂ£¬ÀÁ¼ÓÔØ¿ÉÄÜµ¼ÖÂÓÃ»§Æô¶¯ÁËÏß³ÌÀïÃæ»ñÈ¡²»µ½
+		//åœ¨è¿™é‡Œé¢„å…ˆè®¾ç½®ä¸€ä¸‹ï¼Œæ‡’åŠ è½½å¯èƒ½å¯¼è‡´ç”¨æˆ·å¯åŠ¨äº†çº¿ç¨‹é‡Œé¢è·å–ä¸åˆ°
 		this.requestInfo = ThreadLocalContextManager.getRequestInfo();
 	}
 

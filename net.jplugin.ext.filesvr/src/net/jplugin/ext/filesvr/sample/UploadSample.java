@@ -15,45 +15,45 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 /**
  * 
- * ´ÓÍøÉÏ¸´ÖÆ
+ * ä»ç½‘ä¸Šå¤åˆ¶
  **/
 
 public class UploadSample {
 
-	private String uploadPath = "C:\\upload\\"; // ÉÏ´«ÎÄ¼şµÄÄ¿Â¼
-	private String tempPath = "C:\\upload\\tmp\\"; // ÁÙÊ±ÎÄ¼şÄ¿Â¼
+	private String uploadPath = "C:\\upload\\"; // ä¸Šä¼ æ–‡ä»¶çš„ç›®å½•
+	private String tempPath = "C:\\upload\\tmp\\"; // ä¸´æ—¶æ–‡ä»¶ç›®å½•
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		try {
 			DiskFileItemFactory fu = new DiskFileItemFactory();
 
-			// ÉèÖÃ»º³åÇø´óĞ¡£¬ÕâÀïÊÇ4kb
+			// è®¾ç½®ç¼“å†²åŒºå¤§å°ï¼Œè¿™é‡Œæ˜¯4kb
 			fu.setSizeThreshold(4096);
-			// ÉèÖÃÁÙÊ±Ä¿Â¼£º
+			// è®¾ç½®ä¸´æ—¶ç›®å½•ï¼š
 			fu.setRepository(new File(tempPath));
 
 			ServletFileUpload upload = new ServletFileUpload(fu);
 
-			// ÉèÖÃ×î´óÎÄ¼ş³ß´ç£¬ÕâÀïÊÇ4MB
+			// è®¾ç½®æœ€å¤§æ–‡ä»¶å°ºå¯¸ï¼Œè¿™é‡Œæ˜¯4MB
 			upload.setSizeMax(4194304);
 
-			// µÃµ½ËùÓĞµÄÎÄ¼ş£º
+			// å¾—åˆ°æ‰€æœ‰çš„æ–‡ä»¶ï¼š
 			List fileItems = upload.parseRequest(request);
 			Iterator i = fileItems.iterator();
-			// ÒÀ´Î´¦ÀíÃ¿Ò»¸öÎÄ¼ş£º
+			// ä¾æ¬¡å¤„ç†æ¯ä¸€ä¸ªæ–‡ä»¶ï¼š
 			while (i.hasNext()) {
 				FileItem fi = (FileItem) i.next();
-				// »ñµÃÎÄ¼şÃû£¬Õâ¸öÎÄ¼şÃû°üÀ¨Â·¾¶£º
+				// è·å¾—æ–‡ä»¶åï¼Œè¿™ä¸ªæ–‡ä»¶ååŒ…æ‹¬è·¯å¾„ï¼š
 				String fileName = fi.getName();
 				long fileSize = fi.getSize();
-				// ÔÚÕâÀï¿ÉÒÔ¼ÇÂ¼ÓÃ»§ºÍÎÄ¼şĞÅÏ¢
+				// åœ¨è¿™é‡Œå¯ä»¥è®°å½•ç”¨æˆ·å’Œæ–‡ä»¶ä¿¡æ¯
 				// ...
-				// Ğ´ÈëÎÄ¼ş£¬Ôİ¶¨ÎÄ¼şÃûÎªa.txt£¬¿ÉÒÔ´ÓfileNameÖĞÌáÈ¡ÎÄ¼şÃû£º
+				// å†™å…¥æ–‡ä»¶ï¼Œæš‚å®šæ–‡ä»¶åä¸ºa.txtï¼Œå¯ä»¥ä»fileNameä¸­æå–æ–‡ä»¶åï¼š
 				fi.write(new File(uploadPath + "a.txt"));
 			}
 		} catch (Exception e) {
-			// ¿ÉÒÔÌø×ª³ö´íÒ³Ãæ
+			// å¯ä»¥è·³è½¬å‡ºé”™é¡µé¢
 		}
 	}
 

@@ -12,7 +12,7 @@ import net.jplugin.ext.filesvr.db.DBCloudFile;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç03:14:49
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ03:14:49
  **/
 
 public class FileService implements IFileService{

@@ -3,7 +3,7 @@ package net.jplugin.core.service.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç10:14:05
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ10:14:05
  **/
 
 public class Constants {

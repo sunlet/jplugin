@@ -6,7 +6,7 @@ import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.http.HttpStatusException;
 
 public class HttpFilterManager {
-	//初始化一个空的头节点
+	//鍒濆鍖栦竴涓┖鐨勫ご鑺傜偣
 	static HttpClientFilterChain chain=new HttpClientFilterChain();
 
 	

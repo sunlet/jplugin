@@ -16,7 +16,7 @@ import net.jplugin.common.kits.StringKit;
 
 /**
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-22 ÉÏÎç11:43:12
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸Šåˆ11:43:12
  **/
 
 public abstract class AbstractPlugin implements IPlugin {
@@ -91,13 +91,13 @@ public abstract class AbstractPlugin implements IPlugin {
 
 	public List<PluginError> load() {
 		List<PluginError> errList = null;
-		// Èç¹û²»ÊÇ³õÊ¼×´Ì¬£¬Òì³£
+		// å¦‚æœä¸æ˜¯åˆå§‹çŠ¶æ€ï¼Œå¼‚å¸¸
 		if (this.status != IPlugin.STAT_INIT)
 			throw new RuntimeException(
 					"Not init state,can't call load,plugin name:"
 							+ this.getName());
 
-		//Öğ¸ö¼ÓÔØ
+		//é€ä¸ªåŠ è½½
 		for (int i = 0; i < this.extensions.size(); i++) {
 			try {
 				this.extensions.get(i).load();
@@ -112,9 +112,9 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	/**
-	 * Öğ¸öpluginÏÈ°ÑExtensionPoint·Åµ½³ØÖĞ£¬ÔÚÈ¥´¦ÀíExtension£¬¿ÉÒÔ±ÜÃâPluginÖ®¼ä½»²æÒıÓÃ£º
-	 * plugin1ÖĞµÄÀ©Õ¹ÒıÓÃplugin2ÖĞµÄÀ©Õ¹µã£¬Í¬Ê±
-	 * plugin2ÖĞµÄÀ©Õ¹ÒıÓÃplugin1ÖĞµÄÀ©Õ¹µã
+	 * é€ä¸ªpluginå…ˆæŠŠExtensionPointæ”¾åˆ°æ± ä¸­ï¼Œåœ¨å»å¤„ç†Extensionï¼Œå¯ä»¥é¿å…Pluginä¹‹é—´äº¤å‰å¼•ç”¨ï¼š
+	 * plugin1ä¸­çš„æ‰©å±•å¼•ç”¨plugin2ä¸­çš„æ‰©å±•ç‚¹ï¼ŒåŒæ—¶
+	 * plugin2ä¸­çš„æ‰©å±•å¼•ç”¨plugin1ä¸­çš„æ‰©å±•ç‚¹
 	 * @param pluginRegistry
 	 * @param errorList 
 	 */
@@ -149,7 +149,7 @@ public abstract class AbstractPlugin implements IPlugin {
 	 */
 	public List<PluginError> valid(PluginRegistry pluginRegistry) {
 		List<PluginError> errors = new ArrayList<PluginError>();
-		//¼ì²époint
+		//æ£€æŸ¥point
 		for (ExtensionPoint ep:this.extensionPoints){
 			if (StringKit.isNull(ep.getName())){
 				errors.add(new PluginError(this.getName(),"extension point name is null"));
@@ -161,7 +161,7 @@ public abstract class AbstractPlugin implements IPlugin {
 			
 			pluginRegistry.getExtensionPointMap().put(ep.getName(), ep);
 		}
-		//¼ì²éextensionµÄ¹¤×÷·ÅÔÚextensionpointºóÃæ£¬Ë³Ğò²»ÄÜµßµ¹
+		//æ£€æŸ¥extensionçš„å·¥ä½œæ”¾åœ¨extensionpointåé¢ï¼Œé¡ºåºä¸èƒ½é¢ å€’
 		for (Extension e:this.extensions){
 			String pname = e.getExtensionPointName();
 			ExtensionPoint finder = pluginRegistry.getExtensionPointMap().get(pname);
@@ -180,7 +180,7 @@ public abstract class AbstractPlugin implements IPlugin {
 				}
 			}
 		}
-		//ÓÉÓÚÄ¿Ç°²»²ÉÓÃÅäÖÃÎÄ¼ş£¬ËùÒÔ²»ÓÃ¼ì²éextensionºÍpointÖĞµÄÀàµÄ´æÔÚĞÔÁË¡£
+		//ç”±äºç›®å‰ä¸é‡‡ç”¨é…ç½®æ–‡ä»¶ï¼Œæ‰€ä»¥ä¸ç”¨æ£€æŸ¥extensionå’Œpointä¸­çš„ç±»çš„å­˜åœ¨æ€§äº†ã€‚
 		return errors;
 	}
 

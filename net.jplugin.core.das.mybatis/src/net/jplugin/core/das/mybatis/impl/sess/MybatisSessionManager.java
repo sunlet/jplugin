@@ -20,13 +20,13 @@ public class MybatisSessionManager {
 		Hashtable<String, SqlSessionAdaptor> sessions = getSessions();
 		SqlSessionAdaptor sess = sessions.get(dataSourceName);
 		if (sess==null){
-			//´´½¨session²¢·ÅÈë
+			//åˆ›å»ºsessionå¹¶æ”¾å…¥
 			MybaticsServiceImplNew service = (MybaticsServiceImplNew) MyBatisServiceFactory.getService(dataSourceName);
 			SqlSession sessInner = service._openRealSession();
 			sess = new SqlSessionAdaptor(sessInner);
-			//³¢ÊÔ×¢²ácontext¼àÌıÆ÷
+			//å°è¯•æ³¨å†Œcontextç›‘å¬å™¨
 			ThreadLocalContextManager.instance.getContext().addContextListenerOnce(sessionClearCtxListener );
-			//·ÅÈëSession Map
+			//æ”¾å…¥Session Map
 			sessions.put(dataSourceName, sess);
 		}
 		return sess;
@@ -56,7 +56,7 @@ public class MybatisSessionManager {
 			for (SqlSessionAdaptor s:sessions.values()){
 				s.getRealSession().close();
 			}
-			//Çå¿Õhashmap
+			//æ¸…ç©ºhashmap
 			sessions.clear();
 		}
 		
@@ -68,7 +68,7 @@ public class MybatisSessionManager {
 			for (SqlSessionAdaptor s:sessions.values()){
 				s.getRealSession().close();
 			}
-			//Çå¿Õhashmap
+			//æ¸…ç©ºhashmap
 			sessions.clear();
 		}
 	}

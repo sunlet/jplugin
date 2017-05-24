@@ -17,7 +17,7 @@ public class HttpClientFilterChain {
 	
 	public String next(HttpFilterContext ctx) throws IOException, HttpStatusException{
 		if (this.next==null){
-			//在这里验证，因为filter过程可能修改
+			//鍦ㄨ繖閲岄獙璇侊紝鍥犱负filter杩囩▼鍙兘淇敼
 			validate(ctx);
 			//call
 			if (ctx.getMethod()==HttpFilterContext.Method.POST){

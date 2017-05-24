@@ -17,7 +17,7 @@ import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-6 ÏÂÎç03:03:01
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-6 ä¸‹åˆ03:03:01
  **/
 
 public class PluginEnvirement {
@@ -162,10 +162,10 @@ public class PluginEnvirement {
 	
 	/**
 	 * <pre>
-	 * ÓĞtestAllºÍtestTargetÁ½¸öÊôĞÔ
-	 * testAllÓÅÏÈ
-	 * testAll£º¼ÓÔØËùÓĞµÄ²âÊÔ²å¼ş£¬²¢È«²¿ÔËĞĞ
-	 * testTarget£ºÖ»¼ÓÔØÌØ¶¨µÄ²âÊÔ²å¼ş£¬²¢ÔËĞĞµ½ÕâÀïÎªÖ¹
+	 * æœ‰testAllå’ŒtestTargetä¸¤ä¸ªå±æ€§
+	 * testAllä¼˜å…ˆ
+	 * testAllï¼šåŠ è½½æ‰€æœ‰çš„æµ‹è¯•æ’ä»¶ï¼Œå¹¶å…¨éƒ¨è¿è¡Œ
+	 * testTargetï¼šåªåŠ è½½ç‰¹å®šçš„æµ‹è¯•æ’ä»¶ï¼Œå¹¶è¿è¡Œåˆ°è¿™é‡Œä¸ºæ­¢
 	 * </pre>
 	 * @param plgns
 	 */
@@ -191,7 +191,7 @@ public class PluginEnvirement {
 			}
 
 
-			//ÓĞtestAllºÍtestTargetÁ½¸öÊôĞÔ£¬testAllÓÅÏÈ
+			//æœ‰testAllå’ŒtestTargetä¸¤ä¸ªå±æ€§ï¼ŒtestAllä¼˜å…ˆ
 			boolean testAll = false;
 			String testTarget = null;
 			testTarget = System.getProperty("testTarget");
@@ -205,7 +205,7 @@ public class PluginEnvirement {
 			for (Object obj : pluginToLoad) {
 				addPlugin(obj);
 				
-				//¼ÓÔØ²âÊÔ²å¼ş
+				//åŠ è½½æµ‹è¯•æ’ä»¶
 				if (testAll){
 					try{
 						addPlugin("test."+obj);
@@ -251,7 +251,7 @@ public class PluginEnvirement {
 			}
 			this.stateLevel = STAT_LEVEL_WORKING;
 		} catch (Exception e) {
-			PluginEnvirement.INSTANCE.getStartLogger().log("³õÊ¼»¯¹ı³Ì·¢Éú´íÎó");
+			PluginEnvirement.INSTANCE.getStartLogger().log("åˆå§‹åŒ–è¿‡ç¨‹å‘ç”Ÿé”™è¯¯");
 			logError(e);
 			if (PluginEnvirement.getInstance().hasExtensionPoint(Plugin.EP_STARTUP)){
 				trigStartListener(e, null);

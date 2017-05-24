@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-11 ÉÏÎç09:41:11
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-11 ä¸Šåˆ09:41:11
  **/
 
 public class ThreadLocalContext {

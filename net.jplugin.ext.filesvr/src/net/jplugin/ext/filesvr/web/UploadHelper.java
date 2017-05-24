@@ -28,7 +28,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÉÏÎç10:37:10
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸Šåˆ10:37:10
  **/
 
 public class UploadHelper {
@@ -61,7 +61,7 @@ public class UploadHelper {
 
 
 	/**
-	 * ±¾·½·¨£¬Èç¹ûÊ§°Ü¶¼»áÕı³£·µ»Ø£¬Ö»ÊÇ²»·µ»ØÕâ¸öÎÄ¼ş
+	 * æœ¬æ–¹æ³•ï¼Œå¦‚æœå¤±è´¥éƒ½ä¼šæ­£å¸¸è¿”å›ï¼Œåªæ˜¯ä¸è¿”å›è¿™ä¸ªæ–‡ä»¶
 	 * @param request
 	 * @param reqFileType 
 	 * @return
@@ -69,35 +69,35 @@ public class UploadHelper {
 	 * @throws ServletException
 	 */
 	public static List<SaveFileResult> saveFiles(HttpServletRequest request,boolean onlyOne, String reqFileType) {
-		//ÇëÇó¿ÉÒÔÖ±½Ó´«Èëfiletype
+		//è¯·æ±‚å¯ä»¥ç›´æ¥ä¼ å…¥filetype
 		
 		List<SaveFileResult> retList = new ArrayList<SaveFileResult>(2);
 		try {
 			DiskFileItemFactory fu = new DiskFileItemFactory();
 
-			// ÉèÖÃ»º³åÇø´óĞ¡£¬ÕâÀïÊÇ4kb
+			// è®¾ç½®ç¼“å†²åŒºå¤§å°ï¼Œè¿™é‡Œæ˜¯4kb
 			fu.setSizeThreshold(Configures.uploadBufferSize);
-			// ÉèÖÃÁÙÊ±Ä¿Â¼£º
+			// è®¾ç½®ä¸´æ—¶ç›®å½•ï¼š
 			fu.setRepository(new File(Configures.tempPath));
 
 			ServletFileUpload upload = new ServletFileUpload(fu);
 
 
 
-			// µÃµ½ËùÓĞµÄÎÄ¼ş£º
+			// å¾—åˆ°æ‰€æœ‰çš„æ–‡ä»¶ï¼š
 			List fileItems = upload.parseRequest(request);
 			Iterator i = fileItems.iterator();
-			// ÒÀ´Î´¦ÀíÃ¿Ò»¸öÎÄ¼ş£º
+			// ä¾æ¬¡å¤„ç†æ¯ä¸€ä¸ªæ–‡ä»¶ï¼š
 			
 			while (i.hasNext()) {
 				FileItem fi = (FileItem) i.next();
-				// »ñµÃÎÄ¼şÃû£¬Õâ¸öÎÄ¼şÃû°üÀ¨Â·¾¶£º
+				// è·å¾—æ–‡ä»¶åï¼Œè¿™ä¸ªæ–‡ä»¶ååŒ…æ‹¬è·¯å¾„ï¼š
 				String fileName = fi.getName();
 				
 				System.out.println("field name="+fi.getName());
 
 				if (StringKit.isNull(fileName)){
-					//²»ÊÇÎÄ¼şÏî
+					//ä¸æ˜¯æ–‡ä»¶é¡¹
 					continue;
 				}
 				
@@ -108,7 +108,7 @@ public class UploadHelper {
 				
 				String fileType = reqFileType!=null? reqFileType:FileTypes.getFileType(FileKit.getFileExt(fileName));
 				if (fileType.equals(FileTypes.FT_IMAGE)){
-					// ÉèÖÃ×î´óÎÄ¼ş³ß´ç£¬ÕâÀïÊÇ4MB
+					// è®¾ç½®æœ€å¤§æ–‡ä»¶å°ºå¯¸ï¼Œè¿™é‡Œæ˜¯4MB
 					upload.setSizeMax(Configures.maxPicSize);
 					if (fileSize>Configures.maxPicSize){
 						continue;

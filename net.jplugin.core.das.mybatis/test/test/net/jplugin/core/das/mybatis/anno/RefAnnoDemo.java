@@ -31,7 +31,7 @@ public class RefAnnoDemo extends RefAnnotationSupport{
 	IRuleTestForMybatisAnno rule1;
 	
 	/**
-	 * ╬╡л╛╠Да©ж╩╦Ёж╣р╩╢н
+	 * И²≥Ф─│Е▐≤И┤▐Е▐╙Х╣▀Е─╪Д╦─Ф╛║
 	 */
 	@RefLogger
 	private static Logger logger2;

@@ -22,7 +22,7 @@ public abstract class MethodFilterManager {
 	public Object executeWithFilter(InvocationContext ctx,IMethodCallback r) throws Throwable{
 		if (filters==null) return r.run();
 		else{
-			//ÏÈÕýÐòÖ´ÐÐ
+			//å…ˆæ­£åºæ‰§è¡Œ
 			for (IInvocationFilter f:filters){
 				if (!f.before(ctx)) 
 					throw new MethodIllegleAccessException(ctx);
@@ -33,7 +33,7 @@ public abstract class MethodFilterManager {
 				ctx.setTh(t);
 			}
 
-			//×îºóµ¹ÐòÖ´ÐÐ
+			//æœ€åŽå€’åºæ‰§è¡Œ
 			for (int i=filters.size()-1;i>=0;i--){
 				IInvocationFilter f = filters.get(i);
 				try{

@@ -21,12 +21,12 @@ public class PluginApp {
 		if (PluginEnvirement.getInstance().getStarted()){
 			return;
 		}
-		//home目录
+		//home鐩綍
 		String jpluginHome = System.getProperty(JPLUGIN_HOME_PROP,".");
 		jpluginHome = new File(jpluginHome).getAbsolutePath();
 		PluginEnvirement.INSTANCE.setWorkDir(jpluginHome);
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ plugin.home="+PluginEnvirement.INSTANCE.getWorkDir());
-		//config目录
+		//config鐩綍
 		String configDir = jpluginHome +CONFIG_RELPATH;
 		if (!FileKit.existsAndIsDir(configDir)){
 			configDir = jpluginHome + MAVEN_CONFIG_RELPATH;
@@ -36,7 +36,7 @@ public class PluginApp {
 		}
 		PluginEnvirement.INSTANCE.setConfigDir(configDir);
 		
-		//确定web目录,没有的话不会报错
+		//纭畾web鐩綍,娌℃湁鐨勮瘽涓嶄細鎶ラ敊
 		String webDir = jpluginHome +WEB_RELPATH;
 		if (!FileKit.existsAndIsDir(webDir)){
 			webDir = jpluginHome + MAVEN_WEB_RELPATH;

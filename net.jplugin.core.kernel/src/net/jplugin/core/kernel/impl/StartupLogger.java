@@ -16,7 +16,7 @@ import net.jplugin.org.apache.output.io.StreamTarget;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-6 ÏÂÎç03:50:05
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-6 ä¸‹åˆ03:50:05
  **/
 
 public class StartupLogger {

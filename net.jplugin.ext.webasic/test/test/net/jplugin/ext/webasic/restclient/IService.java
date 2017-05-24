@@ -11,7 +11,7 @@ public interface IService {
 	int add(int a, int b);
 
 	/**
-	 * 2017-5-10 Ôö¼ÓMIX²ÎÊıÄ£Ê½£¬²»ĞèÒªannotationÁË
+	 * 2017-5-10 å¢åŠ MIXå‚æ•°æ¨¡å¼ï¼Œä¸éœ€è¦annotationäº†
 	 */
 	String addString(String a,  String b);
 	

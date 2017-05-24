@@ -21,14 +21,14 @@ public class TableAutoCreation {
 	
 	public static void tryCreate(TableConfig tc, Result result, String tbBaseName) {
 		String key = result.getDataSource()+"#"+result.getTableName();
-		//ÕâÀïÃ»ÓĞ×öÍ¬²½¿ØÖÆ£¬ÒòÎªcreatetableµÄÊ±¼ä¿ÉÄÜ±È½Ï³¤¡£
+		//è¿™é‡Œæ²¡æœ‰åšåŒæ­¥æ§åˆ¶ï¼Œå› ä¸ºcreatetableçš„æ—¶é—´å¯èƒ½æ¯”è¾ƒé•¿ã€‚
 		String sql = tc.getCreationSql();
 
-		//ÓĞsql²¢ÇÒÃ»ÓĞÅĞ¶Ï¹ı¸Ã±í²Å´¦Àí
+		//æœ‰sqlå¹¶ä¸”æ²¡æœ‰åˆ¤æ–­è¿‡è¯¥è¡¨æ‰å¤„ç†
 		if (StringKit.isNotNull(sql) && !tableMapping.containsKey(key)){
 			sql = StringKit.repaceFirstIgnoreCase(sql, tbBaseName, result.getTableName());
 			tryCreateTable(result.getDataSource(),result.getTableName(),sql);
-			//ÕâÀï¿ÉÄÜÖØ¸´±»·ÅÈë
+			//è¿™é‡Œå¯èƒ½é‡å¤è¢«æ”¾å…¥
 			tableMapping.put(key, 1);
 		}
 	}
@@ -38,14 +38,14 @@ public class TableAutoCreation {
 		try{
 			Connection conn = ds.getConnection();
 			try{
-				//select ³É¹¦Ö´ĞĞ²»ÔÙ´´½¨
+				//select æˆåŠŸæ‰§è¡Œä¸å†åˆ›å»º
 				SQLTemplate.executeSelect(conn, "select * from "+tableName +" where 1=2", new IResultDisposer() {
 					@Override
 					public void readRow(ResultSet rs) throws SQLException {
 					}
 				}, null);
 			}catch(Exception e1){
-				//selectÊ§°Ü£¬²Å´´½¨
+				//selectå¤±è´¥ï¼Œæ‰åˆ›å»º
 				SQLTemplate.executeCreateSql(conn , sql);
 			}
 		}catch(Exception e){

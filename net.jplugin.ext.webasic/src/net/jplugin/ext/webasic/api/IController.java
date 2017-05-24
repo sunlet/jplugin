@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÏÂÎç05:51:09
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸‹åˆ05:51:09
  **/
 
 public interface IController {

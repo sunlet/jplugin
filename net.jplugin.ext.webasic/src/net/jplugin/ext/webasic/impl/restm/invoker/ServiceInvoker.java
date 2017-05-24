@@ -32,7 +32,7 @@ import net.jplugin.ext.webasic.impl.restm.RestMethodState.State;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÏÂÎç05:51:42
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸‹åˆ05:51:42
  **/
 
 public class ServiceInvoker implements IServiceInvoker{
@@ -79,7 +79,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		
 		String val=(String) paraMap.get(paraInfo.name);
 		if (val==null){
-			//ÅĞ¶ÏÊÇ·ñ»ìºÏ²ÎÊıÃû³ÆÄ£Ê½
+			//åˆ¤æ–­æ˜¯å¦æ··åˆå‚æ•°åç§°æ¨¡å¼
 			if (RestHandler.MIX_PARA_VALUE.equals(paraMap.get(RestHandler.MIX_PARA))){
 				val = (String) paraMap.get("arg"+idx);
 			}
@@ -123,7 +123,7 @@ public class ServiceInvoker implements IServiceInvoker{
 	}
 
 	private void callJson(CallParam cp) throws Throwable {
-		//Ä¿Ç°×ª»»ÎªStringParamµ÷ÓÃ,ÒòÎª³õÊ¼ÉèÖÃµÄÊ±ºò²ÎÊıÒÑ¾­Merge£¬ÕâÀï²»ĞèÒª×ª»»ÁË¡£2016-12-08
+		//ç›®å‰è½¬æ¢ä¸ºStringParamè°ƒç”¨,å› ä¸ºåˆå§‹è®¾ç½®çš„æ—¶å€™å‚æ•°å·²ç»Mergeï¼Œè¿™é‡Œä¸éœ€è¦è½¬æ¢äº†ã€‚2016-12-08
 		JsonCallHelper.convertToHttp(cp);
 		callStringParam(cp);
 	}
@@ -166,7 +166,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		}catch(MethodIllegleAccessException e){
 			disposeException(cp, e);
 		}catch(Exception e){
-			//ÓĞRule±ê¼ÇµÄÇé¿öÏÂ£¬InvocationTargetException»á±»È¥µô£¬ËùÒÔÖ»ÄÜÔÚÕâÀï´¦ÀíÁË
+			//æœ‰Ruleæ ‡è®°çš„æƒ…å†µä¸‹ï¼ŒInvocationTargetExceptionä¼šè¢«å»æ‰ï¼Œæ‰€ä»¥åªèƒ½åœ¨è¿™é‡Œå¤„ç†äº†
 			disposeException(cp, e);
 		}
 	}
@@ -174,18 +174,18 @@ public class ServiceInvoker implements IServiceInvoker{
 	private void callStringParamForConcreate(CallParam cp) throws Throwable{
 		ObjectAndMethod oam = helper.get(cp.getOperation(), null);
 		
-		//µÃµ½²ÎÊıannotation
+		//å¾—åˆ°å‚æ•°annotation
 		Annotation[][] paraAnootation;
 		if (ObjectDefine.OBJ_BIZLOGIC.equals(helper.getObjeceDefine().getObjType())){
-			//´Ó½Ó¿Ú»ñÈ¡meta
+			//ä»æ¥å£è·å–meta
 			Class intf = RuleServiceFactory.getRuleInterface(helper.getObjeceDefine().getBlName());
 			paraAnootation = ReflactKit.findSingeMethodExactly(intf,oam.method.getName()).getParameterAnnotations();
 		}else{
-			//´ÓÀà»ñÈ¡meta
+			//ä»ç±»è·å–meta
 			paraAnootation = oam.method.getParameterAnnotations();
 		}
 		
-		//»ñÈ¡²ÎÊıµÄÖµ
+		//è·å–å‚æ•°çš„å€¼
 		Object[] paraValue = getParaValueFromRequest(cp,paraAnootation,oam.method.getParameterTypes());
 		
 		try{
@@ -219,7 +219,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		}catch(MethodIllegleAccessException e){
 			disposeException(cp, e);
 		}catch(Exception e){
-			//ÓĞRule±ê¼ÇµÄÇé¿öÏÂ£¬InvocationTargetException»á±»È¥µô£¬ËùÒÔÖ»ÄÜÔÚÕâÀï´¦ÀíÁË
+			//æœ‰Ruleæ ‡è®°çš„æƒ…å†µä¸‹ï¼ŒInvocationTargetExceptionä¼šè¢«å»æ‰ï¼Œæ‰€ä»¥åªèƒ½åœ¨è¿™é‡Œå¤„ç†äº†
 			disposeException(cp, e);
 		}
 	}
@@ -235,7 +235,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getMessage(),e);
 	}
 
-	//ÎªÁË¼æÈİ return½Úµã
+	//ä¸ºäº†å…¼å®¹ returnèŠ‚ç‚¹
 	Boolean restCompatibleReturn;
 	private boolean compatibleReturn() {
 		if (restCompatibleReturn==null){
@@ -266,7 +266,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		return this.helper;
 	}
 	
-	//<<<<<<<<<<<<<<<<<<<<<<ÒÔÏÂµ÷ÓÃRemoteCall
+	//<<<<<<<<<<<<<<<<<<<<<<ä»¥ä¸‹è°ƒç”¨RemoteCall
 	private void callRemteCall(CallParam cp) throws Throwable {
 		Class[] paraType = getParaTypes(cp);
 		Object[] paraValue = getParaValues(cp);
@@ -328,5 +328,5 @@ public class ServiceInvoker implements IServiceInvoker{
 		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(targetException);
 	}
 	
-	//ÒÔÉÏµ÷ÓÃRemoteCall>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	//ä»¥ä¸Šè°ƒç”¨RemoteCall>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 }

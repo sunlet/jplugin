@@ -18,7 +18,7 @@ import net.jplugin.ext.webasic.api.WebFilter;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÉÏÎç10:25:57
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸Šåˆ10:25:57
  **/
 
 public class InitRequestInfoFilter implements WebFilter {
@@ -30,7 +30,7 @@ public class InitRequestInfoFilter implements WebFilter {
 	public static boolean dummyAllowed = false;
 	private static String dummyToken=null;
 	/* (non-Javadoc)
-	 * Èç¹û´«ÈëÁËtoken£¬Ôò²»ÓÃsession
+	 * å¦‚æœä¼ å…¥äº†tokenï¼Œåˆ™ä¸ç”¨session
 	 * @see net.luis.plugin.webservice.api.WebFilter#doFilter(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {

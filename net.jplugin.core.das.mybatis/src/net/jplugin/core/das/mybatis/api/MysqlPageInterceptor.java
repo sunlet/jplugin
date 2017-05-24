@@ -8,7 +8,7 @@ import org.apache.ibatis.plugin.Signature;
 import java.sql.Connection;
 
 /**
- * mysql·ÖÒ³²å¼ş
+ * mysqlåˆ†é¡µæ’ä»¶
  * @author peiyu
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})

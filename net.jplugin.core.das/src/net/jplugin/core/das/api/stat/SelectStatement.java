@@ -71,7 +71,7 @@ public class SelectStatement extends ItemPairBasedStatement implements IStatemen
 	public String getSqlClause() {
 		AssertKit.assertTrue(StringKit.isNull(select) || this.itemPairs==null);
 		
-		//组装SELECT
+		//缁勮SELECT
 		StringBuffer sb = new StringBuffer("SELECT ");
 		if (StringKit.isNotNull(select)){
 			sb.append(select);
@@ -90,7 +90,7 @@ public class SelectStatement extends ItemPairBasedStatement implements IStatemen
 			throw new RuntimeException("Must have a select item in sql");
 		}
 
-		//组装from,可能存在from为空的特殊sql语句，比如mysql获取刚插入的主键
+		//缁勮from,鍙兘瀛樺湪from涓虹┖鐨勭壒娈妔ql璇彞锛屾瘮濡俶ysql鑾峰彇鍒氭彃鍏ョ殑涓婚敭
 		if (fromList!=null && !fromList.isEmpty()){
 			sb.append(" FROM ");
 			for (int i=0;i<fromList.size();i++){
@@ -104,11 +104,11 @@ public class SelectStatement extends ItemPairBasedStatement implements IStatemen
 		//add where
 		super.addWhereClause(sb);
 		
-		//组装groupby
+		//缁勮groupby
 		if (StringKit.isNotNull(groupby)){
 			sb.append(" GROUP BY ").append(groupby);
 		}
-		//组装having
+		//缁勮having
 		if (StringKit.isNotNull(having)){
 			sb.append(" HAVING ").append(having);
 		}

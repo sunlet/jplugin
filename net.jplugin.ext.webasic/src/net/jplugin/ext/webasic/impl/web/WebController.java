@@ -29,7 +29,7 @@ import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÏÂÎç05:51:35
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸‹åˆ05:51:35
  **/
 
 public class WebController implements IController{
@@ -68,7 +68,7 @@ public class WebController implements IController{
 			});
 			//res.getWriter().print(result.getJson());
 		}catch(MethodIllegleAccessException e1){
-			//ÎŞÈ¨ÏŞ£¬·µ»Ø¿ÕÄÚÈİ
+			//æ— æƒé™ï¼Œè¿”å›ç©ºå†…å®¹
 		}catch(InvocationTargetException e){
 			throw ((InvocationTargetException)e).getTargetException();
 		}

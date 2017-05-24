@@ -73,7 +73,7 @@ public class StatementWrapperForMt implements Statement{
 		return inner.executeLargeUpdate(sql, columnNames);
 	}
 	
-	//ÏÂÃæÊÇÓÃÀ´wrapperµÄ·½·¨
+	//ä¸‹é¢æ˜¯ç”¨æ¥wrapperçš„æ–¹æ³•
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return inner.unwrap(iface);
 	}

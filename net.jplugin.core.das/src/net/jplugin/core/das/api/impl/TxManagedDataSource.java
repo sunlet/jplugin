@@ -26,7 +26,7 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 		this.DBCONN_IN_CTX = DBCONN_IN_CTX_PREFIX +"#"+ds;
 	}
 	
-	//ÏÂÃæÊÇdatasourceÏà¹ØµÄ´úÀí·½·¨£¬Ö»ÊµÏÖÁËgetConnectionÒ»¸ö·½·¨
+	//ä¸‹é¢æ˜¯datasourceç›¸å…³çš„ä»£ç†æ–¹æ³•ï¼Œåªå®ç°äº†getConnectionä¸€ä¸ªæ–¹æ³•
 	@Override
 	public PrintWriter getLogWriter() throws SQLException {
 		return inner.getLogWriter();
@@ -37,17 +37,17 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	}
 
 	/**
-	 * »ñÈ¡Á¬½Ó£¬²¢¸ºÔğÔÚreleaseÊ±ÊÍ·ÅÁ¬½Ó
+	 * è·å–è¿æ¥ï¼Œå¹¶è´Ÿè´£åœ¨releaseæ—¶é‡Šæ”¾è¿æ¥
 	 */
 	public Connection getConnection() throws SQLException {
-		//Èç¹ûÄÜÔÚctxÖĞÕÒµ½£¬Ôò·µ»ØctxÖĞµÄconn
+		//å¦‚æœèƒ½åœ¨ctxä¸­æ‰¾åˆ°ï¼Œåˆ™è¿”å›ctxä¸­çš„conn
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance
 				.getContext();
 		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 		if (conn != null)
 			return conn;
 		
-		//ÔÚctxÖĞ»ñÈ¡²»µ½£¬Ôò´´½¨Ò»¸ö²¢·ÅÖÃÔÚctxÖĞ£¬²¢ÉèÖÃReleaseListenerÈ·±£ÊÍ·Å
+		//åœ¨ctxä¸­è·å–ä¸åˆ°ï¼Œåˆ™åˆ›å»ºä¸€ä¸ªå¹¶æ”¾ç½®åœ¨ctxä¸­ï¼Œå¹¶è®¾ç½®ReleaseListenerç¡®ä¿é‡Šæ”¾
 		conn = new TxManagedConnAdaptor(inner.getConnection());
 		ctx.setAttribute(DBCONN_IN_CTX, conn);
 		ctx.addContextListener(new ThreadLocalContextListener() {
@@ -67,7 +67,7 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 				}
 			}
 		});
-		//¶ÔÓÚĞÂ´´½¨µÄÁ´½Ó£¬ÉèÖÃĞÂÁ¬½ÓµÄÊÂÎïÊôĞÔ
+		//å¯¹äºæ–°åˆ›å»ºçš„é“¾æ¥ï¼Œè®¾ç½®æ–°è¿æ¥çš„äº‹ç‰©å±æ€§
 		TransactionManager txm = ServiceFactory.getService(TransactionManager.class);
 		if (txm.getStatus() != TransactionManager.Status.NOTX){
 			conn.connection().setAutoCommit(false);
@@ -109,15 +109,15 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	}
 	
 
-	//ÏÂÃæÊµÏÖtxÏà¹Ø·½·¨¡£Ä¿Ç°µÄÊµÏÖ·½·¨ÊÇ£¬Á¬½Ó¾ÖÏŞÔÚÊÂÎïµ±ÖĞ¡£
-	//Èç¹ûbeginÇ°ÓĞÊÂÎï£¬Ôò¹Ø±ÕËü;ÔÚÌá½»Ê±ÊÍ·ÅÁ´½Ó¡£
+	//ä¸‹é¢å®ç°txç›¸å…³æ–¹æ³•ã€‚ç›®å‰çš„å®ç°æ–¹æ³•æ˜¯ï¼Œè¿æ¥å±€é™åœ¨äº‹ç‰©å½“ä¸­ã€‚
+	//å¦‚æœbeginå‰æœ‰äº‹ç‰©ï¼Œåˆ™å…³é—­å®ƒ;åœ¨æäº¤æ—¶é‡Šæ”¾é“¾æ¥ã€‚
 	
 	/**
-	 * »ñÈ¡ctxÖĞµÄconn£¬¹Øµô£¬ÒÔ±ãÒÔºó»ñÈ¡µÄÁ¬½ÓÔÚÊÂÎï¿ØÖÆÖĞ¡£
+	 * è·å–ctxä¸­çš„connï¼Œå…³æ‰ï¼Œä»¥ä¾¿ä»¥åè·å–çš„è¿æ¥åœ¨äº‹ç‰©æ§åˆ¶ä¸­ã€‚
 	 */
 	@Override
 	public void doBegin() {
-		//Èç¹ûÒÑÓĞÁ¬½Ó£¬Ôò¼ÓÈëÊÂÎï¡£ÊÂÎïÖĞĞÂ»ñÈ¡µÄÁ¬½Ó£¬»áÔÚ»ñÈ¡Ê±¿¼ÂÇ
+		//å¦‚æœå·²æœ‰è¿æ¥ï¼Œåˆ™åŠ å…¥äº‹ç‰©ã€‚äº‹ç‰©ä¸­æ–°è·å–çš„è¿æ¥ï¼Œä¼šåœ¨è·å–æ—¶è€ƒè™‘
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance
 				.getContext();
 		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
@@ -128,7 +128,7 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	}
 	
 	/**
-	 * Èç¹ûctxÖĞ´æÔÚ£¬Ôòrollback
+	 * å¦‚æœctxä¸­å­˜åœ¨ï¼Œåˆ™rollback
 	 */
 	@Override
 	public void doRollback() {
@@ -148,7 +148,7 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 	}
 
 	/**
-	 * Èç¹ûctxÖĞ´æÔÚ£¬Ôòcommit
+	 * å¦‚æœctxä¸­å­˜åœ¨ï¼Œåˆ™commit
 	 */
 	@Override
 	public void doCommit() {

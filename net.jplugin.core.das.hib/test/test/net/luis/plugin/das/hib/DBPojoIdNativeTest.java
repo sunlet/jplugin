@@ -3,7 +3,7 @@ package test.net.luis.plugin.das.hib;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÏÂÎç06:43:56
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸‹åˆ06:43:56
  **/
 
 public class DBPojoIdNativeTest {

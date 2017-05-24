@@ -12,11 +12,11 @@ import net.jplugin.core.event.api.IEventFilter;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç03:29:38
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ03:29:38
  **/
 
 public class ChannelFacade extends Channel {
-	//Key£ºÊÂ¼şÀàĞÍ»òÕß±ğÃûÀàĞÍ£¬Value£ºÊÇ·ñ±ğÃû£»true-±ğÃûÀàĞÍ  False£ºÔ­Ê¼EventÀàĞÍ
+	//Keyï¼šäº‹ä»¶ç±»å‹æˆ–è€…åˆ«åç±»å‹ï¼ŒValueï¼šæ˜¯å¦åˆ«åï¼›true-åˆ«åç±»å‹  Falseï¼šåŸå§‹Eventç±»å‹
 	Hashtable<String, Boolean> eventTypesMap = new Hashtable<String, Boolean>();
 	Hashtable<String, Vector<AliasAndFilter>> filterMapping = new Hashtable<String, Vector<AliasAndFilter>>();
 	Hashtable<String,Vector<Channel>> channelMap = new Hashtable<String, Vector<Channel>>();
@@ -38,7 +38,7 @@ public class ChannelFacade extends Channel {
 			eventTypesMap.put(e, false);
 		}
 		
-		//¼ì²éalias,²¢³õÊ¼»¯filterMapping
+		//æ£€æŸ¥alias,å¹¶åˆå§‹åŒ–filterMapping
 		for (EventAliasDefine ead:typeAliases){
 			if (!eventTypesMap.containsKey(ead.getEventType())){
 				throw new RuntimeException("Can't find event type ["+ead.getEventType()+"] for alias type ["+ead.getTypeAlias()+"]");
@@ -53,7 +53,7 @@ public class ChannelFacade extends Channel {
 			}
 		}
 		
-		//AliasÀàĞÍ¼ÓÈëeventTypesMapÖĞ
+		//Aliasç±»å‹åŠ å…¥eventTypesMapä¸­
 		for (EventAliasDefine ead:typeAliases){
 			if (eventTypesMap.containsKey(ead.getTypeAlias())){
 				throw new RuntimeException("Duplicated event alias type:"+ead.getTypeAlias());
@@ -61,7 +61,7 @@ public class ChannelFacade extends Channel {
 			eventTypesMap.put(ead.getTypeAlias(), true);
 		}
 		
-		//³õÊ¼»¯consumer
+		//åˆå§‹åŒ–consumer
 		for (EventConsumer c:consumers){
 			if (!eventTypesMap.containsKey(c.getTargetType())){
 				throw new RuntimeException("Can't find event type or event alias type for consumer:"+c.getClass().getName());
@@ -92,14 +92,14 @@ public class ChannelFacade extends Channel {
 	private void addConsumerToChannel(EventConsumer c) {
 		 String eventRouteType = c.getTargetType();
 		 
-		 //³õÊ¼»¯¸ÃÀàĞÍµÄchannelÁĞ±í
+		 //åˆå§‹åŒ–è¯¥ç±»å‹çš„channelåˆ—è¡¨
 		 Vector<Channel> channels = channelMap.get(eventRouteType);
 		 if (channels == null){
 			 channels =  new Vector<Channel>();
 			 channelMap.put(eventRouteType, channels);
 		 }
 		 
-		 //²éÕÒtargetChannel
+		 //æŸ¥æ‰¾targetChannel
 		 Channel targetChannel = null;
 		 for (Channel channel:channels){
 			 if (channel.getChannelType().equals(c.getChannelType())){
@@ -112,7 +112,7 @@ public class ChannelFacade extends Channel {
 			 channels.add(targetChannel);
 		 }
 		 
-		 //¼ÓÈëconsumer
+		 //åŠ å…¥consumer
 		 targetChannel.addConsumer(c);
 	}
 
@@ -130,17 +130,17 @@ public class ChannelFacade extends Channel {
 		Boolean isAliasType = eventTypesMap.get(e.getType());
 		
 		if (isAliasType == null){
-			//²»´æÔÚ¶ÔÓ¦µÄEvent»òÕßAlias
+			//ä¸å­˜åœ¨å¯¹åº”çš„Eventæˆ–è€…Alias
 			throw new RuntimeException("The event type not regist:"+e.getType());
 		}
 		if (isAliasType == true){
-			//ÊÇÒ»¸öAlias
+			//æ˜¯ä¸€ä¸ªAlias
 			throw new RuntimeException("The event type not regist:"+e.getType()+" It's a alias type");
 		}
 		
 		executeOnChannel(e.getType(),e);
 		
-		//Èç¹û¸Ãevent¾ßÓĞalias£¬»¹Òª·¢ËÍ¸øalias
+		//å¦‚æœè¯¥eventå…·æœ‰aliasï¼Œè¿˜è¦å‘é€ç»™alias
 		Vector<AliasAndFilter> list = filterMapping.get(e.getType());
 		if (list!=null){
 			for (AliasAndFilter aaf:list){

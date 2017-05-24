@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç01:10:25
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ01:10:25
  **/
 
 public interface IStartup {

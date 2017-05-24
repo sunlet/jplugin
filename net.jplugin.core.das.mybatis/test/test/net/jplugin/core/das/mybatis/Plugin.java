@@ -44,10 +44,10 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionMybatisDasHelper.addMappingExtension(this, "testdb",ITxTestDB1Mapper.class);
 		ExtensionMybatisDasHelper.addMappingExtension(this, "database",ITxTestDB2Mapper.class);
 	
-		//这里重用了das模块测试用例的数据源配置
+		//杩欓噷閲嶇敤浜哾as妯″潡娴嬭瘯鐢ㄤ緥鐨勬暟鎹簮閰嶇疆
 		ExtensionMybatisDasHelper.addMappingExtension(this,"router-db", TbRoute0Mapper.class);
 		
-		//测试anno
+		//娴嬭瘯anno
 		ExtensionCtxHelper.addRuleExtension(this, IRuleTestForMybatisAnno.class, RuleTestForMybatisAnno.class);
 		ExtensionServiceHelper.addServiceExtension(this, IServiceForAnno.class.getName(), ServiceImplForAnno.class);
 	}

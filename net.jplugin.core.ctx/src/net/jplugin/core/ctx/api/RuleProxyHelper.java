@@ -6,7 +6,7 @@ import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 
 public class RuleProxyHelper {
 	/**
-	 * 如果有Rule标记，则执行拦截器，否则直接调用
+	 * 濡傛灉鏈塕ule鏍囪锛屽垯鎵ц鎷︽埅鍣紝鍚﹀垯鐩存帴璋冪敤
 	 * @param obj
 	 * @param method
 	 * @param args

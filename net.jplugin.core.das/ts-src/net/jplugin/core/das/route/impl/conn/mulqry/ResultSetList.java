@@ -31,7 +31,7 @@ import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.das.route.impl.conn.mulqry.ResultSetOrderByTool.OrderComparor;
 
 /**
- * ÊµÏÖÒ»¸öÀàĞÍÎª ResultSet.TYPE_FORWARD_ONLYµÄResultSet
+ * å®ç°ä¸€ä¸ªç±»å‹ä¸º ResultSet.TYPE_FORWARD_ONLYçš„ResultSet
  * @author Administrator
  *
  */
@@ -86,7 +86,7 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 		if (direction!= FETCH_FORWARD) 
 			throw new RuntimeException("Not support");
 		else{
-			//do nothing ,²»ÉèÖÃ
+			//do nothing ,ä¸è®¾ç½®
 		}
 	}
 	@Override
@@ -95,7 +95,7 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	}
 	@Override
 	public void setFetchSize(int rows) throws SQLException {
-		//ÕâÀïÓÃsuperÊµÏÖÒ²Ã»Ê²Ã´ÎÊÌâ
+		//è¿™é‡Œç”¨superå®ç°ä¹Ÿæ²¡ä»€ä¹ˆé—®é¢˜
 		o.setFetchSize(rows);
 	}
 	@Override
@@ -123,30 +123,30 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	public boolean next() throws SQLException {
 
 		if (o==null){
-			//Ö±½ÓÈ¡³öÀ´Ò»¸öÅÅÔÚµÚÒ»Î»µÄ
+			//ç›´æ¥å–å‡ºæ¥ä¸€ä¸ªæ’åœ¨ç¬¬ä¸€ä½çš„
 			return retriveCurrent();
 		}else{
-			//°Ñµ±Ç°µÄnextÒÔºó£¬·ÅÈëÅÅĞò¶ÓÁĞ
+			//æŠŠå½“å‰çš„nextä»¥åï¼Œæ”¾å…¥æ’åºé˜Ÿåˆ—
 			if (o.next()){
 				this.orderByTool.refreshAndAdd(orderComparorOfO, o);
 			}
 
-			//ÔÙÈ¡³öÀ´Ò»¸ö·ÅÔÚµÚÒ»Î»µÄ
+			//å†å–å‡ºæ¥ä¸€ä¸ªæ”¾åœ¨ç¬¬ä¸€ä½çš„
 			return retriveCurrent();
 		}
 	}
 	
-	//¸Ã·½·¨Ò»¶¨»áÉèÖÃoºÍorderComparorOfO
+	//è¯¥æ–¹æ³•ä¸€å®šä¼šè®¾ç½®oå’ŒorderComparorOfO
 	private boolean retriveCurrent() {
 		OrderComparor first = this.orderByTool.pollFirst();
 		if (first ==null){
-			//°Ñµ±Ç°µÄoÇåÀíµô
+			//æŠŠå½“å‰çš„oæ¸…ç†æ‰
 			o = null;
 			orderComparorOfO = null;
-			//ÕâÒ»¸öÎªnull
+			//è¿™ä¸€ä¸ªä¸ºnull
 			return false;
 		}else{
-			//ÉèÖÃµÚÒ»¸öo ºÍ orderComparorOfO
+			//è®¾ç½®ç¬¬ä¸€ä¸ªo å’Œ orderComparorOfO
 			o = this.list.get(first.getRsIndex());
 			orderComparorOfO = first;
 			return true;
@@ -231,7 +231,7 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 		throw new SQLFeatureNotSupportedException("not support");
 	}
 	
-	//ÒÔÏÂÎªÄ¬ÈÏÊµÏÖ
+	//ä»¥ä¸‹ä¸ºé»˜è®¤å®ç°
 	
 	public boolean wasNull() throws SQLException {
 		return o.wasNull();

@@ -13,11 +13,11 @@ public class SqlStrLexerToolNew {
 
 	/**
 	 * <PRE>
-	 * µ¥´Ê: SELECT  ABC  23.23  AND OR _NOT
-	 * ÔËËã·û£º'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>
-	 * ·Ö½ç·û£º'('  ')' ','
-	 * ×Ö·û´®³£Á¿£º'   ' ´ø×ªÒå·û
-	 * ×¢ÊÍ£º /star.....star/
+	 * å•è¯: SELECT  ABC  23.23  AND OR _NOT
+	 * è¿ç®—ç¬¦ï¼š'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>
+	 * åˆ†ç•Œç¬¦ï¼š'('  ')' ','
+	 * å­—ç¬¦ä¸²å¸¸é‡ï¼š'   ' å¸¦è½¬ä¹‰ç¬¦
+	 * æ³¨é‡Šï¼š /star.....star/
 	 * <pre>
 	 * @param sqlStr
 	 * @return
@@ -33,11 +33,11 @@ public class SqlStrLexerToolNew {
 	
 	public List<String> parse(){
 		while(true){
-			//ºöÂÔ¿Õ¸ñ
+			//å¿½ç•¥ç©ºæ ¼
 			while (idx<buffer.length && buffer[idx]==' '){
 				idx++;
 			}
-			//Ê¶±ğ
+			//è¯†åˆ«
 			if (idx<buffer.length){
 				char c = buffer[idx];
 				if (isWordCharStart()) 
@@ -114,7 +114,7 @@ public class SqlStrLexerToolNew {
 	public void parseOperator(){
 		if (idx+1 >=buffer.length) {
 			list.add(new String(buffer,idx,1));
-			//idx ²»ÓÃÔö¼Ó
+			//idx ä¸ç”¨å¢åŠ 
 			return;
 		}else{
 			char c1 = buffer[idx];
@@ -125,7 +125,7 @@ public class SqlStrLexerToolNew {
 				return;
 			}else{
 				list.add(new String(buffer,idx,1));
-				//idx ²»ÓÃÔö¼Ó
+				//idx ä¸ç”¨å¢åŠ 
 				return;
 			}
 		}

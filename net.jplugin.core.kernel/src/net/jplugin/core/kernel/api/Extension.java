@@ -11,7 +11,7 @@ import net.jplugin.core.kernel.impl.PropertyUtil;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-22 ÉÏÎç11:43:22
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸Šåˆ11:43:22
  **/
 
 public class Extension {
@@ -64,7 +64,7 @@ public class Extension {
 		}
 		if (this.extensionObject == null){
 			if (clazz.equals(String.class)){
-				//×Ö·û´®ÀàĞÍ²ÉÓÃÌØÊâ¼ÓÔØ·½Ê½
+				//å­—ç¬¦ä¸²ç±»å‹é‡‡ç”¨ç‰¹æ®ŠåŠ è½½æ–¹å¼
 				if (this.propertyList.size()!=1){
 					throw new RuntimeException("String type extension must has one property with the val");
 				}
@@ -72,7 +72,7 @@ public class Extension {
 			}else{
 				this.extensionObject = clazz.newInstance();
 	
-				//´øÊôĞÔµÄ¼ÓÔØ·½Ê½
+				//å¸¦å±æ€§çš„åŠ è½½æ–¹å¼
 				if (this.propertyList.size()>0){
 					setProperty(this.extensionObject,this.propertyList);
 				}
@@ -92,7 +92,7 @@ public class Extension {
 	 */
 	private static void setProperty(Object o,
 			Vector<Property> p) {
-		//¿´ÄÜ·ñÕÒµ½method
+		//çœ‹èƒ½å¦æ‰¾åˆ°method
 		Method method = null;
 		try {
 			method = o.getClass().getMethod("setExtensionProperty", new Class[]{java.util.List.class});

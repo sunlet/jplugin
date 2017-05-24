@@ -24,7 +24,7 @@ import net.jplugin.ext.webasic.api.ObjectDefine;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç03:09:15
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ03:09:15
  **/
 
 public class Plugin extends AbstractPlugin{

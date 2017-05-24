@@ -7,7 +7,7 @@ import net.jplugin.core.kernel.api.Extension;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÉÏÎç09:15:30
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸Šåˆ09:15:30
  **/
 
 public class RuleServiceDefinition {

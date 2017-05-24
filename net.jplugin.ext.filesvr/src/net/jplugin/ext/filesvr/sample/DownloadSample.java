@@ -17,28 +17,28 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * ´ÓÍøÉÏ»ñÈ¡
+ * ä»ç½‘ä¸Šè·å–
  **/
 
 public class DownloadSample {
 	
 	public HttpServletResponse download(String path, HttpServletResponse response) {
         try {
-            // pathÊÇÖ¸ÓûÏÂÔØµÄÎÄ¼şµÄÂ·¾¶¡£
+            // pathæ˜¯æŒ‡æ¬²ä¸‹è½½çš„æ–‡ä»¶çš„è·¯å¾„ã€‚
             File file = new File(path);
-            // È¡µÃÎÄ¼şÃû¡£
+            // å–å¾—æ–‡ä»¶åã€‚
             String filename = file.getName();
-            // È¡µÃÎÄ¼şµÄºó×ºÃû¡£
+            // å–å¾—æ–‡ä»¶çš„åç¼€åã€‚
             String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
 
-            // ÒÔÁ÷µÄĞÎÊ½ÏÂÔØÎÄ¼ş¡£
+            // ä»¥æµçš„å½¢å¼ä¸‹è½½æ–‡ä»¶ã€‚
             InputStream fis = new BufferedInputStream(new FileInputStream(path));
             byte[] buffer = new byte[fis.available()];
             fis.read(buffer);
             fis.close();
-            // Çå¿Õresponse
+            // æ¸…ç©ºresponse
             response.reset();
-            // ÉèÖÃresponseµÄHeader
+            // è®¾ç½®responseçš„Header
             response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
             response.addHeader("Content-Length", "" + file.length());
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
@@ -53,15 +53,15 @@ public class DownloadSample {
     }
 
     public void downloadLocal(HttpServletResponse response) throws FileNotFoundException {
-        // ÏÂÔØ±¾µØÎÄ¼ş
-        String fileName = "Operator.doc".toString(); // ÎÄ¼şµÄÄ¬ÈÏ±£´æÃû
-        // ¶Áµ½Á÷ÖĞ
-        InputStream inStream = new FileInputStream("c:/Operator.doc");// ÎÄ¼şµÄ´æ·ÅÂ·¾¶
-        // ÉèÖÃÊä³öµÄ¸ñÊ½
+        // ä¸‹è½½æœ¬åœ°æ–‡ä»¶
+        String fileName = "Operator.doc".toString(); // æ–‡ä»¶çš„é»˜è®¤ä¿å­˜å
+        // è¯»åˆ°æµä¸­
+        InputStream inStream = new FileInputStream("c:/Operator.doc");// æ–‡ä»¶çš„å­˜æ”¾è·¯å¾„
+        // è®¾ç½®è¾“å‡ºçš„æ ¼å¼
         response.reset();
         response.setContentType("bin");
         response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-        // Ñ­»·È¡³öÁ÷ÖĞµÄÊı¾İ
+        // å¾ªç¯å–å‡ºæµä¸­çš„æ•°æ®
         byte[] b = new byte[100];
         int len;
         try {
@@ -74,7 +74,7 @@ public class DownloadSample {
     }
 
     public void downloadNet(HttpServletResponse response) throws MalformedURLException {
-        // ÏÂÔØÍøÂçÎÄ¼ş
+        // ä¸‹è½½ç½‘ç»œæ–‡ä»¶
         int bytesum = 0;
         int byteread = 0;
 
@@ -99,7 +99,7 @@ public class DownloadSample {
         }
     }
     
-    //Ö§³ÖÔÚÏß´ò¿ª
+    //æ”¯æŒåœ¨çº¿æ‰“å¼€
     public void downLoad(String filePath, HttpServletResponse response, boolean isOnLine) throws Exception {
         File f = new File(filePath);
         if (!f.exists()) {
@@ -110,13 +110,13 @@ public class DownloadSample {
         byte[] buf = new byte[1024];
         int len = 0;
 
-        response.reset(); // ·Ç³£ÖØÒª
-        if (isOnLine) { // ÔÚÏß´ò¿ª·½Ê½
+        response.reset(); // éå¸¸é‡è¦
+        if (isOnLine) { // åœ¨çº¿æ‰“å¼€æ–¹å¼
             URL u = new URL("file:///" + filePath);
             response.setContentType(u.openConnection().getContentType());
             response.setHeader("Content-Disposition", "inline; filename=" + f.getName());
-            // ÎÄ¼şÃûÓ¦¸Ã±àÂë³ÉUTF-8
-        } else { // ´¿ÏÂÔØ·½Ê½
+            // æ–‡ä»¶ååº”è¯¥ç¼–ç æˆUTF-8
+        } else { // çº¯ä¸‹è½½æ–¹å¼
             response.setContentType("application/x-msdownload");
             response.setHeader("Content-Disposition", "attachment; filename=" + f.getName());
         }

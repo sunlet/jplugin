@@ -12,15 +12,15 @@ public class ConentManagerImpl implements IContentManager {
 	private static final int MAX_POST_CHECK = 15;
 
 	/**
-	 * ÎªÁË¼æÈİESFµÄÀÏ¹æÔò£¬¿ÉÒÔ´ø.do£¬Ò²¿ÉÒÔ²»´øµÄÇé¿ö¡£
-	 * Èç¹ûÎ²²¿Ã»ÓĞµã£¬»òÕßÓĞ .do£¬·µ»Øfalse¡£
-	 * ·ñÔò·µ»Øtrue
+	 * ä¸ºäº†å…¼å®¹ESFçš„è€è§„åˆ™ï¼Œå¯ä»¥å¸¦.doï¼Œä¹Ÿå¯ä»¥ä¸å¸¦çš„æƒ…å†µã€‚
+	 * å¦‚æœå°¾éƒ¨æ²¡æœ‰ç‚¹ï¼Œæˆ–è€…æœ‰ .doï¼Œè¿”å›falseã€‚
+	 * å¦åˆ™è¿”å›true
 	 */
 	@Override
 	public boolean accept(String uri) {
 		String post = getPost(uri);
 		if (post==null || ".do".equals(post)) 
-			return false; //Î²²¿Ã»ÓĞµã£¬Ä¿Ç°ÅĞ¶Ï15Î»
+			return false; //å°¾éƒ¨æ²¡æœ‰ç‚¹ï¼Œç›®å‰åˆ¤æ–­15ä½
 		else{
 			return true;
 		}
@@ -32,7 +32,7 @@ public class ConentManagerImpl implements IContentManager {
 	}
 
 	/**
-	 * »ñÈ¡×îºóMAX_POST_CHECK Î»£¬Èç¹ûÓĞ.XXXµÄ»°£¬·µ»Ø.XXX
+	 * è·å–æœ€åMAX_POST_CHECK ä½ï¼Œå¦‚æœæœ‰.XXXçš„è¯ï¼Œè¿”å›.XXX
 	 * @param uri
 	 * @return
 	 */

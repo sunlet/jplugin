@@ -21,7 +21,7 @@ public class UpdateHandler extends AbstractCommandHandler{
 	@Override
 	KeyResult walkToGetKeyColumnInfo(SqlWordsWalker w, String tableName,String keyField) {
 		
-		//»ñÈ¡±ğÃû¡£TABLEÃû³ÆºóÃæÈç¹ûÊÇ×Ö·û´®ÄÇ¾ÍÊÇ±ğÃû£¬·ñÔòÎŞ±ğÃû ¡£
+		//è·å–åˆ«åã€‚TABLEåç§°åé¢å¦‚æœæ˜¯å­—ç¬¦ä¸²é‚£å°±æ˜¯åˆ«åï¼Œå¦åˆ™æ— åˆ«å ã€‚
 		String tableAliasName=null;
 		if (!w.next())
 			throw new TablesplitException("the sql is not complete. sql:"+w.sql);
@@ -85,7 +85,7 @@ public class UpdateHandler extends AbstractCommandHandler{
 	@Override
 	String getFinalSql(SqlWordsWalker walker, String sourceTableName, String finalTableName) {
 		String finalSql = StringKit.repaceFirst(walker.sql,sourceTableName,finalTableName);
-		//´¦Àí´ø×Ö¶ÎµÄ±íÃû
+		//å¤„ç†å¸¦å­—æ®µçš„è¡¨å
 		finalSql = StringKit.replaceStr(finalSql," "+sourceTableName+"."," "+finalTableName+".");
 		return finalSql;
 	}

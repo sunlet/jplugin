@@ -8,7 +8,7 @@ import net.jplugin.common.kits.JsonKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç10:17:24
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ10:17:24
  **/
 @Deprecated
 public class RuleResult {

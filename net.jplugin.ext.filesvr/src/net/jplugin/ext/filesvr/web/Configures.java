@@ -8,12 +8,12 @@ import net.jplugin.ext.filesvr.Plugin;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç07:36:22
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ07:36:22
  **/
 
 public class Configures {
-	public static String uploadPath; // ÉÏ´«ÎÄ¼şµÄÄ¿Â¼
-	public static String tempPath ; // ÁÙÊ±ÎÄ¼şÄ¿Â¼
+	public static String uploadPath; // ä¸Šä¼ æ–‡ä»¶çš„ç›®å½•
+	public static String tempPath ; // ä¸´æ—¶æ–‡ä»¶ç›®å½•
 	public static int  maxPicSize ;
 	public static int maxFileSize;
 	public static int uploadBufferSize;

@@ -28,7 +28,7 @@ public class HashAlgm  implements ITsAlgorithm{
 		if (splits==0){
 			throw new TablesplitException("Splits value error ,must >0 ,for table:"+tableBaseName);
 		}
-		//¿ÉÒÔ¼Ù¶¨splitsÎªint·¶Î§ÄÚ
+		//å¯ä»¥å‡å®šsplitsä¸ºintèŒƒå›´å†…
 		int mod = (int) (hashCode % splits);
 		
 		int dsIndex = mod / compondDataSource.getConfig().getDataSourceConfig().length;

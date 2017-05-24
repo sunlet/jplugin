@@ -8,7 +8,7 @@ import net.jplugin.ext.filesvr.api.FileTypes;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç08:38:23
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ08:38:23
  **/
 
 public class CreateImageEventFilter implements IEventFilter{

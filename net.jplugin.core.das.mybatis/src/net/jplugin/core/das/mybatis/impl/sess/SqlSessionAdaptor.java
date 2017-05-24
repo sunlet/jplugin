@@ -12,9 +12,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 /**
  * <pre>
- * ÓÉÓÚ´´½¨Mybatis·şÎñµÄÊ±ºòÒÑ¾­¶ÔÁ´½Ó²»Ìá½»¡¢²»¹Ø±Õ¡¢ËùÒÔÕâÀï¾Í²»Òª¶Ô¹Ø×¢ commit,rollbackÁË¡£
- * ÕâÀïÖ»´¦ÀíÒ»ÏÂ close¼´¿É¡£°ÑsessionµÄ¹Ø±Õ×ö³É¼ÙµÄ¡£
- * ÁíÍâ£¬Ä¿Ç°ÔÚÊÊµ±µÄÊ±ºòclearCache¡£
+ * ç”±äºåˆ›å»ºMybatisæœåŠ¡çš„æ—¶å€™å·²ç»å¯¹é“¾æ¥ä¸æäº¤ã€ä¸å…³é—­ã€æ‰€ä»¥è¿™é‡Œå°±ä¸è¦å¯¹å…³æ³¨ commit,rollbackäº†ã€‚
+ * è¿™é‡Œåªå¤„ç†ä¸€ä¸‹ closeå³å¯ã€‚æŠŠsessionçš„å…³é—­åšæˆå‡çš„ã€‚
+ * å¦å¤–ï¼Œç›®å‰åœ¨é€‚å½“çš„æ—¶å€™clearCacheã€‚
  * </pre>
  * @author Administrator
  *
@@ -32,7 +32,7 @@ public class SqlSessionAdaptor implements SqlSession {
 	}
 	
 	/**
-	 * »º´æ¶ÔMapperµÄ»ñÈ¡
+	 * ç¼“å­˜å¯¹Mapperçš„è·å–
 	 */
 	public <T> T getMapper(Class<T> cls) {
 		Object o = mapperMap.get(cls);
@@ -48,7 +48,7 @@ public class SqlSessionAdaptor implements SqlSession {
 	public void close() {
 		//do nothing
 	}
-	////////////Ò»ÏÂ·½·¨Î´¶¯
+	////////////ä¸€ä¸‹æ–¹æ³•æœªåŠ¨
 	public void clearCache() {
 		inner.clearCache();
 	}

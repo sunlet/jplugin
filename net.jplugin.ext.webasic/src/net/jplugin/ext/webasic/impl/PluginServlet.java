@@ -18,7 +18,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÉÏÎç10:21:05
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸Šåˆ10:21:05
  **/
 
 public class PluginServlet extends HttpServlet{

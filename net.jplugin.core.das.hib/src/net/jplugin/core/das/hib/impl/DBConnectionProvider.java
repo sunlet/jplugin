@@ -12,7 +12,7 @@ import org.hibernate.connection.ConnectionProvider;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÉÏÎç09:58:02
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸Šåˆ09:58:02
  **/
 
 public class DBConnectionProvider implements ConnectionProvider {

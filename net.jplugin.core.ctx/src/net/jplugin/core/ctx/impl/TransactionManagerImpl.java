@@ -11,7 +11,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÉÏÎç08:39:26
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸Šåˆ08:39:26
  **/
 /**
  * @author Luis
@@ -38,7 +38,7 @@ public class TransactionManagerImpl implements TransactionManager {
 	private Logger logger;
 	
 	public void begin() {
-		 //ÏÈ¼ì²é×´Ì¬
+		 //å…ˆæ£€æŸ¥çŠ¶æ€
 		 if (txObject.get().getStatus()!=Status.NOTX){
 			 throw new RuntimeException("tx state not right");
 		 }
@@ -50,10 +50,10 @@ public class TransactionManagerImpl implements TransactionManager {
 			 }
 		 }catch(Throwable e){
 			 rollbackPreviousSilently(pos-1);
-			 throw new TxRuntimeException("Æô¶¯ÊÂÎï·¢ÉúÒì³£",e);
+			 throw new TxRuntimeException("å¯åŠ¨äº‹ç‰©å‘ç”Ÿå¼‚å¸¸",e);
 		 }
 		 
-		 //³É¹¦ÁËÔÙÉè¶¨×´Ì¬
+		 //æˆåŠŸäº†å†è®¾å®šçŠ¶æ€
 		 txObject.get().setStatus(Status.INTX);
 		 txObject.get().notifyTxBegin();
 	}
@@ -70,11 +70,11 @@ public class TransactionManagerImpl implements TransactionManager {
 			throw new RollBackException("tx marked roll back");
 		}
 		
-		//Ö´ĞĞÌá½»Ç°µÄÊÂÎïÍ¬²½£¬Èç¹û·¢ÉúÒì³££¬ÔòÅ×³öÒì³£
+		//æ‰§è¡Œæäº¤å‰çš„äº‹ç‰©åŒæ­¥ï¼Œå¦‚æœå‘ç”Ÿå¼‚å¸¸ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
 		txObject.get().notifyBeforeCompletion();
 		
 		
-		//Ö´ĞĞÌá½»
+		//æ‰§è¡Œæäº¤
 		TxRuntimeException theException = null;
 		int pos = 0;
 		try{
@@ -83,10 +83,10 @@ public class TransactionManagerImpl implements TransactionManager {
 			}
 		}catch(Throwable e){
 			commitFollowingsSilently(pos+1);
-			theException = new TxRuntimeException(handlers.length>1? "ÊÂÎïÌá½»Òì³££¬ÒòÎªÓĞ¶à¸öÊÂÎï´¦ÀíÆ÷£¬¿ÉÄÜ²»ÍêÈ«Ìá½»":"ÊÂÎïÌá½»Òì³£",e);
+			theException = new TxRuntimeException(handlers.length>1? "äº‹ç‰©æäº¤å¼‚å¸¸ï¼Œå› ä¸ºæœ‰å¤šä¸ªäº‹ç‰©å¤„ç†å™¨ï¼Œå¯èƒ½ä¸å®Œå…¨æäº¤":"äº‹ç‰©æäº¤å¼‚å¸¸",e);
 			throw theException;
 		}finally{
-			//ÎŞÂÛÈçºÎ¶¼Éè¶¨×´Ì¬
+			//æ— è®ºå¦‚ä½•éƒ½è®¾å®šçŠ¶æ€
 			txObject.get().setStatus(Status.NOTX);
 			txObject.get().notifyAfterCommit(theException);
 		}
@@ -95,7 +95,7 @@ public class TransactionManagerImpl implements TransactionManager {
 	public void rollback() {
 		Status currnetState = txObject.get().getStatus();
 		
-		//Èç¹ûÔÚÌá½»Ê±ºòÊ§°Ü²»ĞèÒªµ÷ÓÃrollback£¬µ«ÊÇÔÚĞ´´úÂëµÄÊ±ºòÎŞ·¨±ÜÃâ£¬´ËÊ±Ó¦¸ÃËã³É¹¦
+		//å¦‚æœåœ¨æäº¤æ—¶å€™å¤±è´¥ä¸éœ€è¦è°ƒç”¨rollbackï¼Œä½†æ˜¯åœ¨å†™ä»£ç çš„æ—¶å€™æ— æ³•é¿å…ï¼Œæ­¤æ—¶åº”è¯¥ç®—æˆåŠŸ
 		if (currnetState == Status.NOTX){
 			return;
 		}
@@ -113,10 +113,10 @@ public class TransactionManagerImpl implements TransactionManager {
 			}
 		} catch (Throwable e) {
 			rollbackFollowingsSilently(pos);
-			theException = new TxRuntimeException(handlers.length>1? "ÊÂÎï»Ø¹öÒì³££¬ÒòÎªÓĞ¶à¸öÊÂÎï´¦ÀíÆ÷£¬¿ÉÄÜ²»ÍêÈ«»Ø¹ö":"ÊÂÎï»Ø¹öÒì³£", e);
+			theException = new TxRuntimeException(handlers.length>1? "äº‹ç‰©å›æ»šå¼‚å¸¸ï¼Œå› ä¸ºæœ‰å¤šä¸ªäº‹ç‰©å¤„ç†å™¨ï¼Œå¯èƒ½ä¸å®Œå…¨å›æ»š":"äº‹ç‰©å›æ»šå¼‚å¸¸", e);
 			throw theException;
 		} finally {
-			//ÎŞÂÛÈçºÎ¶¼Éè¶¨×´Ì¬
+			//æ— è®ºå¦‚ä½•éƒ½è®¾å®šçŠ¶æ€
 			txObject.get().setStatus(Status.NOTX);
 			txObject.get().notifyAfterRollback(theException);
 		}
@@ -134,7 +134,7 @@ public class TransactionManagerImpl implements TransactionManager {
 			 try{
 				 handlers[i].doCommit();
 			 }catch(Throwable th){
-				 getLogger().error("Ìá½»ºóĞøÊÂÎï´¦ÀíÆ÷Ê±Òì³£",th);
+				 getLogger().error("æäº¤åç»­äº‹ç‰©å¤„ç†å™¨æ—¶å¼‚å¸¸",th);
 			 }
 		 }
 	}
@@ -154,7 +154,7 @@ public class TransactionManagerImpl implements TransactionManager {
 			 try{
 				 handlers[i].doRollback();
 			 }catch(Throwable th){
-				 getLogger().error("»Ø¹öÇ°ÇıÊÂÎï´¦ÀíÆ÷Ê±Òì³£",th);
+				 getLogger().error("å›æ»šå‰é©±äº‹ç‰©å¤„ç†å™¨æ—¶å¼‚å¸¸",th);
 			 }
 		 }
 	}
@@ -173,7 +173,7 @@ public class TransactionManagerImpl implements TransactionManager {
 			 try{
 				 handlers[i].doRollback();
 			 }catch(Throwable th){
-				 getLogger().error("»Ø¹öºóĞøÊÂÎï´¦ÀíÆ÷Ê±Òì³£",th);
+				 getLogger().error("å›æ»šåç»­äº‹ç‰©å¤„ç†å™¨æ—¶å¼‚å¸¸",th);
 			 }
 		 }
 	}

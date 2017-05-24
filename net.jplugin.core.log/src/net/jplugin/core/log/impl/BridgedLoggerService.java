@@ -14,9 +14,9 @@ import net.jplugin.core.log.api.Logger;
 
 /**
  * <pre>
- * Õâ¸ö½Ó¿ÚÓÃÀ´ÊµÏÖ ÔÚcommonLoggerImplÃ»ÓĞ³õÊ¼»¯ºÃµÄÇé¿öÏÂ£¬µ÷ÓÃStatLogger½Ó¿Ú½øĞĞÈÕÖ¾¼ÇÂ¼£¬
- * µÈLog4j³õÊ¼»¯ÒÔºó£¬°ÑËùÓĞµÄÏà¹ØLogger×ª»ØcommonLoggerImplµÄLogger,
- * ±ÜÃâcommonLoggerImpl£¨Ä¿Ç°ÊÇLogger4j£©Ã»ÓĞ³õÊ¼»¯µÄÊ±ºò£¬µ÷ÓÃÈÕÖ¾Ê§°Ü¡£
+ * è¿™ä¸ªæ¥å£ç”¨æ¥å®ç° åœ¨commonLoggerImplæ²¡æœ‰åˆå§‹åŒ–å¥½çš„æƒ…å†µä¸‹ï¼Œè°ƒç”¨StatLoggeræ¥å£è¿›è¡Œæ—¥å¿—è®°å½•ï¼Œ
+ * ç­‰Log4jåˆå§‹åŒ–ä»¥åï¼ŒæŠŠæ‰€æœ‰çš„ç›¸å…³Loggerè½¬å›commonLoggerImplçš„Logger,
+ * é¿å…commonLoggerImplï¼ˆç›®å‰æ˜¯Logger4jï¼‰æ²¡æœ‰åˆå§‹åŒ–çš„æ—¶å€™ï¼Œè°ƒç”¨æ—¥å¿—å¤±è´¥ã€‚
  * </pre>
  * 
  * @author Administrator
@@ -28,19 +28,19 @@ public class BridgedLoggerService implements ILogService {
 	List<BridgedLoggerImpl> bridgeLoggers = new ArrayList<BridgedLoggerImpl>();
 
 	/**
-	 * ³õÊ¼»¯ÆÕÍ¨µÄlogService,ÈÕÖ¾ÕæÕı¼ÇÂ¼µ½log4j
+	 * åˆå§‹åŒ–æ™®é€šçš„logService,æ—¥å¿—çœŸæ­£è®°å½•åˆ°log4j
 	 */
 	public void initCommonLoggerService(){
 		synchronized (bridgeLoggers) {
 			commonLoggerImpl = new LogServiceImpl();
 			/**
-			 * °ÑÒÑ¾­»ñÈ¡µÄlogger´¦ÀíÒ»±é
+			 * æŠŠå·²ç»è·å–çš„loggerå¤„ç†ä¸€é
 			 */
 			for (BridgedLoggerImpl log:bridgeLoggers){
 				log.changeToCommonLogger(commonLoggerImpl);
 			}
 			/**
-			 * ÇåÀílist
+			 * æ¸…ç†list
 			 */
 			bridgeLoggers.clear();
 			bridgeLoggers = null;
@@ -75,7 +75,7 @@ public class BridgedLoggerService implements ILogService {
 		
 		void changeToCommonLogger(LogServiceImpl s){
 			commonLogger = s.getLogger(this.startLogger.name);
-			//ÊÍ·ÅÄÚ´æ
+			//é‡Šæ”¾å†…å­˜
 			startLogger = null;
 		}
 

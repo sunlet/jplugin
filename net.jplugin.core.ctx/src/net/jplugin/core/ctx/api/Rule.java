@@ -4,11 +4,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Àı×Ó£º
+ * ä¾‹å­ï¼š
  * 	@Rule (methodType=TxType.ANY,keyIndex=5,logIndexes={1,2,3})
- ¡Á 
+ Ã— 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-11 ÉÏÎç08:42:35
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-11 ä¸Šåˆ08:42:35
  **/
 
 

@@ -10,7 +10,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 /**
 *
 * @author: LiuHang
-* @version ����ʱ�䣺2015-10-12 ����01:07:22
+* @version 创建时间：2015-10-12 下午01:07:22
 **/
 public class ConfigFactory {
 
@@ -65,7 +65,7 @@ public class ConfigFactory {
 	}
 
 	/**
-	 * ��������
+	 * 本地优先
 	 * @param group
 	 * @return
 	 */
@@ -82,9 +82,9 @@ public class ConfigFactory {
 	}
 	/**
 	 * <pre>
-	 * ������������˸�key���򷵻ر���
-	 * �������Զ�̳�ʼ�����ˣ��򷵻�Զ�̣����򷵻�null��
-	 * ע�⣺���ڳ�ʼ��˳��ԭ�򣬷��ʸ÷�����ʱ�������Զ����û�г�ʼ���õ������
+	 * 如果本地配置了该key，则返回本地
+	 * 否则如果远程初始化好了，则返回远程，否则返回null。
+	 * 注意：由于初始化顺序原因，访问该方法的时候，提放了远程有没有初始化好的情况！
 	 * </pre>
 	 * @param path
 	 * @return

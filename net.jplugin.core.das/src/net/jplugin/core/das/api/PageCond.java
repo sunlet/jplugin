@@ -5,7 +5,7 @@ import net.jplugin.common.kits.JsonKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÏÂÎç04:59:13
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸‹åˆ04:59:13
  **/
 
 

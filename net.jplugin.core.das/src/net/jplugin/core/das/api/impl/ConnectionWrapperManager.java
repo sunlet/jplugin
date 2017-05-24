@@ -13,9 +13,9 @@ public class ConnectionWrapperManager {
 	}
 
 	public static Connection getConnection(String dataSourceName, Connection connection) {
-		//ÕâÀïÖ±½ÓÊ¹ÓÃÕâ¸ö²ÎÊıconnection±äÁ¿ÁË
+		//è¿™é‡Œç›´æ¥ä½¿ç”¨è¿™ä¸ªå‚æ•°connectionå˜é‡äº†
 		if (arr!=null && arr.length>0){
-			//ºó×¢²áµÄ·â×°ÔÚ×îÍâÃæ
+			//åæ³¨å†Œçš„å°è£…åœ¨æœ€å¤–é¢
 			for (IConnectionWrapperService dsw:arr){
 				connection = dsw.wrapper(dataSourceName,connection);
 			}

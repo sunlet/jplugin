@@ -9,7 +9,7 @@ import net.jplugin.core.ctx.api.Rule;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-12 ÏÂÎç04:11:52
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-12 ä¸‹åˆ04:11:52
  **/
 
 public class RuleInvocationContext {

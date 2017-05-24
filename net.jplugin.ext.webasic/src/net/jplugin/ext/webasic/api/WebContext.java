@@ -41,7 +41,7 @@ public class WebContext {
 			
 			basePath = WebContext.getProtocal()+"://"+host+":"+WebContext.getPort()+WebContext.getContextPath();
 			if (!localhostCall(host)){
-				//Èç¹ûÊÇ±¾»úµ÷ÓÃ£¬¼ÌĞø³õÊ¼»¯
+				//å¦‚æœæ˜¯æœ¬æœºè°ƒç”¨ï¼Œç»§ç»­åˆå§‹åŒ–
 				init = true;
 			}
 		}

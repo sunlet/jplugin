@@ -13,7 +13,7 @@ import net.jplugin.core.das.api.stat.UpdateStatement;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÉÏÎç08:47:47
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸Šåˆ08:47:47
  **/
 
 public interface IDataService {
@@ -21,8 +21,8 @@ public interface IDataService {
 	public void flush();
 	public void insert(Object obj);
 
-	//È¥µôUPdate·½·¨£¬Õâ¸ö·½·¨Ã»Ê²Ã´ÓÃ´¦µÄ£¬ÒòÎª³Ö¾Ã»¯¶ÔÏó¿ÉÒÔ×Ô¶¯update,
-	//Í¬Ê±£¬Ò²²»ÔõÃ´ĞèÒª¶Ô·Ç³Ö¾Ã¶ÔÏóµ÷ÓÃupdate
+	//å»æ‰UPdateæ–¹æ³•ï¼Œè¿™ä¸ªæ–¹æ³•æ²¡ä»€ä¹ˆç”¨å¤„çš„ï¼Œå› ä¸ºæŒä¹…åŒ–å¯¹è±¡å¯ä»¥è‡ªåŠ¨update,
+	//åŒæ—¶ï¼Œä¹Ÿä¸æ€ä¹ˆéœ€è¦å¯¹éæŒä¹…å¯¹è±¡è°ƒç”¨update
 	//public void update(Object obj);
 
 	public boolean delete(Object obj);
@@ -45,7 +45,7 @@ public interface IDataService {
 
 	public List<Object> queryBySql(String sql, Object... binds);
 	
-	//ÔİÊ±Ã»ÓĞÊµÏÖfetchBySql·½·¨£¬Ê¹ÓÃquerybysql·½·¨°ÑresultsetÒÔListÊı×éµÄĞÎÊ½·µ»Ø£¬Ò²²»´íµÄ£¡
+	//æš‚æ—¶æ²¡æœ‰å®ç°fetchBySqlæ–¹æ³•ï¼Œä½¿ç”¨querybysqlæ–¹æ³•æŠŠresultsetä»¥Listæ•°ç»„çš„å½¢å¼è¿”å›ï¼Œä¹Ÿä¸é”™çš„ï¼
 	
 	public int executeUpdateSql(UpdateStatement us);
 	public int executeDeleteSql(DeleteStatement ds);

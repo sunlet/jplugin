@@ -18,7 +18,7 @@ public class DictionaryServiceImpl implements IDictionaryService {
 	ConcurrentHashMap<String, Map<String,List<Dictionary>>> dataCache=new ConcurrentHashMap<String, Map<String,List<Dictionary>>>();
 	@Override
 	public List<Dictionary> getDictionarys(String provider, String param) {
-		if (param==null) param="";//以便可以作为key
+		if (param==null) param="";//浠ヤ究鍙互浣滀负key
 		
 		IDictProvidor dictProd = map.get(provider);
 		if (dictProd.dynamic())

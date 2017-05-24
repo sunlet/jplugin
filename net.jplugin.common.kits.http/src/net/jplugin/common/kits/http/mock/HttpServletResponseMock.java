@@ -9,7 +9,7 @@ import net.jplugin.common.kits.JsonKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç11:53:15
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ11:53:15
  **/
 
 public class HttpServletResponseMock extends HttpServletResponseEmpty{

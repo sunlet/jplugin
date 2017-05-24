@@ -10,7 +10,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÏÂÎç06:16:54
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸‹åˆ06:16:54
  **/
 
 public class DasTest {
@@ -20,7 +20,7 @@ public class DasTest {
 	}
 
 	/**
-	 * Ã»ÓĞÊÂÎïÇé¿öÏÂÈç¹ûÓÃUUID£¬²»»á²åÈë£»µ«ÊÇÓÃnative»á²åÈë£¬ÒòÎªÕâÑù²ÅÄÜ²úÉúid
+	 * æ²¡æœ‰äº‹ç‰©æƒ…å†µä¸‹å¦‚æœç”¨UUIDï¼Œä¸ä¼šæ’å…¥ï¼›ä½†æ˜¯ç”¨nativeä¼šæ’å…¥ï¼Œå› ä¸ºè¿™æ ·æ‰èƒ½äº§ç”Ÿid
 	 * @throws Exception
 	 */
 	public static void testUUIDIDNoTx() throws Exception{

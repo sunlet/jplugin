@@ -18,17 +18,17 @@ public class ConfigedDataSource {
       <property name="url" value="${url}"/>
       <property name="username"><value>${dbuser}</value></property>
       <property name="password"><value>${dbpassword}</value></property>
-      <!-- ×î´ó¼¤»îÁ¬½ÓÊı£¬±íÊ¾Í¬Ê±×î¶àÓĞ¶àÉÙ¸öÊı¾İ¿âÁ¬½Ó -->
+      <!-- æœ€å¤§æ¿€æ´»è¿æ¥æ•°ï¼Œè¡¨ç¤ºåŒæ—¶æœ€å¤šæœ‰å¤šå°‘ä¸ªæ•°æ®åº“è¿æ¥ -->
       <property name="maxActive"><value>${maxActive}</value></property> 
-      <!-- ×î´óµÄ¿ÕÏĞÁ¬½ÓÊı£¬±íÊ¾¼´Ê¹Ã»ÓĞÊı¾İ¿âÁ¬½ÓÊ±ÒÀÈ»¿ÉÒÔ±£³Ö¶àÉÙ¿ÕÏĞµÄÁ¬½Ó£¬¶ø²»±»Çå³ı£¬ËæÊ±´¦ÓÚ´ıÃü×´Ì¬ -->
+      <!-- æœ€å¤§çš„ç©ºé—²è¿æ¥æ•°ï¼Œè¡¨ç¤ºå³ä½¿æ²¡æœ‰æ•°æ®åº“è¿æ¥æ—¶ä¾ç„¶å¯ä»¥ä¿æŒå¤šå°‘ç©ºé—²çš„è¿æ¥ï¼Œè€Œä¸è¢«æ¸…é™¤ï¼Œéšæ—¶å¤„äºå¾…å‘½çŠ¶æ€ -->
       <property name="maxIdle"><value>${maxIdle}</value></property>
-      <!-- ÊÇ×î´óµÈ´ıÃëÖÓÊı£¬È¡Öµ-1£¬±íÊ¾ÎŞÏŞµÈ´ı£¬Ö±µ½³¬Ê±ÎªÖ¹£¬È¡Öµ9000£¬±íÊ¾9Ãëºó³¬Ê± -->
+      <!-- æ˜¯æœ€å¤§ç­‰å¾…ç§’é’Ÿæ•°ï¼Œå–å€¼-1ï¼Œè¡¨ç¤ºæ— é™ç­‰å¾…ï¼Œç›´åˆ°è¶…æ—¶ä¸ºæ­¢ï¼Œå–å€¼9000ï¼Œè¡¨ç¤º9ç§’åè¶…æ—¶ -->
       <property name="maxWait"><value>${maxWait}</value></property>
-      <!-- ÊÇ·ñÇåÀíremoveAbandonedTimeoutÃëÃ»ÓĞÊ¹ÓÃµÄ»î¶¯Á¬½Ó,ÇåÀíºó²¢Ã»ÓĞ·Å»ØÁ¬½Ó³Ø.£¨Ä¬ÈÏÊÇfalse£© -->
+      <!-- æ˜¯å¦æ¸…ç†removeAbandonedTimeoutç§’æ²¡æœ‰ä½¿ç”¨çš„æ´»åŠ¨è¿æ¥,æ¸…ç†åå¹¶æ²¡æœ‰æ”¾å›è¿æ¥æ± .ï¼ˆé»˜è®¤æ˜¯falseï¼‰ -->
       <property name="removeAbandoned"><value>true</value></property>
-      <!-- Éè¶¨Á¬½ÓÔÚ¶àÉÙÃëÄÚ±»ÈÏÎªÊÇ·ÅÆúµÄÁ¬½Ó£¬¼´¿É½øĞĞ»Ö¸´ÀûÓÃ ,Õë¶ÔÎ´±»closeµÄ»î¶¯Á¬½Ó-->
+      <!-- è®¾å®šè¿æ¥åœ¨å¤šå°‘ç§’å†…è¢«è®¤ä¸ºæ˜¯æ”¾å¼ƒçš„è¿æ¥ï¼Œå³å¯è¿›è¡Œæ¢å¤åˆ©ç”¨ ,é’ˆå¯¹æœªè¢«closeçš„æ´»åŠ¨è¿æ¥-->
       <property name="removeAbandonedTimeout"><value>600</value></property>
-      <!-- ÊÇ·ñÊä³ö»ØÊÕµÄÈÕÖ¾£¬¿ÉÒÔÏêÏ¸´òÓ¡³öÒì³£´Ó¶ø·¢ÏÖÊÇÔÚÄÇÀï·¢ÉúÁËĞ¹Â© -->
+      <!-- æ˜¯å¦è¾“å‡ºå›æ”¶çš„æ—¥å¿—ï¼Œå¯ä»¥è¯¦ç»†æ‰“å°å‡ºå¼‚å¸¸ä»è€Œå‘ç°æ˜¯åœ¨é‚£é‡Œå‘ç”Ÿäº†æ³„æ¼ -->
       <property name="logAbandoned"><value>false</value></property>
     </bean>
 	 * @param groupName
@@ -52,7 +52,7 @@ public class ConfigedDataSource {
 
 	private static DataSource createJdbcDataSource(String group, Map<String, String> map) {
 		org.apache.commons.dbcp.BasicDataSource ds = new BasicDataSource();
-		//ÎªÁË¼æÈİÒÔÇ°µÄÅäÖÃÎÄ¼ş£¬Ö§³Ödbuser¡¢dbpasswordÁ½¸ö²ÎÊı
+		//ä¸ºäº†å…¼å®¹ä»¥å‰çš„é…ç½®æ–‡ä»¶ï¼Œæ”¯æŒdbuserã€dbpasswordä¸¤ä¸ªå‚æ•°
 		if (map.containsKey("dbuser")){
 			map.put("username", map.get("dbuser"));
 			map.remove("dbuser");
@@ -61,7 +61,7 @@ public class ConfigedDataSource {
 			map.put("password", map.get("dbpassword"));
 			map.remove("dbpassword");
 		}
-		//ÒÔÉÏÎªÁË¸üºÃµÄÇ¨ÒÆÒÔÇ°µÄÅäÖÃÎÄ¼ş£¬Ö»ĞŞ¸ÄÎÄ¼şÃû¼´¿É
+		//ä»¥ä¸Šä¸ºäº†æ›´å¥½çš„è¿ç§»ä»¥å‰çš„é…ç½®æ–‡ä»¶ï¼Œåªä¿®æ”¹æ–‡ä»¶åå³å¯
 		
 		map.remove(DataSourceFactory.IS_TX_MANAGED);
 		

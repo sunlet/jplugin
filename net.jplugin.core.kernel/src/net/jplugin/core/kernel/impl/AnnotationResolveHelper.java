@@ -15,12 +15,12 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  * <pre>
- * ÄÜ¹»×Ô¶¯
- * JPluginÖ§³ÖµÄÒıÓÃÄ£Ê½µÄannotation°üÀ¨£º
+ * èƒ½å¤Ÿè‡ªåŠ¨
+ * JPluginæ”¯æŒçš„å¼•ç”¨æ¨¡å¼çš„annotationåŒ…æ‹¬ï¼š
  * @RefLogger
  * @RefMybatis
  * @RefRuleService
- * @RefRemoteProxy£¨´ıÊµÏÖ£©
+ * @RefRemoteProxyï¼ˆå¾…å®ç°ï¼‰
  * @RefConfig
  *</pre>
  * @author Administrator
@@ -38,7 +38,7 @@ public class AnnotationResolveHelper {
 
 	public void resolveHistory(){
 		/**
-		 * ÕâÀïÓÃÒ»¸öset×öÒ»¸öÅÅÖØ¡£ÎªÁË±ÜÃâÓÃ»§¼ÓÁËµ÷ÓÃÁËresolve·½·¨£¬Í¬Ê±¿ò¼ÜÒ²´¦ÀíÁË¡£¶Ô³åÍ»½øĞĞ±ÜÃâ¡£
+		 * è¿™é‡Œç”¨ä¸€ä¸ªsetåšä¸€ä¸ªæ’é‡ã€‚ä¸ºäº†é¿å…ç”¨æˆ·åŠ äº†è°ƒç”¨äº†resolveæ–¹æ³•ï¼ŒåŒæ—¶æ¡†æ¶ä¹Ÿå¤„ç†äº†ã€‚å¯¹å†²çªè¿›è¡Œé¿å…ã€‚
 		 */
 		Set<Object> set = new HashSet();
 		for (Object o:toResolveList){
@@ -66,7 +66,7 @@ public class AnnotationResolveHelper {
 	
 
 	/**
-	 * ´¦Àíannotation±ê¼Ç¹ıµÄÊôĞÔ
+	 * å¤„ç†annotationæ ‡è®°è¿‡çš„å±æ€§
 	 */
 	public final void resolveBatch(Collection<Object> objList) {
 		if (objList==null) 
@@ -77,12 +77,12 @@ public class AnnotationResolveHelper {
 	}
 	
 	public final void resolveOne(Object obj){
-		//³õÊ¼»¯ÒÔÇ°ÏÈ±£Áô
+		//åˆå§‹åŒ–ä»¥å‰å…ˆä¿ç•™
 		if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_INITING){
 			this.toResolveList.add(obj);
 			return;
 		}
-		//³õÊ¼»¯ÒÔºó¾Í²Ù×÷
+		//åˆå§‹åŒ–ä»¥åå°±æ“ä½œ
 		if (handlers ==null) 
 			init();
 	

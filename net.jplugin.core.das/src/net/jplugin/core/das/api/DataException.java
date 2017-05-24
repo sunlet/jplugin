@@ -3,7 +3,7 @@ package net.jplugin.core.das.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-24 ÉÏÎç09:08:56
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-24 ä¸Šåˆ09:08:56
  **/
 
 public class DataException extends RuntimeException {

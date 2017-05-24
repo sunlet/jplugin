@@ -17,7 +17,7 @@ import net.jplugin.common.kits.AssertKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç11:53:08
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ11:53:08
  **/
 
 public class HttpServletRequestMock extends HttpServletRequestEmpty{
@@ -38,7 +38,7 @@ public class HttpServletRequestMock extends HttpServletRequestEmpty{
 
 		public void forward(ServletRequest arg0, ServletResponse arg1)
 				throws ServletException, IOException {
-			//Ö±½Ó°Ñ½á¹ûÊä³ö
+			//ç›´æ¥æŠŠç»“æœè¾“å‡º
 			for (String key:attrMap.keySet()){
 				res.getWriter().print(attrMap.get(key));
 			}

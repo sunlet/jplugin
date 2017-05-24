@@ -45,7 +45,7 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 /**
- * Http²Ù×÷¹¤¾ßÀà
+ * Httpæ“ä½œå·¥å…·ç±»
  * @author liyy
  * @date 2014-05-20
  */
@@ -55,18 +55,18 @@ public class HttpKit_OLD{
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
 
-    private static int maxConnections = 200; //httpÇëÇó×î´ó²¢·¢Á¬½ÓÊı
-    private static int maxConnectionsPerRoute = 20; //httpÇëÇó×î´ó²¢·¢Á¬½ÓÊı
-    private static int socketTimeout = 5; //³¬Ê±Ê±¼ä£¬Ä¬ÈÏ20Ãë
-    private static int maxRetries = 5;//´íÎó³¢ÊÔ´ÎÊı£¬´íÎóÒì³£±íÇëÔÚRetryHandlerÌí¼Ó
-    private static int httpThreadCount = 3;//httpÏß³Ì³ØÊıÁ¿
+    private static int maxConnections = 200; //httpè¯·æ±‚æœ€å¤§å¹¶å‘è¿æ¥æ•°
+    private static int maxConnectionsPerRoute = 20; //httpè¯·æ±‚æœ€å¤§å¹¶å‘è¿æ¥æ•°
+    private static int socketTimeout = 5; //è¶…æ—¶æ—¶é—´ï¼Œé»˜è®¤20ç§’
+    private static int maxRetries = 5;//é”™è¯¯å°è¯•æ¬¡æ•°ï¼Œé”™è¯¯å¼‚å¸¸è¡¨è¯·åœ¨RetryHandleræ·»åŠ 
+    private static int httpThreadCount = 3;//httpçº¿ç¨‹æ± æ•°é‡
     
     private static boolean unitTesting=false;
 	public static boolean isUnitTesting(){
 		return unitTesting;
 	}
 	/**
-	 * ÉèÖÃµ¥Ôª²âÊÔ×´Ì¬
+	 * è®¾ç½®å•å…ƒæµ‹è¯•çŠ¶æ€
 	 * @param b
 	 */
 	public static void setUnitTesting(boolean b) {
@@ -104,7 +104,7 @@ public class HttpKit_OLD{
 			 */
 
 			SchemeRegistry registry = new SchemeRegistry();
-			//´Ë´¦²»ÄÜÖ±½ÓÊ¹ÓÃĞÂµÄSchemeµÄ¹¹Ôì·½·¨£¬·ñÔò»áÓĞhttpsµÄÑéÖ¤ÎÊÌâ
+			//æ­¤å¤„ä¸èƒ½ç›´æ¥ä½¿ç”¨æ–°çš„Schemeçš„æ„é€ æ–¹æ³•ï¼Œå¦åˆ™ä¼šæœ‰httpsçš„éªŒè¯é—®é¢˜
 			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 			registry.register(new Scheme("https", sf, 443));
 

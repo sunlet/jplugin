@@ -7,7 +7,7 @@ import net.jplugin.core.ctx.api.TransactionSync;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÉÏÎç11:17:32
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸Šåˆ11:17:32
  **/
 
 public class TransactionManagerAdaptor implements TransactionManager{

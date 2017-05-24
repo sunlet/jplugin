@@ -7,7 +7,7 @@ import java.util.Map;
 /**
 *
 * @author: LiuHang
-* @version ´´½¨Ê±¼ä£º2015-2-22 ÉÏÎç11:46:53
+* @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸Šåˆ11:46:53
 **/
 
 public interface IPlugin {

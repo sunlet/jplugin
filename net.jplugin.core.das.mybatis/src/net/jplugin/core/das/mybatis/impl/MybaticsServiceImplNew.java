@@ -43,7 +43,7 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		dataSource = DataSourceFactory.getDataSource(dataSourceName);
 //		ServiceFactory.getService(TransactionManager.class).addTransactionHandler(managedDataSource);
 
-		//´´½¨txfactory£¬²»Ìá½»£¬²»¹Ø±Õ£¬Ò»ÇĞ½»¸øÈİÆ÷
+		//åˆ›å»ºtxfactoryï¼Œä¸æäº¤ï¼Œä¸å…³é—­ï¼Œä¸€åˆ‡äº¤ç»™å®¹å™¨
 		Properties prop = new Properties();
 		prop.setProperty("closeConnection", "false");
 		ManagedTransactionFactory tm = new ManagedTransactionFactory();
@@ -56,7 +56,7 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		//check global config
 		String globalConfigResource = checkGlocalConfigMapper(dataSourceName,mappers,interceptors);
 		if (globalConfigResource!=null){
-			//×¢Òâ£ºÔÚglobal configÇé¿öÏÂ£¬Í¨¹ıÀ©Õ¹ÅäÖÃÅäÖÃµÄInteceptor»¹ÊÇ»á¼ÓÈëµÄ
+			//æ³¨æ„ï¼šåœ¨global configæƒ…å†µä¸‹ï¼Œé€šè¿‡æ‰©å±•é…ç½®é…ç½®çš„Inteceptorè¿˜æ˜¯ä¼šåŠ å…¥çš„
 			configuration = buildGlobalConfiguration(globalConfigResource);
 			if (configuration.getEnvironment()!=null)
 				throw new RuntimeException("The global config for Mybatis MUST NOT has enviremonent element: "+globalConfigResource);
@@ -135,9 +135,9 @@ public class MybaticsServiceImplNew implements IMybatisService {
 	}
 
 	/**
-	 * ÓĞÁ½¸ö×÷ÓÃ£º
-	 * 1.½øĞĞÈ«¾ÖÅäÖÃ¼ì²é£¬Èç¹ûÓĞÈ«¾ÖÅäÖÃ£¬Ôò²»ÔÊĞí´æÔÚÆäËûÅäÖÃ
-	 * 2.·µ»Ø£ºÊÇ·ñÆôÓÃmybatisÈ«¾ÖÅäÖÃ
+	 * æœ‰ä¸¤ä¸ªä½œç”¨ï¼š
+	 * 1.è¿›è¡Œå…¨å±€é…ç½®æ£€æŸ¥ï¼Œå¦‚æœæœ‰å…¨å±€é…ç½®ï¼Œåˆ™ä¸å…è®¸å­˜åœ¨å…¶ä»–é…ç½®
+	 * 2.è¿”å›ï¼šæ˜¯å¦å¯ç”¨mybatiså…¨å±€é…ç½®
 	 * @param datasource
 	 * @param mappers
 	 * @param interceptors 
@@ -174,7 +174,7 @@ public class MybaticsServiceImplNew implements IMybatisService {
 	@Override
 	public <T> void runWithMapper(Class<T> type,IMapperHandler<T> handler){
 		/**
-		 * ¼ÇÂ¼Ò»ÏÂ£ºÕâÀïµÄsess.close()Ä¿Ç°ÊÇ¿Õ²Ù×÷£¬ÍêÈ«¿ÉÒÔÉ¾È¥£¡
+		 * è®°å½•ä¸€ä¸‹ï¼šè¿™é‡Œçš„sess.close()ç›®å‰æ˜¯ç©ºæ“ä½œï¼Œå®Œå…¨å¯ä»¥åˆ å»ï¼
 		 */
 		SqlSession sess = openSession();
 		try{
@@ -198,7 +198,7 @@ public class MybaticsServiceImplNew implements IMybatisService {
 
 	
 	/**
-	 * ×¢Òâ£¬ÕâÀï»ñÈ¡µÄconnection²»ÓÃ¹Ø±Õ£¬»á×Ô¶¯¹Ø±ÕµÄ
+	 * æ³¨æ„ï¼Œè¿™é‡Œè·å–çš„connectionä¸ç”¨å…³é—­ï¼Œä¼šè‡ªåŠ¨å…³é—­çš„
 	 */
 	@Override
 	public Connection getConnection() {

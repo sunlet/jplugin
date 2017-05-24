@@ -9,7 +9,7 @@ import net.jplugin.core.kernel.api.IStartup;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç01:07:22
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ01:07:22
  **/
 
 public class Plugin extends AbstractPlugin{

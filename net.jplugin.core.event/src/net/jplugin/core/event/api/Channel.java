@@ -6,7 +6,7 @@ import java.util.Vector;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç03:25:31
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ03:25:31
  **/
 
 public abstract class Channel {

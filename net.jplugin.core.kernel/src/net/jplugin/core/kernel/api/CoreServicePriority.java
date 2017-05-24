@@ -3,7 +3,7 @@ package net.jplugin.core.kernel.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-2 ÏÂÎç05:44:04
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-2 ä¸‹åˆ05:44:04
  **/
 
 public class CoreServicePriority {

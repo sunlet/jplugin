@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-13 ÏÂÎç01:37:33
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-13 ä¸‹åˆ01:37:33
  **/
 
 public class ClientInfo {

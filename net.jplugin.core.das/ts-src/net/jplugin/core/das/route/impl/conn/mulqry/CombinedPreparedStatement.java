@@ -36,9 +36,9 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 	ParseResult sqlParseResult;
 	public CombinedPreparedStatement(Connection conn, String sql){
 		super(conn);
-		//½âÎö
+		//è§£æ
 		sqlParseResult = CombinedSqlParser.parse(sql);
-		//²úÉústatement ÁĞ±í
+		//äº§ç”Ÿstatement åˆ—è¡¨
 		fillStatementList(sqlParseResult);
 	}
 	
@@ -46,7 +46,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 		try{
 			for (DataSourceInfo dsi:pr.getMeta().getDataSourceInfos()){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
-				//Ã¿Ò»¸ö±í¶¼»ñÈ¡Ò»¸öStatement£¬²¢²»ÖØÓÃ
+				//æ¯ä¸€ä¸ªè¡¨éƒ½è·å–ä¸€ä¸ªStatementï¼Œå¹¶ä¸é‡ç”¨
 				for (String destTbName:dsi.getDestTbs()){
 					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(pr.getSql(), pr.getMeta().getSourceTb(), destTbName));
 					statementList.add(stmt);
@@ -67,7 +67,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 	public ResultSet executeQuery() throws SQLException {
 		ResultSetList temp = genResultSetListFromStatementList(sqlParseResult);
 		
-		//¸ù¾İcount(*)Ä£Ê½·µ»Ø²»Í¬µÄÖµ
+		//æ ¹æ®count(*)æ¨¡å¼è¿”å›ä¸åŒçš„å€¼
 		if (sqlParseResult.getMeta().getCountStar()==1){
 			this.theResultSet = new ResultSetForCount(temp);
 			return this.theResultSet;
@@ -80,15 +80,15 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 	private ResultSetList genResultSetListFromStatementList(ParseResult pr) {
 		List<ResultSet> tempList = new ArrayList<ResultSet>();
 		try{
-			//Öğ¸öÖ´ĞĞ²éÑ¯
+			//é€ä¸ªæ‰§è¡ŒæŸ¥è¯¢
 			for (Statement st:this.statementList){
 				tempList.add(((PreparedStatement)st).executeQuery());
 			}
-			//ÖÆÔì½á¹û
+			//åˆ¶é€ ç»“æœ
 			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
 			return ret;
 		}catch(Exception e){
-			//·¢ÉúÒì³£µÄÇé¿öÏÂ£¬statement »áÔÚ±¾statement¹Ø±ÕµÄÊ±ºò¹Ø±Õ£¬µ«ÊÇresultSet²»»á£¬ĞèÒª´¦ÀíÒ»ÏÂ
+			//å‘ç”Ÿå¼‚å¸¸çš„æƒ…å†µä¸‹ï¼Œstatement ä¼šåœ¨æœ¬statementå…³é—­çš„æ—¶å€™å…³é—­ï¼Œä½†æ˜¯resultSetä¸ä¼šï¼Œéœ€è¦å¤„ç†ä¸€ä¸‹
 			for (ResultSet r:tempList){
 				try{
 					r.close();

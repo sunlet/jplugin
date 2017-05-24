@@ -8,12 +8,12 @@ public class KernelKit {
 	private static final String DEFAULT_ENV = "develop";
 
 	public static String getConfigFilePath(String filename){
-		//ÏÈÕÒ²»´øenvµÄÈ±Ê¡ÎÄ¼ş
+		//å…ˆæ‰¾ä¸å¸¦envçš„ç¼ºçœæ–‡ä»¶
 		String path = getFileName("",filename);
 		if (FileKit.existsAndIsFile(path)){
 			return path;
 		}
-		//ÕÒenvÎÄ¼ş£¬Èç¹ûÃ»ÓĞÅäÖÃÔòÕÒÈ±Ê¡env
+		//æ‰¾envæ–‡ä»¶ï¼Œå¦‚æœæ²¡æœ‰é…ç½®åˆ™æ‰¾ç¼ºçœenv
 		String envtype = PluginEnvirement.INSTANCE.getEnvType();
 		if (envtype==null){
 			envtype=DEFAULT_ENV;
@@ -22,7 +22,7 @@ public class KernelKit {
 		if (FileKit.existsAndIsFile(path)){
 			return path;
 		}else{
-			//Í¨¹ı¸÷ÖÖÇşµÀÕÒ²»µ½ÎÄ¼ş£¬Ò²ÕÒ²»µ½develop£¬Ê¹ÓÃÄ¬ÈÏÖµ¡£Ó¦¸ÃÕÒ²»µ½ÎÄ¼ş»á±¨´íµÄ¡£
+			//é€šè¿‡å„ç§æ¸ é“æ‰¾ä¸åˆ°æ–‡ä»¶ï¼Œä¹Ÿæ‰¾ä¸åˆ°developï¼Œä½¿ç”¨é»˜è®¤å€¼ã€‚åº”è¯¥æ‰¾ä¸åˆ°æ–‡ä»¶ä¼šæŠ¥é”™çš„ã€‚
 			return getFileName("",filename);
 		}
 	}

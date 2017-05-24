@@ -11,7 +11,7 @@ public class CompareKit {
 		else if (o2!=null)
 			return -1;
 		else
-			//两个都为null
+			//涓や釜閮戒负null
 			return 0;
 
 	}

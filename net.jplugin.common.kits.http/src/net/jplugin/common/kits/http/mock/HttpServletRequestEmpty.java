@@ -27,7 +27,7 @@ import javax.servlet.http.Part;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç11:54:34
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ11:54:34
  **/
 
 public class HttpServletRequestEmpty implements HttpServletRequest{

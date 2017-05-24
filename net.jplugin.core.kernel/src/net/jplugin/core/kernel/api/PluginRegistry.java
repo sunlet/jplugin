@@ -14,7 +14,7 @@ import net.jplugin.common.kits.StringKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-22 ÉÏÎç11:43:01
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸Šåˆ11:43:01
  **/
 
 public class PluginRegistry {
@@ -34,13 +34,13 @@ public class PluginRegistry {
 		this.pluginList.add((AbstractPlugin) plugin);
 	}
 	/**
-	 * ÏÈÌŞ³ıÖØÃû
-	 * ÔÙ°´ÕÕÓÅÏÈ¼¶ÅÅĞò£¬Ğ¡Êı×ÖÓĞÏß£»ÏàÍ¬Êı×ÖµÄ£¬°´ÕÕÃû³ÆÅÅĞò
+	 * å…ˆå‰”é™¤é‡å
+	 * å†æŒ‰ç…§ä¼˜å…ˆçº§æ’åºï¼Œå°æ•°å­—æœ‰çº¿ï¼›ç›¸åŒæ•°å­—çš„ï¼ŒæŒ‰ç…§åç§°æ’åº
 	 */
 	public void sort(){
-		//ÑéÖ¤nameÊÇ·ñÓĞÏàÍ¬£¬ÏàÍ¬Ôò±¨´í,¼ÓÈë´íÎóÁĞ±í
+		//éªŒè¯nameæ˜¯å¦æœ‰ç›¸åŒï¼Œç›¸åŒåˆ™æŠ¥é”™,åŠ å…¥é”™è¯¯åˆ—è¡¨
 		checkSameName(errorList);
-		//ÅÅĞò
+		//æ’åº
 		SortUtil.sort(this.pluginList, new Comparor() {
 
 			public boolean isGreaterThen(Object o1, Object o2) {
@@ -63,7 +63,7 @@ public class PluginRegistry {
 	}
 	
 	/**
-	 * ¸÷¸öplugin×Ô¼ºÑéÖ¤×Ô¼º,Èç¹û´íÎó£¬ÉèÖÃerror×´Ì¬
+	 * å„ä¸ªpluginè‡ªå·±éªŒè¯è‡ªå·±,å¦‚æœé”™è¯¯ï¼Œè®¾ç½®errorçŠ¶æ€
 	 */
 	public void valid(){
 		for (int i=0;i<pluginList.size();i++){
@@ -77,14 +77,14 @@ public class PluginRegistry {
 	}
 	
 	/**
-	 * ¸÷¸öPlugin×Ô¼º¼ÓÔØ×Ô¼º£¬Åöµ½Òì³£ÔòÅ×³ö
+	 * å„ä¸ªPluginè‡ªå·±åŠ è½½è‡ªå·±ï¼Œç¢°åˆ°å¼‚å¸¸åˆ™æŠ›å‡º
 	 */
 	public void load(){
-		//¼ÓÔØ
+		//åŠ è½½
 		for (int i=0;i<pluginList.size();i++){
 			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
 			/**
-			 * Èç¹û¾­¹ıvalidÒÔºó£¬²»ÊÇ´íÎó×´Ì¬(ÊÇ³õÊ¼×´Ì¬),Ôò¼ÓÔØ£¬²¢ĞŞ¸ÄÎªLOADED×´Ì¬
+			 * å¦‚æœç»è¿‡validä»¥åï¼Œä¸æ˜¯é”™è¯¯çŠ¶æ€(æ˜¯åˆå§‹çŠ¶æ€),åˆ™åŠ è½½ï¼Œå¹¶ä¿®æ”¹ä¸ºLOADEDçŠ¶æ€
 			 */
 			if (plugin.getStatus() == IPlugin.STAT_INIT){
 				List<PluginError> ret = plugin.load();
@@ -105,12 +105,12 @@ public class PluginRegistry {
 	
 	
 	/**
-	 * °ó¶¨ExtensionºÍExtensionPointÖ®¼ä¹ØÏµ£¬
-	 * Ö»´¦Àí×´Ì¬Õı³£µÄplugin£¬²»Õı³£µÄºöÂÔµô
+	 * ç»‘å®šExtensionå’ŒExtensionPointä¹‹é—´å…³ç³»ï¼Œ
+	 * åªå¤„ç†çŠ¶æ€æ­£å¸¸çš„pluginï¼Œä¸æ­£å¸¸çš„å¿½ç•¥æ‰
 	 * @return 
 	 */
 	public void wire(){
-		//validµÄÊ±ºòÔø¾­·ÅÖÃ¹ıextensionPointMap,ÒªÈ«²¿ÇåÀíµô
+		//validçš„æ—¶å€™æ›¾ç»æ”¾ç½®è¿‡extensionPointMap,è¦å…¨éƒ¨æ¸…ç†æ‰
 		this.extensionPointMap.clear();
 		
 		for (int i=0;i<pluginList.size();i++){
@@ -133,7 +133,7 @@ public class PluginRegistry {
 	
 	
 	/**
-	 * Æô¶¯£¬Ö´ĞĞ¸÷¸öPluginµÄinit
+	 * å¯åŠ¨ï¼Œæ‰§è¡Œå„ä¸ªPluginçš„init
 	 * @param testAll 
 	 * @param testTarget 
 	 */
@@ -146,7 +146,7 @@ public class PluginRegistry {
 					PluginEnvirement.INSTANCE.getStartLogger().log("StartPlugin :["+i+"] "+plugin.getName());
 					plugin.init();
 					
-					//Èç¹û²»ÊÇÈ«²¿²âÊÔ£¬²¢ÇÒÆô¶¯µ½Ä¿±ê²å¼ş£¬ÔòÍ£Ö¹
+					//å¦‚æœä¸æ˜¯å…¨éƒ¨æµ‹è¯•ï¼Œå¹¶ä¸”å¯åŠ¨åˆ°ç›®æ ‡æ’ä»¶ï¼Œåˆ™åœæ­¢
 					if (!testAll && plugin.getName().equals(testTarget)){
 						break;
 					}

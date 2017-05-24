@@ -9,7 +9,7 @@ import net.jplugin.common.kits.StringKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÉÏÎç10:07:28
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸Šåˆ10:07:28
  **/
 
 public class RequesterInfo {
@@ -128,7 +128,7 @@ public class RequesterInfo {
 		public void setJsonContent(String jsonContent) {
 			this.jsonContent = jsonContent;
 			fillItemsToParamContent();
-////2016-12-08×¢ÊÍµô			parseAndCacheJsonContent();
+////2016-12-08æ³¨é‡Šæ‰			parseAndCacheJsonContent();
 		}
 		
 		private void fillItemsToParamContent() {
@@ -136,7 +136,7 @@ public class RequesterInfo {
 				paramContent = new HashMap<String,String>();
 			
 			if (StringKit.isNull(this.jsonContent))
-				return;//²»×öÈÎºÎ×ª»»£¬ÈÏÎªÃ»²ÎÊı
+				return;//ä¸åšä»»ä½•è½¬æ¢ï¼Œè®¤ä¸ºæ²¡å‚æ•°
 			
 			Map map = JsonKit.json2Map(this.jsonContent);
 			for (Object key : map.keySet()){
@@ -147,10 +147,10 @@ public class RequesterInfo {
 			}
 		}
 		
-//2016-12-08ÏÂÃæÄÚÈİ±»×¢µô£¬ÒòÎªĞèÒª°ÑjsonÄ£Ê½ÏÂ²ÎÊıÖ±½Ó¼ÓÈë paramContent£¬ÒÔ±¸·şÎñÊµÏÖÖĞ·ÃÎÊ
+//2016-12-08ä¸‹é¢å†…å®¹è¢«æ³¨æ‰ï¼Œå› ä¸ºéœ€è¦æŠŠjsonæ¨¡å¼ä¸‹å‚æ•°ç›´æ¥åŠ å…¥ paramContentï¼Œä»¥å¤‡æœåŠ¡å®ç°ä¸­è®¿é—®
 //		private void parseAndCacheJsonContent() {
 //			 this.mapForJsonContent = JsonKit.json2Map(jsonContent);
-//			 //ÕâÀï×öÒ»¸öÈİ´í
+//			 //è¿™é‡Œåšä¸€ä¸ªå®¹é”™
 //			 if (this.mapForJsonContent==null) 
 //				 this.mapForJsonContent = new HashMap<String,String>(0);
 //		}

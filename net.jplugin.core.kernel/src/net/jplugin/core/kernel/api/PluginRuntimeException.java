@@ -3,7 +3,7 @@ package net.jplugin.core.kernel.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç10:21:24
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ10:21:24
  **/
 
 public class PluginRuntimeException extends RuntimeException {

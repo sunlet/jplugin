@@ -3,7 +3,7 @@ package net.jplugin.core.ctx.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÏÂÎç01:28:40
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸‹åˆ01:28:40
  **/
 
 public interface TransactionSync {

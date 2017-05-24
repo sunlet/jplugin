@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface IDictProvidor {
 	/**
-	 * 是否使用缓存
+	 * 鏄惁浣跨敤缂撳瓨
 	 * @return
 	 */
 	public boolean dynamic();
 	/**
-	 * 注意：dynamic==true，才可以传递param
+	 * 娉ㄦ剰锛歞ynamic==true锛屾墠鍙互浼犻�抪aram
 	 * @param param
 	 * @return
 	 */

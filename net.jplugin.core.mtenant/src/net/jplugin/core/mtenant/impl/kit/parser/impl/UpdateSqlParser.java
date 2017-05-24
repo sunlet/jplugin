@@ -14,10 +14,10 @@ import net.jplugin.core.mtenant.impl.kit.utils.StringUtils;
 /**
  * @author gaojh
  * @date 2017/1/7
- * 分带where和不带where两种
- * 如果不带where，直接加上where
- * 如果带where，处理它
- * 最好再处理一下子查询
+ * 鍒嗗甫where鍜屼笉甯here涓ょ
+ * 濡傛灉涓嶅甫where锛岀洿鎺ュ姞涓妛here
+ * 濡傛灉甯here锛屽鐞嗗畠
+ * 鏈�濂藉啀澶勭悊涓�涓嬪瓙鏌ヨ
  */
 public class UpdateSqlParser implements SqlParser {
     @Override

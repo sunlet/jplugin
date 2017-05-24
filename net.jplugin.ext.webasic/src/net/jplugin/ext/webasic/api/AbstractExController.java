@@ -114,7 +114,7 @@ public class AbstractExController {
 		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
-			// ÎªÁË¼õÉÙÒ»±éĞòÁĞ»¯,ÏÈ¼Ù¶¨wa_ch=true,ÔÙÈ¡MD5,È»ºóÔÙÌæ»»Ö®
+			// ä¸ºäº†å‡å°‘ä¸€éåºåˆ—åŒ–,å…ˆå‡å®šwa_ch=true,å†å–MD5,ç„¶åå†æ›¿æ¢ä¹‹
 			jr._setProp(WA_CH, "true");
 			jr._setProp(WA_MD5, "%{MD5KEY}%");
 			String jsonToWrite = jr.toJson();
@@ -122,18 +122,18 @@ public class AbstractExController {
 			String oldMd5 = (String) req.getAttribute(WA_MD5);
 			String newMd5 = MD5Kit.MD5(jsonToWrite);
 			if (newMd5.equals(oldMd5)) {
-				// Êä³ö£ºÎŞ±ä»¯
+				// è¾“å‡ºï¼šæ— å˜åŒ–
 				JsonResult newrr = JsonResult.create();
 				newrr._setProp(WA_CH, "false");
 				jsonToWrite = newrr.toJson();
 			} else {
-				// Êä³ö°üº¬MD5ĞÅÏ¢µÄĞÂÄÚÈİ£¬MD5ÖµÌæ»»½øÈ¥
+				// è¾“å‡ºåŒ…å«MD5ä¿¡æ¯çš„æ–°å†…å®¹ï¼ŒMD5å€¼æ›¿æ¢è¿›å»
 				jsonToWrite = StringKit.replaceStr(jsonToWrite, "%{MD5KEY}%",
 						newMd5);
 			}
 			renderJson(jsonToWrite);
 		} else {
-			// Ö±½ÓÊä³ö
+			// ç›´æ¥è¾“å‡º
 			renderJson(jr.toJson());
 		}
 	}
@@ -143,7 +143,7 @@ public class AbstractExController {
 		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
-			// ÎªÁË¼õÉÙÒ»±éĞòÁĞ»¯,ÏÈ¼Ù¶¨wa_ch=true,ÔÙÈ¡MD5,È»ºóÔÙÌæ»»Ö®
+			// ä¸ºäº†å‡å°‘ä¸€éåºåˆ—åŒ–,å…ˆå‡å®šwa_ch=true,å†å–MD5,ç„¶åå†æ›¿æ¢ä¹‹
 			rr.setContent(WA_CH, "true");
 			rr.setContent(WA_MD5, "%{MD5KEY}%");
 			String jsonToWrite = rr.getJson();
@@ -151,18 +151,18 @@ public class AbstractExController {
 			String oldMd5 = (String) req.getAttribute(WA_MD5);
 			String newMd5 = MD5Kit.MD5(jsonToWrite);
 			if (newMd5.equals(oldMd5)) {
-				// Êä³ö£ºÎŞ±ä»¯
+				// è¾“å‡ºï¼šæ— å˜åŒ–
 				RuleResult newrr = RuleResult.create();
 				newrr.setContent(WA_CH, "false");
 				jsonToWrite = newrr.getJson();
 			} else {
-				// Êä³ö°üº¬MD5ĞÅÏ¢µÄĞÂÄÚÈİ£¬MD5ÖµÌæ»»½øÈ¥
+				// è¾“å‡ºåŒ…å«MD5ä¿¡æ¯çš„æ–°å†…å®¹ï¼ŒMD5å€¼æ›¿æ¢è¿›å»
 				jsonToWrite = StringKit.replaceStr(jsonToWrite, "%{MD5KEY}%",
 						newMd5);
 			}
 			renderJson(jsonToWrite);
 		} else {
-			// Ö±½ÓÊä³ö
+			// ç›´æ¥è¾“å‡º
 			renderJson(rr.getJson());
 		}
 	}

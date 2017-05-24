@@ -141,7 +141,7 @@ public class RouterStatement extends EmptyStatement {
 	}
 
 	/**
-	 * Õâ¸ö·µ»ØÓÃÀ´Ö´ĞĞ´øsql²ÎÊıµÄÇé¿ö
+	 * è¿™ä¸ªè¿”å›ç”¨æ¥æ‰§è¡Œå¸¦sqlå‚æ•°çš„æƒ…å†µ
 	 * @return
 	 * @throws SQLException
 	 */

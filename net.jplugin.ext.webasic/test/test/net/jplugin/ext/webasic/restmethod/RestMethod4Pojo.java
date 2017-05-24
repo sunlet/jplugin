@@ -14,7 +14,7 @@ import net.jplugin.ext.webasic.api.Para;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÏÂÎç02:09:06
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸‹åˆ02:09:06
  **/
 
 public class RestMethod4Pojo {

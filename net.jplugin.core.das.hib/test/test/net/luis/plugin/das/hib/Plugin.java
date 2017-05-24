@@ -10,7 +10,7 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÏÂÎç06:13:07
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸‹åˆ06:13:07
  **/
 
 public class Plugin extends AbstractPluginForTest{
