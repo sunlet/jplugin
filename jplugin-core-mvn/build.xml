@@ -34,7 +34,9 @@
 			<path path="${basedir}/../net.jplugin.ext.token/bin" />
 			<path path="${basedir}/../net.jplugin.ext.webasic/bin" />
 			<path path="${basedir}/../net.jplugin.ext.dict/bin" />
-			<path path="${basedir}/../net.jplugin.core.mtenant/bin" />
+			<path path="${basedir}/../net.jplugin.ext.staticweb/bin" />
+			
+			<!--path path="${basedir}/../net.jplugin.core.mtenant/bin" /-->
 
 			<path path="${basedir}/../net.jplugin.common.kits/src" />
 			<path path="${basedir}/../net.jplugin.common.kits.http/src" />
@@ -56,14 +58,15 @@
 			<path path="${basedir}/../net.jplugin.ext.webasic/src" />
 			<path path="${basedir}/../net.jplugin.ext.dict/src" />
 			<path path="${basedir}/../net.jplugin.core.das/ts-src" />
-			<path path="${basedir}/../net.jplugin.core.mtenant/src" />
+			<path path="${basedir}/../net.jplugin.ext.staticweb/src" />
+			<!--path path="${basedir}/../net.jplugin.core.mtenant/src" /-->
 
 		</foreach>
 	</target>
 
 	<target name="cp">
 		<copy todir="${tmpcls}">
-			<fileset dir="${projname}" includes="**/*.*">
+			<fileset dir="${projname}" includes="net/jplugin/**/*.*">
 			</fileset>
 		</copy>
 	</target>
