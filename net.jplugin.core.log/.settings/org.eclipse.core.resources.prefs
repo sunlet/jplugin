@@ -1,0 +1,14 @@
+eclipse.preferences.version=1
+encoding//src/net/jplugin/core/log/Plugin.java=UTF-8
+encoding//src/net/jplugin/core/log/api/Constants.java=UTF-8
+encoding//src/net/jplugin/core/log/api/ILogService.java=UTF-8
+encoding//src/net/jplugin/core/log/api/LazyLogger.java=UTF-8
+encoding//src/net/jplugin/core/log/api/LogFactory.java=UTF-8
+encoding//src/net/jplugin/core/log/api/Logger.java=UTF-8
+encoding//src/net/jplugin/core/log/api/RefLogger.java=UTF-8
+encoding//src/net/jplugin/core/log/impl/BridgedLoggerService.java=UTF-8
+encoding//src/net/jplugin/core/log/impl/LogAnnoAttrHandler.java=UTF-8
+encoding//src/net/jplugin/core/log/impl/LogServiceImpl.java=UTF-8
+encoding//src/net/jplugin/core/log/impl/LogServiceImpl4Compatible.java=UTF-8
+encoding//src/net/jplugin/core/log/impl/Logger4Log4j.java=UTF-8
+encoding/<project>=UTF-8
