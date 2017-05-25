@@ -53,10 +53,10 @@ public class ESFHelper {
 //	}
 
 	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
+		
+		if (obj instanceof IDynamicService) 
+			throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
 		try{
-			if (obj instanceof IDynamicService) 
-				throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
-			
 			ThreadLocalContextManager.instance.createContext();
 			ESFRPCContext.fill(ctx);
 			
