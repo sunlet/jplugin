@@ -25,8 +25,8 @@ public class ExtPlugin {
 		try{
 			Class.forName(string);
 			ret.add(string);
-		}catch(Exception e){
-			PluginEnvirement.INSTANCE.getStartLogger().log("IgnorePlugin : "+string+",Class not found.");
+		}catch(ClassNotFoundException e){
+			PluginEnvirement.INSTANCE.getStartLogger().log("IgnoredPlugin : "+string);
 		}
 		
 	}

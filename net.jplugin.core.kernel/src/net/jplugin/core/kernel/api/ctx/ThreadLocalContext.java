@@ -52,7 +52,11 @@ public class ThreadLocalContext {
 			addContextListener(ruleContextListener);
 	}
 	
-	public void release(){
+	/**
+	 * The method can't be called outside this module,so it must not be publie.
+	 * The threadlocal var not be released!!!
+	 */
+	void release(){
 		if (listeners!=null){
 			for (ThreadLocalContextListener l:this.listeners){
 				l.released(this);
