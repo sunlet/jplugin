@@ -6,9 +6,11 @@ import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
 
 public class Plugin extends AbstractPlugin{
+	
 	/**
 	 * <pre>
 	 * #多租户配置列表
@@ -16,17 +18,31 @@ public class Plugin extends AbstractPlugin{
 	 * mtenant.enable=FALSE|TRUE
 	 * 
 	 * #HTTP请求中租户参数位置
-	 *  mtenant.req-param-at=BOTH|COOKIE|REQUEST
+	 * mtenant.req-param-at=BOTH|COOKIE|REQUEST
 	 *  
 	 * #HTTP请求中租户参数名称，参数中的名称、cookie中的名称都用这个配置，必须是相同的
 	 * mtenant.req-param-name=xxxxx
 	 * 
-	 * 
-	 * #指定区分多租户字段的名称.如果mtenant.enable=TRUE,则这项必须配置
-	 * mtenant.field=field1
+
 	 * 
 	 * #启用多租户的数据源，默认ALL。可选配置。
 	 * mtenant.datasource=ALL|ds1,ds2,ds3
+	 * 
+	 * #多租户数据库策略，这个配置目前不开放
+	 * mtenant.db.strategy=schema（默认）|merge
+	 *
+	 * #分schema模式下各数据源对应的schemaprefix值，对于多租户的情况必须配置，否则会出错
+	 * mtenant.schema-prefix.ds1=xxx
+	 * mtenant.schema-prefix.ds2=yyy
+	 * mtenant.schema-prefix.ds2=zzz
+	 * 
+	 * #并表方案还有一些其他配置，未在这里列出 ........
+	 */
+	
+	/**
+	 * 基于新的分schema方案，下面的配置不需要了！
+	 * #指定区分多租户字段的名称.如果mtenant.enable=TRUE,则这项必须配置
+	 * mtenant.field=field1
 	 * 
 	 * #指定各个数据源中不支持多租户的表（例外表）。可选配置
 	 * mtenant.datasource.ds1.exclude=table1,table2
@@ -51,6 +67,7 @@ public class Plugin extends AbstractPlugin{
 	public void onCreateServices() {
 		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
 			HttpFilterManager.addFilter(new MTenantChain());
+			AbstractSqlMultiTenantHanlder.initInstance();
 		}
 	}
 
@@ -61,7 +78,6 @@ public class Plugin extends AbstractPlugin{
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 	

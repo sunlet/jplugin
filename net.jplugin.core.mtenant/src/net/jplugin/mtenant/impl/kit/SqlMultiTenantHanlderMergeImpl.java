@@ -1,5 +1,6 @@
-package net.jplugin.core.mtenant.impl.kit;
+package net.jplugin.mtenant.impl.kit;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,24 +10,24 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
-import net.jplugin.core.mtenant.impl.kit.parser.SqlParser;
-import net.jplugin.core.mtenant.impl.kit.parser.impl.DeleteSqlParser;
-import net.jplugin.core.mtenant.impl.kit.parser.impl.InsertSqlParser;
-import net.jplugin.core.mtenant.impl.kit.parser.impl.SelectSqlParser;
-import net.jplugin.core.mtenant.impl.kit.parser.impl.UpdateSqlParser;
-import net.jplugin.core.mtenant.impl.kit.utils.SqlHelper;
-import net.jplugin.core.mtenant.impl.kit.utils.StringUtils;
+import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
+import net.jplugin.mtenant.impl.kit.parse.SqlParser;
+import net.jplugin.mtenant.impl.kit.parse.impl.DeleteSqlParser;
+import net.jplugin.mtenant.impl.kit.parse.impl.InsertSqlParser;
+import net.jplugin.mtenant.impl.kit.parse.impl.SelectSqlParser;
+import net.jplugin.mtenant.impl.kit.parse.impl.UpdateSqlParser;
+import net.jplugin.mtenant.impl.kit.util.StringUtils;
 
-public class SqlMultiTenantHanlderKit {
+public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlder{
 	/**
 	 * @param dataSourceName
 	 * @param sql
 	 * @return
 	 */
 	private static ConcurrentHashMap<String, List<String>> ignores = null;
-	private static Logger logger = LogFactory.getLogger(SqlMultiTenantHanlderKit.class);
+	private static Logger logger = LogFactory.getLogger(SqlMultiTenantHanlderMergeImpl.class);
 
-	public static String handle(String dataSourceName, String sql) {
+	public  String handle(String dataSourceName, String sql,Connection conn) {
 		String result = handleInner(dataSourceName, sql);
 		if (logger.isDebugEnabled()){
 			if (!sql.equals(result)){
@@ -36,7 +37,7 @@ public class SqlMultiTenantHanlderKit {
 		}
 		return result;
 	}
-	public static String handleInner(String dataSourceName, String sql) {
+	public  String handleInner(String dataSourceName, String sql) {
 		if ("false".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable", "FALSE"))) {
 			return sql;
 		}
@@ -89,7 +90,6 @@ public class SqlMultiTenantHanlderKit {
 			}
 		}
 
-		sql = SqlHelper.format(sql);
 		if (StringUtils.contains(sql, "ignore-tenant")) {
 			return sql;
 		}
@@ -102,6 +102,7 @@ public class SqlMultiTenantHanlderKit {
 		ConcurrentHashMap<String, Object> params = new ConcurrentHashMap<>();
 		params.put(ConfigFactory.getStringConfig("mtenant.field"), tenantId);
 
+		sql = sql.toLowerCase().trim();
 		SqlParser parser;
 		if (StringUtils.startsWithIgnoreCase(sql, "select")) {
 			parser = new SelectSqlParser();
@@ -114,6 +115,28 @@ public class SqlMultiTenantHanlderKit {
 		} else {
 			return sql;
 		}
-		return parser.parse(sql, params, ignores.get(dataSourceName));
+		String dealSql = parser.parse(sql, params, ignores.get(dataSourceName));
+		
+		/*List<String> ignoreTables = ignores.get(dataSourceName);
+		boolean havePlatform = false;
+		for(Map.Entry<String, Object> entry : params.entrySet()){
+			if(dealSql.contains(entry.getKey())){
+				havePlatform=true;
+				break;
+			}
+		}
+		boolean haveIgnore=false;
+		if(!havePlatform){
+			for(String ignore: ignoreTables){
+				if(dealSql.contains(ignore)){
+					haveIgnore=true;
+					break;
+				}
+			}
+		}
+		if(!haveIgnore&&!havePlatform){
+			throw new IllegalArgumentException("SQL parse error");
+		}*/
+		return dealSql;
 	}
 }

@@ -1,4 +1,4 @@
-package net.jplugin.core.mtenant.impl.kit.parser.impl;
+package net.jplugin.mtenant.impl.kit.parse.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import net.jplugin.core.mtenant.impl.kit.parser.SqlParser;
-import net.jplugin.core.mtenant.impl.kit.utils.SqlHelper;
-import net.jplugin.core.mtenant.impl.kit.utils.StringUtils;
+import net.jplugin.mtenant.impl.kit.parse.SqlParser;
+import net.jplugin.mtenant.impl.kit.util.SqlHelper;
+import net.jplugin.mtenant.impl.kit.util.StringUtils;
 
 /**
  * @author gaojh

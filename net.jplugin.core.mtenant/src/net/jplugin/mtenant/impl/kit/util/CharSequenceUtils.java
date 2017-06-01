@@ -1,4 +1,4 @@
-package net.jplugin.core.mtenant.impl.kit.utils;
+package net.jplugin.mtenant.impl.kit.util;
 
 public class CharSequenceUtils {
 
