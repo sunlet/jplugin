@@ -67,20 +67,28 @@ public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanld
 		//在列表中，必须能够处理
 		String schemaPrefix = ConfigFactory.getStringConfig("mtenant.schema-prefix."+dataSourceName);
 		if (StringKit.isNull(schemaPrefix)){
-			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be confied with a [mtenant.schema-prefix."+dataSourceName+"] key");
+			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be configed with a [schema-prefix."+dataSourceName+"] key");
 		}
 		
 		if (StringKit.isNull(tid)){
-			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be confied with a tenantid request attribute");
+			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be configed with a tenantid request attribute");
 		}
 		String schema = schemaPrefix + "_"+ tid;
 		try {
-			conn.setSchema(schema);
+			setSchema(conn,schema);
+//			conn.setSchema(schema);
 			return sql+ ("/*schema="+schema+"*/");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] set schema to ["+schema+"] error!",e);
 		}
 		
+	}
+
+	private void setSchema(Connection conn, String schema) throws SQLException {
+//		while(conn.isWrapperFor(Connection.class)){
+//			conn = conn.unwrap(Connection.class);
+//		}
+		conn.setSchema(schema);
 	}
 
 	private boolean inDataSourceList(String dataSourceName) {

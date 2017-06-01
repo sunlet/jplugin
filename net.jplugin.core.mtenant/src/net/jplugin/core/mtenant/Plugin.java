@@ -59,7 +59,7 @@ public class Plugin extends AbstractPlugin{
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
 			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
 		}else{
-			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ignore!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant DISABLED!");
 		}
 	}
 	
