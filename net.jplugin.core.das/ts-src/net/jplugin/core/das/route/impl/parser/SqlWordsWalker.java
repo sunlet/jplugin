@@ -22,6 +22,10 @@ public class SqlWordsWalker{
 		reset();
 	}
 	
+	public String[] getArray(){
+		return this.words;
+	}
+	
 	/**
 	 * 这两个直接查询数组
 	 * @param start

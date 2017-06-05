@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.config.api.ConfigFactory;
@@ -51,7 +51,7 @@ public class ConfigedDataSource {
 	}
 
 	private static DataSource createJdbcDataSource(String group, Map<String, String> map) {
-		org.apache.commons.dbcp.BasicDataSource ds = new BasicDataSource();
+		org.apache.commons.dbcp2.BasicDataSource ds = new BasicDataSource();
 		//为了兼容以前的配置文件，支持dbuser、dbpassword两个参数
 		if (map.containsKey("dbuser")){
 			map.put("username", map.get("dbuser"));
@@ -63,6 +63,8 @@ public class ConfigedDataSource {
 		}
 		//以上为了更好的迁移以前的配置文件，只修改文件名即可
 		
+		compibleWithDBCP1(map);
+		
 		map.remove(DataSourceFactory.IS_TX_MANAGED);
 		
 		if (map.isEmpty()){
@@ -72,5 +74,19 @@ public class ConfigedDataSource {
 			ReflactKit.setPropertyFromString(ds, k,map.get(k));
 		}
 		return ds;
+	}
+
+	private static void compibleWithDBCP1(Map<String, String> map) {
+		if (map.containsKey("maxWait")){
+			String o = map.get("maxWait");
+			map.remove("maxWait");
+			map.put("maxWaitMillis", o);
+		}
+		if (map.containsKey("maxActive")){
+			String o = map.get("maxActive");
+			map.remove("maxActive");
+			map.put("maxTotal", o);
+		}
+		
 	}
 }

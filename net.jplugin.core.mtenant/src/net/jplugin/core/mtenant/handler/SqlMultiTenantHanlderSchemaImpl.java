@@ -74,13 +74,14 @@ public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanld
 			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be configed with a tenantid request attribute");
 		}
 		String schema = schemaPrefix + "_"+ tid;
-		try {
-			setSchema(conn,schema);
-//			conn.setSchema(schema);
-			return sql+ ("/*schema="+schema+"*/");
-		} catch (Exception e) {
-			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] set schema to ["+schema+"] error!",e);
-		}
+		return MultiDbSqlHelper.handle(sql, schema);
+//		try {
+////			setSchema(conn,schema);
+////			conn.setSchema(schema);
+////			return sql+ ("/*schema="+schema+"*/");
+//		} catch (Exception e) {
+//			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] set schema to ["+schema+"] error!",e);
+//		}
 		
 	}
 

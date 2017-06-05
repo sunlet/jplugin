@@ -14,7 +14,7 @@ public class SqlStrLexerToolNew {
 	/**
 	 * <PRE>
 	 * 单词: SELECT  ABC  23.23  AND OR _NOT
-	 * 运算符：'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>
+	 * 运算符：'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>  !
 	 * 分界符：'('  ')' ','
 	 * 字符串常量：'   ' 带转义符
 	 * 注释： /star.....star/
@@ -48,6 +48,8 @@ public class SqlStrLexerToolNew {
 					parseOperator();
 				else if (isConstStart()) 
 					parseConst();
+				else if (isFanPieStart())
+					parseFanPie();
 				else if (isSplit()) 
 					parseSplit();
 				else 
@@ -63,6 +65,24 @@ public class SqlStrLexerToolNew {
 		return list;
 	}
 	
+	private void parseFanPie() {
+		int start = idx;
+		while(++idx<buffer.length){
+			if (isFanPieEnd()){
+				list.add(new String(buffer,start,idx-start+1));
+				return;
+			}
+		}
+		list.add(new String(buffer,start,buffer.length-idx));
+	}
+	public boolean isFanPieEnd(){
+		return (buffer[idx]=='`');
+	}
+
+	private boolean isFanPieStart() {
+		return buffer[idx]=='`';
+	}
+
 	private boolean isWordCharStart() {
 		char c = buffer[idx];
 		return (c>='0'&& c<='9')|| (c>='A' && c<='Z') ||(c>='a' && c<='z') || (c=='_') || (c=='.');
@@ -75,7 +95,7 @@ public class SqlStrLexerToolNew {
 
 	public boolean isOperatorStart(){
 		char c = buffer[idx];
-		return (c == '=') || (c ==  '<')|| (c==  '>')|| (c==  '&')|| (c==  '^')|| (c==  '+' )|| (c==  '-' )|| (c==  '*')|| (c==  '/');
+		return (c == '=') || (c ==  '<')|| (c==  '>')|| (c==  '&')|| (c==  '^')|| (c==  '+' )|| (c==  '-' )|| (c==  '*')|| (c==  '/')|| (c=='!');
 	}
 	
 	public boolean isConstStart(){
