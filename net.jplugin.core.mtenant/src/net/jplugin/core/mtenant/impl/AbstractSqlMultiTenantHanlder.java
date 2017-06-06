@@ -15,7 +15,7 @@ public abstract class AbstractSqlMultiTenantHanlder {
 	}
 	
 	public static void initInstance(){
-		String s = ConfigFactory.getStringConfig("mtenant.db.strategy");
+		String s = ConfigFactory.getStringConfig("mtenant.db-strategy");
 		if (s==null){
 			s = "schema";
 //			s = "merge";
