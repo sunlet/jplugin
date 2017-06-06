@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
@@ -62,6 +63,16 @@ public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanld
 		if (!this.allDataSource && !inDataSourceList(dataSourceName))
 			return sql;
 		
+		//router connection数据源不能配置为多租户
+		boolean isRouter =false;
+		try{
+			isRouter = conn.isWrapperFor(RouterConnection.class);
+		}catch(Exception e){
+			throw new RuntimeException("Error while call isWrapper",e);
+		}
+		if (isRouter) 
+			throw new RuntimeException("Router connection can't be configed with multinant."+conn.getClass().getName());
+		
 		String tid = ThreadLocalContextManager.getRequestInfo().getCurrentTenantId();
 		
 		//在列表中，必须能够处理
@@ -71,8 +82,11 @@ public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanld
 		}
 		
 		if (StringKit.isNull(tid)){
-			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be configed with a tenantid request attribute");
+			throw new RuntimeException("The multi tenant datasource ["+dataSourceName+"] must be called with a tenantid request attribute");
 		}
+		
+		
+		//重写sql
 		String schema = schemaPrefix + "_"+ tid;
 		return MultiDbSqlHelper.handle(sql, schema);
 //		try {

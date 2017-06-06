@@ -17,14 +17,16 @@ public abstract class AbstractSqlMultiTenantHanlder {
 	public static void initInstance(){
 		String s = ConfigFactory.getStringConfig("mtenant.db.strategy");
 		if (s==null){
-//			s = "schema";
-			s = "merge";
+			s = "schema";
+//			s = "merge";
 		}
 		if ("schema".equals(s)){
 			instance = new SqlMultiTenantHanlderSchemaImpl();
-		}else{
+		}else if ("merge".equals(s)){
 			instance = new SqlMultiTenantHanlderMergeImpl();
-		}
+		}else
+			throw new RuntimeException("Error mtenant.db.strategy configed : "+s);
+		
 		PluginEnvirement.getInstance().getStartLogger().log("多租户数据库策略:"+s+"  "+instance.getClass().getName());
 
 	};
