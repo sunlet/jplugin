@@ -6,16 +6,24 @@ import net.jplugin.core.das.route.impl.parser.SqlStrLexerToolNew;
 import net.jplugin.core.das.route.impl.parser.SqlWordsWalker;
 
 /**
- * 规则： select规则： from、join 后的第一个单词。 from、join 到 ORDER|WHERE|GROUP|UNION|LIMIT|) 
- * 之间的所有","之后的第一个单词。
+ * <pre>
+ * 规则： 
+ * select规则： 
+ * 	from、join 后的第一个单词。 
+ * 	from、join 到 ORDER|WHERE|GROUP|UNION|LIMIT|) 之间的所有","之后的第一个单词。
  * 
- * update规则： update 之后的第一个 select规则
+ * update规则： 
+ * 	update 之后的第一个 
+ * 	select规则
  * 
- * insert规则： into 之后的第一个 select规则
+ * insert规则： 
+ * 	into 之后的第一个 
+ * 	select规则
  * 
- * DELETE规则： 就是select规则
- * 
- * @author Administrator
+ * DELETE规则： 
+ * 	就是select规则
+ * </pre>
+ * @author LiuHang
  *
  */
 public class MultiDbSqlHelper {
@@ -52,16 +60,20 @@ public class MultiDbSqlHelper {
 		for (int i = 0; i < list.length; i++) {
 			if ("INTO".equalsIgnoreCase(list[i])) {
 				handleTableName(list, i + 1, schema);
+				return;
 			}
 		}
+		throw new RuntimeException("Can't find INTO word in "+toSql(list));
 	}
 
 	private static void handleUpdate(String[] list, String schema) {
 		for (int i = 0; i < list.length; i++) {
 			if ("UPDATE".equalsIgnoreCase(list[i])) {
 				handleTableName(list, i + 1, schema);
+				return;
 			}
 		}
+		throw new RuntimeException("Can't find UPDATE word in "+toSql(list));
 	}
 
 	private static String toSql(String[] list) {
