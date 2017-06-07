@@ -1,7 +1,7 @@
 package net.jplugin.common.kits;
 
 /*
- * ĞŞ¸ÄÀúÊ· °æ±¾ ĞŞ¶©ÈË ĞŞ¶©Ê±¼ä ĞŞ¶©Ô­Òò
+ * ä¿®æ”¹å†å² ç‰ˆæœ¬ ä¿®è®¢äºº ä¿®è®¢æ—¶é—´ ä¿®è®¢åŸå› 
  */
 
 import java.io.IOException;
@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
 
 public class StringKit {
 
-	final static String[] SBC = { "£¬", "¡£", "£»", "¡°", "¡±", "£¿", "£¡", "£¨", "£©",
-			"£º", "¡ª¡ª", "¡¢" };
+	final static String[] SBC = { "ï¼Œ", "ã€‚", "ï¼›", "â€œ", "â€", "ï¼Ÿ", "ï¼", "ï¼ˆ", "ï¼‰",
+			"ï¼š", "â€”â€”", "ã€" };
 
 	final static String[] DBC = { ",", ".", ";", "\"", "\"", "?", "!", "(",
 			")", ":", "_", "," };
@@ -36,7 +36,7 @@ public class StringKit {
 	}
 	
 	/**
-	 * È¥³ı×Ö·û´®Á½¶Ë¿Õ¸ñ Èç¹û×Ö·û´®ÊÇ¿ÕµÄ·µ¼Ónull
+	 * å»é™¤å­—ç¬¦ä¸²ä¸¤ç«¯ç©ºæ ¼ å¦‚æœå­—ç¬¦ä¸²æ˜¯ç©ºçš„è¿”åŠ null
 	 * 
 	 * @Param String
 	 * @return String
@@ -68,7 +68,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÉèÖÃ×Ö·û´®Ê××ÖÄ¸Îª´óĞ´
+	 * è®¾ç½®å­—ç¬¦ä¸²é¦–å­—æ¯ä¸ºå¤§å†™
 	 */
 	public static String cap(String str) {
 		if (str == null)
@@ -81,7 +81,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶Ï×Ö·û´®ÊÇ·ñÊÇ°üº¬a-z, A-Z, 0-9, _(ÏÂ»®Ïß)
+	 * åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦æ˜¯åŒ…å«a-z, A-Z, 0-9, _(ä¸‹åˆ’çº¿)
 	 */
 	public static boolean isWord(String str) {
 		if (str == null)
@@ -96,7 +96,7 @@ public class StringKit {
 		return true;
 	}
 
-	//ÔÊĞíÊÇ¸ºÊı
+	//å…è®¸æ˜¯è´Ÿæ•°
 	public static boolean isNumAllowNig(String str){
 		if (str.startsWith("-")){
 			return isNum(str.substring(1));
@@ -106,7 +106,7 @@ public class StringKit {
 	}
 	
 	/**
-	 * ÅĞ¶Ï×Ö·û´®ÊÇ·ñÊı×Ö
+	 * åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦æ•°å­—
 	 */
 	public static boolean isNum(String str) {
 		if (str == null || str.length() <= 0)
@@ -122,7 +122,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶Ï×Ö·û´®ÊÇ·ñÎªÊµÊı
+	 * åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦ä¸ºå®æ•°
 	 */
 	public static boolean isNumEx(String str) {
 		if (str == null || str.length() <= 0)
@@ -130,7 +130,7 @@ public class StringKit {
 
 		char[] ch = str.toCharArray();
 
-		// ÅĞ¶ÏµÚÒ»¸ö×Ö·ûÊÇ·ñ£­ºÅ
+		// åˆ¤æ–­ç¬¬ä¸€ä¸ªå­—ç¬¦æ˜¯å¦ï¼å·
 		int index = 0;
 		if (ch[0] == '-')
 			index = 1;
@@ -151,7 +151,7 @@ public class StringKit {
 	}
 
 	/**
-	 * Ìæ»»×Ö·û´®£¬sOld sNewµÄ´óĞ¡±ØĞëÏàÍ¬
+	 * æ›¿æ¢å­—ç¬¦ä¸²ï¼ŒsOld sNewçš„å¤§å°å¿…é¡»ç›¸åŒ
 	 */
 	public static String replaceStrEq(String sReplace, String sOld, String sNew) {
 		if (sReplace == null || sOld == null || sNew == null)
@@ -193,7 +193,7 @@ public class StringKit {
 	}
 
 	/**
-	 * Ìæ»»×Ö·û´®
+	 * æ›¿æ¢å­—ç¬¦ä¸²
 	 */
 	@SuppressWarnings("unchecked")
 	public static String replaceStrEx(String sReplace, String sOld, String sNew) {
@@ -243,7 +243,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ·Ö¸ô×Ö·û´®
+	 * åˆ†éš”å­—ç¬¦ä¸²
 	 */
 	public static String[] splitStr(String sStr, String sSplitter) {
 		if (sStr == null || sStr.length() <= 0 || sSplitter == null
@@ -297,7 +297,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÒÔsContacterÎª·Ö¸ô·ûÁ¬½Ó×Ö·û´®Êı×ésaStr
+	 * ä»¥sContacterä¸ºåˆ†éš”ç¬¦è¿æ¥å­—ç¬¦ä¸²æ•°ç»„saStr
 	 */
 	public static String contactStr(String[] saStr, String sContacter) {
 		if (saStr == null || saStr.length <= 0 || sContacter == null
@@ -315,7 +315,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ×ª»»ÕûĞÍÊı×éÎª×Ö·û´®
+	 * è½¬æ¢æ•´å‹æ•°ç»„ä¸ºå­—ç¬¦ä¸²
 	 */
 	public static String contactStr(int[] saStr, String sContacter) {
 		if (saStr == null || saStr.length <= 0 || sContacter == null
@@ -333,7 +333,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅÅĞò×Ö·û´®Êı×é
+	 * æ’åºå­—ç¬¦ä¸²æ•°ç»„
 	 */
 	public static String[] sortByLength(String[] saSource, boolean bAsc) {
 		if (saSource == null || saSource.length <= 0)
@@ -396,7 +396,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ×ª»»sbctodbc
+	 * è½¬æ¢sbctodbc
 	 */
 	public static String symbolSBCToDBC(String sSource) {
 		if (sSource == null || sSource.length() <= 0)
@@ -409,7 +409,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ×ª»»dbctosbc
+	 * è½¬æ¢dbctosbc
 	 */
 	public static String symbolDBCToSBC(String sSource) {
 		if (sSource == null || sSource.length() <= 0)
@@ -422,7 +422,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶ÏÊÇ·ñemailµØÖ·
+	 * åˆ¤æ–­æ˜¯å¦emailåœ°å€
 	 */
 	public static boolean isEmailUrl(String str) {
 		if ((str == null) || (str.length() == 0))
@@ -439,7 +439,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶ÏÊÇ·ñemailµØÖ·
+	 * åˆ¤æ–­æ˜¯å¦emailåœ°å€
 	 */
 	public static boolean isEmailAddress(String str) {
 		if (str == null || str.length() <= 0)
@@ -470,7 +470,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ¸ñÊ½»¯ÈÕÆÚ
+	 * æ ¼å¼åŒ–æ—¥æœŸ
 	 * 
 	 * @param java
 	 *            .util.Date date
@@ -488,11 +488,11 @@ public class StringKit {
 	}
 
 	/**
-	 * ½«ÈÕÆÚ×Ö·û´®×ª»»³Éjava.util.DateÀàĞÍ¶ÔÏó
+	 * å°†æ—¥æœŸå­—ç¬¦ä¸²è½¬æ¢æˆjava.util.Dateç±»å‹å¯¹è±¡
 	 * 
 	 * @param dateString
 	 * @param format
-	 *            Ä¬ÈÏÊ¹ÓÃyyyy-MM-dd¸ñÊ½
+	 *            é»˜è®¤ä½¿ç”¨yyyy-MM-ddæ ¼å¼
 	 * */
 	public final static Date string2Date(String dateString, String format) {
 
@@ -516,7 +516,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ½«NullµÄString×ª»»Îª¿Õ×Ö·û´®
+	 * å°†Nullçš„Stringè½¬æ¢ä¸ºç©ºå­—ç¬¦ä¸²
 	 */
 	public static String cEmpty(String s) {
 		if (s == null)
@@ -525,7 +525,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ½«¿Õ×Ö·û´®×ª»»ÎªNull
+	 * å°†ç©ºå­—ç¬¦ä¸²è½¬æ¢ä¸ºNull
 	 */
 	public static String cNull(String s) {
 		if (s == null)
@@ -536,7 +536,7 @@ public class StringKit {
 	}
 
 	/**
-	 * Èç¹ûsÎª¿Õ»òNull, Ôò·µ»Ø"NUll", ·ñÔò¸øsÁ½±ß¼ÓÉÏµ¥ÒıºÅ·µ»Ø¡£ÓÃÔÚĞ´Êı¾İ¿âµÄÊ±ºò¡£
+	 * å¦‚æœsä¸ºç©ºæˆ–Null, åˆ™è¿”å›"NUll", å¦åˆ™ç»™sä¸¤è¾¹åŠ ä¸Šå•å¼•å·è¿”å›ã€‚ç”¨åœ¨å†™æ•°æ®åº“çš„æ—¶å€™ã€‚
 	 */
 	public static String nullString(String s) {
 		if (s == null)
@@ -585,7 +585,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ¼ì²éÊÇ·ñÆ¥Åä,¿ÉÒÔ´ø*
+	 * æ£€æŸ¥æ˜¯å¦åŒ¹é…,å¯ä»¥å¸¦*
 	 * 
 	 * @param s1
 	 * @param s2
@@ -602,7 +602,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ¼ì²éÊÇ·ñÆ¥Åä£¬¿ÉÒÔ´ø*
+	 * æ£€æŸ¥æ˜¯å¦åŒ¹é…ï¼Œå¯ä»¥å¸¦*
 	 * 
 	 * @param subarr
 	 * @param pararr
@@ -645,7 +645,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶ÏÊÇ·ñÎª¿ÕÖ¸Õë»òÕß¿Õ×Ö·û
+	 * åˆ¤æ–­æ˜¯å¦ä¸ºç©ºæŒ‡é’ˆæˆ–è€…ç©ºå­—ç¬¦
 	 * 
 	 * @param str
 	 * @return
@@ -658,7 +658,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶ÏÊÇ·ñÎª¿ÕÖ¸Õë»òÕß¿Õ×Ö·û
+	 * åˆ¤æ–­æ˜¯å¦ä¸ºç©ºæŒ‡é’ˆæˆ–è€…ç©ºå­—ç¬¦
 	 * 
 	 * @param str
 	 * @return
@@ -671,7 +671,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶ÏÊÇ·ñÎª¿ÕÖ¸Õë
+	 * åˆ¤æ–­æ˜¯å¦ä¸ºç©ºæŒ‡é’ˆ
 	 * 
 	 * @param str
 	 * @return
@@ -685,7 +685,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÅĞ¶ÏÊÇ·ñÎª¿ÕÖ¸Õë
+	 * åˆ¤æ–­æ˜¯å¦ä¸ºç©ºæŒ‡é’ˆ
 	 * 
 	 * @param str
 	 * @return
@@ -698,7 +698,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ½«¿ÕÖ¸Õë×ª³É¿Õ×Ö·û
+	 * å°†ç©ºæŒ‡é’ˆè½¬æˆç©ºå­—ç¬¦
 	 * 
 	 * @param str
 	 * @return
@@ -775,7 +775,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ÉèÖÃ×Ö·û´®µÄÖÆ¶¨Î»ÖÃ£¨0±íÊ¾µÚÒ»¸ö×Ö·û£©×Ö·û¡£ Èç¹û×Ö·û´®³¤¶ÈĞ¡ÓÚ Î»ÖÃ+1 £¬ÔòÊ×ÏÈ¸ø×Ö·û´® ²¹³ä0 ÔÊĞí´«Èë²ÎÊıÎªnull
+	 * è®¾ç½®å­—ç¬¦ä¸²çš„åˆ¶å®šä½ç½®ï¼ˆ0è¡¨ç¤ºç¬¬ä¸€ä¸ªå­—ç¬¦ï¼‰å­—ç¬¦ã€‚ å¦‚æœå­—ç¬¦ä¸²é•¿åº¦å°äº ä½ç½®+1 ï¼Œåˆ™é¦–å…ˆç»™å­—ç¬¦ä¸² è¡¥å……0 å…è®¸ä¼ å…¥å‚æ•°ä¸ºnull
 	 * 
 	 * @param extend2
 	 * @param pos_is_allow_sendback
@@ -909,7 +909,7 @@ public class StringKit {
 	}
 
 	/**
-	 * ¼ÆËãStringµÄnative×Ö·û´®³¤¶È
+	 * è®¡ç®—Stringçš„nativeå­—ç¬¦ä¸²é•¿åº¦
 	 * 
 	 * @return java.lang.String
 	 */
@@ -931,7 +931,7 @@ public class StringKit {
 	public final static int MAX_VARCHAR_PREPARE_LENGTH = 1000;
 
 	/**
-	 * 2005-11-7 Ìí¼Ó¶ÔoracleÊı¾İ¿âÖĞ³¤×Ö·û´®×Ö¶ÎµÄ´¦Àí£¬ ½â¾öoracle jdbcµÄsetString³¬¹ı1280×Ö½ÚÊ±µÄÒì³£¡£
+	 * 2005-11-7 æ·»åŠ å¯¹oracleæ•°æ®åº“ä¸­é•¿å­—ç¬¦ä¸²å­—æ®µçš„å¤„ç†ï¼Œ è§£å†³oracle jdbcçš„setStringè¶…è¿‡1280å­—èŠ‚æ—¶çš„å¼‚å¸¸ã€‚
 	 * 
 	 * @param aValueList
 	 * @param aDataTypes
@@ -941,8 +941,8 @@ public class StringKit {
 		if (value != null && (nativeLength(value) > MAX_VARCHAR_PREPARE_LENGTH)) {
 
 			// modify by wangkq 2007/4/4
-			// Ô­À´½«×Ö·û´®½øĞĞ²ğ·ÖµÄËã·¨²»ÕıÈ·£¬²ÉÓÃDataUtil.nativeLengthÖĞ»ñÈ¡
-			// ×Ö·û´®³¤¶È·½·¨À´½øĞĞ×Ö·û´®·Ö¸î
+			// åŸæ¥å°†å­—ç¬¦ä¸²è¿›è¡Œæ‹†åˆ†çš„ç®—æ³•ä¸æ­£ç¡®ï¼Œé‡‡ç”¨DataUtil.nativeLengthä¸­è·å–
+			// å­—ç¬¦ä¸²é•¿åº¦æ–¹æ³•æ¥è¿›è¡Œå­—ç¬¦ä¸²åˆ†å‰²
 			String sql = "?";
 			StringBuffer buff = new StringBuffer("");
 			int len = 0;
@@ -993,7 +993,7 @@ public class StringKit {
 			if (c1>c2) return 1;
 			if (c1<c2) return -1;
 		}
-		//×Ö·û±ÈÍêÁË£¬»¹ÎŞ½á¹û£¬±È³¤¶È
+		//å­—ç¬¦æ¯”å®Œäº†ï¼Œè¿˜æ— ç»“æœï¼Œæ¯”é•¿åº¦
 		if (s1.length() >s2.length()) return 1;
 		if (s1.length() <s2.length()) return -1;
 		return 0;

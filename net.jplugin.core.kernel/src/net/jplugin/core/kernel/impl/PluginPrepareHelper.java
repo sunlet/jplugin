@@ -14,7 +14,7 @@ import net.jplugin.core.kernel.api.PluginAnnotation;
 
 public class PluginPrepareHelper {
 	/**
-	 * 目前调用prepare是无序的
+	 * 鐩墠璋冪敤prepare鏄棤搴忕殑
 	 * 
 	 * @param obj
 	 */
@@ -39,7 +39,7 @@ public class PluginPrepareHelper {
 	}
 
 	/**
-	 * 目前调用prepare是无序的
+	 * 鐩墠璋冪敤prepare鏄棤搴忕殑
 	 * 
 	 * @param obj
 	 */

@@ -25,7 +25,7 @@ public class DeleteTest {
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );
 		AssertKit.assertEqual(1,SQLTemplate.executeDeleteSql(conn, "delete from  tb_route0 where tb_route0.f1='a'", null));
 		
-		//ÏÂÃæÕâ¸öºÃÏñÔÚSqlÓï¾äÖĞ²»ÔÊĞí£¬ÎÒÃÇÖ§³ÖÕâÖÖ£¬Ã»¹ØÏµµÄ¡£
+		//ä¸‹é¢è¿™ä¸ªå¥½åƒåœ¨Sqlè¯­å¥ä¸­ä¸å…è®¸ï¼Œæˆ‘ä»¬æ”¯æŒè¿™ç§ï¼Œæ²¡å…³ç³»çš„ã€‚
 //		AssertKit.assertEqual(1,SQLTemplate.executeDeleteSql(conn, "delete from  tb_route0 ttt where ttt.f1='a'", null));
 
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );

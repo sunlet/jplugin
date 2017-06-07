@@ -10,7 +10,7 @@ class ItemPairBasedStatement extends WhereBasedStatement{
 	protected List<ItemPair> itemPairs;
 
 	/**
-	 * item 主要用来支持 select中别名为空的情况
+	 * item 涓昏鐢ㄦ潵鏀寔 select涓埆鍚嶄负绌虹殑鎯呭喌
 	 * @param name
 	 */
 	public void addItem(String name){

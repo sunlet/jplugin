@@ -5,7 +5,7 @@ import java.util.Hashtable;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-13 ÏÂÎç01:46:50
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-13 ä¸‹åˆ01:46:50
  **/
 
 public class ClientFactory {
@@ -26,7 +26,7 @@ public class ClientFactory {
 		return client;
 	}
 	/**
-	 * ´´½¨Ò»¸öÖ¸¶¨½Ó¿ÚµÄProxy
+	 * åˆ›å»ºä¸€ä¸ªæŒ‡å®šæ¥å£çš„Proxy
 	 * @param intf
 	 * @return
 	 */

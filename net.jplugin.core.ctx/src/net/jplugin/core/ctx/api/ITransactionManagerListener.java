@@ -3,7 +3,7 @@ package net.jplugin.core.ctx.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÉÏÎç11:13:23
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸Šåˆ11:13:23
  **/
 
 public interface ITransactionManagerListener {

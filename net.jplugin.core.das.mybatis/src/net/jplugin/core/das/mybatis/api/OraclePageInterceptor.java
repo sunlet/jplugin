@@ -8,14 +8,14 @@ import org.apache.ibatis.plugin.Signature;
 import java.sql.Connection;
 
 /**
- * oracle·ÖÒ³²å¼ş
+ * oracleåˆ†é¡µæ’ä»¶
  * @author peiyu
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
 public class OraclePageInterceptor extends PageInterceptor {
 
     /**
-     * ²Î¿¼hibernateµÄÊµÏÖÍê³ÉoracleµÄ·ÖÒ³
+     * å‚è€ƒhibernateçš„å®ç°å®Œæˆoracleçš„åˆ†é¡µ
      * @param sql
      * @param page
      * @return

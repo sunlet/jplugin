@@ -6,7 +6,7 @@ import net.jplugin.core.event.api.Channel.ChannelType;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÉÏÎç11:46:45
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸Šåˆ11:46:45
  **/
 
 public class ChannelFactory {

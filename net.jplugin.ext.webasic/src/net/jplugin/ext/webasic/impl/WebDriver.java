@@ -22,7 +22,7 @@ import net.jplugin.ext.webasic.api.WebFilter;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-2 ÏÂÎç05:57:36
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-2 ä¸‹åˆ05:57:36
  **/
 
 public class WebDriver {
@@ -42,12 +42,15 @@ public class WebDriver {
 	public void init() {
 		controllerSets = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_CONTROLLERSET,IControllerSet.class);
 		filters = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_WEBFILTER,WebFilter.class);
+		for (WebFilter f:filters){
+			PluginEnvirement.INSTANCE.resolveRefAnnotation(f);
+		}
 		
 		for ( int i=0;i<controllerSets.length;i++){
 			controllerSets[i].init();
 		}
 		
-		//³õÊ¼»¯pathmap
+		//åˆå§‹åŒ–pathmap
 		for (IControllerSet is:controllerSets){
 			Set<String> paths = is.getAcceptPaths();
 			for (String p:paths){
@@ -59,6 +62,10 @@ public class WebDriver {
 		}
 		
 	}
+	
+	public IControllerSet[] getControllerSet(){
+		return this.controllerSets;
+	}
 
 	public void dohttp(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException{
 		ThreadLocalContext tlc =null;
@@ -69,7 +76,7 @@ public class WebDriver {
 			if (doWebFilter(req,res)){
 				Throwable th = null;
 				try{
-					//»ñÈ¡ControllerMeta£¬²¢Ö´ĞĞ
+					//è·å–ControllerMetaï¼Œå¹¶æ‰§è¡Œ
 					String path = req.getServletPath();
 					ControllerMeta controllerMeta = this.parseControllerMeta(path);
 					if (controllerMeta!=null)
@@ -82,7 +89,7 @@ public class WebDriver {
 					th = t;
 					doAfterWebFilter(req,res,th);
 				}
-				//Èç¹û·¢ÉúÒì³£ÔÙ´ÎÅ×³ö
+				//å¦‚æœå‘ç”Ÿå¼‚å¸¸å†æ¬¡æŠ›å‡º
 				if (th!=null) throw th;
 			}
 		}catch(Throwable e){
@@ -100,7 +107,7 @@ public class WebDriver {
 
 
 	/**
-	 * Èç¹ûÓĞ·µ»Øfalse£¬ÔòÖĞ¶Ï
+	 * å¦‚æœæœ‰è¿”å›falseï¼Œåˆ™ä¸­æ–­
 	 * @param req
 	 * @param res
 	 * @return
@@ -139,69 +146,109 @@ public class WebDriver {
 		return logger;
 	}
 	
+//	/**
+//	 * è·¯å¾„æŸ¥æ‰¾è§„åˆ™ï¼šå…ˆå®Œå…¨åŒ¹é…ï¼Œåœ¨åŒ¹é…æœ€åä¸€ä¸ª/ä»¥å‰ï¼ˆå‰é¢ä¸ºäº†å…¼å®¹ä»¥å‰çš„å®ç°ï¼‰ã€‚å¦‚æœéƒ½åŒ¹é…ä¸ä¸Šï¼Œä»å‰å¼€å§‹å¾€ååŒ¹é…ï¼Œä¸€çº§ä¸€çº§æ‰¾ã€‚
+//	 * è¿™æ ·å®ç°ä¸ºäº†åœ¨åŠ¨æ€æœåŠ¡å®ç°æ—¶å€™ï¼Œå¯ä»¥ä¼ é€’å¤šçº§/X/X/Xå½“åšdynamicMethodName
+//	 * @param path
+//	 * @return
+//	 */
+//	public ControllerMeta parseControllerMeta(String path){
+//		//é™¤å»ç‚¹
+//		int dotPos = path.lastIndexOf('.');
+//		if ( dotPos >= 0){
+//			path = path.substring(0,dotPos);
+//		}
+//		
+//		IControllerSet ctroller = pathMap.get(path);
+//
+//		if (ctroller!=null)
+//			return new ControllerMeta(ctroller,path,null);
+//
+//		int splitPos = path.lastIndexOf('/');
+//
+//		//ç­‰äº0çš„æ—¶å€™ä¸é€‚åˆï¼Œåªæœ‰ä¸€ä¸ªpath
+//		if (splitPos>0){
+//			String prePath = path.substring(0, splitPos);
+//			String postPath = path.substring(splitPos+1);
+//			ctroller = pathMap.get(prePath);
+//			
+//			if (ctroller!=null)
+//				return new ControllerMeta(ctroller,prePath,postPath);
+//			else 
+//				return searchFromStartToEnd3(path);
+//		}
+//		return null;
+//	}
+	
 	/**
-	 * Â·¾¶²éÕÒ¹æÔò£ºÏÈÍêÈ«Æ¥Åä£¬ÔÚÆ¥Åä×îºóÒ»¸ö/ÒÔÇ°£¨Ç°ÃæÎªÁË¼æÈİÒÔÇ°µÄÊµÏÖ£©¡£Èç¹û¶¼Æ¥Åä²»ÉÏ£¬´ÓÇ°¿ªÊ¼ÍùºóÆ¥Åä£¬Ò»¼¶Ò»¼¶ÕÒ¡£
-	 * ÕâÑùÊµÏÖÎªÁËÔÚ¶¯Ì¬·şÎñÊµÏÖÊ±ºò£¬¿ÉÒÔ´«µİ¶à¼¶/X/X/Xµ±×ödynamicMethodName
+	 * ä»å‰å¾€åæ‰¾
 	 * @param path
 	 * @return
 	 */
-	public ControllerMeta parseControllerMeta(String path){
-		//³ıÈ¥µã
+	public ControllerMeta parseControllerMeta(String path) {
+		//é™¤å»ç‚¹
 		int dotPos = path.lastIndexOf('.');
 		if ( dotPos >= 0){
 			path = path.substring(0,dotPos);
 		}
-		
-		IControllerSet ctroller = pathMap.get(path);
-
-		if (ctroller!=null)
-			return new ControllerMeta(ctroller,path,null);
-
-		int splitPos = path.lastIndexOf('/');
-
-		//µÈÓÚ0µÄÊ±ºò²»ÊÊºÏ£¬Ö»ÓĞÒ»¸öpath
-		if (splitPos>0){
-			String prePath = path.substring(0, splitPos);
-			String postPath = path.substring(splitPos+1);
-			ctroller = pathMap.get(prePath);
-			
-			if (ctroller!=null)
-				return new ControllerMeta(ctroller,prePath,postPath);
-			else 
-				return searchFromStartToEnd3(path);
+				
+		//å¯¹å…¨å±€ /åšç‰¹æ®Šå¤„ç†
+		if (pathMap.get("/")!=null){
+			return new ControllerMeta(pathMap.get("/"),"/",path.substring(1));
 		}
-		return null;
-	}
-	
-	/**
-	 * ´ÓÇ°Íùºó£¬ÕÒµ½µ¹ÊıµÚ¶ş¼¶ÎªÖ¹
-	 * @param path
-	 * @return
-	 */
-	private ControllerMeta searchFromStartToEnd3(String path) {
-		//¼ÆËã×îºóÒ»¸ö / µÄÎ»ÖÃ
-		int lastPos = path.lastIndexOf('/');
-		if (lastPos<=0) //Èç¹ûµÈÓÚ0ËµÃ÷Ö»ÓĞÒ»¸ö/£¬Ò²²»Í¬ÔÙÕÒÁË 
-			return null;
 		
+		//ä»1å¼€å§‹æŸ¥æ‰¾
 		int pos =1;
 		while(true){
 			pos = path.indexOf('/',pos);
-			if (pos>=lastPos) 
-				return null;
-			if (pos<0) //¼«¶Ë£¬Ö»ÓĞÒ»¸ö/Ê±ºò»áµ½ÕâÀï£¬ÒòÎªÊÇ´Ó1¿ªÊ¼ÕÒµÄ
-				return null;
-			
+			if (pos<0) {
+				//åˆ°æœ«å°¾ï¼Œæ•´ä¸²åŒ¹é…
+				IControllerSet ctroller = pathMap.get(path);
+				if (ctroller!=null)
+					return new ControllerMeta(ctroller,path,null);
+				else
+					return null;
+			}
 			String prePath = path.substring(0, pos);
 			IControllerSet ctroller = pathMap.get(prePath);
 			if (ctroller!=null){
 				String postPath = path.substring(pos+1);
 				return new ControllerMeta(ctroller,prePath,postPath);
 			}
-			
 			pos++;
 		}
 	}
+
+//	
+//	/**
+//	 * ä»å‰å¾€åï¼Œæ‰¾åˆ°å€’æ•°ç¬¬äºŒçº§ä¸ºæ­¢
+//	 * @param path
+//	 * @return
+//	 */
+//	private ControllerMeta searchFromStartToEnd3(String path) {
+//		//è®¡ç®—æœ€åä¸€ä¸ª / çš„ä½ç½®
+//		int lastPos = path.lastIndexOf('/');
+//		if (lastPos<=0) //å¦‚æœç­‰äº0è¯´æ˜åªæœ‰ä¸€ä¸ª/ï¼Œä¹Ÿä¸åŒå†æ‰¾äº† 
+//			return null;
+//		
+//		int pos =1;
+//		while(true){
+//			pos = path.indexOf('/',pos);
+//			if (pos>=lastPos) 
+//				return null;
+//			if (pos<0) //æç«¯ï¼Œåªæœ‰ä¸€ä¸ª/æ—¶å€™ä¼šåˆ°è¿™é‡Œï¼Œå› ä¸ºæ˜¯ä»1å¼€å§‹æ‰¾çš„
+//				return null;
+//			
+//			String prePath = path.substring(0, pos);
+//			IControllerSet ctroller = pathMap.get(prePath);
+//			if (ctroller!=null){
+//				String postPath = path.substring(pos+1);
+//				return new ControllerMeta(ctroller,prePath,postPath);
+//			}
+//			
+//			pos++;
+//		}
+//	}
 
 	public static class ControllerMeta {
 		IControllerSet controllerSet;
@@ -233,7 +280,7 @@ public class WebDriver {
 //	private void dohttpThrowEx(HttpServletRequest req,HttpServletResponse res) throws Throwable{
 //		String path = req.getServletPath();
 //		
-//		//³öÈ¥µã
+//		//å‡ºå»ç‚¹
 //		int dotPos = path.lastIndexOf('.');
 //		if ( dotPos >= 0){
 //			path = path.substring(0,dotPos);
@@ -247,7 +294,7 @@ public class WebDriver {
 //		}
 //
 //		int splitPos = path.lastIndexOf('/');
-//		//µÈÓÚ0µÄÊ±ºò²»ÊÊºÏ£¬Ö»ÓĞÒ»¸öpath
+//		//ç­‰äº0çš„æ—¶å€™ä¸é€‚åˆï¼Œåªæœ‰ä¸€ä¸ªpath
 //		if (splitPos>0){
 //			String prePath = path.substring(0, splitPos);
 //			String postPath = path.substring(splitPos+1);

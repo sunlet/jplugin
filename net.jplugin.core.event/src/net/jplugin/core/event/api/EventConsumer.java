@@ -5,7 +5,7 @@ import net.jplugin.core.event.api.Channel.ChannelType;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç03:25:25
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ03:25:25
  **/
 
 public abstract class EventConsumer {

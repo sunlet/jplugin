@@ -8,7 +8,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-12 ÏÂÎç05:56:20
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-12 ä¸‹åˆ05:56:20
  **/
 
 public class RuleLoggerHelper {

@@ -13,7 +13,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÏÂÎç12:03:21
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸‹åˆ12:03:21
  **/
 
 public class TransactionObject {
@@ -75,15 +75,15 @@ public class TransactionObject {
 	 * 
 	 */
 	public void notifyTxBegin() {
-		//Õâ¸ö·½·¨½ö½öÓÃÀ´¼ì²é£¬syncÓ¦¸ÃÒÑ¾­ÔÚÌá½»»òÕß»Ø¹öµÄÊ±ºòÇåÀíµôÁË£¡£¡
+		//è¿™ä¸ªæ–¹æ³•ä»…ä»…ç”¨æ¥æ£€æŸ¥ï¼Œsyncåº”è¯¥å·²ç»åœ¨æäº¤æˆ–è€…å›æ»šçš„æ—¶å€™æ¸…ç†æ‰äº†ï¼ï¼
 		if (syncs!=null && !syncs.isEmpty()){
-			//·¢ÉúÁË²»Ó¦¸Ã·¢ÉúµÄÎÊÌâ£¬ÊÂÎïÍ¬²½Ã»ÓĞÇåÀíµô
-			getLogger().error("·¢ÉúÁË²»Ó¦¸Ã·¢ÉúµÄÎÊÌâ£¬ÊÂÎïÍ¬²½Ã»ÓĞÇåÀíµô!!!!!!");
+			//å‘ç”Ÿäº†ä¸åº”è¯¥å‘ç”Ÿçš„é—®é¢˜ï¼Œäº‹ç‰©åŒæ­¥æ²¡æœ‰æ¸…ç†æ‰
+			getLogger().error("å‘ç”Ÿäº†ä¸åº”è¯¥å‘ç”Ÿçš„é—®é¢˜ï¼Œäº‹ç‰©åŒæ­¥æ²¡æœ‰æ¸…ç†æ‰!!!!!!");
 			syncs.clear();
 		}
 	}
 	/**
-	 * ÓĞÒì³£ÔòÅ×³ö
+	 * æœ‰å¼‚å¸¸åˆ™æŠ›å‡º
 	 */
 	public void notifyBeforeCompletion() {
 		if (syncs == null){
@@ -95,14 +95,14 @@ public class TransactionObject {
 		}
 	}
 	
-	//ÔÚ³É¹¦Ìá½»µÄÇé¿öÏÂÅ×³öÒì³££¬ÆäËûÇé¿ö²»Å×³öÒì³£
+	//åœ¨æˆåŠŸæäº¤çš„æƒ…å†µä¸‹æŠ›å‡ºå¼‚å¸¸ï¼Œå…¶ä»–æƒ…å†µä¸æŠ›å‡ºå¼‚å¸¸
 	public void notifyAfterCommit(Throwable th){
 		if (syncs == null){
 			return;
 		}
 		
 		if (th==null){
-			//Ö´ĞĞ£¬Å×³öÒì³£
+			//æ‰§è¡Œï¼ŒæŠ›å‡ºå¼‚å¸¸
 			Throwable theNewTh = null;
 			for (TransactionSync s:syncs){
 				try{
@@ -114,9 +114,9 @@ public class TransactionObject {
 					}
 				}
 			}
-			//ÇåÀí
+			//æ¸…ç†
 			this.syncs.clear();
-			//Å×³öÒì³£
+			//æŠ›å‡ºå¼‚å¸¸
 			if (theNewTh!=null){
 				if (theNewTh instanceof RuntimeException){
 					throw (RuntimeException)theNewTh;
@@ -125,7 +125,7 @@ public class TransactionObject {
 				}
 			}
 		}else{
-			//Ö´ĞĞ£¬²»Å×³öÒì³£
+			//æ‰§è¡Œï¼Œä¸æŠ›å‡ºå¼‚å¸¸
 			for (TransactionSync s:syncs){
 				try{
 					s.afterCompletion(false, th);
@@ -133,7 +133,7 @@ public class TransactionObject {
 					logError("Exception in transaction sync:1",e);
 				}
 			}
-			//ÇåÀí
+			//æ¸…ç†
 			this.syncs.clear();
 		}
 	}
@@ -141,7 +141,7 @@ public class TransactionObject {
 		if (syncs == null){
 			return;
 		}
-		//Ö´ĞĞ£¬²»Å×³öÒì³£
+		//æ‰§è¡Œï¼Œä¸æŠ›å‡ºå¼‚å¸¸
 		for (TransactionSync s:syncs){
 			try{
 				s.afterCompletion(false, th);
@@ -149,7 +149,7 @@ public class TransactionObject {
 				logError("Exception in transaction sync:2",e);
 			}
 		}
-		//ÇåÀí
+		//æ¸…ç†
 		this.syncs.clear();
 	}
 

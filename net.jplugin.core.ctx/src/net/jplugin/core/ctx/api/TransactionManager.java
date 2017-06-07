@@ -4,28 +4,28 @@ package net.jplugin.core.ctx.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-12 ÉÏÎç10:39:12
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-12 ä¸Šåˆ10:39:12
  **/
 
 public interface TransactionManager {
 	enum Status{NOTX,INTX,MARKED_ROLLBACK}
 	/**
-	 * ¿ªÆôÊÂÎï£¬Èç¹ûÖØ¸´¿ªÆô£¬ÔòÒì³£
+	 * å¼€å¯äº‹ç‰©ï¼Œå¦‚æœé‡å¤å¼€å¯ï¼Œåˆ™å¼‚å¸¸
 	 */
 	public void begin();
 
 	/**
-	 * Ìá½»ÊÂÎñ
+	 * æäº¤äº‹åŠ¡
 	 */
 	public void commit();
 
 	/**
-	 * »Ø¹öÊÂÎï
+	 * å›æ»šäº‹ç‰©
 	 */
 	public void rollback();
 	
 	/**
-	 * ÉèÖÃ»Ø¹ö
+	 * è®¾ç½®å›æ»š
 	 */
 	public void setRollbackOnly();
 	
@@ -37,19 +37,19 @@ public interface TransactionManager {
 	public void addTransactionHandler(TransactionHandler txHandler);
 	
 	/**
-	 * ÔÚÊÂÎïµ±ÖĞ²Å¿ÉÒÔµ÷ÓÃ´Ë·½·¨
+	 * åœ¨äº‹ç‰©å½“ä¸­æ‰å¯ä»¥è°ƒç”¨æ­¤æ–¹æ³•
 	 * @param s
 	 */
 	public boolean containTransactionSync(TransactionSync s);
 	
 	/**
-	 * ÔÚÊÂÎïµ±ÖĞ²Å¿ÉÒÔµ÷ÓÃ´Ë·½·¨
+	 * åœ¨äº‹ç‰©å½“ä¸­æ‰å¯ä»¥è°ƒç”¨æ­¤æ–¹æ³•
 	 * @param s
 	 */
 	public void addTransactionSync(TransactionSync s);
 	
 	/**
-	 * ÔÚÊÂÎïµ±ÖĞ²Å¿ÉÒÔµ÷ÓÃ´Ë·½·¨
+	 * åœ¨äº‹ç‰©å½“ä¸­æ‰å¯ä»¥è°ƒç”¨æ­¤æ–¹æ³•
 	 * @param s
 	 */
 	public void removeTransactionSync(TransactionSync s);

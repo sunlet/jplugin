@@ -3,7 +3,7 @@ package net.jplugin.core.event.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÉÏÎç08:44:21
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸Šåˆ08:44:21
  **/
 
 public interface IEventFilter {

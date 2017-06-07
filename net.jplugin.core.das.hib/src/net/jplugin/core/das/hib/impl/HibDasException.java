@@ -3,7 +3,7 @@ package net.jplugin.core.das.hib.impl;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÏÂÎç12:50:52
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸‹åˆ12:50:52
  **/
 
 public class HibDasException extends RuntimeException {

@@ -11,12 +11,14 @@ import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.ext.webasic.Plugin;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÏÂÎç05:51:42
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸‹åˆ05:51:42
  **/
 
 public class ObjectCallHelper{
@@ -39,6 +41,7 @@ public class ObjectCallHelper{
 	 */
 	public ObjectCallHelper(ObjectDefine d) {
 		this.objeceDefine = d;
+		initObject();
 	}
 	
 	
@@ -48,7 +51,7 @@ public class ObjectCallHelper{
 
 
 	/**
-	 * Èç¹ûargÎª¿Õ£¬±íÊ¾Ö»ÄÜÍ¨¹ı¶ÔÓ¦µÄ·½·¨Ãû£¨²»¿¼ÂÇ²ÎÊı£©»ñÈ¡µ½Ò»¸ö·½·¨£¬·ñÔòÅ×³öÒì³££¡
+	 * å¦‚æœargä¸ºç©ºï¼Œè¡¨ç¤ºåªèƒ½é€šè¿‡å¯¹åº”çš„æ–¹æ³•åï¼ˆä¸è€ƒè™‘å‚æ•°ï¼‰è·å–åˆ°ä¸€ä¸ªæ–¹æ³•ï¼Œå¦åˆ™æŠ›å‡ºå¼‚å¸¸ï¼
 	 * @param req
 	 * @param arg
 	 * @return
@@ -62,11 +65,12 @@ public class ObjectCallHelper{
 	}
 
 	public void initObject(){
-		//³õÊ¼»¯svcObject
+		//åˆå§‹åŒ–svcObject
 		if (svcObject==null){
 			synchronized (this) {
 				if (svcObject == null){
 					svcObject = createObject(objeceDefine);	
+					PluginEnvirement.INSTANCE.resolveRefAnnotation(svcObject);
 				}
 			}
 		}
@@ -105,7 +109,7 @@ public class ObjectCallHelper{
 	}
 
 	private Method getMethod(String reqMethodName,Class[] arg) {
-		//»ñÈ¡MethodName
+		//è·å–MethodName
 		String methodName;
 		if (StringKit.isNull(reqMethodName))
 			methodName = "index";
@@ -187,10 +191,10 @@ public class ObjectCallHelper{
 	
 	public Object invokeWithRuleSupport(ObjectAndMethod oam,Object[] paraValue) throws Throwable{
 		if (ObjectDefine.OBJ_BIZLOGIC.equals(getObjeceDefine().getObjType())){
-			//Èç¹ûÊÇÒµÎñÂß¼­£¬Ôò²»»áÔÙÅĞ¶ÏRule 
+			//å¦‚æœæ˜¯ä¸šåŠ¡é€»è¾‘ï¼Œåˆ™ä¸ä¼šå†åˆ¤æ–­Rule 
 			return oam.method.invoke(oam.object, paraValue);
 		}else{
-			//ÆÕÍ¨·½·¨£¬²¢ÇÒÓĞRule±ê¼Ç£¬ÔòĞèÒªÅĞ¶ÏRule Annotation
+			//æ™®é€šæ–¹æ³•ï¼Œå¹¶ä¸”æœ‰Ruleæ ‡è®°ï¼Œåˆ™éœ€è¦åˆ¤æ–­Rule Annotation
 			return RuleProxyHelper.invokeWithRule(oam.object, oam.method, paraValue);
 		}
 	}

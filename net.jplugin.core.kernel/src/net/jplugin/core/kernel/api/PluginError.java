@@ -6,7 +6,7 @@ import java.io.StringWriter;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-22 ÏÂÎç03:07:53
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸‹åˆ03:07:53
  **/
 
 public class PluginError {

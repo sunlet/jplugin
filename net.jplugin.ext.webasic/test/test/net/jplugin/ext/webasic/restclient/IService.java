@@ -10,7 +10,10 @@ public interface IService {
 
 	int add(int a, int b);
 
-	String addString(String a, @Para(name="b") String b);
+	/**
+	 * 2017-5-10 增加MIX参数模式，不需要annotation了
+	 */
+	String addString(String a,  String b);
 	
 	String addStringDefault(String a, @Para(name="b",required=false) String b);
 

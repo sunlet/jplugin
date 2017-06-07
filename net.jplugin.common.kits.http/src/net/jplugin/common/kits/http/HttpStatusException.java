@@ -3,7 +3,7 @@ package net.jplugin.common.kits.http;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-13 ÏÂÎç02:07:17
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-13 ä¸‹åˆ02:07:17
  **/
 
 public class HttpStatusException extends Exception {

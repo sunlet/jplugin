@@ -11,7 +11,7 @@ import net.jplugin.common.kits.StringKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-22 ÉÏÎç11:43:28
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸Šåˆ11:43:28
  **/
 
 public class ExtensionPoint {
@@ -41,14 +41,14 @@ public class ExtensionPoint {
 	
 	
 	/**
-	 * ¶¨Òå½×¶Î
+	 * å®šä¹‰é˜¶æ®µ
 	 * @return
 	 */
 	public String getName(){
 		return name;
 	}
 	/**
-	 * ¶¨Òå½×¶Î
+	 * å®šä¹‰é˜¶æ®µ
 	 * @return
 	 */
 	public Class<?> getExtensionClass(){
@@ -56,7 +56,7 @@ public class ExtensionPoint {
 	}
 	
 	/**
-	 * ¶¨Òå½×¶Î
+	 * å®šä¹‰é˜¶æ®µ
 	 * @return
 	 */
 	public boolean extensionNameReqiredAndUnique(){
@@ -64,7 +64,7 @@ public class ExtensionPoint {
 	}
 
 	/**
-	 * ÔËĞĞ½×¶Î
+	 * è¿è¡Œé˜¶æ®µ
 	 * @return
 	 */
 	public List<Extension> getExtensions(){
@@ -90,7 +90,7 @@ public class ExtensionPoint {
 		}
 	}
 	/**
-	 * ÔËĞĞ½×¶Î
+	 * è¿è¡Œé˜¶æ®µ
 	 * @param <T>
 	 * @param t
 	 * @return

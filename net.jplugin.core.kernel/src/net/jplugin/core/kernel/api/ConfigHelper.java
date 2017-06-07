@@ -7,7 +7,7 @@ import net.jplugin.common.kits.StringKit;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÉÏÎç11:12:50
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸Šåˆ11:12:50
  **/
 
 public class ConfigHelper {

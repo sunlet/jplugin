@@ -12,7 +12,7 @@ import net.jplugin.common.kits.PritiveKits.Transformer;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÉÏÎç08:58:51
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸Šåˆ08:58:51
  **/
 
 public class ObjectKit {
@@ -58,7 +58,7 @@ public class ObjectKit {
 		if (p.attr == null){
 			return o;
 		}
-		//ÁĞ±í »òÕßÊı×é£¨Ôİ²»Ö§³ÖÊı×é£©
+		//åˆ—è¡¨ æˆ–è€…æ•°ç»„ï¼ˆæš‚ä¸æ”¯æŒæ•°ç»„ï¼‰
 		if (p.attr.equals(PathSegment.ATTR_IDX)){
 			int pos = Integer.parseInt(p.value);
 			if (pos<0){
@@ -137,15 +137,15 @@ public class ObjectKit {
 			s = s.trim();
 			if (s.endsWith("]")) {
 				int leftKHPos = s.indexOf("[");
-				// »ñÈ¡tag
+				// è·å–tag
 				tag = s.substring(0, leftKHPos).trim();
-				// »ñÈ¡attr
+				// è·å–attr
 				String attrString = s.substring(leftKHPos + 1, s.length() - 1);
 				if (attrString.startsWith("@")) {
-					// ÖĞÀ¨ºÅÄÚÊÇÌõ¼ş
+					// ä¸­æ‹¬å·å†…æ˜¯æ¡ä»¶
 					int dhPos = attrString.indexOf("=");
 					attr = decode(attrString.substring(0, dhPos));
-					attr = attr.substring(1);//È¥µô@
+					attr = attr.substring(1);//å»æ‰@
 					attr = attr.trim();
 					value = decode(attrString.substring(dhPos + 1));
 
@@ -156,7 +156,7 @@ public class ObjectKit {
 						throw new RuntimeException("path error:" + s);
 					}
 				} else {
-					// ÖĞÀ¨ºÅÄÚÊÇĞòºÅ
+					// ä¸­æ‹¬å·å†…æ˜¯åºå·
 					attrString = attrString.trim();
 					if (!StringKit.isNumAllowNig(attrString)) {
 						throw new RuntimeException("path error:" + s);
@@ -170,7 +170,7 @@ public class ObjectKit {
 		}
 
 		/**
-		 * È¥³ı¿Õ¸ñ£¬È¥³ıµ¥ÒıºÅË«ÒıºÅ ×ªÒå·ûÈ¥µô
+		 * å»é™¤ç©ºæ ¼ï¼Œå»é™¤å•å¼•å·åŒå¼•å· è½¬ä¹‰ç¬¦å»æ‰
 		 * 
 		 * @param name
 		 * @return
@@ -182,7 +182,7 @@ public class ObjectKit {
 			char c1 = s.charAt(0);
 			char c2 = s.charAt(s.length()-1);
 			
-			//ÅĞ¶ÏÓÃË«ÒıºÅ»òÕßµ¥ÒıºÅÀ¨ÆğÀ´£¬»òÕß²»´øÒıºÅ
+			//åˆ¤æ–­ç”¨åŒå¼•å·æˆ–è€…å•å¼•å·æ‹¬èµ·æ¥ï¼Œæˆ–è€…ä¸å¸¦å¼•å·
 			if (!((c1=='\'' && c2=='\'') || (c1=='"' && c2=='"') || 
 			    ((c1!='\'' && c1!='"')&&(c2!='\'' && c2!='"')))){
 				throw new RuntimeException("path error:" + s);
@@ -199,7 +199,7 @@ public class ObjectKit {
 				s = s.substring(1, s.length() - 1);
 			}
 
-			// ×ªÒå·ûÔŞ²»´¦Àí
+			// è½¬ä¹‰ç¬¦èµä¸å¤„ç†
 			return s;
 		}
 	}

@@ -15,6 +15,7 @@ import net.jplugin.core.das.Plugin;
 import net.jplugin.core.das.api.impl.ConfigedDataSource;
 import net.jplugin.core.das.api.impl.DataSourceAutoFindUtil;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
+import net.jplugin.core.das.api.impl.DataSourceWrapper;
 import net.jplugin.core.das.api.impl.TxManagedDataSource;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -32,7 +33,7 @@ public class DataSourceFactory {
 		Map<String, DataSourceDefinition> dss=new HashMap();
 		dss.putAll(PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_DATASOURCE,DataSourceDefinition.class));
 
-		//Èç¹û°üº¬databaseµÄÅäÖÃ×é£¬¶øÇÒÃ»ÓĞ´´½¨Ãû×ÖÎªdatabaseµÄDataSource£¬Ôò×Ô¶¯´´½¨Ò»¸ö¡£ÎªÁË¼æÈİ
+		//å¦‚æœåŒ…å«databaseçš„é…ç½®ç»„ï¼Œè€Œä¸”æ²¡æœ‰åˆ›å»ºåå­—ä¸ºdatabaseçš„DataSourceï¼Œåˆ™è‡ªåŠ¨åˆ›å»ºä¸€ä¸ªã€‚ä¸ºäº†å…¼å®¹
 		//<<<<<
 //		if (ConfigFactory.getGroups().contains(DATABASE_DSKEY) && !dss.containsKey(DATABASE_DSKEY)){
 //			DataSourceDefinition dsd = new DataSourceDefinition();
@@ -41,7 +42,7 @@ public class DataSourceFactory {
 //			dss.put(DATABASE_DSKEY, dsd);
 //		}
 		//>>>>>>
-		//×Ô¶¯·¢ÏÖËùÓĞÃ»ÓĞ°´ÕÕÅäÖÃÃû³Æ×¢²áµÄÊı¾İÔ´£¬²¢È«²¿¼ÓÈë½øÈ¥¡£
+		//è‡ªåŠ¨å‘ç°æ‰€æœ‰æ²¡æœ‰æŒ‰ç…§é…ç½®åç§°æ³¨å†Œçš„æ•°æ®æºï¼Œå¹¶å…¨éƒ¨åŠ å…¥è¿›å»ã€‚
 		List<String> allConfigedNames = DataSourceAutoFindUtil.getAllDataSourceNames();
 		for (String configedName:allConfigedNames){
 			if (dss.containsKey(configedName))
@@ -50,9 +51,9 @@ public class DataSourceFactory {
 			dsd.setConfigGroupName(configedName);
 			dsd.setManaged(true);
 			if ("false".equalsIgnoreCase(ConfigFactory.getStringConfig(configedName+"."+IS_TX_MANAGED))){
-				dsd.setManaged(false);//Îª×Ö·û´®false²Åµ½ÕâÀï
+				dsd.setManaged(false);//ä¸ºå­—ç¬¦ä¸²falseæ‰åˆ°è¿™é‡Œ
 			}else{
-				dsd.setManaged(true);//Ä¬ÈÏÊÇtrue
+				dsd.setManaged(true);//é»˜è®¤æ˜¯true
 			}
 			dss.put(configedName, dsd);
 		}
@@ -61,10 +62,10 @@ public class DataSourceFactory {
 			DataSource dataSource = ConfigedDataSource.getDataSource(ds.getValue().getConfigGroupName());
 			if (ds.getValue().getManaged()){
 				TxManagedDataSource managedDataSource = new TxManagedDataSource(ds.getKey(),dataSource);
-				map.put(ds.getKey(), managedDataSource);	
+				map.put(ds.getKey(), new DataSourceWrapper(ds.getKey(),managedDataSource));	
 				ServiceFactory.getService(TransactionManager.class).addTransactionHandler(managedDataSource);
 			}else{
-				map.put(ds.getKey(), dataSource);
+				map.put(ds.getKey(), new DataSourceWrapper(ds.getKey(),dataSource));
 			}
 		}
 	}
@@ -76,7 +77,7 @@ public class DataSourceFactory {
 	public static DataSource getDataSource(String dataSourceName){
 		DataSource ds = map.get(dataSourceName);
 		
-		if (ds==null) {//Èç¹ûÆ¥Åä²»µ½£¬´ÓÅäÖÃÃûÆ¥Åä 2016-9-12
+		if (ds==null) {//å¦‚æœåŒ¹é…ä¸åˆ°ï¼Œä»é…ç½®ååŒ¹é… 2016-9-12
 			throw new RuntimeException("Can't find datasource config for:"+dataSourceName);
 		}
 		return ds;

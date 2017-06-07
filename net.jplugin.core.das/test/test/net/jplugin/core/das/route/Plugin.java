@@ -13,7 +13,7 @@ import test.net.jplugin.core.das.route.stringint.UpdateTest;
 public class Plugin extends AbstractPluginForTest {
 
 	public Plugin(){
-		//ÒÑ¾­ÓĞ×ÅÁ½¸öÊı¾İÔ´ "database","db_2";
+		//å·²ç»æœ‰ç€ä¸¤ä¸ªæ•°æ®æº "database","db_2";
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-db" , "router-db");
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-1" , "router-ds-1");
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-2" , "router-ds-2");

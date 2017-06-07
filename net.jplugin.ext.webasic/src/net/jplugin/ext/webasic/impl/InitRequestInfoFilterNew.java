@@ -3,7 +3,6 @@ package net.jplugin.ext.webasic.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,15 +11,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.omg.PortableInterceptor.RequestInfo;
+
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.ext.webasic.api.RequestIdUtil;
 import net.jplugin.ext.webasic.api.WebFilter;
 
 /**
- * This filter must not conflict with InitRequestInfoFilter°£This is two seperate
- * method°£
+ * This filter must not conflict with InitRequestInfoFilter„ÄÇThis is two seperate
+ * method„ÄÇ
  * 
  * @author Administrator
  *
@@ -31,6 +34,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
+	public static final String _GREQID = "_greqid_";
 	private static final String APPLICATION_JSON = "application/json";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
@@ -41,20 +45,31 @@ public class InitRequestInfoFilterNew implements WebFilter {
 //		}
 		
 		RequesterInfo requestInfo = ThreadLocalContextManager.getRequestInfo();
-		Content content = requestInfo.getContent();
 		
-		//get content
-		parseContent(content, req);
+		//parse content
+		parseContent(requestInfo, req);
+		//parse cookies
+		parseCookies(requestInfo,req);
+		//parse headers
+		parseHeaders(requestInfo,req);
 		
 		//fill request url
 		requestInfo.setRequestUrl(req.getRequestURL().toString());
-		
 		//fill client ip
 		requestInfo.setCallerIpAddress(getClientIp(req));
 		
-		//fill other attribute
-		fillFromContent(requestInfo);
+		//fill other attribute from content,cookie,header
+		fillFromBasicReqInfo(requestInfo);
 		
+		return true;
+	}
+
+	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
+		requestInfo.getHeaders().setHeader(_GREQID, req.getHeader(_GREQID));
+		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
+	}
+
+	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
 		//fill cookie
 		Cookie[] arr = req.getCookies();
 		if (arr!=null){
@@ -63,14 +78,13 @@ public class InitRequestInfoFilterNew implements WebFilter {
 				cookies.setCookie(c.getName(), c.getValue());
 			}
 		}
-		return true;
 	}
 
-	public static void fillFromContent(RequesterInfo requestInfo) {
+	public static void fillFromBasicReqInfo(RequesterInfo requestInfo) {
 		Content content = requestInfo.getContent();
 		
 		Map map;
-		//2016-12-08 “ÚŒ™∞—jsonContentΩ‚Œˆ∑≈»ÎparamContent£¨≤ª–Ë“™«¯∑÷¡À
+		//2016-12-08 Âõ†‰∏∫ÊääjsonContentËß£ÊûêÊîæÂÖ•paramContentÔºå‰∏çÈúÄË¶ÅÂå∫ÂàÜ‰∫Ü
 //		if (APPLICATION_JSON.equals(content.getContentType())) {
 //			map = content.getMapForJsonContent();
 //		} else {
@@ -80,13 +94,23 @@ public class InitRequestInfoFilterNew implements WebFilter {
 
 		String clientAppToken = (String) map.get(_ATK);
 		String operatorToken = (String) map.get(_OTK);
-		//»Á¥À≈–∂œ£¨±‹√‚∫ÕInitRequestInfoFilter≥ÂÕª¡À
+		//Â¶ÇÊ≠§Âà§Êñ≠ÔºåÈÅøÂÖçÂíåInitRequestInfoFilterÂÜ≤Á™Å‰∫Ü
 		if (clientAppToken!=null  || operatorToken!=null){
 			requestInfo.setClientAppToken(clientAppToken);
 			requestInfo.setOperatorToken(operatorToken);
 			requestInfo.setOperatorId((String) map.get(_OID));
 			requestInfo.setClientAppCode((String) map.get(_AID));
 		}
+		
+		//ËÆæÁΩÆreqId
+		String reqId = (String) requestInfo.getHeaders().getHeader(_GREQID);
+		if (StringKit.isNull(reqId))
+			reqId = RequestIdUtil.newRequestId();
+		requestInfo.setRequestId(reqId);
+		
+		//ËÆæÁΩÆtenant
+		MtInvocationFilterHandler.instance.handle(requestInfo);
+		
 	}
 
 	private String getClientIp(HttpServletRequest request) {
@@ -108,7 +132,8 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
 	}
 
-	private void parseContent(Content content, HttpServletRequest req) {
+	private void parseContent(RequesterInfo reqInfo, HttpServletRequest req) {
+		Content content = reqInfo.getContent();
 		content.setContentType(req.getContentType());
 		if (APPLICATION_JSON.equals(content.getContentType())) {
 			InputStream is = null;

@@ -3,7 +3,7 @@ package net.jplugin.core.ctx.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-12 ÏÂÎç06:36:04
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-12 ä¸‹åˆ06:36:04
  **/
 
 public class RuleRuntimeException extends RuntimeException {

@@ -7,7 +7,7 @@ import net.jplugin.core.kernel.api.Extension;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-1 ÏÂÎç09:01:41
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-1 ä¸‹åˆ09:01:41
  **/
 
 public class ExtensionDasHelper {

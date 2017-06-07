@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,19 +13,24 @@ import net.jplugin.common.kits.MD5Kit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleResult;
+import net.jplugin.core.kernel.api.ctx.RequesterInfo;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 public class AbstractExController {
 	private static final String WA_CK = "wa_ck";
 	private static final String WA_MD5 = "wa_md5";
 	private static final String WA_CH = "wa_ch";
 	public static final String JSP_BASE = "/WEB-INF/classes/";
+	private static final String HTTP_REQ = "HTTP_REQ";
+	private static final String HTTP_RES = "HTTP_RES";
 
-	private HttpServletRequest req;
-	private HttpServletResponse res;
+//	private HttpServletRequest req;
+//	private HttpServletResponse res;
 
 	public final void _init(HttpServletRequest req, HttpServletResponse res) {
-		this.req = req;
-		this.res = res;
+		ThreadLocalContextManager.instance.getContext().setAttribute(HTTP_REQ, req);
+		ThreadLocalContextManager.instance.getContext().setAttribute(HTTP_RES, res);
+		
 		Enumeration nms = req.getParameterNames();
 		while (nms.hasMoreElements()) {
 			String name = (String) nms.nextElement();
@@ -33,24 +39,24 @@ public class AbstractExController {
 	}
 
 	public HttpServletRequest getReq() {
-		return req;
+		return (HttpServletRequest) ThreadLocalContextManager.instance.getContext().getAttribute(HTTP_REQ);
 	}
 
 	public HttpServletResponse getRes() {
-		return res;
+		return (HttpServletResponse) ThreadLocalContextManager.instance.getContext().getAttribute(HTTP_RES);
 	}
 
 	public String getParam(String nm) {
-		return req.getParameter(nm);
+		return getReq().getParameter(nm);
 	}
 
 	public Object getAttr(String nm) {
-		return req.getAttribute(nm);
+		return getReq().getAttribute(nm);
 	}
 
 	public Set<String> getAttrNames() {
 		HashSet<String> ret = new HashSet<String>();
-		Enumeration<String> nms = req.getAttributeNames();
+		Enumeration<String> nms = getReq().getAttributeNames();
 
 		while (nms.hasMoreElements()) {
 			String key = nms.nextElement();
@@ -60,16 +66,17 @@ public class AbstractExController {
 	}
 
 	public String getStringAttr(String nm) {
-		return (String) req.getAttribute(nm);
+		return (String) getReq().getAttribute(nm);
 	}
 
 	public void setAttr(String nm, Object o) {
-		req.setAttribute(nm, o);
+		getReq().setAttribute(nm, o);
 	}
 
 	public void forward(String path) {
 		try {
-			req.getRequestDispatcher(path).forward(req, res);
+			ServletRequest req=getReq();
+			req.getRequestDispatcher(path).forward(req, getRes());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(),e);
 		}
@@ -104,9 +111,10 @@ public class AbstractExController {
 	
 	@Deprecated
 	public void renderJson(JsonResult jr){
+		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
-			// ÎªÁË¼õÉÙÒ»±éĞòÁĞ»¯,ÏÈ¼Ù¶¨wa_ch=true,ÔÙÈ¡MD5,È»ºóÔÙÌæ»»Ö®
+			// ä¸ºäº†å‡å°‘ä¸€éåºåˆ—åŒ–,å…ˆå‡å®šwa_ch=true,å†å–MD5,ç„¶åå†æ›¿æ¢ä¹‹
 			jr._setProp(WA_CH, "true");
 			jr._setProp(WA_MD5, "%{MD5KEY}%");
 			String jsonToWrite = jr.toJson();
@@ -114,27 +122,28 @@ public class AbstractExController {
 			String oldMd5 = (String) req.getAttribute(WA_MD5);
 			String newMd5 = MD5Kit.MD5(jsonToWrite);
 			if (newMd5.equals(oldMd5)) {
-				// Êä³ö£ºÎŞ±ä»¯
+				// è¾“å‡ºï¼šæ— å˜åŒ–
 				JsonResult newrr = JsonResult.create();
 				newrr._setProp(WA_CH, "false");
 				jsonToWrite = newrr.toJson();
 			} else {
-				// Êä³ö°üº¬MD5ĞÅÏ¢µÄĞÂÄÚÈİ£¬MD5ÖµÌæ»»½øÈ¥
+				// è¾“å‡ºåŒ…å«MD5ä¿¡æ¯çš„æ–°å†…å®¹ï¼ŒMD5å€¼æ›¿æ¢è¿›å»
 				jsonToWrite = StringKit.replaceStr(jsonToWrite, "%{MD5KEY}%",
 						newMd5);
 			}
 			renderJson(jsonToWrite);
 		} else {
-			// Ö±½ÓÊä³ö
+			// ç›´æ¥è¾“å‡º
 			renderJson(jr.toJson());
 		}
 	}
 	
 	@Deprecated
 	public void renderJson(RuleResult rr) {
+		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
 		if ("true".equals(wa_ck)) {
-			// ÎªÁË¼õÉÙÒ»±éĞòÁĞ»¯,ÏÈ¼Ù¶¨wa_ch=true,ÔÙÈ¡MD5,È»ºóÔÙÌæ»»Ö®
+			// ä¸ºäº†å‡å°‘ä¸€éåºåˆ—åŒ–,å…ˆå‡å®šwa_ch=true,å†å–MD5,ç„¶åå†æ›¿æ¢ä¹‹
 			rr.setContent(WA_CH, "true");
 			rr.setContent(WA_MD5, "%{MD5KEY}%");
 			String jsonToWrite = rr.getJson();
@@ -142,31 +151,34 @@ public class AbstractExController {
 			String oldMd5 = (String) req.getAttribute(WA_MD5);
 			String newMd5 = MD5Kit.MD5(jsonToWrite);
 			if (newMd5.equals(oldMd5)) {
-				// Êä³ö£ºÎŞ±ä»¯
+				// è¾“å‡ºï¼šæ— å˜åŒ–
 				RuleResult newrr = RuleResult.create();
 				newrr.setContent(WA_CH, "false");
 				jsonToWrite = newrr.getJson();
 			} else {
-				// Êä³ö°üº¬MD5ĞÅÏ¢µÄĞÂÄÚÈİ£¬MD5ÖµÌæ»»½øÈ¥
+				// è¾“å‡ºåŒ…å«MD5ä¿¡æ¯çš„æ–°å†…å®¹ï¼ŒMD5å€¼æ›¿æ¢è¿›å»
 				jsonToWrite = StringKit.replaceStr(jsonToWrite, "%{MD5KEY}%",
 						newMd5);
 			}
 			renderJson(jsonToWrite);
 		} else {
-			// Ö±½ÓÊä³ö
+			// ç›´æ¥è¾“å‡º
 			renderJson(rr.getJson());
 		}
 	}
 
 	public void invalidSession() {
+		HttpServletRequest req=getReq();
 		req.getSession().invalidate();
 	}
 
 	public void setSessAttr(String k, Object v) {
+		HttpServletRequest req = getReq();
 		req.getSession().setAttribute(k, v);
 	}
 
 	public void sendRedirect(String path) {
+		HttpServletResponse res = getRes();
 		try {
 			res.sendRedirect(path);
 		} catch (IOException e) {

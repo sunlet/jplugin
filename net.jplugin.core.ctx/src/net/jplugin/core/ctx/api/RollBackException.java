@@ -3,7 +3,7 @@ package net.jplugin.core.ctx.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-14 ÉÏÎç09:53:17
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-14 ä¸Šåˆ09:53:17
  **/
 
 public class RollBackException extends RuntimeException {

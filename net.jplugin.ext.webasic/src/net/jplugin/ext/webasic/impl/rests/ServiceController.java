@@ -24,7 +24,7 @@ import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÏÂÎç05:51:42
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸‹åˆ05:51:42
  **/
 
 public class ServiceController implements IController{

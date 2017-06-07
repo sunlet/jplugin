@@ -4,7 +4,7 @@
 
 	<groupId>net.jplugin.mvn</groupId>
 	<artifactId>jplugin-core</artifactId>
-	<version>1.5.2-SNAPSHOT</version>
+	<version>1.6.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jplugin-core</name>
@@ -76,14 +76,14 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-pool</groupId>
-			<artifactId>commons-pool</artifactId>
-			<version>1.6</version>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-pool2</artifactId>
+		    <version>2.4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.1</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 <!-- 		<dependency>
 			<groupId>org.springframework</groupId>

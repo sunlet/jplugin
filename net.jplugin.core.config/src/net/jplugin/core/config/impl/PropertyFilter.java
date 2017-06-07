@@ -7,7 +7,7 @@ import net.jplugin.core.kernel.api.IPropertyFilter;
 public class PropertyFilter implements IPropertyFilter {
 
 	/**
-	 * Ä¿Ç°Ö»ÊÇÒ»¸öºÜ¼òµ¥µÄÊµÏÖ£¬Ö§³ÖÕû¸ö×Ö·û´®µÄÆ¥Åä
+	 * ç›®å‰åªæ˜¯ä¸€ä¸ªå¾ˆç®€å•çš„å®ç°ï¼Œæ”¯æŒæ•´ä¸ªå­—ç¬¦ä¸²çš„åŒ¹é…
 	 */
 	@Override
 	public String filte(String s) {

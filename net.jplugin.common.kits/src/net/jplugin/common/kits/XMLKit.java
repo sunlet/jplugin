@@ -33,7 +33,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * @author LiuHang ´ÓXmlUtilºÍÒÔÇ°µÄXmlUtilÕûÀí.
+ * @author LiuHang ä»XmlUtilå’Œä»¥å‰çš„XmlUtilæ•´ç†.
  * 
  *         To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
@@ -47,7 +47,7 @@ public class XMLKit {
 		dbf.setIgnoringElementContentWhitespace(true);
 	}
 
-	// empty dom ÎªÕû¸övmÎ¨Ò»µÄdom,ËùÓĞÒ»¶¨²»ÄÜ¸øËüÔö¼Ó¶ù×Ó½Úµã£¬·ñÔò»áµ¼ÖÂÄÚ´æÒæ´¦
+	// empty dom ä¸ºæ•´ä¸ªvmå”¯ä¸€çš„dom,æ‰€æœ‰ä¸€å®šä¸èƒ½ç»™å®ƒå¢åŠ å„¿å­èŠ‚ç‚¹ï¼Œå¦åˆ™ä¼šå¯¼è‡´å†…å­˜ç›Šå¤„
 	private static Document emptyDom = createDocument("EMPTY");
 
 	public final static Document getSystemEmptyDom() {
@@ -55,7 +55,7 @@ public class XMLKit {
 	}
 
 	/**
-	 * ´´½¨ĞÂµÄDocument,ÒÔrootElementÎª¸ù½ÚµãµÄÃû³Æ
+	 * åˆ›å»ºæ–°çš„Document,ä»¥rootElementä¸ºæ ¹èŠ‚ç‚¹çš„åç§°
 	 * 
 	 * @param rootElement
 	 * @return
@@ -68,7 +68,7 @@ public class XMLKit {
 	}
 
 	/**
-	 * ´´½¨¿ÕDom
+	 * åˆ›å»ºç©ºDom
 	 * 
 	 * @return
 	 */
@@ -134,7 +134,7 @@ public class XMLKit {
 				throw new XMLRunTimeException("Can't parse file:" + filePath);
 			return doc;
 		} catch (Exception e) {
-			throw new XMLException("½âÎöÎÄ¼ş´íÎó filePath=[" + filePath + "]  "
+			throw new XMLException("è§£ææ–‡ä»¶é”™è¯¯ filePath=[" + filePath + "]  "
 					+ e.getMessage());
 		}
 	}
@@ -168,14 +168,14 @@ public class XMLKit {
 			if (xmlString == null) {
 				return null;
 			}
-			// Èç¹û×Ö·û´®Ã»ÓĞ¼Óencoding ÔòparseString»á³öÒì³££¬ËùÒÔÄ¬ÈÏ¼Óutf-8µÄencoding
+			// å¦‚æœå­—ç¬¦ä¸²æ²¡æœ‰åŠ encoding åˆ™parseStringä¼šå‡ºå¼‚å¸¸ï¼Œæ‰€ä»¥é»˜è®¤åŠ utf-8çš„encoding
 			final String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
 			if (!xmlString.startsWith("<?")) {
-				// Ã»ÓĞXMLÍ·×Ö·û´®
+				// æ²¡æœ‰XMLå¤´å­—ç¬¦ä¸²
 				xmlString = encoding + xmlString;
 			} else {
-				// Ã»ÓĞencodingÊôĞÔ
+				// æ²¡æœ‰encodingå±æ€§
 				String oneStr = xmlString.substring(xmlString.indexOf("<?"),
 						xmlString.indexOf(">") + 1);
 				if (oneStr.indexOf("encoding") == -1) {
@@ -185,7 +185,7 @@ public class XMLKit {
 
 			return innerParseString(xmlString);
 		} catch (Exception e) {
-			throw new XMLException("½âÎö×Ö·û´®´íÎó xmlString=[" + xmlString + "]  "
+			throw new XMLException("è§£æå­—ç¬¦ä¸²é”™è¯¯ xmlString=[" + xmlString + "]  "
 					+ e.getMessage());
 		}
 	}
@@ -219,11 +219,11 @@ public class XMLKit {
 	private static String stringXMLHeader(String xml) {
 		int start = xml.indexOf("<?");
 		if ((start != -1) && (xml.substring(0, start).trim().length() <= 2)) {
-			// ºóÒ»¸ö×ÓÊ½Ö®ËùÒÔÈ¡2ÊÇÎªÁË¼æÈİUnicodeµÄBOMÍ·,ËäÈ»parseÎ´±ØÖ§³ÖBOM,µ«ÊÇÔÚÕâÀïÈÔÈ»Ğ´µÄ½¡×³Ğ©
+			// åä¸€ä¸ªå­å¼ä¹‹æ‰€ä»¥å–2æ˜¯ä¸ºäº†å…¼å®¹Unicodeçš„BOMå¤´,è™½ç„¶parseæœªå¿…æ”¯æŒBOM,ä½†æ˜¯åœ¨è¿™é‡Œä»ç„¶å†™çš„å¥å£®äº›
 			int end = xml.indexOf("?>", start);
 			if (end != -1) {
 				return xml.substring(start, end + 2);
-				// end + 2 ¸ÕºÃ½«?>°üÀ¨½øÈ¥ÁË
+				// end + 2 åˆšå¥½å°†?>åŒ…æ‹¬è¿›å»äº†
 			}
 		}
 		return null;
@@ -254,12 +254,12 @@ public class XMLKit {
 
 	/***************************************************************************************
 	 * 
-	 * »ñÈ¡ºÍÉè¶¨½ÚµãµÄÖµ Ò»¹²6¸ö·½·¨
+	 * è·å–å’Œè®¾å®šèŠ‚ç‚¹çš„å€¼ ä¸€å…±6ä¸ªæ–¹æ³•
 	 * 
 	 **************************************************************************************/
 
 	/**
-	 * ÉèÖÃ½ÚµãÖµ,½Úµã±ØĞëÎªAttribute Node »òÕß Element Node
+	 * è®¾ç½®èŠ‚ç‚¹å€¼,èŠ‚ç‚¹å¿…é¡»ä¸ºAttribute Node æˆ–è€… Element Node
 	 * 
 	 * @param node
 	 * @param value
@@ -281,12 +281,12 @@ public class XMLKit {
 			nd.appendChild(nd.getOwnerDocument().createTextNode(value));
 		} else {
 			throw new XMLRunTimeException(
-					"Éè¶¨½ÚµãÖµ´íÎó,±ØĞëÎªAttributeNode »òÕßElement Node");
+					"è®¾å®šèŠ‚ç‚¹å€¼é”™è¯¯,å¿…é¡»ä¸ºAttributeNode æˆ–è€…Element Node");
 		}
 	}
 
 	/**
-	 * »ñÈ¡½ÚµãµÄÖµ. ÊµÏÖ:Èç¹ûÎªElement Node»ñÈ¡µÚÒ»¸öÎÄ±¾½ÚµãµÄÖµ.Èç¹ûÕÒ²»µ½,·µ»Ø ""
+	 * è·å–èŠ‚ç‚¹çš„å€¼. å®ç°:å¦‚æœä¸ºElement Nodeè·å–ç¬¬ä¸€ä¸ªæ–‡æœ¬èŠ‚ç‚¹çš„å€¼.å¦‚æœæ‰¾ä¸åˆ°,è¿”å› ""
 	 * 
 	 * @param nd
 	 * @return
@@ -311,20 +311,20 @@ public class XMLKit {
 			}
 		} else
 			throw new XMLRunTimeException(
-					"»ñÈ¡½ÚµãÖµ´íÎó,±ØĞëÎªAttribute Node »òÕßElement Node. but nodetype = "
+					"è·å–èŠ‚ç‚¹å€¼é”™è¯¯,å¿…é¡»ä¸ºAttribute Node æˆ–è€…Element Node. but nodetype = "
 							+ nd.getNodeType());
 	}
 
 	/**
-	 * Éè¶¨¶ù×Ó½ÚµãµÄÖµ
+	 * è®¾å®šå„¿å­èŠ‚ç‚¹çš„å€¼
 	 * 
 	 * @param doc
 	 * @param node
-	 *            ¸¸Ç×½Úµã
+	 *            çˆ¶äº²èŠ‚ç‚¹
 	 * @param childName
-	 *            ¶ù×Ó½ÚµãµÄÃû³Æ
+	 *            å„¿å­èŠ‚ç‚¹çš„åç§°
 	 * @param value
-	 *            ¶ù×Ó½ÚµãµÄÖµ
+	 *            å„¿å­èŠ‚ç‚¹çš„å€¼
 	 * @throws XMLException
 	 */
 	public static void setChildNodeValue(Element node, String childName,
@@ -344,12 +344,12 @@ public class XMLKit {
 
 	/***************************************************************************************
 	 * 
-	 * ´´½¨ºÍÉ¾³ı½Úµã Ò»¹²6¸ö·½·¨
+	 * åˆ›å»ºå’Œåˆ é™¤èŠ‚ç‚¹ ä¸€å…±6ä¸ªæ–¹æ³•
 	 * 
 	 **************************************************************************************/
 
 	/**
-	 *É¾³ıÈ«²¿µÄ¶ù×Ó
+	 *åˆ é™¤å…¨éƒ¨çš„å„¿å­
 	 * 
 	 * @param node
 	 */
@@ -363,15 +363,15 @@ public class XMLKit {
 	}
 
 	/**
-	 * ´´½¨Ò»¸ö¶ù×Ó½Úµã,²¢ÇÒÉè¶¨Öµ
+	 * åˆ›å»ºä¸€ä¸ªå„¿å­èŠ‚ç‚¹,å¹¶ä¸”è®¾å®šå€¼
 	 * 
 	 * @param xdoc
 	 * @param ndT
-	 *            ¸¸Ç×½Úµã
+	 *            çˆ¶äº²èŠ‚ç‚¹
 	 * @param childName
-	 *            ¶ù×Ó½ÚµãÃû³Æ
+	 *            å„¿å­èŠ‚ç‚¹åç§°
 	 * @param childValue
-	 *            ¶ù×Ó½ÚµãÖµ
+	 *            å„¿å­èŠ‚ç‚¹å€¼
 	 * @return
 	 * @throws XMLException
 	 */
@@ -396,7 +396,7 @@ public class XMLKit {
 
 	/***************************************************************************************
 	 * 
-	 * ¼òµ¥²éÑ¯½Úµã Ò»¹²8¸ö·½·¨
+	 * ç®€å•æŸ¥è¯¢èŠ‚ç‚¹ ä¸€å…±8ä¸ªæ–¹æ³•
 	 * 
 	 **************************************************************************************/
 
@@ -488,7 +488,7 @@ public class XMLKit {
 	}
 
 	/**
-	 * Í¨¹ı¶ù×Ó½ÚµãµÄÖµÀ´Ñ¡Ôñ¶ù×Ó½Úµã
+	 * é€šè¿‡å„¿å­èŠ‚ç‚¹çš„å€¼æ¥é€‰æ‹©å„¿å­èŠ‚ç‚¹
 	 * 
 	 * @param parentNode
 	 * @param nodeName
@@ -527,7 +527,7 @@ public class XMLKit {
 	}
 
 	/**
-	 * ±éÀúÕû¸ö½ÚµãµÄÈ«²¿×Ó½Úµã£¬Ê¹ÓÃXO½Ó¿Ú½øĞĞ´¦Àí
+	 * éå†æ•´ä¸ªèŠ‚ç‚¹çš„å…¨éƒ¨å­èŠ‚ç‚¹ï¼Œä½¿ç”¨XOæ¥å£è¿›è¡Œå¤„ç†
 	 * 
 	 * @param nd
 	 * @param xo
@@ -586,8 +586,8 @@ public class XMLKit {
 	}
 
 	/**
-	 * °ÑElement ÏÂÃæµÄËùÓĞtext½Úµã½âÎöÎª xpath->valueµÄHashMap 1.Element¿ÉÒÔ¸ù¾İnameÊôĞÔ½øĞĞÇø·Ö
-	 * 2.Èç¹ûÄ³text½ÚµãÓĞĞÖµÜ½Úµç£¬ÔòºöÂÔ¸Ã½Úµã
+	 * æŠŠElement ä¸‹é¢çš„æ‰€æœ‰textèŠ‚ç‚¹è§£æä¸º xpath->valueçš„HashMap 1.Elementå¯ä»¥æ ¹æ®nameå±æ€§è¿›è¡ŒåŒºåˆ†
+	 * 2.å¦‚æœæŸtextèŠ‚ç‚¹æœ‰å…„å¼ŸèŠ‚ç”µï¼Œåˆ™å¿½ç•¥è¯¥èŠ‚ç‚¹
 	 * 
 	 * @param rootNode
 	 * @return
@@ -599,7 +599,7 @@ public class XMLKit {
 				String path = "";
 				Node pathElem = nd;
 
-				// ÒÔÏÂÑ­»·£¬Ã¿Ò»²½°ÑpathElemµÄ¸¸Ç×½Úµã¶ÔÓ¦µÄpathStep¼ÓÈëµ½pathÇ°Ãæ
+				// ä»¥ä¸‹å¾ªç¯ï¼Œæ¯ä¸€æ­¥æŠŠpathElemçš„çˆ¶äº²èŠ‚ç‚¹å¯¹åº”çš„pathStepåŠ å…¥åˆ°pathå‰é¢
 				do {
 					pathElem = pathElem.getParentNode();
 
@@ -631,7 +631,7 @@ public class XMLKit {
 		try {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer t = tf.newTransformer();
-			t.setOutputProperty("encoding", "GBK");// ½â¾öÖĞÎÄÎÊÌâ£¬xml×ª»»¹ı³Ì±£Ö¤ÖĞÎÄ²»ÂÒÂë£¬ÓëÎÄ¼ş´æ´¢¸ñÊ½ÎŞ¹Ø
+			t.setOutputProperty("encoding", "GBK");// è§£å†³ä¸­æ–‡é—®é¢˜ï¼Œxmlè½¬æ¢è¿‡ç¨‹ä¿è¯ä¸­æ–‡ä¸ä¹±ç ï¼Œä¸æ–‡ä»¶å­˜å‚¨æ ¼å¼æ— å…³
 			t.setOutputProperty(OutputKeys.INDENT,"yes");
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			t.transform(new DOMSource(nd), new StreamResult(bos));

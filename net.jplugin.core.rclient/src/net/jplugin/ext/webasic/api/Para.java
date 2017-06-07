@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-3 ÉÏÎç11:34:19
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-3 ä¸Šåˆ11:34:19
  **/
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Para {

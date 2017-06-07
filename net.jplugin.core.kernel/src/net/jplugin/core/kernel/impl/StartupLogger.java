@@ -6,18 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.jplugin.core.kernel.api.PluginEnvirement;
-
-import com.lh.org.apache.log.Hierarchy;
-import com.lh.org.apache.log.LogTarget;
-import com.lh.org.apache.log.Logger;
-import com.lh.org.apache.log.format.PatternFormatter;
-import com.lh.org.apache.log.output.io.SafeFileTarget;
-import com.lh.org.apache.log.output.io.StreamTarget;
+import net.jplugin.org.apache.log.Hierarchy;
+import net.jplugin.org.apache.log.LogTarget;
+import net.jplugin.org.apache.log.Logger;
+import net.jplugin.org.apache.log.format.PatternFormatter;
+import net.jplugin.org.apache.output.io.SafeFileTarget;
+import net.jplugin.org.apache.output.io.StreamTarget;
 
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-6 œ¬ŒÁ03:50:05
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-6 ‰∏ãÂçà03:50:05
  **/
 
 public class StartupLogger {
@@ -60,7 +59,7 @@ public class StartupLogger {
 		PatternFormatter formatter = new PatternFormatter( pattern );
 		File file = new File( PluginEnvirement.getInstance().getWorkDir()	+ "/logs/"+getStartupLogFileName());
 		
-		com.lh.org.apache.log.Logger logger = hierarchy.getLoggerFor("KernelLogger");
+		net.jplugin.org.apache.log.Logger logger = hierarchy.getLoggerFor("KernelLogger");
 		
 //		AsyncLogTarget target = new AsyncLogTarget(new FileTarget(file,true,formatter));
 //		Thread th = new Thread(target);

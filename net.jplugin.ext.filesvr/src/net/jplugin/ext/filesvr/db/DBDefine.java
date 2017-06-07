@@ -5,7 +5,7 @@ import net.jplugin.core.das.hib.api.IPersistObjDefinition;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÏÂÎç05:11:03
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸‹åˆ05:11:03
  **/
 
 public class DBDefine implements IPersistObjDefinition {

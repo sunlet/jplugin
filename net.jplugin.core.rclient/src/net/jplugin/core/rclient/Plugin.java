@@ -23,7 +23,7 @@ import net.jplugin.core.rclient.proxyfac.TokenFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-14 ÉÏÎç09:35:53
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-14 ä¸Šåˆ09:35:53
  **/
 
 public class Plugin extends AbstractPlugin{
@@ -40,7 +40,7 @@ public class Plugin extends AbstractPlugin{
 		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEURL_RESOLVER, IServiceUrlResolver.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_FILTER, IClientFilter.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_PROXY,ClientProxyDefinition.class,true ));
-		//Ö÷ÒªÓÃÀ´½øĞĞrestfuleÁ´½ÓÊ§°ÜµÄÍ¨Öª
+		//ä¸»è¦ç”¨æ¥è¿›è¡Œrestfuleé“¾æ¥å¤±è´¥çš„é€šçŸ¥
 		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENTFAIL_HANDLER,IClientFailHandler.class,true ));
 
 		this.addExtensionPoint(ExtensionPoint.create(EP_TOKEN_FETCHER,ITokenFetcher.class,true ));
@@ -60,13 +60,18 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		ClientHandlerRegistry.instance.init();
 		ClientFilterRegistry.instance.init();
 		ServiceUrlResolverManager.instance.init();
 		ClientProxyFactory.instance.init();
 		ClientFailHandlerManager.init();
 		TokenFactory.init();
+	}
+
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

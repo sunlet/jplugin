@@ -22,7 +22,7 @@ public class WightHashAlgm implements ITsAlgorithm{
 			throw new RuntimeException("not support algm for key java type:"+key.getClass().getName()+" algm is: "+this.getClass().getName());
 		}
 		
-		//¿ÉÒÔ¼Ù¶¨splitsÎªint·¶Î§ÄÚ
+		//å¯ä»¥å‡å®šsplitsä¸ºintèŒƒå›´å†…
 		int mod = (int) (hashCode % splits);
 		return mod;
 	}

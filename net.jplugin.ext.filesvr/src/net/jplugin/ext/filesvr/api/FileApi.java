@@ -3,7 +3,7 @@ package net.jplugin.ext.filesvr.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç03:11:52
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ03:11:52
  **/
 
 public interface FileApi {

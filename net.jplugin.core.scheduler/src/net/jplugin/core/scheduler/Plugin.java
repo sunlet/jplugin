@@ -6,7 +6,7 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç02:39:52
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ02:39:52
  **/
 
 public class Plugin extends AbstractPlugin{
@@ -22,7 +22,12 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
+	public void onCreateServices() {
+		
+	}
+
 	public void init() {
+		// TODO Auto-generated method stub
 		
 	}
 

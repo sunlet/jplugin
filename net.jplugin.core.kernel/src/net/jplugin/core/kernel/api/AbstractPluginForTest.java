@@ -3,16 +3,16 @@ package net.jplugin.core.kernel.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÏÂÎç01:39:45
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸‹åˆ01:39:45
  **/
 
 public abstract class AbstractPluginForTest extends AbstractPlugin{
 	public final void init() {
 		try{
 			test();
-			System.out.println("Plugin:"+this.getClass().getName()+" ²âÊÔ³É¹¦!");
+			System.out.println("Plugin:"+this.getClass().getName()+" æµ‹è¯•æˆåŠŸ!");
 		}catch(Throwable e){
-			System.out.println("Plugin:"+this.getClass().getName()+" ²âÊÔÊ§°Ü!");
+			System.out.println("Plugin:"+this.getClass().getName()+" æµ‹è¯•å¤±è´¥!");
 			throw new RuntimeException(e);
 		}
 	}

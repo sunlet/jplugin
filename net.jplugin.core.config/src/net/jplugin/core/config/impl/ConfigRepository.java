@@ -12,7 +12,7 @@ import net.jplugin.core.config.api.IConfigProvidor;
 /**
 *
 * @author: LiuHang
-* @version ´´½¨Ê±¼ä£º2015-10-12 ÏÂÎç01:07:22
+* @version åˆ›å»ºæ—¶é—´ï¼š2015-10-12 ä¸‹åˆ01:07:22
 **/
 public class ConfigRepository implements IConfigProvidor{
 	private static final String POSTFIX = ".config.properties";

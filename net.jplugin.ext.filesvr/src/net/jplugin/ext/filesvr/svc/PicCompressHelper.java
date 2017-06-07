@@ -1,7 +1,7 @@
 package net.jplugin.ext.filesvr.svc;
 
 /**
- *  ËõÂÔÍ¼ÊµÏÖ£¬½«Í¼Æ¬(jpg¡¢bmp¡¢png¡¢gifµÈµÈ)ÕæÊµµÄ±ä³ÉÏëÒªµÄ´óĞ¡
+ *  ç¼©ç•¥å›¾å®ç°ï¼Œå°†å›¾ç‰‡(jpgã€bmpã€pngã€gifç­‰ç­‰)çœŸå®çš„å˜æˆæƒ³è¦çš„å¤§å°
  */
 
 import java.awt.Image;
@@ -23,20 +23,20 @@ import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.service.api.ServiceFactory;
 
 /*******************************************************************************
- * ËõÂÔÍ¼Àà£¨Í¨ÓÃ£© ±¾javaÀàÄÜ½«jpg¡¢bmp¡¢png¡¢gifÍ¼Æ¬ÎÄ¼ş£¬½øĞĞµÈ±È»ò·ÇµÈ±ÈµÄ´óĞ¡×ª»»¡£ ¾ßÌåÊ¹ÓÃ·½·¨
- * compressPic(´óÍ¼Æ¬Â·¾¶,Éú³ÉĞ¡Í¼Æ¬Â·¾¶,´óÍ¼Æ¬ÎÄ¼şÃû,Éú³ÉĞ¡Í¼Æ¬ÎÄÃû,Éú³ÉĞ¡Í¼Æ¬¿í¶È,Éú³ÉĞ¡Í¼Æ¬¸ß¶È,ÊÇ·ñµÈ±ÈËõ·Å(Ä¬ÈÏÎªtrue))
+ * ç¼©ç•¥å›¾ç±»ï¼ˆé€šç”¨ï¼‰ æœ¬javaç±»èƒ½å°†jpgã€bmpã€pngã€gifå›¾ç‰‡æ–‡ä»¶ï¼Œè¿›è¡Œç­‰æ¯”æˆ–éç­‰æ¯”çš„å¤§å°è½¬æ¢ã€‚ å…·ä½“ä½¿ç”¨æ–¹æ³•
+ * compressPic(å¤§å›¾ç‰‡è·¯å¾„,ç”Ÿæˆå°å›¾ç‰‡è·¯å¾„,å¤§å›¾ç‰‡æ–‡ä»¶å,ç”Ÿæˆå°å›¾ç‰‡æ–‡å,ç”Ÿæˆå°å›¾ç‰‡å®½åº¦,ç”Ÿæˆå°å›¾ç‰‡é«˜åº¦,æ˜¯å¦ç­‰æ¯”ç¼©æ”¾(é»˜è®¤ä¸ºtrue))
  */
 public class PicCompressHelper {
-	private File file = null; // ÎÄ¼ş¶ÔÏó
-	private String inputDir; // ÊäÈëÍ¼Â·¾¶
-	private String outputDir; // Êä³öÍ¼Â·¾¶
-	private String inputFileName; // ÊäÈëÍ¼ÎÄ¼şÃû
-	private String outputFileName; // Êä³öÍ¼ÎÄ¼şÃû
-	private int outputWidth = 100; // Ä¬ÈÏÊä³öÍ¼Æ¬¿í
-	private int outputHeight = 100; // Ä¬ÈÏÊä³öÍ¼Æ¬¸ß
-	private boolean proportion = true; // ÊÇ·ñµÈ±ÈËõ·Å±ê¼Ç(Ä¬ÈÏÎªµÈ±ÈËõ·Å)
+	private File file = null; // æ–‡ä»¶å¯¹è±¡
+	private String inputDir; // è¾“å…¥å›¾è·¯å¾„
+	private String outputDir; // è¾“å‡ºå›¾è·¯å¾„
+	private String inputFileName; // è¾“å…¥å›¾æ–‡ä»¶å
+	private String outputFileName; // è¾“å‡ºå›¾æ–‡ä»¶å
+	private int outputWidth = 100; // é»˜è®¤è¾“å‡ºå›¾ç‰‡å®½
+	private int outputHeight = 100; // é»˜è®¤è¾“å‡ºå›¾ç‰‡é«˜
+	private boolean proportion = true; // æ˜¯å¦ç­‰æ¯”ç¼©æ”¾æ ‡è®°(é»˜è®¤ä¸ºç­‰æ¯”ç¼©æ”¾)
 
-	public PicCompressHelper() { // ³õÊ¼»¯±äÁ¿
+	public PicCompressHelper() { // åˆå§‹åŒ–å˜é‡
 		inputDir = "";
 		outputDir = "";
 		inputFileName = "";
@@ -75,23 +75,23 @@ public class PicCompressHelper {
 	}
 
 	/*
-	 * »ñµÃÍ¼Æ¬´óĞ¡ ´«Èë²ÎÊı String path £ºÍ¼Æ¬Â·¾¶
+	 * è·å¾—å›¾ç‰‡å¤§å° ä¼ å…¥å‚æ•° String path ï¼šå›¾ç‰‡è·¯å¾„
 	 */
 	public long getPicSize(String path) {
 		file = new File(path);
 		return file.length();
 	}
 
-	// Í¼Æ¬´¦Àí
+	// å›¾ç‰‡å¤„ç†
 	public void compressPic() {
 		try {
-			// »ñµÃÔ´ÎÄ¼ş
+			// è·å¾—æºæ–‡ä»¶
 			file = new File(inputDir + inputFileName);
 			if (!file.exists()) {
-				throw new RuntimeException("ÎÄ¼ş²»´æÔÚ£º" + inputDir + inputFileName);
+				throw new RuntimeException("æ–‡ä»¶ä¸å­˜åœ¨ï¼š" + inputDir + inputFileName);
 			}
 			Image img = ImageIO.read(file);
-			// ÅĞ¶ÏÍ¼Æ¬¸ñÊ½ÊÇ·ñÕıÈ·
+			// åˆ¤æ–­å›¾ç‰‡æ ¼å¼æ˜¯å¦æ­£ç¡®
 			if (img.getWidth(null) == -1) {
 				System.out.println(" can't read,retry!" + "<BR>");
 				throw new RuntimeException(" can't read,retry!" + inputDir
@@ -99,26 +99,26 @@ public class PicCompressHelper {
 			} else {
 				int newWidth;
 				int newHeight;
-				// ÅĞ¶ÏÊÇ·ñÊÇµÈ±ÈËõ·Å
+				// åˆ¤æ–­æ˜¯å¦æ˜¯ç­‰æ¯”ç¼©æ”¾
 				if (this.proportion == true) {
-					// ÎªµÈ±ÈËõ·Å¼ÆËãÊä³öµÄÍ¼Æ¬¿í¶È¼°¸ß¶È
+					// ä¸ºç­‰æ¯”ç¼©æ”¾è®¡ç®—è¾“å‡ºçš„å›¾ç‰‡å®½åº¦åŠé«˜åº¦
 					double rate1 = ((double) img.getWidth(null))
 							/ (double) outputWidth ;
 					double rate2 = ((double) img.getHeight(null))
 							/ (double) outputHeight ;
-					// ¸ù¾İËõ·Å±ÈÂÊ´óµÄ½øĞĞËõ·Å¿ØÖÆ
+					// æ ¹æ®ç¼©æ”¾æ¯”ç‡å¤§çš„è¿›è¡Œç¼©æ”¾æ§åˆ¶
 					double rate = rate1 > rate2 ? rate1 : rate2;
 					newWidth = (int) (((double) img.getWidth(null)) / rate);
 					newHeight = (int) (((double) img.getHeight(null)) / rate);
 				} else {
-					newWidth = outputWidth; // Êä³öµÄÍ¼Æ¬¿í¶È
-					newHeight = outputHeight; // Êä³öµÄÍ¼Æ¬¸ß¶È
+					newWidth = outputWidth; // è¾“å‡ºçš„å›¾ç‰‡å®½åº¦
+					newHeight = outputHeight; // è¾“å‡ºçš„å›¾ç‰‡é«˜åº¦
 				}
 				BufferedImage tag = new BufferedImage((int) newWidth,
 						(int) newHeight, BufferedImage.TYPE_INT_RGB);
 
 				/*
-				 * Image.SCALE_SMOOTH µÄËõÂÔËã·¨ Éú³ÉËõÂÔÍ¼Æ¬µÄÆ½»¬¶ÈµÄ ÓÅÏÈ¼¶±ÈËÙ¶È¸ß Éú³ÉµÄÍ¼Æ¬ÖÊÁ¿±È½ÏºÃ µ«ËÙ¶ÈÂı
+				 * Image.SCALE_SMOOTH çš„ç¼©ç•¥ç®—æ³• ç”Ÿæˆç¼©ç•¥å›¾ç‰‡çš„å¹³æ»‘åº¦çš„ ä¼˜å…ˆçº§æ¯”é€Ÿåº¦é«˜ ç”Ÿæˆçš„å›¾ç‰‡è´¨é‡æ¯”è¾ƒå¥½ ä½†é€Ÿåº¦æ…¢
 				 */
 				tag.getGraphics().drawImage(
 						img.getScaledInstance(newWidth, newHeight,
@@ -127,7 +127,7 @@ public class PicCompressHelper {
 				try {
 					saveImage(tag, outputDir + outputFileName);
 					// out = new FileOutputStream(outputDir + outputFileName);
-					// // JPEGImageEncoder¿ÉÊÊÓÃÓÚÆäËûÍ¼Æ¬ÀàĞÍµÄ×ª»»
+					// // JPEGImageEncoderå¯é€‚ç”¨äºå…¶ä»–å›¾ç‰‡ç±»å‹çš„è½¬æ¢
 					// JPEGImageEncoder encoder =
 					// JPEGCodec.createJPEGEncoder(out);
 					// encoder.encode(tag);
@@ -136,7 +136,7 @@ public class PicCompressHelper {
 				}
 			}
 		} catch (IOException ex) {
-			throw new RuntimeException("Ñ¹ËõÊ§°Ü£º" + inputDir + inputFileName, ex);
+			throw new RuntimeException("å‹ç¼©å¤±è´¥ï¼š" + inputDir + inputFileName, ex);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class PicCompressHelper {
 			} catch (Exception e) {
 				ServiceFactory.getService(ILogService.class)
 						.getLogger(PicCompressHelper.class.getName())
-						.error("¹Ø±ÕÁ÷Òì³£", e);
+						.error("å…³é—­æµå¼‚å¸¸", e);
 			}
 		}
 	}
@@ -167,13 +167,13 @@ public class PicCompressHelper {
 	public static void compressPic(String inputDir, String outputDir,
 			String inputFileName, String outputFileName) {
 		PicCompressHelper pch = new PicCompressHelper();
-		// ÊäÈëÍ¼Â·¾¶
+		// è¾“å…¥å›¾è·¯å¾„
 		pch.inputDir = inputDir;
-		// Êä³öÍ¼Â·¾¶
+		// è¾“å‡ºå›¾è·¯å¾„
 		pch.outputDir = outputDir;
-		// ÊäÈëÍ¼ÎÄ¼şÃû
+		// è¾“å…¥å›¾æ–‡ä»¶å
 		pch.inputFileName = inputFileName;
-		// Êä³öÍ¼ÎÄ¼şÃû
+		// è¾“å‡ºå›¾æ–‡ä»¶å
 		pch.outputFileName = outputFileName;
 		pch.compressPic();
 	}
@@ -182,17 +182,17 @@ public class PicCompressHelper {
 			String inputFileName, String outputFileName, int width, int height,
 			boolean gp) {
 		PicCompressHelper pch = new PicCompressHelper();
-		// ÊäÈëÍ¼Â·¾¶
+		// è¾“å…¥å›¾è·¯å¾„
 		pch.inputDir = inputDir;
-		// Êä³öÍ¼Â·¾¶
+		// è¾“å‡ºå›¾è·¯å¾„
 		pch.outputDir = outputDir;
-		// ÊäÈëÍ¼ÎÄ¼şÃû
+		// è¾“å…¥å›¾æ–‡ä»¶å
 		pch.inputFileName = inputFileName;
-		// Êä³öÍ¼ÎÄ¼şÃû
+		// è¾“å‡ºå›¾æ–‡ä»¶å
 		pch.outputFileName = outputFileName;
-		// ÉèÖÃÍ¼Æ¬³¤¿í
+		// è®¾ç½®å›¾ç‰‡é•¿å®½
 		pch.setWidthAndHeight(width, height);
-		// ÊÇ·ñÊÇµÈ±ÈËõ·Å ±ê¼Ç
+		// æ˜¯å¦æ˜¯ç­‰æ¯”ç¼©æ”¾ æ ‡è®°
 		pch.proportion = gp;
 		pch.compressPic();
 	}
@@ -203,24 +203,24 @@ public class PicCompressHelper {
 		PicCompressHelper.compressPic(dir, dir,fname, fname, w, h, true);
 	}
 
-	// main²âÊÔ
-	// compressPic(´óÍ¼Æ¬Â·¾¶,Éú³ÉĞ¡Í¼Æ¬Â·¾¶,´óÍ¼Æ¬ÎÄ¼şÃû,Éú³ÉĞ¡Í¼Æ¬ÎÄÃû,Éú³ÉĞ¡Í¼Æ¬¿í¶È,Éú³ÉĞ¡Í¼Æ¬¸ß¶È,ÊÇ·ñµÈ±ÈËõ·Å(Ä¬ÈÏÎªtrue))
+	// mainæµ‹è¯•
+	// compressPic(å¤§å›¾ç‰‡è·¯å¾„,ç”Ÿæˆå°å›¾ç‰‡è·¯å¾„,å¤§å›¾ç‰‡æ–‡ä»¶å,ç”Ÿæˆå°å›¾ç‰‡æ–‡å,ç”Ÿæˆå°å›¾ç‰‡å®½åº¦,ç”Ÿæˆå°å›¾ç‰‡é«˜åº¦,æ˜¯å¦ç­‰æ¯”ç¼©æ”¾(é»˜è®¤ä¸ºtrue))
 	public static void main(String[] arg) {
 		PicCompressHelper mypic = new PicCompressHelper();
-		System.out.println("ÊäÈëµÄÍ¼Æ¬´óĞ¡£º" + mypic.getPicSize("e:\\a.jpg") / 1024
+		System.out.println("è¾“å…¥çš„å›¾ç‰‡å¤§å°ï¼š" + mypic.getPicSize("e:\\a.jpg") / 1024
 				+ "KB");
-		int count = 0; // ¼ÇÂ¼È«²¿Í¼Æ¬Ñ¹ËõËùÓÃÊ±¼ä
-		int start = (int) System.currentTimeMillis(); // ¿ªÊ¼Ê±¼ä
+		int count = 0; // è®°å½•å…¨éƒ¨å›¾ç‰‡å‹ç¼©æ‰€ç”¨æ—¶é—´
+		int start = (int) System.currentTimeMillis(); // å¼€å§‹æ—¶é—´
 		mypic.compressPic("e:\\", "e:\\", "a.jpg", "a1.jpg", 120, 120, true);
-		int end = (int) System.currentTimeMillis(); // ½áÊøÊ±¼ä
-		int re = end - start; // µ«Í¼Æ¬Éú³É´¦ÀíÊ±¼ä
+		int end = (int) System.currentTimeMillis(); // ç»“æŸæ—¶é—´
+		int re = end - start; // ä½†å›¾ç‰‡ç”Ÿæˆå¤„ç†æ—¶é—´
 	}
 	
 	public static void cutAndResizeImage(String src, String dest, int x, int y, int w,
 			int h,int destWidth,int destHeight,int htmlImgWidth){
 		
 		if (htmlImgWidth>0){
-			//pxºÍÎïÀíÏñËØ½øĞĞ»»Ëã
+			//pxå’Œç‰©ç†åƒç´ è¿›è¡Œæ¢ç®—
 			int imgRealWidth = getImageWidth(src);
 			if (imgRealWidth<=0){
 				throw new RuntimeException("Can't get img width");
@@ -243,7 +243,7 @@ public class PicCompressHelper {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		// ÅĞ¶ÏÍ¼Æ¬¸ñÊ½ÊÇ·ñÕıÈ·
+		// åˆ¤æ–­å›¾ç‰‡æ ¼å¼æ˜¯å¦æ­£ç¡®
 		return img.getWidth(null);
 	}
 

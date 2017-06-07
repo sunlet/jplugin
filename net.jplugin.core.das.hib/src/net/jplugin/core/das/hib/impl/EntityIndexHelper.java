@@ -18,7 +18,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-24 ÏÂÎç07:07:50
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-24 ä¸‹åˆ07:07:50
  **/
 
 public class EntityIndexHelper {
@@ -57,7 +57,7 @@ public class EntityIndexHelper {
 		
 		String tablename = StringKit.isNull(e.tableName())? ReflactKit.getShortName(c):e.tableName();
 		
-		//»ñÈ¡Ğ¡Ğ´µÄÊôĞÔ¼¯
+		//è·å–å°å†™çš„å±æ€§é›†
 		Set<String> properties = ReflactKit.getProperties(c);
 		Set<String> lownercasePropert = new HashSet<String>();
 		for (String p:properties){
@@ -99,7 +99,7 @@ public class EntityIndexHelper {
 		String ret = "idx_" +tbname.toLowerCase().trim()+"_" +indexStr.toLowerCase().trim();
 		ret = ret.replace(',', '_');
 		ret = StringKit.replaceStr(ret, " ", "");
-		//mysql Ë÷ÒıÃû³Æ³¤¶ÈÏŞÖÆÎª64£¬¹»ÓÃÁË£¬ÏÈ²»¿ØÖÆË÷Òı³¤¶È
+		//mysql ç´¢å¼•åç§°é•¿åº¦é™åˆ¶ä¸º64ï¼Œå¤Ÿç”¨äº†ï¼Œå…ˆä¸æ§åˆ¶ç´¢å¼•é•¿åº¦
 		
 		if (ret.length() > MAX_INDEX_LEN){
 			throw new RuntimeException("name too long:"+ret);

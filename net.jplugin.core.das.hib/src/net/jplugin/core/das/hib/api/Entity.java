@@ -10,5 +10,5 @@ public @interface Entity {
 	public String[] indexes() default "";
 	public String idgen() default "native"; 
 	public String textFields() default "";
-	//native£¨½»¸øÊı¾İ¿â,¸ù¾İÊı¾İ¿â×Ô¶¯È·¶¨£©|uuid.hex(uuid)|assigned|increment(ÄÚ´æ£¬²»Ö§³Ö¶àÊµÀı)|sequence(db2,ora)|identity£¨×ÔÔö³¤£¬oracle²»Ö§³Ö£©
+	//nativeï¼ˆäº¤ç»™æ•°æ®åº“,æ ¹æ®æ•°æ®åº“è‡ªåŠ¨ç¡®å®šï¼‰|uuid.hex(uuid)|assigned|increment(å†…å­˜ï¼Œä¸æ”¯æŒå¤šå®ä¾‹)|sequence(db2,ora)|identityï¼ˆè‡ªå¢é•¿ï¼Œoracleä¸æ”¯æŒï¼‰
 }

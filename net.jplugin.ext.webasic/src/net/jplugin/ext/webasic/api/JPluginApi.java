@@ -6,20 +6,20 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JPluginApi {
 	/**
-	 * 调用者类型：CallerType
+	 * 璋冪敤鑰呯被鍨嬶細CallerType
 	 */
 	public enum CT{APP,USER,SSO}
 	/**
-	 * 限制级别：RestrictLevel
+	 * 闄愬埗绾у埆锛歊estrictLevel
 	 */
 	public enum RL{NONE,TK,AUTH}
 	/**
-	 * API名称
+	 * API鍚嶇О
 	 * @return
 	 */
 	String name() default "";
 	/**
-	 * API控制级别
+	 * API鎺у埗绾у埆
 	 * @return
 	 */
 	RL restrictLevel() default RL.NONE;

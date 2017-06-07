@@ -6,18 +6,18 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 
 public class TestStream {
-	// ÖĞ¼ä²Ù×÷£º
-	// filter()£º ¶ÔÔªËØ½øĞĞ¹ıÂË
-	// sorted()£º¶ÔÔªËØÅÅĞò
-	// map()£ºÔªËØÓ³Éä
-	// distinct()£ºÈ¥³ıÖØ¸´µÄÔªËØ
+	// ä¸­é—´æ“ä½œï¼š
+	// filter()ï¼š å¯¹å…ƒç´ è¿›è¡Œè¿‡æ»¤
+	// sorted()ï¼šå¯¹å…ƒç´ æ’åº
+	// map()ï¼šå…ƒç´ æ˜ å°„
+	// distinct()ï¼šå»é™¤é‡å¤çš„å…ƒç´ 
 
-	// ×îÖÕ²Ù×÷£º
-	// forEach()£º±éÀúÃ¿¸öÔªËØ¡£
-	// reduce()£º°ÑStream ÔªËØ×éºÏÆğÀ´¡£ÀıÈç£¬×Ö·û´®Æ´½Ó£¬ÊıÖµµÄ sum£¬min£¬max £¬average ¶¼ÊÇÌØÊâµÄ reduce¡£
-	// collect()£º·µ»ØÒ»¸öĞÂµÄ¼¯ºÏ¡£
-	// min()£ºÕÒµ½×îĞ¡Öµ¡£
-	// max()£ºÕÒµ½×î´óÖµ¡£
+	// æœ€ç»ˆæ“ä½œï¼š
+	// forEach()ï¼šéå†æ¯ä¸ªå…ƒç´ ã€‚
+	// reduce()ï¼šæŠŠStream å…ƒç´ ç»„åˆèµ·æ¥ã€‚ä¾‹å¦‚ï¼Œå­—ç¬¦ä¸²æ‹¼æ¥ï¼Œæ•°å€¼çš„ sumï¼Œminï¼Œmax ï¼Œaverage éƒ½æ˜¯ç‰¹æ®Šçš„ reduceã€‚
+	// collect()ï¼šè¿”å›ä¸€ä¸ªæ–°çš„é›†åˆã€‚
+	// min()ï¼šæ‰¾åˆ°æœ€å°å€¼ã€‚
+	// max()ï¼šæ‰¾åˆ°æœ€å¤§å€¼ã€‚
 	public void test() {
 		List<Integer> list = new ArrayList<Integer>();
 		list.add(1);
@@ -32,17 +32,17 @@ public class TestStream {
 		System.out.println(result.orElse(100));
 		
 		System.out.println("Test2.....");
-		//lamdaÁ½¸ö²ÎÊıÊ±£¬ĞèÒªÓÃÀ¨ºÅ,ÁíÍâ£¬¿ÉÒÔÃ°ºÅ±íÊ¾·¨
+		//lamdaä¸¤ä¸ªå‚æ•°æ—¶ï¼Œéœ€è¦ç”¨æ‹¬å·,å¦å¤–ï¼Œå¯ä»¥å†’å·è¡¨ç¤ºæ³•
 		list.stream().sorted((c1, c2) -> c1 - c2)
 		.forEach(System.out::println);
 
 		System.out.println("Test3.....");
-		//lamdaÒ»¸ö²ÎÊıÊ±ºò£¬¿ÉÒÔ²»´øÀ¨ºÅ
+		//lamdaä¸€ä¸ªå‚æ•°æ—¶å€™ï¼Œå¯ä»¥ä¸å¸¦æ‹¬å·
 		list.stream().sorted((c1, c2) -> (c1-c2))
 		.forEach(c->System.out.println(c));
 
-		System.out.println("Test4 ¶à¸öÓï¾ä......");
-		//¶à¸öÓï¾äĞèÒªÓÃ´óÀ¨ºÅ£¬Èç¹ûĞèÒªreturn£¬Ôò×îºóÒ»¾äĞèÒª
+		System.out.println("Test4 å¤šä¸ªè¯­å¥......");
+		//å¤šä¸ªè¯­å¥éœ€è¦ç”¨å¤§æ‹¬å·ï¼Œå¦‚æœéœ€è¦returnï¼Œåˆ™æœ€åä¸€å¥éœ€è¦
 		list.stream().sorted((c1, c2) -> (c1-c2))
 		.forEach((c) -> {System.out.println(c+Thread.currentThread().getName());try {
 			Thread.sleep(1);

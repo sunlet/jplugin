@@ -14,7 +14,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  * 
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-12 …œŒÁ09:08:37
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-12 ‰∏äÂçà09:08:37
  **/
 
 public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
@@ -32,7 +32,7 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	public Object invokeWithLog(Object proxyObj, Object oldService, Method method,
 			Object[] args, Rule meta) throws Throwable {
 		Throwable throwable = null;
-		InvocationContext invokCtx = new InvocationContext();
+		RuleInvocationContext invokCtx = new RuleInvocationContext();
 		invokCtx.begin(method, args, meta);
 		try {
 			return method.invoke(oldService, args);

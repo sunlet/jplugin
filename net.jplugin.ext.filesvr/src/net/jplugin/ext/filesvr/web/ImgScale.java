@@ -12,7 +12,7 @@ public class ImgScale {
 	public final static String BIG="B";
 	public final static String ORIGINAL="O";
 	public static String maintainImgName(String path, String scale) {
-		//目前只分小图和其他图
+		//鐩墠鍙垎灏忓浘鍜屽叾浠栧浘
 //		if (scale.equals(SMALL)) return path+"_min";
 //		else return path;
 		

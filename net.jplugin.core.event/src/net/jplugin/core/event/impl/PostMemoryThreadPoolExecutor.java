@@ -12,7 +12,7 @@ import net.jplugin.core.event.api.Event;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÏÂÎç03:07:24
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸‹åˆ03:07:24
  **/
 
 public class PostMemoryThreadPoolExecutor {

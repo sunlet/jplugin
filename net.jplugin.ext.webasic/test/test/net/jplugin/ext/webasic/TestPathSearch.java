@@ -8,6 +8,7 @@ public class TestPathSearch {
 		WebDriver.INSTANCE.parseControllerMeta("/a/b/c/d/e/f/g.do");
 		WebDriver.INSTANCE.parseControllerMeta("/a/b.do");
 		WebDriver.INSTANCE.parseControllerMeta("/a.do");
+		WebDriver.INSTANCE.parseControllerMeta("/.do");
 	}
 
 }

@@ -20,7 +20,7 @@ import net.jplugin.ext.filesvr.web.UploadHelper.SaveFileResult;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç03:13:31
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ03:13:31
  **/
 
 public class FileUploadServlet {
@@ -28,7 +28,7 @@ public class FileUploadServlet {
 	private static final String FILE_ID = "fileId";
 	
 	public void index(HttpServletRequest req,HttpServletResponse res) throws IOException{
-		//´¦Àífilter
+		//å¤„ç†filter
 		FileUploadFilter[] filters = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_UPLOADFILTER, FileUploadFilter.class);
 		for (FileUploadFilter f:filters){
 			if (!f.filter(req)){

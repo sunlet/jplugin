@@ -22,8 +22,12 @@ public class SqlWordsWalker{
 		reset();
 	}
 	
+	public String[] getArray(){
+		return this.words;
+	}
+	
 	/**
-	 * ÕâÁ½¸öÖ±½Ó²éÑ¯Êý×é
+	 * è¿™ä¸¤ä¸ªç›´æŽ¥æŸ¥è¯¢æ•°ç»„
 	 * @param start
 	 * @param s
 	 * @return
@@ -62,7 +66,7 @@ public class SqlWordsWalker{
 		if (pos>=-1 && pos<=words.length-1){
 			this.position = pos;
 
-			//×¢Òâ£¬position¿ÉÒÔÊÇ-1,´ËÊ±³õÊ¼»¯Îªnull
+			//æ³¨æ„ï¼Œpositionå¯ä»¥æ˜¯-1,æ­¤æ—¶åˆå§‹åŒ–ä¸ºnull
 			if (pos!=-1) {
 				word = words[pos];
 			}else 
@@ -102,8 +106,8 @@ public class SqlWordsWalker{
 	}
 
 	/**
-	 * ¿ªÊ¼µÄÏÈ¾öÌõ¼þÊÇÒÑ¾­µ±Ç°ÊÇ×óÀ¨ºÅÁË¡£
-	 * ÒªÕÒËüÆ¥ÅäµÄÓÒÀ¨ºÅ
+	 * å¼€å§‹çš„å…ˆå†³æ¡ä»¶æ˜¯å·²ç»å½“å‰æ˜¯å·¦æ‹¬å·äº†ã€‚
+	 * è¦æ‰¾å®ƒåŒ¹é…çš„å³æ‹¬å·
 	 */
 	public void nextUntilMatchingBracket() {
 		int leftBracketNum=1;

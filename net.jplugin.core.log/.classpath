@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.config"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

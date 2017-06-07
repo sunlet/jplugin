@@ -15,7 +15,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÉÏÎç11:48:08
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸Šåˆ11:48:08
  **/
 
 public class PostMemoryChannel extends Channel{

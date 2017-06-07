@@ -3,7 +3,7 @@ package net.jplugin.core.rclient.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-14 ÉÏÎç11:27:10
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-14 ä¸Šåˆ11:27:10
  **/
 
 public class RemoteExecuteException extends RuntimeException {

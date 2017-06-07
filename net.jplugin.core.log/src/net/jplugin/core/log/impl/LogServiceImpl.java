@@ -2,10 +2,15 @@ package net.jplugin.core.log.impl;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
+import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.kits.KernelKit;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 
@@ -19,7 +24,7 @@ import org.apache.log4j.RollingFileAppender;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-7 œ¬ŒÁ11:34:28
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-7 ‰∏ãÂçà11:34:28
  **/
 
 public class LogServiceImpl implements ILogService {
@@ -27,16 +32,41 @@ public class LogServiceImpl implements ILogService {
 	public LogServiceImpl() {
         init();
     }
-
+	
 	private void init(){
-		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
+		Map<String, String> configs = ConfigFactory.getStringConfigInGroup("log4j");
+		if (configs!=null && !configs.isEmpty()){
+			PluginEnvirement.getInstance().getStartLogger().log("Using global logger config");
+			Properties p = new Properties();
+			for (Entry<String, String> e:configs.entrySet()){
+				p.setProperty(e.getKey(), e.getValue());
+			}
+			initFromProperties(p);
+		}else{
+			PluginEnvirement.getInstance().getStartLogger().log("Using local logger config");
+			initWithLocalConfig();
+		}
+	}
+
+	private void initWithLocalConfig(){
+//		String path = PluginEnvirement.getInstance().getConfigDir()+"/log4j.properties";
+		String path = KernelKit.getConfigFilePath("log4j.properties");
 		Properties prop =null;
 		try{
-			prop = PropertiesKit.loadProperties(path);
+			if (FileKit.existsFile(path))
+				prop = PropertiesKit.loadProperties(path);
+			else{
+				PluginEnvirement.getInstance().getStartLogger().log("Using classpath logger config");
+				prop = PropertiesKit.loadFromClassPath(this.getClass(),"log4j.properties");
+			}
 		}catch(Exception e){
-			System.out.println("Warnning : Log4j.properties not found at:"+path);
+			PluginEnvirement.INSTANCE.getStartLogger().log("Warnning : Log4j.properties not found at:"+path);
 			return;
 		}
+		initFromProperties(prop);
+	}
+	
+	private void initFromProperties(Properties prop){
 		PropertiesKit.replaceVar(prop, PluginEnvirement.WORK_DIR, PluginEnvirement.getInstance().getWorkDir());
 		PropertyConfigurator.configure(prop);
 	}

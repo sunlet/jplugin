@@ -6,10 +6,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 /**
 *
 * @author: LiuHang
-* @version ´´½¨Ê±¼ä£º2015-10-12 ÏÂÎç01:07:22
+* @version åˆ›å»ºæ—¶é—´ï¼š2015-10-12 ä¸‹åˆ01:07:22
 **/
 public class ConfigFactory {
 
@@ -23,6 +24,12 @@ public class ConfigFactory {
 	}
 	public static String getStringConfig(String path){
 		return getStringConfig(path,null);
+	}
+	public static String getStringConfigWithTrim(String path){
+		String v = getStringConfig(path,null);
+		if (v!=null) 
+			v = v.trim();
+		return v;
 	}
 	public static Long getLongConfig(String path,Long def){
 		String val = _getStringConfig(path);
@@ -58,7 +65,7 @@ public class ConfigFactory {
 	}
 
 	/**
-	 * ±¾µØÓÅÏÈ
+	 * æœ¬åœ°ä¼˜å…ˆ
 	 * @param group
 	 * @return
 	 */
@@ -75,9 +82,9 @@ public class ConfigFactory {
 	}
 	/**
 	 * <pre>
-	 * Èç¹û±¾µØÅäÖÃÁË¸Ãkey£¬Ôò·µ»Ø±¾µØ
-	 * ·ñÔòÈç¹ûÔ¶³Ì³õÊ¼»¯ºÃÁË£¬Ôò·µ»ØÔ¶³Ì£¬·ñÔò·µ»Ønull¡£
-	 * ×¢Òâ£ºÓÉÓÚ³õÊ¼»¯Ë³ĞòÔ­Òò£¬·ÃÎÊ¸Ã·½·¨µÄÊ±ºò£¬Ìá·ÅÁËÔ¶³ÌÓĞÃ»ÓĞ³õÊ¼»¯ºÃµÄÇé¿ö£¡
+	 * å¦‚æœæœ¬åœ°é…ç½®äº†è¯¥keyï¼Œåˆ™è¿”å›æœ¬åœ°
+	 * å¦åˆ™å¦‚æœè¿œç¨‹åˆå§‹åŒ–å¥½äº†ï¼Œåˆ™è¿”å›è¿œç¨‹ï¼Œå¦åˆ™è¿”å›nullã€‚
+	 * æ³¨æ„ï¼šç”±äºåˆå§‹åŒ–é¡ºåºåŸå› ï¼Œè®¿é—®è¯¥æ–¹æ³•çš„æ—¶å€™ï¼Œææ”¾äº†è¿œç¨‹æœ‰æ²¡æœ‰åˆå§‹åŒ–å¥½çš„æƒ…å†µï¼
 	 * </pre>
 	 * @param path
 	 * @return
@@ -98,6 +105,6 @@ public class ConfigFactory {
 	
 	public static void _setRemoteConfigProvidor(IConfigProvidor repo) {
 		remoteConfigProvidor = repo;
-		System.out.println("$$$ Remote Configigure Providor init:"+repo.getClass().getName());
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Remote Configigure Providor init:"+repo.getClass().getName());
 	}
 }

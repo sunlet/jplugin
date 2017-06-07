@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+encoding//src/net/jplugin/ext/dict/DictController.java=UTF-8
+encoding//src/net/jplugin/ext/dict/Plugin.java=UTF-8
+encoding//src/net/jplugin/ext/dict/api/Dictionary.java=UTF-8
+encoding//src/net/jplugin/ext/dict/api/ExtensionDictHelper.java=UTF-8
+encoding//src/net/jplugin/ext/dict/api/IDictProvidor.java=UTF-8
+encoding//src/net/jplugin/ext/dict/api/IDictionaryService.java=UTF-8
+encoding//src/net/jplugin/ext/dict/impl/DictionaryServiceImpl.java=UTF-8
+encoding//src/net/jplugin/ext/dict/test/TestDictProvider.java=UTF-8
+encoding/<project>=UTF-8

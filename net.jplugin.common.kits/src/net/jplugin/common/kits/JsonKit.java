@@ -7,18 +7,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.jplugin.common.kits.PritiveKits.Transformer;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.jplugin.common.kits.PritiveKits.Transformer;
 /**
- * Json操作工具�?
+ * Json鎿嶄綔宸ュ叿锟�?
  * @author liyy
  * @date 2014-05-20
  */
 public class JsonKit {
 //	private static Logger logger = Logger.getLogger(JsonKit.class);
-	private static final ObjectMapper mapper = new ObjectMapper();
+//	private static final ObjectMapper mapper = new ObjectMapper();
+	
+	private static final ObjectMapper mapper;
+
+	static {
+	   mapper = new ObjectMapper();
+	   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
 
 	public static String object2Json(Object object) {
 		StringWriter writer = new StringWriter();
@@ -137,7 +145,7 @@ public class JsonKit {
 	}
 
 	/**
-	 * ��ǿ��ת�������ڻ�������ֱ��ת���ַ���
+	 * 锟斤拷强锟斤拷转锟斤拷锟斤拷锟斤拷锟节伙拷锟斤拷锟斤拷锟斤拷直锟斤拷转锟斤拷锟街凤拷锟斤拷
 	 * @param val
 	 * @param clz
 	 * @return

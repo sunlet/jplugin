@@ -7,7 +7,7 @@ import net.jplugin.core.service.api.Constants;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-6 ÏÂÎç03:31:14
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-6 ä¸‹åˆ03:31:14
  **/
 
 public class ExtensionServiceHelper {

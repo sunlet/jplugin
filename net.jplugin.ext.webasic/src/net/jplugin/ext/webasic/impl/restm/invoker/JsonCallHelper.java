@@ -12,7 +12,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 public class JsonCallHelper {
 
 	public static void convertToHttp(CallParam cp) {
-		//ÒòÎªValueÒÑ¾­Mergeµ½ParamContentµ±ÖĞ£¬ËùÒÔÕâÀïÖ±½Ó´ÓParamContent»ñÈ¡¼´¿É¡£
+		//å› ä¸ºValueå·²ç»Mergeåˆ°ParamContentå½“ä¸­ï¼Œæ‰€ä»¥è¿™é‡Œç›´æ¥ä»ParamContentè·å–å³å¯ã€‚
 		Map<String, String> map = ThreadLocalContextManager.getRequestInfo().getContent().getParamContent();
 		cp.getParamMap().clear();
 		cp.getParamMap().putAll(map);
@@ -20,7 +20,7 @@ public class JsonCallHelper {
 		
 //		String json = cp.getParamMap().get(CallParam.JSON_KEY);
 //		if (StringKit.isNull(json))
-//			return;//²»×öÈÎºÎ×ª»»£¬ÈÏÎªÃ»²ÎÊı
+//			return;//ä¸åšä»»ä½•è½¬æ¢ï¼Œè®¤ä¸ºæ²¡å‚æ•°
 //		
 //		Map map = JsonKit.json2Map(json);
 //		for (Object key : map.keySet()){

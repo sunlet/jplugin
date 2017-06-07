@@ -52,7 +52,7 @@ public class HeadCharKit {
 	     }  
 	     return result;  
 	 }  
-	 //==============ÒÔÉÏÊÇÍøÉÏ¹«¹²´úÂë====
+	 //==============ä»¥ä¸Šæ˜¯ç½‘ä¸Šå…¬å…±ä»£ç ====
 	 
 	 public static char getSerNameFirstChar(String name){
 		if (name==null) return '#';
@@ -70,9 +70,9 @@ public class HeadCharKit {
 	 
 	 
 	 public static void main(String[] args) {
-		System.out.println(getSerNameFirstChar("Äã"));
-		System.out.println(getSerNameFirstChar("ºÃ"));
-		System.out.println(getSerNameFirstChar("Ôø"));
+		System.out.println(getSerNameFirstChar("ä½ "));
+		System.out.println(getSerNameFirstChar("å¥½"));
+		System.out.println(getSerNameFirstChar("æ›¾"));
 		System.out.println(getSerNameFirstChar("1"));
 		System.out.println(getSerNameFirstChar("hetong"));
 		System.out.println(getSerNameFirstChar("-"));

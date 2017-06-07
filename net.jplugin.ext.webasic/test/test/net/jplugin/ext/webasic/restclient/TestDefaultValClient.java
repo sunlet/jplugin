@@ -14,7 +14,7 @@ public class TestDefaultValClient {
 
 	public void test() throws IOException, HttpStatusException{
 		final HashMap<String,Object> para = new HashMap();
-		//正常调用
+		//姝ｅ父璋冪敤
 		para.put("arg0","a");
 //		para.put("b", "b");
 		String r = HttpKit.post("http://localhost:8080/demo/testrestclient/addStringNoRequired.do",para );

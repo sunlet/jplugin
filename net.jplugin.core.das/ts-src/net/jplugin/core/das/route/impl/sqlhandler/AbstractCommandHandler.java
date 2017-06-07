@@ -82,7 +82,7 @@ public abstract class AbstractCommandHandler{
 		return result;
 	}
 
-	//ÅĞ¶ÏÊÇ·ñÊÇselect count(*) from ¡£¡£¡£Ä£Ê½
+	//åˆ¤æ–­æ˜¯å¦æ˜¯select count(*) from ã€‚ã€‚ã€‚æ¨¡å¼
 	private boolean getCountStar(SqlWordsWalker walker) {
 		if (!"select".equalsIgnoreCase(walker.wordAt(0)))
 				return false;
@@ -91,29 +91,29 @@ public abstract class AbstractCommandHandler{
 		while (pos < walker.size()) {
 			String w = walker.wordAt(pos);
 			if (w.startsWith("/*") && w.endsWith("*/")) {
-				//×¢ÊÍºöÂÔ
+				//æ³¨é‡Šå¿½ç•¥
 				pos++;
 			}else if (",".equals(w)){
-				//¶ººÅºöÂÔ
+				//é€—å·å¿½ç•¥
 				pos ++;
 			}else if ("from".equalsIgnoreCase(w)){
-				//Åöµ½from Ìø³öÑ­»·
+				//ç¢°åˆ°from è·³å‡ºå¾ªç¯
 				return hasCount;
 			} else if ("count".equalsIgnoreCase(w)) {
-				//Åöµ½count£¬½øĞĞÅĞ¶Ï
+				//ç¢°åˆ°countï¼Œè¿›è¡Œåˆ¤æ–­
 				String posAdd2 = walker.wordAt(pos + 2);
 				if (!("0".equals(posAdd2) || "1".equals(posAdd2) || "*".equals(posAdd2)))
 					return false;
 				if (!("(".equals(walker.wordAt(pos + 1)) && ")".equals(walker.wordAt(pos + 3))))
 					return false;
-				hasCount = true;//´æÔÚ count
-				pos += 4; //Ìø¹ı count(1/*/0) 
+				hasCount = true;//å­˜åœ¨ count
+				pos += 4; //è·³è¿‡ count(1/*/0) 
 			}else{
-				//¶¼²»ÊÇ£¬Ôòfalse
+				//éƒ½ä¸æ˜¯ï¼Œåˆ™false
 				return false;
 			}
 		}
-		//Ó¦¸Ãµ½²»ÁËÕâÀï£¬³ı·Ç£ºSELECT fromÖ®¼ä£¬³ıÁË×¢ÊÍºÍ¶ººÅ£¬Ã»ÓĞÆäËûµÄ
+		//åº”è¯¥åˆ°ä¸äº†è¿™é‡Œï¼Œé™¤éï¼šSELECT fromä¹‹é—´ï¼Œé™¤äº†æ³¨é‡Šå’Œé€—å·ï¼Œæ²¡æœ‰å…¶ä»–çš„
 		throw new RuntimeException("Sql illegal:"+walker.sql);
 	}
 
@@ -124,14 +124,14 @@ public abstract class AbstractCommandHandler{
 			if (walker.next() && walker.word.equalsIgnoreCase("by")){
 				order = new ArrayList<String>();
 				
-				//Ä¿Ç°Ö»Ö§³ÖÁ½¸ö×Ö¶ÎµÄorderby,°´ÕÕÓï·¨£¬ºóÃæ¾ÍÊÇwithÓï¾äµÄ²¿·ÖÁË£¬»òÕß½áÊøÁË
+				//ç›®å‰åªæ”¯æŒä¸¤ä¸ªå­—æ®µçš„orderby,æŒ‰ç…§è¯­æ³•ï¼Œåé¢å°±æ˜¯withè¯­å¥çš„éƒ¨åˆ†äº†ï¼Œæˆ–è€…ç»“æŸäº†
 				while (walker.next() &&  !(")".equals(walker.word)) && !("with".equalsIgnoreCase(walker.word))){
 					order.add(walker.word);
 				}
 			}
 		}
 		
-		//¸´Ô­position
+		//å¤åŸposition
 		walker.setPosition(oldPos);
 		
 		if (order!=null && order.size()>0) 
@@ -141,7 +141,7 @@ public abstract class AbstractCommandHandler{
 	}
 
 	/**
-	 * 16-11-18ĞŞ¸ÄÎª´ÓÈ«´®¼ìË÷£¬²»ÄÜÖ»¿´µÚÒ»¸öselectºóÃæ¡£ÒòÎªselect¿ÉÄÜ»á±»¿ò¼Ü×Ô¶¯Ìí¼Óselect count(*) from (XXXX)
+	 * 16-11-18ä¿®æ”¹ä¸ºä»å…¨ä¸²æ£€ç´¢ï¼Œä¸èƒ½åªçœ‹ç¬¬ä¸€ä¸ªselectåé¢ã€‚å› ä¸ºselectå¯èƒ½ä¼šè¢«æ¡†æ¶è‡ªåŠ¨æ·»åŠ select count(*) from (XXXX)
 	 * @param walker
 	 * @return
 	 */

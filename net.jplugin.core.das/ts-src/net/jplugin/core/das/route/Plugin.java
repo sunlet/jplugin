@@ -25,7 +25,7 @@ public class Plugin extends AbstractPlugin {
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"month", MonthAlgm.class);
 	}
 	@Override
-	public void init() {
+	public void onCreateServices() {
 		TsAlgmManager.init();
 		
 		for (String s:DataSourceFactory.getDataSourceNames()){
@@ -44,6 +44,11 @@ public class Plugin extends AbstractPlugin {
 	@Override
 	public int getPrivority() {
 		return CoreServicePriority.DAS_TS;
+	}
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

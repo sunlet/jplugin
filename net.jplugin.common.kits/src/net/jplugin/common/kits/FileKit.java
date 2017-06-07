@@ -6,6 +6,8 @@
  */
 package net.jplugin.common.kits;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,7 +17,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.util.Properties;
 
@@ -26,6 +30,9 @@ import java.util.Properties;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class FileKit {
+
+//	private static final long MAX_FILE_LEN_SUPPORT = 1024 * 1024 * 20;
+
 
 	public static void string2File(String string, String filename,String encode)
 			throws Exception {
@@ -213,9 +220,9 @@ public class FileKit {
 		try {
 			fi = new FileInputStream(s);
 			fo = new FileOutputStream(t);
-			in = fi.getChannel();// 得到对应的文件通道
-			out = fo.getChannel();// 得到对应的文件通道
-			in.transferTo(0, in.size(), out);// 连接两个通道，并且从in通道读取，然后写入out通道
+			in = fi.getChannel();// 寰楀埌瀵瑰簲鐨勬枃浠堕�氶亾
+			out = fo.getChannel();// 寰楀埌瀵瑰簲鐨勬枃浠堕�氶亾
+			in.transferTo(0, in.size(), out);// 杩炴帴涓や釜閫氶亾锛屽苟涓斾粠in閫氶亾璇诲彇锛岀劧鍚庡啓鍏ut閫氶亾
 		} catch (IOException e) {
 			throw new RuntimeException("copy file error:"+s+" "+t,e);
 		} finally {
@@ -234,5 +241,103 @@ public class FileKit {
 	public static boolean existsFile(String filepath) {
 		return new File(filepath).exists();
 	}
+
+	public static boolean existsAndIsFile(String filepath) {
+		File f = new File(filepath);
+		return f.exists() && f.isFile();
+	}
+	public static boolean existsAndIsDir(String path) {
+		File f = new File(path);
+		return f.exists() && f.isDirectory();
+	}
+	public static byte[] file2Bytes(String path) {
+		byte[] buffer = new byte[4096];
+		
+		ByteArrayOutputStream baos=new ByteArrayOutputStream();
+		FileInputStream fis=null;
+		try {
+			fis = new FileInputStream(path);
+			
+			int len;
+			while( (len =	fis.read(buffer))>0){
+				baos.write(buffer, 0, len);
+			}
+			
+			return baos.toByteArray();
+		}catch(Exception e){
+			throw new RuntimeException("Read file error:"+path,e);
+		}finally{
+			if (fis!=null) try{fis.close();}catch(Throwable t){}
+		}
+	}
+
+
+	public static long getFileSize(String f) {
+		return new File(f).length();
+	}
+
+
+	public static void createEmptyFile(String filename) {
+		FileOutputStream fop=null;
+		try{
+			fop = new FileOutputStream(filename);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(filename,e);
+		}finally{
+			if (fop!=null) try{fop.close();} catch (Exception e){}
+		}
+		
+	}
+
+
+	public static boolean removeFile(String name) {
+		return new File(name).delete();
+	}
+
+
+	public static boolean renameFile(String from, String to) {
+		return new File(from).renameTo(new File(to));
+	}
+
+
+	public static void appendFile(String filename, String string) {
+		if (!FileKit.existsFile(filename)){
+			FileKit.makeDirectory(new File(filename).getParent());
+			createEmptyFile(filename);
+		}
+		FileOutputStream fop=null;
+		OutputStreamWriter osw=null;
+		try {
+			fop = new FileOutputStream(filename,true);
+			osw = new OutputStreamWriter(fop,"utf-8");
+			osw.write(string);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException("FileNotFound",e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("IOException",e);
+		}finally{
+			if (osw!=null) try{osw.close();}catch(Exception e){}
+			if (fop!=null) try{fop.close();}catch(Exception e){}
+		}
+	}
+
+
+	public static void appendStackTrace(String file, Throwable th) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PrintWriter pw = new PrintWriter(os);
+		th.printStackTrace(pw);
+		pw.close();
+		try {
+			appendFile(file,os.toString("utf-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+
+	
 
 }

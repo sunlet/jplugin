@@ -3,7 +3,7 @@ package net.jplugin.core.ctx.impl;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-17 ÉÏÎç08:50:45
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-17 ä¸Šåˆ08:50:45
  **/
 
 public class TxRuntimeException extends RuntimeException {

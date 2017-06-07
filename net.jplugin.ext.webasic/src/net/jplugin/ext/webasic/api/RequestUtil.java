@@ -7,9 +7,9 @@ public class RequestUtil {
 	public static boolean  isMobileDevice(HttpServletRequest req){
 		String requestHeader = req.getHeader("user-agent");
         /**
-         * android : ËùÓÐandroidÉè±¸
+         * android : æ‰€æœ‰androidè®¾å¤‡
          * mac os : iphone ipad
-         * windows phone:NokiaµÈwindowsÏµÍ³µÄÊÖ»ú
+         * windows phone:Nokiaç­‰windowsç³»ç»Ÿçš„æ‰‹æœº
          */
         String[] deviceArray = new String[]{"android","mac os","windows phone"};
         if(requestHeader == null)

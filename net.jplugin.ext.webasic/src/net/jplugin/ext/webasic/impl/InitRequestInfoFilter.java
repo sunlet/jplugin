@@ -6,7 +6,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.token.api.ITokenService;
@@ -15,7 +18,7 @@ import net.jplugin.ext.webasic.api.WebFilter;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-5 …œŒÁ10:25:57
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-5 ‰∏äÂçà10:25:57
  **/
 
 public class InitRequestInfoFilter implements WebFilter {
@@ -27,11 +30,14 @@ public class InitRequestInfoFilter implements WebFilter {
 	public static boolean dummyAllowed = false;
 	private static String dummyToken=null;
 	/* (non-Javadoc)
-	 * »Áπ˚¥´»Î¡Àtoken£¨‘Ú≤ª”√session
+	 * Â¶ÇÊûú‰º†ÂÖ•‰∫ÜtokenÔºåÂàô‰∏çÁî®session
 	 * @see net.luis.plugin.webservice.api.WebFilter#doFilter(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
 //		res.addHeader("Access-Control-Allow-Origin","*");
+		String acaoCfg = getAccessControlAllowOrigin();
+		if (StringKit.isNotNull(acaoCfg))
+			res.addHeader("Access-Control-Allow-Origin",acaoCfg);
 		
 		ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(req.getParameter("_gid"));
 		String _tk = req.getParameter("_tk");
@@ -70,6 +76,17 @@ public class InitRequestInfoFilter implements WebFilter {
 //		info.setOperatorId((String) req.getSession().getAttribute("_user"));
 //		info.setClientVersion(req.getParameter(CLIENTVERSION));
 //		return true;
+	}
+	
+	boolean cfgInit=false;
+	String accessControlAllowOrigin;
+	private String getAccessControlAllowOrigin() {
+		if (cfgInit == false){
+			cfgInit = true;
+			accessControlAllowOrigin = ConfigFactory.getStringConfigWithTrim("platform.access-control-allow-origin");
+			PluginEnvirement.INSTANCE.getStartLogger().log("Init access-control-allow-origin = "+accessControlAllowOrigin);
+		}
+		return accessControlAllowOrigin;
 	}
 	public void doAfter(HttpServletRequest req, HttpServletResponse res, Throwable th) {
 	}

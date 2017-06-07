@@ -2,11 +2,18 @@ package test.net.jplugin.ext.webasic;
 import java.io.IOException;
 
 import net.jplugin.common.kits.http.HttpStatusException;
+import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.rclient.ExtendsionClientHelper;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
+import test.net.jplugin.ext.webasic.annotation.AnnoTest;
+import test.net.jplugin.ext.webasic.annotation.IRuleTestForAnno;
+import test.net.jplugin.ext.webasic.annotation.RuleTestForAnno;
+import test.net.jplugin.ext.webasic.annotation.ServiceExportTest;
+import test.net.jplugin.ext.webasic.annotation.WebControllerTest;
+import test.net.jplugin.ext.webasic.annotation.WebExControllerTest;
 import test.net.jplugin.ext.webasic.dynamicmethod.DynamicMethodTest;
 import test.net.jplugin.ext.webasic.dynamicmethod.TestDynamicMethodClient;
 import test.net.jplugin.ext.webasic.restclient.IService;
@@ -21,7 +28,7 @@ import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-2 œ¬ŒÁ04:57:02
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-2 ‰∏ãÂçà04:57:02
  **/
 
 public class Plugin extends AbstractPluginForTest{
@@ -40,6 +47,14 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionWebHelper.addWebCtrlFilterExtension(this, WebCtrlFilterTest.class);
 		
 		ExtensionWebHelper.addServiceExportExtension(this, "/dynamic-method", DynamicMethodTest.class);
+		
+		ExtensionWebHelper.addWebControllerExtension(this, "/webanno/web",WebControllerTest.class);
+		ExtensionWebHelper.addWebExControllerExtension(this, "/webanno/webex", WebExControllerTest.class);
+		ExtensionWebHelper.addServiceExportExtension(this, "/webanno/service", ServiceExportTest.class);
+		ExtensionCtxHelper.addRuleExtension(this,IRuleTestForAnno.class,RuleTestForAnno.class);
+		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
+
+		
 	}
 
 	@Override
@@ -56,6 +71,7 @@ public class Plugin extends AbstractPluginForTest{
 		new TestRemoteClient().test();
 		new TestDynamicMethodClient().test();
 		new TestPathSearch().test();
+		new AnnoTest().test();
 	}
 	
 	@Override

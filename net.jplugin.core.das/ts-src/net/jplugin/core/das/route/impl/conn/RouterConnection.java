@@ -116,9 +116,11 @@ public class RouterConnection implements Connection{
 
 	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		throw new RuntimeException("not support");
+		if (iface.equals(this.getClass())) 
+			return true;
+		else 
+			return false;
 	}
-
 
 	@Override
 	public CallableStatement prepareCall(String sql) throws SQLException {

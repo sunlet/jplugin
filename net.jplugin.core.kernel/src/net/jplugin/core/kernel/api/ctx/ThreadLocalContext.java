@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-11 ÉÏÎç09:41:11
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-11 ä¸Šåˆ09:41:11
  **/
 
 public class ThreadLocalContext {
@@ -52,7 +52,11 @@ public class ThreadLocalContext {
 			addContextListener(ruleContextListener);
 	}
 	
-	public void release(){
+	/**
+	 * The method can't be called outside this module,so it must not be publie.
+	 * The threadlocal var not be released!!!
+	 */
+	void release(){
 		if (listeners!=null){
 			for (ThreadLocalContextListener l:this.listeners){
 				l.released(this);

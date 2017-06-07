@@ -16,7 +16,7 @@ import net.jplugin.ext.webasic.api.ObjectDefine;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÏÂÎç02:02:12
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸‹åˆ02:02:12
  **/
 
 public class ServiceControllerSet implements IControllerSet{

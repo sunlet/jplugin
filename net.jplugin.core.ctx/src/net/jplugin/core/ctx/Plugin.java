@@ -1,5 +1,7 @@
 package net.jplugin.core.ctx;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
@@ -7,11 +9,13 @@ import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.api.TransactionHandler;
 import net.jplugin.core.ctx.api.ITransactionManagerListener;
 import net.jplugin.core.ctx.api.TransactionManager;
+import net.jplugin.core.ctx.impl.RuleServiceAttrAnnoHandler;
 import net.jplugin.core.ctx.impl.TransactionManagerAdaptor;
 import net.jplugin.core.ctx.impl.TxMgrListenerManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
+import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -21,14 +25,14 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÉÏÎç09:02:06
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸Šåˆ09:02:06
  **/
 
 public class Plugin extends AbstractPlugin{
 	public static final String EP_RULE_SERVICE="EP_RULE_SERVICE";
 	
 	/*
-	 * TX ¶¨ÒåÎªÒ»¸öÀ©Õ¹µã£¬²»ÈÃ±ğÈËËæ±ğ¿ÉÒÔ»ñÈ¡µ½£¬ÒòÎªÎÒÃÇÏëÔö¼ÓÒ»¸öadaptor£¬ÓÃ»§Ö»ÄÜÍ¨¹ıTransactionServiceFactoryÀ´»ñÈ¡
+	 * TX å®šä¹‰ä¸ºä¸€ä¸ªæ‰©å±•ç‚¹ï¼Œä¸è®©åˆ«äººéšåˆ«å¯ä»¥è·å–åˆ°ï¼Œå› ä¸ºæˆ‘ä»¬æƒ³å¢åŠ ä¸€ä¸ªadaptorï¼Œç”¨æˆ·åªèƒ½é€šè¿‡TransactionServiceFactoryæ¥è·å–
 	 */
 	public static final String EP_TXMGR_LISTENER="EP_TXMGR_LISTENER";
 	
@@ -39,6 +43,8 @@ public class Plugin extends AbstractPlugin{
 		
 		addExtension(Extension.create(Constants.EP_SERVICE, RuleServiceFactory.class.getName(),RuleServiceFactory.class));
 		addExtension(Extension.create(Constants.EP_SERVICE, TransactionManager.class.getName(),TransactionManagerAdaptor.class));
+		
+		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, RuleServiceAttrAnnoHandler.class);
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()
@@ -48,10 +54,11 @@ public class Plugin extends AbstractPlugin{
 		return CoreServicePriority.CTX;
 	}
 
+
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 //		TransactionManager[] txms = PluginEnvirement.getInstance().getExtensionObjects(EP_TX_SERVICE_IMPLEMENTATION,TransactionManager.class);
 //		if (txms.length==0){
 //			txmf.init(null);
@@ -67,6 +74,10 @@ public class Plugin extends AbstractPlugin{
 		ruleSvcFactory.init(defs);
 		
 		TxMgrListenerManager.init();
+	}
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

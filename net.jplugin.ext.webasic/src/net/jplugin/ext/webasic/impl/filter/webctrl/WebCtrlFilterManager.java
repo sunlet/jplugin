@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.ext.webasic.Plugin;
-import net.jplugin.ext.webasic.api.IMethodFilter;
+import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.impl.filter.MethodFilterManager;
 
 public class WebCtrlFilterManager extends MethodFilterManager {
@@ -12,8 +12,8 @@ public class WebCtrlFilterManager extends MethodFilterManager {
 	
 	@Override
 	public void init() {
-		IMethodFilter[] arr = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_WEBCTRLFILTER,IMethodFilter.class);
-		filters = new ArrayList<IMethodFilter>(arr.length);
+		IInvocationFilter[] arr = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_WEBCTRLFILTER,IInvocationFilter.class);
+		filters = new ArrayList<IInvocationFilter>(arr.length);
 		for (int i=0;i<arr.length;i++){
 			filters.add(arr[i]);
 		}

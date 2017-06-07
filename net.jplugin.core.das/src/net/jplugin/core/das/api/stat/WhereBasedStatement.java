@@ -26,7 +26,7 @@ public class WhereBasedStatement {
 	}
 	
 	protected void addWhereClause(StringBuffer sb) {
-		//×é×°where
+		//ç»„è£…where
 		if (whereSegments!=null && !whereSegments.isEmpty()){
 			sb.append(" WHERE ");
 			for (IWhereSegment wi:whereSegments){

@@ -16,7 +16,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-9 …œŒÁ08:35:48
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-9 ‰∏äÂçà08:35:48
  **/
 
 public class Plugin extends AbstractPlugin{
@@ -26,7 +26,6 @@ public class Plugin extends AbstractPlugin{
 
 	public Plugin(){
 		if (noHib()){
-//			System.out.println("Hiberinate env not found,skipped!");
 			return;
 		}
 		addExtensionPoint(ExtensionPoint.create(EP_DATAMAPPING, IPersistObjDefinition.class));
@@ -55,9 +54,9 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		if (noHib()){
-			System.out.println("Hiberinate env not found,not init!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("Hiberinate env not found,not init!");
 			return;
 		}
 		
@@ -70,6 +69,11 @@ public class Plugin extends AbstractPlugin{
 		
 		MtDataService mtsvc = (MtDataService) ServiceFactory.getService(IMtDataService.class);
 		mtsvc.initDataService(ServiceFactory.getService(IDataService.class));
+	}
+
+	@Override
+	public void init() {
+		
 	}
 
 }

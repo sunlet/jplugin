@@ -12,7 +12,7 @@ import net.jplugin.core.rclient.handler.RestHandler;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-13 ÏÂÎç01:47:46
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-13 ä¸‹åˆ01:47:46
  **/
 
 public class Client <T> {

@@ -22,7 +22,7 @@ import org.w3c.dom.Node;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-24 ÉÏÎç11:52:19
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-24 ä¸Šåˆ11:52:19
  **/
 
 public class EntityXMLBuilderHelper {
@@ -124,7 +124,7 @@ public class EntityXMLBuilderHelper {
 			clsElem.appendChild(propElem);
 		}
 		
-		//ÒÆ¶¯×â»§×Ö¶Îµ½×îºó
+		//ç§»åŠ¨ç§Ÿæˆ·å­—æ®µåˆ°æœ€å
 		Element tenantElem = XMLKit.getElementByAttribute(clsElem, "property", "name", "tenantId");
 		if (tenantElem!=null){
 			clsElem.removeChild(tenantElem);
@@ -164,7 +164,7 @@ public class EntityXMLBuilderHelper {
 			return ret;
 		}
 		
-		//ÈÕÆÚÀàĞÍÌØÊâ´¦Àí
+		//æ—¥æœŸç±»å‹ç‰¹æ®Šå¤„ç†
 		if (value.equals(Date.class)) {
 			if (key.toLowerCase().endsWith("date")) {
 				return "date";
@@ -185,7 +185,7 @@ public class EntityXMLBuilderHelper {
 //        <property name="isEvolve" column="isevolve" type="java.lang.Integer"/>
 //		<property name="moduleId" column="module_id" type="java.lang.Long"/>
 //		
-//	 <property name="updatetime" type="timestamp"  node="boss·şÎñÆ÷Â·¾¶" >
+//	 <property name="updatetime" type="timestamp"  node="bossæœåŠ¡å™¨è·¯å¾„" >
 //     <column name="updatetime"  />
 // </property>
 }

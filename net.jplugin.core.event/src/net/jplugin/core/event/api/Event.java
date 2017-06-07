@@ -3,7 +3,7 @@ package net.jplugin.core.event.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-7 ÏÂÎç03:24:16
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-7 ä¸‹åˆ03:24:16
  **/
 
 public abstract class Event {

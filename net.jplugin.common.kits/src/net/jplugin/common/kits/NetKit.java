@@ -26,7 +26,7 @@ public class NetKit {
 //				if (ip != null && ip instanceof Inet4Address) {
 //					String addr = ip.getHostAddress();
 //					System.out.println(addr);
-//					// System.out.println("±¾»úµÄIP = " + ip.getHostAddress());
+//					// System.out.println("æœ¬æœºçš„IP = " + ip.getHostAddress());
 //				}
 //			}
 //		}

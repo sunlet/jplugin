@@ -28,7 +28,8 @@ public class CorePlugin {
 		addIfExists(ret,"net.jplugin.ext.webasic.Plugin");
 		addIfExists(ret,"net.jplugin.ext.token.Plugin");
 		addIfExists(ret,"net.jplugin.ext.dict.Plugin");
-
+		addIfExists(ret,"net.jplugin.core.mtenant.Plugin");
+		addIfExists(ret,"net.jplugin.ext.staticweb.Plugin");
 		//file
 		addIfExists(ret,"net.jplugin.ext.filesvr.Plugin");
 

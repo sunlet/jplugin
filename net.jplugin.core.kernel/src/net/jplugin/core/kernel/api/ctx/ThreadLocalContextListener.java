@@ -3,12 +3,12 @@ package net.jplugin.core.kernel.api.ctx;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-16 ÏÂÎç08:53:31
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-16 ä¸‹åˆ08:53:31
  **/
 
 public interface ThreadLocalContextListener {
 	/**
-	 * ´Ë·½·¨²»ÒªÅ×Òì³£
+	 * æ­¤æ–¹æ³•ä¸è¦æŠ›å¼‚å¸¸
 	 * @param rc
 	 */
 	public void released(ThreadLocalContext rc);

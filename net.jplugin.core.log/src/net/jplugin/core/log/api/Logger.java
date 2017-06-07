@@ -6,7 +6,7 @@ import org.apache.log4j.Priority;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-8 ÉÏÎç12:24:05
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-8 ä¸Šåˆ12:24:05
  **/
 
 public interface Logger {

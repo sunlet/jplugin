@@ -3,7 +3,7 @@ package net.jplugin.core.kernel.api;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-2 œ¬ŒÁ05:44:04
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-2 ‰∏ãÂçà05:44:04
  **/
 
 public class CoreServicePriority {
@@ -26,4 +26,6 @@ public class CoreServicePriority {
 	public static final int JOB = 140 + OFFSET;
 	public static final int LOCK = 150 + OFFSET;
 	public static final int CONFIG = 5+OFFSET;
+	public static final int MULTI_TANANT = 105 + OFFSET;
+	public static final int STATIC_WEB = 5+OFFSET;
 }

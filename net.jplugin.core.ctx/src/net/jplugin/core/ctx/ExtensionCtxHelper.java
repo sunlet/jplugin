@@ -7,7 +7,7 @@ import net.jplugin.core.kernel.api.Extension;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç10:22:41
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ10:22:41
  **/
 
 public class ExtensionCtxHelper {

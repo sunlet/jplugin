@@ -1,6 +1,7 @@
 package net.jplugin.common.kits;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-22 œ¬ŒÁ02:09:16
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-22 ‰∏ãÂçà02:09:16
  **/
 
 public class ReflactKit {
@@ -116,7 +117,7 @@ public class ReflactKit {
 			if ((modf & Modifier.STATIC)!=0)
 				continue;
 			
-			//Object¿‡µƒ∑Ω∑®≤ªøº¬«
+			//ObjectÁ±ªÁöÑÊñπÊ≥ï‰∏çËÄÉËôë
 			if (m.getDeclaringClass()==Object.class){
 				continue;
 			}
@@ -138,7 +139,7 @@ public class ReflactKit {
 		String nm = c.getName();
 		int pos = nm.lastIndexOf('.');
 		if (pos<0) {
-			//Œﬁ∞¸√˚
+			//Êó†ÂåÖÂêç
 			return nm;
 		}
 		return nm.substring(pos+1);
@@ -227,6 +228,40 @@ public class ReflactKit {
 	public static Method getGetterMethod(Class c,String attr) throws SecurityException, NoSuchMethodException {
 		String pName = "get"+Character.toUpperCase(attr.charAt(0)) + attr.substring(1);
 		return c.getMethod(pName);
+	}
+
+	public static List<Field> getAllFields(Object obj) {
+		List l = new ArrayList();
+		Class<? extends Object> clazz = obj.getClass();
+		
+		for (;clazz!=Object.class;clazz = clazz.getSuperclass()){
+			for (Field f:clazz.getDeclaredFields()){
+				l.add(f);
+			}
+		}
+		return l;
+	}
+
+	public static Object getFieldValueForce(Field field,Object o) {
+		try {
+			field.setAccessible(true);
+			return field.get(o);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException("Get field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Get field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		}
+	}
+
+	public static void setFieldValueForce(Field field,Object o, Object v) {
+		try {
+			field.setAccessible(true);
+			field.set(o, v);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException("Set field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Set field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
+		}
 	}
 
 

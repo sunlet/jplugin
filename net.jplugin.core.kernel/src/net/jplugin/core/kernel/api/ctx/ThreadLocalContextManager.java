@@ -5,7 +5,7 @@ package net.jplugin.core.kernel.api.ctx;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-11 ÉÏÎç09:40:56
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-11 ä¸Šåˆ09:40:56
  **/
 
 public class ThreadLocalContextManager {
@@ -17,15 +17,20 @@ public class ThreadLocalContextManager {
 		return ThreadLocalContextManager.instance.getContext().getRequesterInfo();
 	}
 	
+//	public static ThreadLocalContext currentContet(){
+//		return ThreadLocalContextManager.instance.getContext();
+//	}
+
+	
 	public ThreadLocalContext getContext(){
 		ThreadLocalContext ctx = ctxLocal.get();
 		return ctx;
 	}
 	/**
-	 * Èç¹ûÊÇhttpµ÷ÓÃ£¬ÔòÔÚhttpÀ¹½ØÆ÷ÖĞ²úÉú/Ïú»Ùctx
-	 * Èç¹ûÊÇÒì²½µ÷ÓÃ£¬ÔÚµ÷ÓÃ´¦ÀíÆ÷ÖĞ²úÉú/Ïú»Ùctx
-	 * È·±£²»»á³öÏÖ²»Æ¥Åä£¡£¡£¡
-	 * ContextÖ»±£ÁôÒ»¸ö£¬²»²ÉÓÃ¶ÑÕ»»úÖÆ£¬±£³Ö¼òµ¥¡£
+	 * å¦‚æœæ˜¯httpè°ƒç”¨ï¼Œåˆ™åœ¨httpæ‹¦æˆªå™¨ä¸­äº§ç”Ÿ/é”€æ¯ctx
+	 * å¦‚æœæ˜¯å¼‚æ­¥è°ƒç”¨ï¼Œåœ¨è°ƒç”¨å¤„ç†å™¨ä¸­äº§ç”Ÿ/é”€æ¯ctx
+	 * ç¡®ä¿ä¸ä¼šå‡ºç°ä¸åŒ¹é…ï¼ï¼ï¼
+	 * Contextåªä¿ç•™ä¸€ä¸ªï¼Œä¸é‡‡ç”¨å †æ ˆæœºåˆ¶ï¼Œä¿æŒç®€å•ã€‚
 	 * @param rc
 	 * @return 
 	 */
@@ -37,6 +42,10 @@ public class ThreadLocalContextManager {
 		ctxLocal.set(rc);
 		return rc;
 	}
+	
+//	public static void releaseCurrentContext(){
+//		instance.releaseContext();
+//	}
 	
 	public void releaseContext(){
 		ThreadLocalContext ctx = ctxLocal.get();

@@ -28,7 +28,7 @@ import net.jplugin.ext.filesvr.web.UploadHelper.SaveFileResult;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-15 ÏÂÎç03:13:31
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-15 ä¸‹åˆ03:13:31
  **/
 
 public class FileDownloadServlet {
@@ -36,7 +36,7 @@ public class FileDownloadServlet {
 	private static final String FILE_ID = "fileId";
 	
 	public void index(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException{
-		//´¦Àífilter
+		//å¤„ç†filter
 		FileDownloadFilter[] filters = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_DOWNLOADFILTER, FileDownloadFilter.class);
 		for (FileDownloadFilter f:filters){
 			if (!f.filter(req)){
@@ -55,13 +55,13 @@ public class FileDownloadServlet {
 		if (FileTypes.FT_IMAGE.equals(cf.getFileType())){
 			String scale=req.getParameter("scale");
 			if (scale==null) scale=ImgScale.BIG;
-			/*Ô¤ÏÈÑ¹ËõºÃ·ÅÈëwebÄ¿Â¼µÄ·½Ê½
+			/*é¢„å…ˆå‹ç¼©å¥½æ”¾å…¥webç›®å½•çš„æ–¹å¼
 			String path = "/upload/" + cf.getStorePath();
 			path = ImgScale.maintainImgName(path,scale);
 			req.getRequestDispatcher(path).forward(req, res);
 			*/
 			
-			//ĞÂ·½Ê½£¬Ê¹ÓÃÊ±Ñ¹Ëõ£¬²¢²»·ÅÈëwebµ±ÖĞ
+			//æ–°æ–¹å¼ï¼Œä½¿ç”¨æ—¶å‹ç¼©ï¼Œå¹¶ä¸æ”¾å…¥webå½“ä¸­
 			AssertKit.assertNotNull(cf, "the cloud file");
 			String origFilePath = Configures.uploadPath+"/"+cf.getStorePath();
 			String dirname = new File(origFilePath).getParentFile().getAbsolutePath()+"/";
@@ -72,7 +72,7 @@ public class FileDownloadServlet {
 			
 			Size targetSize = ImgScale.getTargetSize(scale);
 			if (!FileKit.existsFile(targetFilePath)){
-				//Ñ¹ËõÎÄ¼ş
+				//å‹ç¼©æ–‡ä»¶
 				PicCompressHelper.compressPic(dirname, dirname, origFileName, targetFileName, targetSize.width, targetSize.height, true);
 			}
 			DownloadHelper.downLoad(targetFilePath, cf.getFileName(), res, true);

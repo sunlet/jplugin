@@ -15,7 +15,7 @@ public class SelectHandler extends AbstractCommandHandler{
 		if (StringKit.isNull(walker.word)) 
 			throw new TablesplitException("Found null TableName in insert sql."+walker.sql);
 		if ("(".equals(walker.word)){
-			//Èç¹ûÅöµ½(£¬ÕÒÏÂÒ»¸ö£¬µ«²»»áÑ­»·ÕÒ
+			//å¦‚æœç¢°åˆ°(ï¼Œæ‰¾ä¸‹ä¸€ä¸ªï¼Œä½†ä¸ä¼šå¾ªç¯æ‰¾
 			walker.nextUntilIgnoreCase("FROM");
 			if (!walker.next())
 				throw new TablesplitException("Can't find TableName in insert sql."+walker.sql);
@@ -29,7 +29,7 @@ public class SelectHandler extends AbstractCommandHandler{
 	@Override
 	KeyResult walkToGetKeyColumnInfo(SqlWordsWalker w, String tableName,String keyField) {
 		
-		//TABLEÃû³ÆºóÃæÈç¹ûÊÇ×Ö·û´®ÄÇ¾ÍÊÇ±ğÃû£¬·ñÔòÎŞ±ğÃû
+		//TABLEåç§°åé¢å¦‚æœæ˜¯å­—ç¬¦ä¸²é‚£å°±æ˜¯åˆ«åï¼Œå¦åˆ™æ— åˆ«å
 		String tableAliasName=null;
 		if (!w.next())
 			throw new TablesplitException("the sql is not complete. sql:"+w.sql);
@@ -86,7 +86,7 @@ public class SelectHandler extends AbstractCommandHandler{
 	@Override
 	String getFinalSql(SqlWordsWalker walker, String sourceSql, String finalTableName) {
 		String finalSql = StringKit.repaceFirst(walker.sql,sourceSql,finalTableName);
-		//´¦Àí´ø×Ö¶ÎµÄ±íÃû
+		//å¤„ç†å¸¦å­—æ®µçš„è¡¨å
 		finalSql = StringKit.replaceStr(finalSql," "+sourceSql+"."," "+finalTableName+".");
 		return finalSql;
 	}

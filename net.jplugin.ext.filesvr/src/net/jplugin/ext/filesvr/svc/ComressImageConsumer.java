@@ -15,7 +15,7 @@ import net.jplugin.ext.filesvr.web.Configures;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç08:33:56
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ08:33:56
  **/
 
 public class ComressImageConsumer extends EventConsumer {
@@ -28,7 +28,7 @@ public class ComressImageConsumer extends EventConsumer {
 //		FileCreatedEvent fce = (FileCreatedEvent) e;
 //		AssertKit.assertEqual(fce.getFile().getFileType(),FileTypes.FT_IMAGE,"file type wrong");
 //		String storePath = fce.getFile().getStorePath();
-//		//Æ´½Ó¾ø¶ÔÂ·¾¶
+//		//æ‹¼æ¥ç»å¯¹è·¯å¾„
 //		String absStorePath = Configures.uploadPath + "/"+storePath;
 //		
 //		String filename = new File(absStorePath).getName();
@@ -36,7 +36,7 @@ public class ComressImageConsumer extends EventConsumer {
 //		
 //		PicCompressHelper.compressPic(dirname, dirname, filename, filename+"_min", 100, 100, true);
 //		
-//		//¸´ÖÆµ½webÄ¿Â¼µ±ÖĞ£¬´óÍ¼Ğ¡Í¼¶¼¿½±´£¬ÒÔºó´óÍ¼ÔÙËµ
+//		//å¤åˆ¶åˆ°webç›®å½•å½“ä¸­ï¼Œå¤§å›¾å°å›¾éƒ½æ‹·è´ï¼Œä»¥åå¤§å›¾å†è¯´
 //		String destFilename = Configures.smallFilePath +"/" + storePath +"_min";
 //		FileKit.makeDirectory(new File(destFilename).getParentFile().getAbsolutePath());
 //		FileKit.copyFile(absStorePath+"_min",destFilename);

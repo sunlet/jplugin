@@ -16,7 +16,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-7 œ¬ŒÁ03:20:27
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-7 ‰∏ãÂçà03:20:27
  **/
 
 public class Plugin extends AbstractPlugin{
@@ -38,13 +38,17 @@ public class Plugin extends AbstractPlugin{
 		return CoreServicePriority.EVENT;
 	}
 
-	public void init() {
+	public void onCreateServices() {
 		String[] eventTypes = PluginEnvirement.getInstance().getExtensionObjects(EP_EVENT_TYPES,String.class);
 		EventAliasDefine[] typeAliases = PluginEnvirement.getInstance().getExtensionObjects(EP_EVENT_TYPE_ALIAS,EventAliasDefine.class);
 		EventConsumer[] eventConsumers = PluginEnvirement.getInstance().getExtensionObjects(EP_EVENT_CONSUMER,EventConsumer.class);
 		
 		ChannelFacade channel = (ChannelFacade) ServiceFactory.getService(Channel.class.getName(),Channel.class);
 		channel.init(eventTypes, typeAliases,eventConsumers);
+	}
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

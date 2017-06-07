@@ -15,7 +15,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-7 œ¬ŒÁ09:59:02
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-7 ‰∏ãÂçà09:59:02
  **/
 
 public class Plugin extends AbstractPlugin{
@@ -34,11 +34,20 @@ public class Plugin extends AbstractPlugin{
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
-	public void init() {
+	public void onCreateServices() {
 		ExtensionPoint servicesPoint = PluginEnvirement.getInstance().getExtensionPoint(Constants.EP_SERVICE);
 		
 		Map<String, Object> map  = servicesPoint.getExtensionMap();
 		ServiceFactory.init(map);
 	}
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+//	@Override
+//	public void init() {
+//		ServiceFactory.initAnnotation();
+//	}
 	
 }

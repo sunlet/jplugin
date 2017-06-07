@@ -16,7 +16,7 @@ import net.jplugin.common.kits.JsonKit;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-24 ÉÏÎç09:02:50
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-24 ä¸Šåˆ09:02:50
  **/
 
 public class SQLTemplate {
@@ -78,7 +78,7 @@ public class SQLTemplate {
 				return ret;
 			}
 		} catch (Exception e) {
-			throw new DataException(e.getMessage()+"SQLÖ´ĞĞÊ§°Ü¡£ SQL="+sql, e);
+			throw new DataException(e.getMessage()+"SQLæ‰§è¡Œå¤±è´¥ã€‚ SQL="+sql, e);
 		}finally{
 			closeStmtQuiretly(stmt);
 		}

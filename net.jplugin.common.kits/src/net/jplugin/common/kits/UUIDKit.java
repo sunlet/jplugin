@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç06:04:48
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ06:04:48
  **/
 
 public class UUIDKit {

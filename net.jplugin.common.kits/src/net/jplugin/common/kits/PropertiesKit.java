@@ -2,12 +2,13 @@ package net.jplugin.common.kits;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
  *
  * @author: LiuHang
- * @version ¥¥Ω® ±º‰£∫2015-2-8 …œŒÁ01:42:24
+ * @version ÂàõÂª∫Êó∂Èó¥Ôºö2015-2-8 ‰∏äÂçà01:42:24
  **/
 
 public class PropertiesKit {
@@ -38,5 +39,12 @@ public class PropertiesKit {
 				prop.setProperty((String)o, newv);
 			}
 		}
+	}
+
+	public static Properties loadFromClassPath(Class c, String filename) throws IOException {
+		String pathname = StringKit.replaceStr(c.getPackage().getName(),".", "/")+"/"+filename;
+		Properties prop = new Properties();
+		prop.load(c.getClassLoader().getResourceAsStream(pathname));
+		return prop;
 	}
 }

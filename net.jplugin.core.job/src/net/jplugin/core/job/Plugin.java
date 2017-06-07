@@ -5,7 +5,7 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 
 public class Plugin extends AbstractPlugin{
 
-	public void init() {
+	public void onCreateServices() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -13,6 +13,12 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public int getPrivority() {
 		return CoreServicePriority.JOB;
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -7,7 +7,7 @@ import net.jplugin.core.ctx.api.Rule;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-11 ÉÏÎç08:39:33
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-11 ä¸Šåˆ08:39:33
  **/
 
 public interface RuleInvocationHandler {

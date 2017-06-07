@@ -9,6 +9,7 @@ public class ESFRestContext {
 	String callerIpAddress;
 	String requestUrl;
 	HashMap<String,String> cookieMap;
+	HashMap<String,String> headerMap;
 
 	public String getCallerIpAddress() {
 		return callerIpAddress;
@@ -18,12 +19,8 @@ public class ESFRestContext {
 		this.callerIpAddress = callerIpAddress;
 	}
 
-	public static void fill(ESFRestContext ctx) {
-		//from ctx
-		RequesterInfo info = ThreadLocalContextManager.getRequestInfo();
-		info.setCallerIpAddress(ctx.getCallerIpAddress());
-		info.setRequestUrl(ctx.getRequestUrl());
-		info.getCookies()._setFromMap(ctx.getCookieMap());
+	public HashMap<String, String> getHeaderMap() {
+		return headerMap;
 	}
 
 	public String getRequestUrl() {
@@ -40,6 +37,10 @@ public class ESFRestContext {
 
 	public void setCookieMap(HashMap<String, String> cookieMap) {
 		this.cookieMap = cookieMap;
+	}
+	
+	public void setHeaderMap(HashMap<String, String> map) {
+		this.headerMap = map;
 	}
 
 }

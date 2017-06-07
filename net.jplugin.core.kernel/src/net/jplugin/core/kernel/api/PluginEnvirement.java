@@ -1,46 +1,70 @@
 package net.jplugin.core.kernel.api;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
-import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
 import net.jplugin.core.kernel.impl.PluginPrepareHelper;
+import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
 
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-6 ÏÂÎç03:03:01
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-6 ä¸‹åˆ03:03:01
  **/
 
 public class PluginEnvirement {
+	public static final int STAT_LEVEL_PREPAREING=0;
+	public static final int STAT_LEVEL_LOADING=10;
+	public static final int STAT_LEVEL_WIRING=20;
+	public static final int STAT_LEVEL_INITING=30;
+	public static final int STAT_LEVEL_WORKING=40;
+	
 	public static final String WORK_DIR = "work-dir";
-	private static PluginEnvirement instance = new PluginEnvirement();
+	public static PluginEnvirement INSTANCE = new PluginEnvirement();
 	private PluginRegistry registry = new PluginRegistry();
 //	private StartupLogger startupLog = new StartupLogger();
 	String workdir=null;
+	private AnnotationResolveHelper annoResolveHelper=new AnnotationResolveHelper(this);
+	private int stateLevel=STAT_LEVEL_PREPAREING;
+	
+	private IStartLogger startLogger = new StartUpLoggerImpl();
+
+	
+	
 	public static PluginEnvirement getInstance() {
-		return instance;
+		return INSTANCE;
+	}
+	
+	public IStartLogger getStartLogger() {
+		return startLogger;
+	}
+	
+	public int getStateLevel(){
+		return this.stateLevel;
 	}
 	
 	public void stop(){
-		System.out.println("$$$ now to stop plugin envirment");
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ now to stop plugin envirment");
 		this.registry.destroy();
 		this.registry = new PluginRegistry();
 		this.started = false;
-		System.out.println("$$$ plugin envirment stopped");
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ plugin envirment stopped");
 	}
 
 	public PluginRegistry getPluginRegistry() {
 		return registry;
+	}
+	
+	public boolean getStarted(){
+		return this.started;
 	}
 
 	public boolean hasExtensionPoint(String pointName){
@@ -138,10 +162,10 @@ public class PluginEnvirement {
 	
 	/**
 	 * <pre>
-	 * ÓĞtestAllºÍtestTargetÁ½¸öÊôĞÔ
-	 * testAllÓÅÏÈ
-	 * testAll£º¼ÓÔØËùÓĞµÄ²âÊÔ²å¼ş£¬²¢È«²¿ÔËĞĞ
-	 * testTarget£ºÖ»¼ÓÔØÌØ¶¨µÄ²âÊÔ²å¼ş£¬²¢ÔËĞĞµ½ÕâÀïÎªÖ¹
+	 * æœ‰testAllå’ŒtestTargetä¸¤ä¸ªå±æ€§
+	 * testAllä¼˜å…ˆ
+	 * testAllï¼šåŠ è½½æ‰€æœ‰çš„æµ‹è¯•æ’ä»¶ï¼Œå¹¶å…¨éƒ¨è¿è¡Œ
+	 * testTargetï¼šåªåŠ è½½ç‰¹å®šçš„æµ‹è¯•æ’ä»¶ï¼Œå¹¶è¿è¡Œåˆ°è¿™é‡Œä¸ºæ­¢
 	 * </pre>
 	 * @param plgns
 	 */
@@ -150,20 +174,24 @@ public class PluginEnvirement {
 			return;
 		started = true;
 		try {
-			System.out.println("$$$ ConfigDir="+this.getConfigDir()+" \n$$$ WorkDir="+this.getWorkDir());
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ ConfigDir="+this.getConfigDir());
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ WorkDir="+this.getWorkDir());
 			Set<Object> pluginToLoad = new HashSet<Object>();
 			
 			if (plgns==null){
-				Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
-				pluginToLoad.addAll(prop.keySet());
+				if (FileKit.existsFile(getConfigDir() + "/plugin.cfg")){
+					Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
+					pluginToLoad.addAll(prop.keySet());
+				}
 				pluginToLoad.addAll(CorePlugin.get());
 				pluginToLoad.addAll(ExtPlugin.get());
+				pluginToLoad.addAll(PluginAutoDetect.get(pluginToLoad));
 			}else{
 				pluginToLoad.addAll( plgns);
 			}
 
 
-			//ÓĞtestAllºÍtestTargetÁ½¸öÊôĞÔ£¬testAllÓÅÏÈ
+			//æœ‰testAllå’ŒtestTargetä¸¤ä¸ªå±æ€§ï¼ŒtestAllä¼˜å…ˆ
 			boolean testAll = false;
 			String testTarget = null;
 			testTarget = System.getProperty("testTarget");
@@ -172,12 +200,12 @@ public class PluginEnvirement {
 			}
 			
 			PluginPrepareHelper.preparePlugins(pluginToLoad);
-
+			
 			
 			for (Object obj : pluginToLoad) {
 				addPlugin(obj);
 				
-				//¼ÓÔØ²âÊÔ²å¼ş
+				//åŠ è½½æµ‹è¯•æ’ä»¶
 				if (testAll){
 					try{
 						addPlugin("test."+obj);
@@ -193,8 +221,14 @@ public class PluginEnvirement {
 
 			registry.sort();
 			registry.valid();
+			this.stateLevel = STAT_LEVEL_LOADING;
 			registry.load();
+			this.stateLevel = STAT_LEVEL_WIRING;
 			registry.wire();
+			registry.makeServices();
+			this.stateLevel = STAT_LEVEL_INITING;
+			this.annoResolveHelper.resolveHistory();
+
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
 					ThreadLocalContextManager.instance.createContext();
@@ -215,13 +249,14 @@ public class PluginEnvirement {
 				}catch(Exception th){}
 				System.exit(-2);
 			}
+			this.stateLevel = STAT_LEVEL_WORKING;
 		} catch (Exception e) {
-			System.out.println("³õÊ¼»¯¹ı³Ì·¢Éú´íÎó");
+			PluginEnvirement.INSTANCE.getStartLogger().log("åˆå§‹åŒ–è¿‡ç¨‹å‘ç”Ÿé”™è¯¯");
 			logError(e);
 			if (PluginEnvirement.getInstance().hasExtensionPoint(Plugin.EP_STARTUP)){
 				trigStartListener(e, null);
 			}
-			e.printStackTrace();
+			getStartLogger().log(e.getMessage(),e);
 			
 			try{
 				Thread.sleep(3000);
@@ -280,13 +315,25 @@ public class PluginEnvirement {
 	 */
 	private void logStart(List<PluginError> errors) {
 		if (errors == null || errors.size() == 0) {
-			System.out.println("@@Plugin Loaded successfully!");
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@Plugin Loaded successfully!");
 		} else {
-			System.out.println("@@Plugin Loaded with errors ");
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@Plugin Loaded with errors ");
 			for (PluginError e : errors) {
-				System.out.println(e.toString());
+				PluginEnvirement.INSTANCE.getStartLogger().log(e.toString());
 			}
 		}
+	}
+
+	public void resolveRefAnnotation(Object o) {
+		this.annoResolveHelper.resolveOne(o);
+	}
+	
+	public String getEnvType(){
+		return System.getProperty("plugin.env");
+	}
+	
+	public String getLogDir(){
+		return this.getWorkDir()+"/logs";
 	}
 	
 

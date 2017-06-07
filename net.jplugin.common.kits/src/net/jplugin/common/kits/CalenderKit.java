@@ -19,7 +19,7 @@ public class CalenderKit {
 
 	public static String time_pattern = "yyyyMMddHHmmss";
 
-	//=================ÒÔÏÂ¼¸¸ö·½·¨ÓÃÀ´ÊµÏÖºÍÊı¾İ¸ñÊ½×ª»»
+	//=================ä»¥ä¸‹å‡ ä¸ªæ–¹æ³•ç”¨æ¥å®ç°å’Œæ•°æ®æ ¼å¼è½¬æ¢
 	public static String getTimeString(long timeLong) {
 		return getFormatedTimeString(timeLong, time_pattern);
 	}
@@ -52,12 +52,12 @@ public class CalenderKit {
 			throw new RuntimeException("parse error:"+dateString);
 		}
 	}
-	//=====================ÒÔÉÏÊµÏÖÊı¾İ×ª»»=============================
+	//=====================ä»¥ä¸Šå®ç°æ•°æ®è½¬æ¢=============================
 	
 	
 	
 	/**
-	 * ¸ñÊ½»¯Ê±¼äÎªÖ¸¶¨¸ñÊ½<br>
+	 * æ ¼å¼åŒ–æ—¶é—´ä¸ºæŒ‡å®šæ ¼å¼<br>
 	 * 
 	 * @param timeLong
 	 * @param pattern
@@ -80,7 +80,7 @@ public class CalenderKit {
 
 
 	/**
-	 * ¸ñÊ½»¯Ê±¼äÎªÖ¸¶¨¸ñÊ½<br>
+	 * æ ¼å¼åŒ–æ—¶é—´ä¸ºæŒ‡å®šæ ¼å¼<br>
 	 * <em>Pattern: yyyy-MM-dd HH:mm:ss </em>
 	 * 
 	 * @param timeLong
@@ -107,7 +107,7 @@ public class CalenderKit {
 
 	public static String getTimeDescription(long time) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
-		sdf.applyPattern("yyyyÄêMMÔÂddÈÕHH:mm:ss");
+		sdf.applyPattern("yyyyå¹´MMæœˆddæ—¥HH:mm:ss");
 		return sdf.format(new Date(time));
 	}
 
@@ -272,9 +272,9 @@ public class CalenderKit {
 	public static String getDHM(long times) {
 		long hours = times % (24 * 60 * 60 * 1000L);
 		long minutes = hours % ((60 * 60 * 1000L));
-		return String.valueOf(getDays(times)) + "Ìì "
-				+ String.valueOf(getHours(hours)) + "Ğ¡Ê±: "
-				+ String.valueOf(getMinutes(minutes)) + "·ÖÖÓ";
+		return String.valueOf(getDays(times)) + "å¤© "
+				+ String.valueOf(getHours(hours)) + "å°æ—¶: "
+				+ String.valueOf(getMinutes(minutes)) + "åˆ†é’Ÿ";
 	}
 
 	public static int getHour24OfTime(long time) {
@@ -300,19 +300,19 @@ public class CalenderKit {
 		long dural = now - l;
 
 		if (dural < 10 * 60 * 1000) {
-			return "¸Õ¸Õ";
+			return "åˆšåˆš";
 		}
 
 		if (dural < 3600 * 1000) {
-			return (dural / (60 * 1000 * 10)) + "0 "+"·ÖÖÓÇ°";
+			return (dural / (60 * 1000 * 10)) + "0 "+"åˆ†é’Ÿå‰";
 		}
 
 		if (dural < 5 * 3600 * 1000) {
-			return dural / (3600 * 1000) + "Ğ¡Ê±Ç°";
+			return dural / (3600 * 1000) + "å°æ—¶å‰";
 		}
 
 		if (l / (3600 * 1000 * 24) == now / (3600 * 1000 * 24)) {
-			return "½ñÌì";
+			return "ä»Šå¤©";
 		}
 
 		Date theTime = new Date(l);
@@ -359,7 +359,7 @@ public class CalenderKit {
 		return date.getTime();
 	}
 	/**
-	 * Õâ¸ö×ª»»ÓĞÒ»µã±¿£¬¿´Î´À´ÓĞÃ»ÓĞ¸üºÃµÄ
+	 * è¿™ä¸ªè½¬æ¢æœ‰ä¸€ç‚¹ç¬¨ï¼Œçœ‹æœªæ¥æœ‰æ²¡æœ‰æ›´å¥½çš„
 	 * @param date
 	 * @return
 	 */

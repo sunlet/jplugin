@@ -1,123 +1,123 @@
-package net.jplugin.core.das.route.impl.parser;
-
-import java.util.ArrayList;
-
-public class SqlStrLexerTool {
-	public static final int STATE_STR_CONST = 1;
-	public static final int STATE_WORD = 2;
-	public static final int STATE_SPACING = 3;
-	public static final int STATE_OPERATOR = 4;
-
-	public static ArrayList<String> parse(String sqlStr){
-		CharacterLexer cmc = new CharacterLexer(sqlStr);
-		ArrayList list = new ArrayList<>();
-		int state;
-		int startPos = 0;
-		state = STATE_SPACING;
-		
-		if (cmc.next())
-			while(true){
-				if (state == STATE_STR_CONST){
-					if (cmc.word == '\\'){
-						cmc.next(); //∞—œ¬“ª∏ˆ÷±Ω”π˝µÙ
-						if (!cmc.next()) break;
-					}else if (cmc.word == '\''){
-						list.add(sqlStr.substring(startPos, cmc.position+1));
-						state = STATE_SPACING;
-						if (!cmc.next()) break;
-					}else{
-						if (!cmc.next()) {
-							break;
-						}
-					}
-				}else if (state == STATE_OPERATOR){
-					if (cmc.word == ' '){
-						list.add(sqlStr.substring(startPos,cmc.position));
-						state = STATE_SPACING;
-						if (!cmc.next()) break;
-					}else if (isOperator(cmc.word)){
-						if (isOperatorSet(sqlStr,startPos,cmc.position)){
-							//◊È∫œ◊˜Œ™“ª∏ˆ£¨◊¥Ã¨±‰ªØ
-							list.add(sqlStr.substring(startPos,cmc.position+1));
-							state = STATE_SPACING;
-						}else{
-							//∞—…œ“ª∏ˆº«¬ºœ¬¿¥£¨◊¥Ã¨≤ª±‰
-							list.add(sqlStr.substring(startPos,cmc.position));
-							startPos = cmc.position;
-						}
-						if (!cmc.next()) break;
-					}else if (cmc.word == '\''){
-						list.add(sqlStr.substring(startPos,cmc.position));
-						state = STATE_STR_CONST;
-						startPos = cmc.position;
-						if (!cmc.next()) 
-							break;
-					}else{
-						list.add(sqlStr.substring(startPos,cmc.position));
-						state = STATE_WORD;
-						startPos = cmc.position;
-						if (!cmc.next()) 
-							break;
-					}
-				}else if (state == STATE_WORD){
-					if (cmc.word == ' '){
-						list.add(sqlStr.substring(startPos,cmc.position));
-						state = STATE_SPACING;
-						startPos = cmc.position;
-						if (!cmc.next()) break;
-					}else if (isOperator(cmc.word)){
-						list.add(sqlStr.substring(startPos,cmc.position));
-						startPos = cmc.position;
-						state = STATE_OPERATOR;
-						if (!cmc.next()) break;
-					}else{
-						if (!cmc.next()) break;
-					}
-				}else{ //STATE_SPACING
-					if (cmc.word==' '){
-						if (!cmc.next()) break;
-					}else if (cmc.word=='\''){
-						state = STATE_STR_CONST;
-						startPos = cmc.position;
-						if (!cmc.next()) break;
-					}else if (isOperator(cmc.word)){
-						state = STATE_OPERATOR;
-						startPos = cmc.position;
-						if (!cmc.next()) break;
-					}else{
-						state = STATE_WORD;
-						startPos = cmc.position;
-						if (!cmc.next()) break;
-					}
-				}	
-			}
-		
-		//◊Ó∫Û“ª∂Œ
-		if (state!=STATE_SPACING && startPos<=sqlStr.length()-1){
-			list.add(sqlStr.substring(startPos));
-		}
-		
-		return list;
-	}
-
-	private static boolean isOperatorSet(String sql, int startPos, int endPos) {
-		if (endPos - startPos!=1) return false;
-		char c1 = sql.charAt(startPos), c2= sql.charAt(endPos);
-		return (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>');
-	}
-
-	private static boolean isOperator(char word) {
-		return word == '=' || word == '<' || word == '>' || 
-			   word == '(' || word == ')' || word==','|| 
-			   word == '&'|| word == '^' || word== '+'||
-			   word == '-'|| word=='*' || word=='/';
-	}
-	
-	public static void main(String[] args) {
-		ArrayList<String> result = SqlStrLexerTool.parse("  select * from customer a where a.x=?) and a.y='12' and (a.z<3 or a.z>=5)  ");
-		for (String s:result){
-			System.out.println("- "+ s);
-		}
-		
-	}
-}
+//package net.jplugin.core.das.route.impl.parser;
+//
+//import java.util.ArrayList;
+//
+//public class SqlStrLexerTool {
+//	public static final int STATE_STR_CONST = 1;
+//	public static final int STATE_WORD = 2;
+//	public static final int STATE_SPACING = 3;
+//	public static final int STATE_OPERATOR = 4;
+//
+//	public static ArrayList<String> parse(String sqlStr){
+//		CharacterLexer cmc = new CharacterLexer(sqlStr);
+//		ArrayList list = new ArrayList<>();
+//		int state;
+//		int startPos = 0;
+//		state = STATE_SPACING;
+//		
+//		if (cmc.next())
+//			while(true){
+//				if (state == STATE_STR_CONST){
+//					if (cmc.word == '\\'){
+//						cmc.next(); //Êää‰∏ã‰∏Ä‰∏™Áõ¥Êé•ËøáÊéâ
+//						if (!cmc.next()) break;
+//					}else if (cmc.word == '\''){
+//						list.add(sqlStr.substring(startPos, cmc.position+1));
+//						state = STATE_SPACING;
+//						if (!cmc.next()) break;
+//					}else{
+//						if (!cmc.next()) {
+//							break;
+//						}
+//					}
+//				}else if (state == STATE_OPERATOR){
+//					if (cmc.word == ' '){
+//						list.add(sqlStr.substring(startPos,cmc.position));
+//						state = STATE_SPACING;
+//						if (!cmc.next()) break;
+//					}else if (isOperator(cmc.word)){
+//						if (isOperatorSet(sqlStr,startPos,cmc.position)){
+//							//ÁªÑÂêà‰Ωú‰∏∫‰∏Ä‰∏™ÔºåÁä∂ÊÄÅÂèòÂåñ
+//							list.add(sqlStr.substring(startPos,cmc.position+1));
+//							state = STATE_SPACING;
+//						}else{
+//							//Êää‰∏ä‰∏Ä‰∏™ËÆ∞ÂΩï‰∏ãÊù•ÔºåÁä∂ÊÄÅ‰∏çÂèò
+//							list.add(sqlStr.substring(startPos,cmc.position));
+//							startPos = cmc.position;
+//						}
+//						if (!cmc.next()) break;
+//					}else if (cmc.word == '\''){
+//						list.add(sqlStr.substring(startPos,cmc.position));
+//						state = STATE_STR_CONST;
+//						startPos = cmc.position;
+//						if (!cmc.next()) 
+//							break;
+//					}else{
+//						list.add(sqlStr.substring(startPos,cmc.position));
+//						state = STATE_WORD;
+//						startPos = cmc.position;
+//						if (!cmc.next()) 
+//							break;
+//					}
+//				}else if (state == STATE_WORD){
+//					if (cmc.word == ' '){
+//						list.add(sqlStr.substring(startPos,cmc.position));
+//						state = STATE_SPACING;
+//						startPos = cmc.position;
+//						if (!cmc.next()) break;
+//					}else if (isOperator(cmc.word)){
+//						list.add(sqlStr.substring(startPos,cmc.position));
+//						startPos = cmc.position;
+//						state = STATE_OPERATOR;
+//						if (!cmc.next()) break;
+//					}else{
+//						if (!cmc.next()) break;
+//					}
+//				}else{ //STATE_SPACING
+//					if (cmc.word==' '){
+//						if (!cmc.next()) break;
+//					}else if (cmc.word=='\''){
+//						state = STATE_STR_CONST;
+//						startPos = cmc.position;
+//						if (!cmc.next()) break;
+//					}else if (isOperator(cmc.word)){
+//						state = STATE_OPERATOR;
+//						startPos = cmc.position;
+//						if (!cmc.next()) break;
+//					}else{
+//						state = STATE_WORD;
+//						startPos = cmc.position;
+//						if (!cmc.next()) break;
+//					}
+//				}	
+//			}
+//		
+//		//ÊúÄÂêé‰∏ÄÊÆµ
+//		if (state!=STATE_SPACING && startPos<=sqlStr.length()-1){
+//			list.add(sqlStr.substring(startPos));
+//		}
+//		
+//		return list;
+//	}
+//
+//	private static boolean isOperatorSet(String sql, int startPos, int endPos) {
+//		if (endPos - startPos!=1) return false;
+//		char c1 = sql.charAt(startPos), c2= sql.charAt(endPos);
+//		return (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>');
+//	}
+//
+//	private static boolean isOperator(char word) {
+//		return word == '=' || word == '<' || word == '>' || 
+//			   word == '(' || word == ')' || word==','|| 
+//			   word == '&'|| word == '^' || word== '+'||
+//			   word == '-'|| word=='*' || word=='/';
+//	}
+//	
+//	public static void main(String[] args) {
+//		ArrayList<String> result = SqlStrLexerTool.parse("  select * from customer a where a.x=?) and a.y='12' and (a.z<3 or a.z>=5)  ");
+//		for (String s:result){
+//			System.out.println("- "+ s);
+//		}
+//		
+//	}
+//}

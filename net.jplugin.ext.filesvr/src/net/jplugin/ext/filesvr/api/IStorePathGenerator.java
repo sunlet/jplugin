@@ -5,14 +5,14 @@ import net.jplugin.ext.filesvr.web.StorePathGenerator;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç05:56:32
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ05:56:32
  **/
 
 public interface IStorePathGenerator {
 	public static IStorePathGenerator instance = new StorePathGenerator();
 	/**
-	 * ²úÉúÎÄ¼şÃû£¬²»°üº¬´æ´¢Ä¿Â¼µÄÃû³Æ£¬Ò²²»°üº¬ "/"
-	 * ±ÈÈç£ºabc.txt   a/b/c/dd.txt 
+	 * äº§ç”Ÿæ–‡ä»¶åï¼Œä¸åŒ…å«å­˜å‚¨ç›®å½•çš„åç§°ï¼Œä¹Ÿä¸åŒ…å« "/"
+	 * æ¯”å¦‚ï¼šabc.txt   a/b/c/dd.txt 
 	 *  
 	 * @param clientFileName
 	 * @return

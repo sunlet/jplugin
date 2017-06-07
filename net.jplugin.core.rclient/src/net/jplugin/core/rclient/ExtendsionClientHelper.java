@@ -9,7 +9,7 @@ import net.jplugin.core.rclient.proxyfac.ClientProxyFactory;
 
 public class ExtendsionClientHelper {
 	/**
-	 * 注意：目前localName 为接口的名字
+	 * 娉ㄦ剰锛氱洰鍓峫ocalName 涓烘帴鍙ｇ殑鍚嶅瓧
 	 * @param plugin
 	 * @param url
 	 * @param protocol

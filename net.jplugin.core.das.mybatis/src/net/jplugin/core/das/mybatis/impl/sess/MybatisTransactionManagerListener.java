@@ -6,9 +6,9 @@ public class MybatisTransactionManagerListener implements ITransactionManagerLis
 
 	@Override
 	public void beforeBegin() {
-		//ÕâÀïÊ¹ÓÃclearSessions()»á±¨´í£¬²Â²âÒòÎªbegin¹ı³ÌÖĞ»áµ¼ÖÂÁ´½Ó±»ÊÍ·Å£¬Èç¹ûsession±£ÁôµÄ»°
-		//»áµ¼ÖÂºóÃæµÄsessionÖ´ĞĞ±¨Êı¾İ¿âÁ´½Ó¹Ø±Õ´í¡£
-		//±¾ÖÊÔ­ÒòÊÇmybatisÄ¿Ç°»¹ÊÇ³ÖÓĞConnectionµÄÒıÓÃµÄ£¬Èç¹û²»³ÖÓĞ¾ÍºÃÁË,Î´À´¿¼ÂÇ¸Ä½øÒ»ÏÂ¡£
+		//è¿™é‡Œä½¿ç”¨clearSessions()ä¼šæŠ¥é”™ï¼ŒçŒœæµ‹å› ä¸ºbeginè¿‡ç¨‹ä¸­ä¼šå¯¼è‡´é“¾æ¥è¢«é‡Šæ”¾ï¼Œå¦‚æœsessionä¿ç•™çš„è¯
+		//ä¼šå¯¼è‡´åé¢çš„sessionæ‰§è¡ŒæŠ¥æ•°æ®åº“é“¾æ¥å…³é—­é”™ã€‚
+		//æœ¬è´¨åŸå› æ˜¯mybatisç›®å‰è¿˜æ˜¯æŒæœ‰Connectionçš„å¼•ç”¨çš„ï¼Œå¦‚æœä¸æŒæœ‰å°±å¥½äº†,æœªæ¥è€ƒè™‘æ”¹è¿›ä¸€ä¸‹ã€‚
 		MybatisSessionManager.releaseSessions();
 	}
 

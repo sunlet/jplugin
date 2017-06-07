@@ -116,7 +116,7 @@ public class MtServiceTest {
 			ThreadLocalContextManager.getRequestInfo().setCurrentTenantId("t2");
 			final MtPojo o2 = new MtPojo();
 			o2.setName("zhangsan");
-			o2.setTenantId("t2");//±ØÐëÊÇ¿Õ
+			o2.setTenantId("t2");//å¿…é¡»æ˜¯ç©º
 			AssertKit.assertException(new Runnable() {
 				public void run() {
 					svc.insert(o2);

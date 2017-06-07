@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
  * This class provides encode/decode for RFC 2045 Base64 as defined by
  * RFC 2045, N. Freed and N. Borenstein.  <a
  * href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>:
- * <a href="http://www.cn-java.com">´úÂëÏÂÔØ</a>:
+ * <a href="http://www.cn-java.com">ä»£ç ä¸‹è½½</a>:
 
  * @author jackliu 2001.11
  */

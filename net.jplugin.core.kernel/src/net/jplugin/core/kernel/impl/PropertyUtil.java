@@ -14,7 +14,7 @@ import net.jplugin.core.kernel.api.Extension.Property;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-14 ÏÂÎç12:08:27
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-14 ä¸‹åˆ12:08:27
  **/
 
 public class PropertyUtil {

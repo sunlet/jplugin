@@ -6,7 +6,7 @@ import net.jplugin.ext.filesvr.db.DBCloudFile;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-18 ÏÂÎç08:27:01
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-18 ä¸‹åˆ08:27:01
  **/
 
 public class FileCreatedEvent extends Event{

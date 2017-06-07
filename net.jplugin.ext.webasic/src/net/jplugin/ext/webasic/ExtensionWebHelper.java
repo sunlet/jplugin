@@ -3,17 +3,17 @@ package net.jplugin.ext.webasic;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.ext.webasic.api.IMethodFilter;
+import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÉÏÎç10:29:19
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸Šåˆ10:29:19
  **/
 
 public class ExtensionWebHelper {
-	//add rest method .   json ¸ñÊ½µÄÔ¶³Ì·½·¨
+	//add rest method .   json æ ¼å¼çš„è¿œç¨‹æ–¹æ³•
 	/**
 	 * Please call [addServiceExportExtension] instead.
 	 * @param plugin
@@ -63,7 +63,7 @@ public class ExtensionWebHelper {
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
 //	}
 
-	//add rest service¡£Hashmap²ÎÊı
+	//add rest serviceã€‚Hashmapå‚æ•°
 	@Deprecated
 	public static void addRestServiceExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
@@ -80,12 +80,12 @@ public class ExtensionWebHelper {
 //	}
 	
 	
-	//add webex controller  À©Õ¹µÄwebcontroller
+	//add webex controller  æ‰©å±•çš„webcontroller
 	public static void addWebExControllerExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER, path, ClassDefine.class,new String[][]{{"clazz",beanClz.getName()}} ));
 	}
 	
-	//add web controller  Web¿ØÖÆ
+	//add web controller  Webæ§åˆ¶
 	public static void addWebControllerExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
 	}
@@ -99,7 +99,7 @@ public class ExtensionWebHelper {
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
 //	}
 
-	//add remote call  JavaĞòÁĞ»¯µÄÔ¶³Ì·şÎñ
+	//add remote call  Javaåºåˆ—åŒ–çš„è¿œç¨‹æœåŠ¡
 	@Deprecated
 	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,Class beanClz){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));

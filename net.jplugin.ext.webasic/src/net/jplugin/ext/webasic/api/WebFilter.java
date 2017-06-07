@@ -6,12 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-5 ÉÏÎç10:24:00
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-5 ä¸Šåˆ10:24:00
  **/
 
 public interface WebFilter {
 	/**
-	 * Èç¹û·µ»Øtrue¼ÌĞø£¬·µ»Øfalse²»ÔÙ¼ÌĞø
+	 * å¦‚æœè¿”å›trueç»§ç»­ï¼Œè¿”å›falseä¸å†ç»§ç»­
 	 * @param req
 	 * @param res
 	 * @return

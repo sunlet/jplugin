@@ -3,7 +3,7 @@ package test.net.jplugin.ext.webasic.restmethod;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÏÂÎç02:08:43
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸‹åˆ02:08:43
  **/
 
 public class RestMethod4Rule {

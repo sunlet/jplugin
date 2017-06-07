@@ -34,7 +34,7 @@
 //		managedDataSource = new TxManagedDataSource(DataSourceHolder.getInstance().getDataSource());
 //		ServiceFactory.getService(TransactionManager.class).addTransactionHandler(managedDataSource);
 //
-//		//´´½¨txfactory£¬²»Ìá½»£¬²»¹Ø±Õ£¬Ò»ÇĞ½»¸øÈİÆ÷
+//		//åˆ›å»ºtxfactoryï¼Œä¸æäº¤ï¼Œä¸å…³é—­ï¼Œä¸€åˆ‡äº¤ç»™å®¹å™¨
 //		Properties prop = new Properties();
 //		prop.setProperty("closeConnection", "false");
 //		ManagedTransactionFactory tm = new ManagedTransactionFactory();
@@ -116,7 +116,7 @@
 //
 //	
 //	/**
-//	 * ×¢Òâ£¬ÕâÀï»ñÈ¡µÄconnection²»ÓÃ¹Ø±Õ£¬»á×Ô¶¯¹Ø±ÕµÄ
+//	 * æ³¨æ„ï¼Œè¿™é‡Œè·å–çš„connectionä¸ç”¨å…³é—­ï¼Œä¼šè‡ªåŠ¨å…³é—­çš„
 //	 */
 //	@Override
 //	public Connection getConnection() {

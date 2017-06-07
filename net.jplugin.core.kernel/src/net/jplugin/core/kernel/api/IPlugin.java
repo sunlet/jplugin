@@ -7,7 +7,7 @@ import java.util.Map;
 /**
 *
 * @author: LiuHang
-* @version ´´½¨Ê±¼ä£º2015-2-22 ÉÏÎç11:46:53
+* @version åˆ›å»ºæ—¶é—´ï¼š2015-2-22 ä¸Šåˆ11:46:53
 **/
 
 public interface IPlugin {
@@ -20,6 +20,7 @@ public interface IPlugin {
 	public List<ExtensionPoint> getExtensionPoints();
 	public List<Extension>  getExtensions();
 	public int getStatus();
+	public void onCreateServices();
 	public void init();
 	public void onDestroy();
 	public Map<String,String> getConfigures();

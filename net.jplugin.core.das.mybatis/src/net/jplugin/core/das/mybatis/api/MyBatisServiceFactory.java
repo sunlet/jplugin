@@ -32,7 +32,7 @@ public class MyBatisServiceFactory {
 
 		ExtensionDefinition4Incept[] inceptDefs = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_MYBATIS_INCEPT,ExtensionDefinition4Incept.class);
 
-		//获取datasources map
+		//鑾峰彇datasources map
 		Map<String,List<String>> mapperMapping=new HashMap();
 		for (ExtensionDefinition4Mapping m:mappingDefs){
 			String ds = m.getDataSource();
@@ -42,7 +42,7 @@ public class MyBatisServiceFactory {
 			list.add(m.getInterfOrResource());
 		}
 		
-		//获取datasources map
+		//鑾峰彇datasources map
 		Map<String,List<Class>> inceptMapping=new HashMap();
 		for (ExtensionDefinition4Incept m:inceptDefs){
 			String ds = m.getDataSource();
@@ -52,7 +52,7 @@ public class MyBatisServiceFactory {
 			list.add(m.getClazz());
 		}
 		
-		//产生services
+		//浜х敓services
 		for (Entry<String, List<String>> en:mapperMapping.entrySet()){
 			MybaticsServiceImplNew service = new MybaticsServiceImplNew();
 			service.init(en.getKey(), en.getValue(),inceptMapping.get(en.getKey()));

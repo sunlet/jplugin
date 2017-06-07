@@ -20,7 +20,7 @@ import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-10 ÏÂÎç02:02:05
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-10 ä¸‹åˆ02:02:05
  **/
 
 public class RmethodControllerSet4Invoker implements IControllerSet{

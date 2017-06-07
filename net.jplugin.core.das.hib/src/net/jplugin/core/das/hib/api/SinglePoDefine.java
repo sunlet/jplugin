@@ -4,7 +4,7 @@ package net.jplugin.core.das.hib.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-1 ÏÂÎç09:16:20
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-1 ä¸‹åˆ09:16:20
  **/
 
 public class SinglePoDefine {

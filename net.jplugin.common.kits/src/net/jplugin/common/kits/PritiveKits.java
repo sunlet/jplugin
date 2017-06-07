@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-4 ÏÂÎç04:20:58
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-4 ä¸‹åˆ04:20:58
  **/
 
 public class PritiveKits {

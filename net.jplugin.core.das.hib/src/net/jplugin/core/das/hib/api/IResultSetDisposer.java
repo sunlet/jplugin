@@ -3,7 +3,7 @@ package net.jplugin.core.das.hib.api;
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-2-9 ÉÏÎç09:51:16
+ * @version åˆ›å»ºæ—¶é—´ï¼š2015-2-9 ä¸Šåˆ09:51:16
  **/
 
 public interface IResultSetDisposer {
