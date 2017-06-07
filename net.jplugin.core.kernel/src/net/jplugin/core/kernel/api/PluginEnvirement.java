@@ -251,12 +251,12 @@ public class PluginEnvirement {
 			}
 			this.stateLevel = STAT_LEVEL_WORKING;
 		} catch (Exception e) {
-			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误");
-			logError(e);
+			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误",e);
+//			logError(e);
 			if (PluginEnvirement.getInstance().hasExtensionPoint(Plugin.EP_STARTUP)){
 				trigStartListener(e, null);
 			}
-			getStartLogger().log(e.getMessage(),e);
+//			getStartLogger().log(e.getMessage(),e);
 			
 			try{
 				Thread.sleep(3000);
@@ -303,12 +303,12 @@ public class PluginEnvirement {
 	public ConfigHelper getConfigHelper(String pluginname){
 		return new ConfigHelper(registry.getLoadedPlugin(pluginname).getConfigures());
 	}
-	/**
-	 * @param e
-	 */
-	private void logError(Exception e) {
-		e.printStackTrace();
-	}
+//	/**
+//	 * @param e
+//	 */
+//	private void logError(Exception e) {
+//		e.printStackTrace();
+//	}
 
 	/**
 	 * @param errors
