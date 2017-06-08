@@ -25,256 +25,271 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class StatemenWrapper implements PreparedStatement{
+import net.jplugin.core.das.api.SqlMonitorListenerContext;
+
+public class StatemenWrapper implements PreparedStatement {
 	Statement inner;
 	String theSql;
 	private String dataSourceName;
+	private SqlMonitorListenerContext ctx;
 
-	public StatemenWrapper(String dsName, Statement s,String sql) {
+	public StatemenWrapper(String dsName, Statement s, String sql) {
 		this.inner = s;
 		this.theSql = sql;
 		this.dataSourceName = dsName;
 	}
+	
+	public SqlMonitorListenerContext getCtx() {
+		//目前在SqlMonitor.execute 的时候调用context，sql的值已经有了
+		if (this.ctx == null) {
+			this.ctx = SqlMonitorListenerContext.create();
+			ctx.setSql(theSql);
+			ctx.setDataSource(dataSourceName);
+		}
+		return ctx;
+	}
+
 	public String getDataSourceName() {
 		return dataSourceName;
 	}
 
-	//FOR PREPARED STATEMENT
+	// FOR PREPARED STATEMENT
 	public ResultSet executeQuery() throws SQLException {
-		return (ResultSet) SqlMonitor.execute(this,"executeQuery",theSql, ()-> ((PreparedStatement)inner).executeQuery());
+		return (ResultSet) SqlMonitor.execute(this, "executeQuery", theSql,
+				() -> ((PreparedStatement) inner).executeQuery());
 	}
 
 	public int executeUpdate() throws SQLException {
-		return (int) SqlMonitor.execute(this,"executeUpdate",theSql, ()-> ((PreparedStatement)inner).executeUpdate());
+		return (int) SqlMonitor.execute(this, "executeUpdate", theSql,
+				() -> ((PreparedStatement) inner).executeUpdate());
 	}
 
 	public void setNull(int parameterIndex, int sqlType) throws SQLException {
-		((PreparedStatement)inner).setNull(parameterIndex, sqlType);
+		((PreparedStatement) inner).setNull(parameterIndex, sqlType);
 	}
 
 	public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-		((PreparedStatement)inner).setBoolean(parameterIndex, x);
+		((PreparedStatement) inner).setBoolean(parameterIndex, x);
 	}
 
 	public void setByte(int parameterIndex, byte x) throws SQLException {
-		((PreparedStatement)inner).setByte(parameterIndex, x);
+		((PreparedStatement) inner).setByte(parameterIndex, x);
 	}
 
 	public void setShort(int parameterIndex, short x) throws SQLException {
-		((PreparedStatement)inner).setShort(parameterIndex, x);
+		((PreparedStatement) inner).setShort(parameterIndex, x);
 	}
 
 	public void setInt(int parameterIndex, int x) throws SQLException {
-		((PreparedStatement)inner).setInt(parameterIndex, x);
+		((PreparedStatement) inner).setInt(parameterIndex, x);
 	}
 
 	public void setLong(int parameterIndex, long x) throws SQLException {
-		((PreparedStatement)inner).setLong(parameterIndex, x);
+		((PreparedStatement) inner).setLong(parameterIndex, x);
 	}
 
 	public void setFloat(int parameterIndex, float x) throws SQLException {
-		((PreparedStatement)inner).setFloat(parameterIndex, x);
+		((PreparedStatement) inner).setFloat(parameterIndex, x);
 	}
 
 	public void setDouble(int parameterIndex, double x) throws SQLException {
-		((PreparedStatement)inner).setDouble(parameterIndex, x);
+		((PreparedStatement) inner).setDouble(parameterIndex, x);
 	}
 
 	public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
-		((PreparedStatement)inner).setBigDecimal(parameterIndex, x);
+		((PreparedStatement) inner).setBigDecimal(parameterIndex, x);
 	}
 
 	public void setString(int parameterIndex, String x) throws SQLException {
-		((PreparedStatement)inner).setString(parameterIndex, x);
+		((PreparedStatement) inner).setString(parameterIndex, x);
 	}
 
 	public void setBytes(int parameterIndex, byte[] x) throws SQLException {
-		((PreparedStatement)inner).setBytes(parameterIndex, x);
+		((PreparedStatement) inner).setBytes(parameterIndex, x);
 	}
 
 	public void setDate(int parameterIndex, Date x) throws SQLException {
-		((PreparedStatement)inner).setDate(parameterIndex, x);
+		((PreparedStatement) inner).setDate(parameterIndex, x);
 	}
 
 	public void setTime(int parameterIndex, Time x) throws SQLException {
-		((PreparedStatement)inner).setTime(parameterIndex, x);
+		((PreparedStatement) inner).setTime(parameterIndex, x);
 	}
 
 	public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
-		((PreparedStatement)inner).setTimestamp(parameterIndex, x);
+		((PreparedStatement) inner).setTimestamp(parameterIndex, x);
 	}
 
 	public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
-		((PreparedStatement)inner).setAsciiStream(parameterIndex, x, length);
+		((PreparedStatement) inner).setAsciiStream(parameterIndex, x, length);
 	}
 
 	public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
-		((PreparedStatement)inner).setUnicodeStream(parameterIndex, x, length);
+		((PreparedStatement) inner).setUnicodeStream(parameterIndex, x, length);
 	}
 
 	public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-		((PreparedStatement)inner).setBinaryStream(parameterIndex, x, length);
+		((PreparedStatement) inner).setBinaryStream(parameterIndex, x, length);
 	}
 
 	public void clearParameters() throws SQLException {
-		((PreparedStatement)inner).clearParameters();
+		((PreparedStatement) inner).clearParameters();
 	}
 
 	public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
-		((PreparedStatement)inner).setObject(parameterIndex, x, targetSqlType);
+		((PreparedStatement) inner).setObject(parameterIndex, x, targetSqlType);
 	}
 
 	public void setObject(int parameterIndex, Object x) throws SQLException {
-		((PreparedStatement)inner).setObject(parameterIndex, x);
+		((PreparedStatement) inner).setObject(parameterIndex, x);
 	}
 
 	public boolean execute() throws SQLException {
-		return (boolean) SqlMonitor.execute(this,"execute",theSql, ()-> ((PreparedStatement)inner).execute());
+		return (boolean) SqlMonitor.execute(this, "execute", theSql, () -> ((PreparedStatement) inner).execute());
 	}
 
 	public void addBatch() throws SQLException {
-		((PreparedStatement)inner).addBatch();
+		((PreparedStatement) inner).addBatch();
 	}
 
 	public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
-		((PreparedStatement)inner).setCharacterStream(parameterIndex, reader, length);
+		((PreparedStatement) inner).setCharacterStream(parameterIndex, reader, length);
 	}
 
 	public void setRef(int parameterIndex, Ref x) throws SQLException {
-		((PreparedStatement)inner).setRef(parameterIndex, x);
+		((PreparedStatement) inner).setRef(parameterIndex, x);
 	}
 
 	public void setBlob(int parameterIndex, Blob x) throws SQLException {
-		((PreparedStatement)inner).setBlob(parameterIndex, x);
+		((PreparedStatement) inner).setBlob(parameterIndex, x);
 	}
 
 	public void setClob(int parameterIndex, Clob x) throws SQLException {
-		((PreparedStatement)inner).setClob(parameterIndex, x);
+		((PreparedStatement) inner).setClob(parameterIndex, x);
 	}
 
 	public void setArray(int parameterIndex, Array x) throws SQLException {
-		((PreparedStatement)inner).setArray(parameterIndex, x);
+		((PreparedStatement) inner).setArray(parameterIndex, x);
 	}
 
 	public ResultSetMetaData getMetaData() throws SQLException {
-		return ((PreparedStatement)inner).getMetaData();
+		return ((PreparedStatement) inner).getMetaData();
 	}
 
 	public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-		((PreparedStatement)inner).setDate(parameterIndex, x, cal);
+		((PreparedStatement) inner).setDate(parameterIndex, x, cal);
 	}
 
 	public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
-		((PreparedStatement)inner).setTime(parameterIndex, x, cal);
+		((PreparedStatement) inner).setTime(parameterIndex, x, cal);
 	}
 
 	public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
-		((PreparedStatement)inner).setTimestamp(parameterIndex, x, cal);
+		((PreparedStatement) inner).setTimestamp(parameterIndex, x, cal);
 	}
 
 	public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
-		((PreparedStatement)inner).setNull(parameterIndex, sqlType, typeName);
+		((PreparedStatement) inner).setNull(parameterIndex, sqlType, typeName);
 	}
 
 	public void setURL(int parameterIndex, URL x) throws SQLException {
-		((PreparedStatement)inner).setURL(parameterIndex, x);
+		((PreparedStatement) inner).setURL(parameterIndex, x);
 	}
 
 	public ParameterMetaData getParameterMetaData() throws SQLException {
-		return ((PreparedStatement)inner).getParameterMetaData();
+		return ((PreparedStatement) inner).getParameterMetaData();
 	}
 
 	public void setRowId(int parameterIndex, RowId x) throws SQLException {
-		((PreparedStatement)inner).setRowId(parameterIndex, x);
+		((PreparedStatement) inner).setRowId(parameterIndex, x);
 	}
 
 	public void setNString(int parameterIndex, String value) throws SQLException {
-		((PreparedStatement)inner).setNString(parameterIndex, value);
+		((PreparedStatement) inner).setNString(parameterIndex, value);
 	}
 
 	public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
-		((PreparedStatement)inner).setNCharacterStream(parameterIndex, value, length);
+		((PreparedStatement) inner).setNCharacterStream(parameterIndex, value, length);
 	}
 
 	public void setNClob(int parameterIndex, NClob value) throws SQLException {
-		((PreparedStatement)inner).setNClob(parameterIndex, value);
+		((PreparedStatement) inner).setNClob(parameterIndex, value);
 	}
 
 	public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
-		((PreparedStatement)inner).setClob(parameterIndex, reader, length);
+		((PreparedStatement) inner).setClob(parameterIndex, reader, length);
 	}
 
 	public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
-		((PreparedStatement)inner).setBlob(parameterIndex, inputStream, length);
+		((PreparedStatement) inner).setBlob(parameterIndex, inputStream, length);
 	}
 
 	public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
-		((PreparedStatement)inner).setNClob(parameterIndex, reader, length);
+		((PreparedStatement) inner).setNClob(parameterIndex, reader, length);
 	}
 
 	public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
-		((PreparedStatement)inner).setSQLXML(parameterIndex, xmlObject);
+		((PreparedStatement) inner).setSQLXML(parameterIndex, xmlObject);
 	}
 
 	public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
-		((PreparedStatement)inner).setObject(parameterIndex, x, targetSqlType, scaleOrLength);
+		((PreparedStatement) inner).setObject(parameterIndex, x, targetSqlType, scaleOrLength);
 	}
 
 	public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
-		((PreparedStatement)inner).setAsciiStream(parameterIndex, x, length);
+		((PreparedStatement) inner).setAsciiStream(parameterIndex, x, length);
 	}
 
 	public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-		((PreparedStatement)inner).setBinaryStream(parameterIndex, x, length);
+		((PreparedStatement) inner).setBinaryStream(parameterIndex, x, length);
 	}
 
 	public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
-		((PreparedStatement)inner).setCharacterStream(parameterIndex, reader, length);
+		((PreparedStatement) inner).setCharacterStream(parameterIndex, reader, length);
 	}
 
 	public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
-		((PreparedStatement)inner).setAsciiStream(parameterIndex, x);
+		((PreparedStatement) inner).setAsciiStream(parameterIndex, x);
 	}
 
 	public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-		((PreparedStatement)inner).setBinaryStream(parameterIndex, x);
+		((PreparedStatement) inner).setBinaryStream(parameterIndex, x);
 	}
 
 	public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
-		((PreparedStatement)inner).setCharacterStream(parameterIndex, reader);
+		((PreparedStatement) inner).setCharacterStream(parameterIndex, reader);
 	}
 
 	public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
-		((PreparedStatement)inner).setNCharacterStream(parameterIndex, value);
+		((PreparedStatement) inner).setNCharacterStream(parameterIndex, value);
 	}
 
 	public void setClob(int parameterIndex, Reader reader) throws SQLException {
-		((PreparedStatement)inner).setClob(parameterIndex, reader);
+		((PreparedStatement) inner).setClob(parameterIndex, reader);
 	}
 
 	public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
-		((PreparedStatement)inner).setBlob(parameterIndex, inputStream);
+		((PreparedStatement) inner).setBlob(parameterIndex, inputStream);
 	}
 
 	public void setNClob(int parameterIndex, Reader reader) throws SQLException {
-		((PreparedStatement)inner).setNClob(parameterIndex, reader);
+		((PreparedStatement) inner).setNClob(parameterIndex, reader);
 	}
 
-	public  void setObject(int parameterIndex, Object x, SQLType targetSqlType, int scaleOrLength)
-			throws SQLException {
-		((PreparedStatement)inner).setObject(parameterIndex, x, targetSqlType, scaleOrLength);
+	public void setObject(int parameterIndex, Object x, SQLType targetSqlType, int scaleOrLength) throws SQLException {
+		((PreparedStatement) inner).setObject(parameterIndex, x, targetSqlType, scaleOrLength);
 	}
 
-	public  void setObject(int parameterIndex, Object x, SQLType targetSqlType) throws SQLException {
-		((PreparedStatement)inner).setObject(parameterIndex, x, targetSqlType);
+	public void setObject(int parameterIndex, Object x, SQLType targetSqlType) throws SQLException {
+		((PreparedStatement) inner).setObject(parameterIndex, x, targetSqlType);
 	}
 
-	public  long executeLargeUpdate() throws SQLException {
-		return (long) SqlMonitor.execute(this,"executeLargeUpdate",theSql, ()-> ((PreparedStatement)inner).executeLargeUpdate());
+	public long executeLargeUpdate() throws SQLException {
+		return (long) SqlMonitor.execute(this, "executeLargeUpdate", theSql,
+				() -> ((PreparedStatement) inner).executeLargeUpdate());
 	}
 
-	
-	//FOR STATEMENT
+	// FOR STATEMENT
 	public void close() throws SQLException {
 		inner.close();
 	}
@@ -289,7 +304,7 @@ public class StatemenWrapper implements PreparedStatement{
 
 	public boolean execute(String sql) throws SQLException {
 		this.theSql = sql;
-		return (boolean) SqlMonitor.execute(this,"execute",theSql, ()-> inner.execute(sql));
+		return (boolean) SqlMonitor.execute(this, "execute", theSql, () -> inner.execute(sql));
 	}
 
 	public void addBatch(String sql) throws SQLException {
@@ -301,12 +316,12 @@ public class StatemenWrapper implements PreparedStatement{
 	}
 
 	public int[] executeBatch() throws SQLException {
-		return (int[]) SqlMonitor.execute(this,"executeBatch",theSql, ()-> inner.executeBatch());
+		return (int[]) SqlMonitor.execute(this, "executeBatch", theSql, () -> inner.executeBatch());
 	}
 
 	public boolean execute(String sql, String[] columnNames) throws SQLException {
 		this.theSql = sql;
-		return (boolean) SqlMonitor.execute(this,"execute",theSql, ()-> inner.execute(sql, columnNames));
+		return (boolean) SqlMonitor.execute(this, "execute", theSql, () -> inner.execute(sql, columnNames));
 	}
 
 	public void closeOnCompletion() throws SQLException {
@@ -315,12 +330,12 @@ public class StatemenWrapper implements PreparedStatement{
 
 	public ResultSet executeQuery(String sql) throws SQLException {
 		this.theSql = sql;
-		return (ResultSet) SqlMonitor.execute(this,"executeQuery",theSql, ()-> inner.executeQuery(sql));
+		return (ResultSet) SqlMonitor.execute(this, "executeQuery", theSql, () -> inner.executeQuery(sql));
 	}
 
 	public int executeUpdate(String sql) throws SQLException {
 		this.theSql = sql;
-		return (int) SqlMonitor.execute(this,"executeUpdate",theSql, ()-> inner.executeUpdate(sql));
+		return (int) SqlMonitor.execute(this, "executeUpdate", theSql, () -> inner.executeUpdate(sql));
 	}
 
 	public int getFetchDirection() throws SQLException {
@@ -341,27 +356,28 @@ public class StatemenWrapper implements PreparedStatement{
 
 	public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
 		this.theSql = sql;
-		return (int) SqlMonitor.execute(this,"executeUpdate",theSql, ()-> inner.executeUpdate(sql, autoGeneratedKeys));
+		return (int) SqlMonitor.execute(this, "executeUpdate", theSql,
+				() -> inner.executeUpdate(sql, autoGeneratedKeys));
 	}
 
 	public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
 		this.theSql = sql;
-		return (int) SqlMonitor.execute(this,"executeUpdate",theSql, ()-> inner.executeUpdate(sql, columnIndexes));
+		return (int) SqlMonitor.execute(this, "executeUpdate", theSql, () -> inner.executeUpdate(sql, columnIndexes));
 	}
 
 	public int executeUpdate(String sql, String[] columnNames) throws SQLException {
 		this.theSql = sql;
-		return (int) SqlMonitor.execute(this,"executeUpdate",theSql, ()-> inner.executeUpdate(sql, columnNames));
+		return (int) SqlMonitor.execute(this, "executeUpdate", theSql, () -> inner.executeUpdate(sql, columnNames));
 	}
 
 	public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
 		this.theSql = sql;
-		return (boolean) SqlMonitor.execute(this,"execute",theSql, ()-> inner.execute(sql, autoGeneratedKeys));
+		return (boolean) SqlMonitor.execute(this, "execute", theSql, () -> inner.execute(sql, autoGeneratedKeys));
 	}
 
 	public boolean execute(String sql, int[] columnIndexes) throws SQLException {
 		this.theSql = sql;
-		return (boolean) SqlMonitor.execute(this,"execute",theSql, ()-> inner.execute(sql, columnIndexes));
+		return (boolean) SqlMonitor.execute(this, "execute", theSql, () -> inner.execute(sql, columnIndexes));
 	}
 
 	public long getLargeUpdateCount() throws SQLException {
@@ -373,30 +389,31 @@ public class StatemenWrapper implements PreparedStatement{
 	}
 
 	public long[] executeLargeBatch() throws SQLException {
-		return (long[]) SqlMonitor.execute(this,"executeLargeBatch",theSql, ()-> inner.executeLargeBatch());
+		return (long[]) SqlMonitor.execute(this, "executeLargeBatch", theSql, () -> inner.executeLargeBatch());
 	}
 
 	public long executeLargeUpdate(String sql) throws SQLException {
 		this.theSql = sql;
-		return (long) SqlMonitor.execute(this,"executeLargeUpdate",theSql, ()-> inner.executeLargeUpdate(sql));
+		return (long) SqlMonitor.execute(this, "executeLargeUpdate", theSql, () -> inner.executeLargeUpdate(sql));
 	}
 
 	public long executeLargeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
 		this.theSql = sql;
-		return (long) SqlMonitor.execute(this,"executeLargeUpdate",theSql, ()-> inner.executeLargeUpdate(sql, autoGeneratedKeys));
+		return (long) SqlMonitor.execute(this, "executeLargeUpdate", theSql,
+				() -> inner.executeLargeUpdate(sql, autoGeneratedKeys));
 	}
 
 	public long executeLargeUpdate(String sql, int[] columnIndexes) throws SQLException {
 		this.theSql = sql;
-		return (long) SqlMonitor.execute(this,"executeLargeUpdate",theSql, ()-> inner.executeLargeUpdate(sql, columnIndexes));
+		return (long) SqlMonitor.execute(this, "executeLargeUpdate", theSql,
+				() -> inner.executeLargeUpdate(sql, columnIndexes));
 	}
 
 	public long executeLargeUpdate(String sql, String[] columnNames) throws SQLException {
 		this.theSql = sql;
-		return (long) SqlMonitor.execute(this,"executeLargeUpdate",theSql, ()-> inner.executeLargeUpdate(sql, columnNames));
+		return (long) SqlMonitor.execute(this, "executeLargeUpdate", theSql,
+				() -> inner.executeLargeUpdate(sql, columnNames));
 	}
-
-
 
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return inner.unwrap(iface);
@@ -441,7 +458,6 @@ public class StatemenWrapper implements PreparedStatement{
 	public boolean getMoreResults(int current) throws SQLException {
 		return inner.getMoreResults(current);
 	}
-
 
 	public int getQueryTimeout() throws SQLException {
 		return inner.getQueryTimeout();
@@ -495,12 +511,10 @@ public class StatemenWrapper implements PreparedStatement{
 		return inner.isCloseOnCompletion();
 	}
 
-
-
 	public void setLargeMaxRows(long max) throws SQLException {
 		inner.setLargeMaxRows(max);
 	}
 
 
-	
+
 }

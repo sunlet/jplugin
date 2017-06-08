@@ -9,9 +9,7 @@ import net.jplugin.core.das.api.SqlMonitorListenerContext;
 public class SqlMonitor {
 
 	public static Object execute(StatemenWrapper stmt, String methodName, String sql, SqlCall sc) throws SQLException {
-		SqlMonitorListenerContext ctx = SqlMonitorListenerContext.create();
-		ctx.setSql(sql);
-		ctx.setDataSource(stmt.getDataSourceName());
+		SqlMonitorListenerContext ctx = stmt.getCtx();
 
 		SqlMonitorListenerManager.instance.beforeExecute(ctx);
 		try {
@@ -38,10 +36,8 @@ public class SqlMonitor {
 	}
 
 	public static Object next(ResultSetWrapper rs, SqlCall sc) throws SQLException {
-		SqlMonitorListenerContext ctx = SqlMonitorListenerContext.create();
-		ctx.setSql(rs.getSql());
-		ctx.setDataSource(rs.getDataSourceName());
-
+		SqlMonitorListenerContext ctx = rs.getCtx();
+		
 		// 如果before被阻挡，after就不要执行了。所以存在有before但是没有after的情况！！
 		SqlMonitorListenerManager.instance.beforeNext(ctx);
 		try {
