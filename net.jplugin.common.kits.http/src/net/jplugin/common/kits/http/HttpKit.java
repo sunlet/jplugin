@@ -1,5 +1,6 @@
 package net.jplugin.common.kits.http;
 
+import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.http.filter.HttpFilterContext;
 import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.common.kits.http.mock.HttpMock;
@@ -188,7 +189,8 @@ public final class HttpKit{
 			Object value = temp.getValue();
 			if(value==null)	value = "";
 			if(key!=null)
-				params.add(new BasicNameValuePair(key, value.toString()));
+				params.add(new BasicNameValuePair(key, JsonKit.object2JsonEx(value)));
+//				params.add(new BasicNameValuePair(key, value.toString()));
 		}
 		httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
 		//设置headers

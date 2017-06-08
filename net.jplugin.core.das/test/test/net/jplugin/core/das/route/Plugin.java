@@ -17,6 +17,8 @@ public class Plugin extends AbstractPluginForTest {
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-db" , "router-db");
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-1" , "router-ds-1");
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-2" , "router-ds-2");
+		
+		ExtensionDasHelper.addSqlListenerExtension(this, SqlMonitorListenerTest.class);
 	}
 	
 	

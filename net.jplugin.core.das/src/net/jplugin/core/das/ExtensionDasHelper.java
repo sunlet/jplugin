@@ -23,5 +23,9 @@ public class ExtensionDasHelper {
 	public static void addConnWrapperExtension(AbstractPlugin plugin,Class clz){
 		plugin.addExtension(Extension.create(Plugin.EP_CONN_WRAPPER, clz));
 	}
+	
+	public static void addSqlListenerExtension(AbstractPlugin plugin,Class clz){
+		plugin.addExtension(Extension.create(Plugin.EP_SQL_LISTENER, clz));
+	}
 
 }
