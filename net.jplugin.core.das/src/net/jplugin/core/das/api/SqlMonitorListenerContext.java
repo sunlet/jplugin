@@ -1,9 +1,14 @@
 package net.jplugin.core.das.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SqlMonitorListenerContext{
 	String sql;
 	String dataSourceName;
 	private Exception exception;
+	Map<String,Object> attributes=null;
+	
 	public String getSql() {
 		return this.sql;
 	}
@@ -31,5 +36,19 @@ public class SqlMonitorListenerContext{
 		return dataSourceName;
 	}
 
+	public void setAttribute(String key,Object val){
+		if (attributes == null){
+			attributes = new HashMap<String, Object>();
+		}
+		attributes.put(key,val);
+	}
+	
+	public String getStringAttribute(String key){
+		return (String) attributes.get(key);
+	}
+	
+	public Object getAttribute(String key){
+		return attributes==null? null:attributes.get(key);
+	}
 
 }
