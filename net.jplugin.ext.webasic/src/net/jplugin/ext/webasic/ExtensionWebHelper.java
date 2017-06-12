@@ -1,9 +1,11 @@
 package net.jplugin.ext.webasic;
 
+import net.jplugin.common.kits.reso.ResolverKit;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.ext.webasic.api.IInvocationFilter;
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.ext.webasic.api.AbstractExController;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
@@ -127,4 +129,95 @@ public class ExtensionWebHelper {
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCTRLFILTER,"",sf));
 	}
 
+	/**
+	 * <pre>
+	 * 自动注册 export  子包下的 服务导出。
+	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
+	 * </pre>
+	 * @param p
+	 */
+	public static void autoAddServiceExportExtension(AbstractPlugin p) {
+		autoAddServiceExportExtension(p,".export");
+	}
+	/**
+	 * <pre>
+	 * 自动注册 controller 子包下的Web控制器。
+	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
+	 * </pre>
+	 * @param p
+	 */
+	public static void autoAddWebControllerExtension(AbstractPlugin p){
+		autoAddWebControllerExtension(p,".controller");
+	}
+	
+	/**
+	 * <PRE>
+	 * 此方法自动遍历指定包下面的类，并且发布为服务。
+	 * 具体来说，对于 “Plugin类所属包的pkgPath子包” 下面的class，如果该Class以Export结尾，则自动注册为服务。
+	 * 注册路径为 类名 除去"Export"后缀的部分。比如对于类 MyServiceExport，注册路径为 "/MyService"
+	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
+	 * 
+	 * 比如：
+	 * 		对于  MyServcieExport 类，自动注册到路径  /MyService。
+	 *   	相当于执行代码 ExtensionWebHelper.addServiceExportExtension(this, "/MyService", MyServiceExport.class);
+	 * </PRE>
+	 * @param p   对应的Plugin类
+	 * @param pkgPath  相对于Plugin类的相对包路径。
+	 */
+	public static void autoAddServiceExportExtension(AbstractPlugin p, String pkgPath) {
+		String pkg = p.getClass().getPackage().getName() +pkgPath;
+		ResolverKit kit = new ResolverKit<>();
+		kit.find(pkg, (c) -> {
+			if (c.getSimpleName().endsWith("Export")) {
+				String classname = c.getSimpleName();
+				String servicePath = "/" + classname.substring(0, classname.length() - "Export".length());
+				ExtensionWebHelper.addServiceExportExtension(p, servicePath, c);
+				PluginEnvirement.INSTANCE.getStartLogger()
+						.log("$$$ Auto add extension for service export : servicePath=" + servicePath + " class="
+								+ c.getName());
+			}
+			return false;
+		});
+	}
+
+	/**
+	 * <PRE>
+	 * 此方法自动遍历指定包下面的类，并且发布为Web控制器。
+	 * 对于 “Plugin类所属包的pkgPath子包” 下面class，如果以Controller结尾，则自动注册为Web控制器。
+	 * 注册路径为 类名 除去 Controller后缀的部分。比如对于类 CustomerController，注册路径为 "/Customer"。
+	 * 另外，在注册时，会根据是否继承AbstractExController来判断是调用addWebExControllerExtension，还是
+	 * 调用addWebControllerExtension。
+	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
+	 * 
+	 * 比如：
+	 * 		对于  CustomerController 类，自动注册到路径  /Customer。
+	 *      如果CustomerController继承了AbstractExController，相当于	执行代码 ExtensionWebHelper.addWebExControllerExtension(this, "/Customer", CustomerController.class);
+	 *      如果CustomerController没有继承AbstractExController，相当于 执行代码 ExtensionWebHelper.addWebControllerExtension(this, "/Customer", CustomerController.class);
+	 * </PRE>
+	 * @param p   对应的Plugin类
+	 * @param pkgPath  相对于Plugin类的相对包路径。
+	 */
+	public static void autoAddWebControllerExtension(AbstractPlugin p, String pkgPath) {
+		String pkg = p.getClass().getPackage().getName() + pkgPath;
+		ResolverKit kit = new ResolverKit<>();
+		kit.find(pkg, (c) -> {
+			if (c.getSimpleName().endsWith("Controller")){
+				String classname = c.getSimpleName();
+				String servicePath = "/" + classname.substring(0, classname.length() - "Controller".length());
+
+				if (AbstractExController.class.isAssignableFrom(c)) {
+										ExtensionWebHelper.addWebExControllerExtension(p, servicePath, c);
+					PluginEnvirement.INSTANCE.getStartLogger()
+							.log("$$$ Auto add extension for web ex controller : servicePath=" + servicePath + " class="
+									+ c.getName());
+				}else{
+					ExtensionWebHelper.addWebControllerExtension(p, servicePath, c);
+					PluginEnvirement.INSTANCE.getStartLogger()
+							.log("$$$ Auto add extension for web controller : servicePath=" + servicePath + " class="
+									+ c.getName());
+				}
+			}
+			return false;
+		});
+	}
 }

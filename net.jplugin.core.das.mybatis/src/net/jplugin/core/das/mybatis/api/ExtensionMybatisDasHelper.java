@@ -1,9 +1,11 @@
 package net.jplugin.core.das.mybatis.api;
 
+import net.jplugin.common.kits.reso.ResolverKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.mybatis.Plugin;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  *
@@ -48,5 +50,34 @@ public class ExtensionMybatisDasHelper {
 	
 	public static void addInctprorExtension(AbstractPlugin plugin,String dataSource,Class inceptorClass){
 		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_INCEPT,ExtensionDefinition4Incept.class, new String[][]{{"dataSource",dataSource},{"clazz",inceptorClass.getName()}}));
+	}
+
+	/**
+	 * <PRE>
+	 * 自动注册 mapper 子包下面的 Mapper接口。
+	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
+	 * </PRE>
+	 * @param p
+	 */
+	public static void autoAddMappingExtension(AbstractPlugin p) {
+		autoAddMappingExtension(p,DataSourceFactory.DATABASE_DSKEY,".mapper");
+	}
+
+	/**
+	 * <PRE>
+	 * 此方法自动遍历指定包下面的类，并且注册Mybatis Mapper接口。
+	 * 相当于在Plugin构造函数中逐个调用 ExtensionMybatisDasHelper.addMappingExtension(p, clazz);
+	 * </PRE>
+	 * @param p   对应的Plugin类
+	 * @param pkgPath  相对于Plugin类的相对包路径。
+	 */
+	public static void autoAddMappingExtension(AbstractPlugin p, String dataSource,String pkgPath) {
+		String pkg = p.getClass().getPackage().getName() + pkgPath;
+		ResolverKit kit = new ResolverKit<>();
+		kit.find(pkg, (c) -> {
+			ExtensionMybatisDasHelper.addMappingExtension(p,dataSource, c);
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for mybatis mapping : class=" + c);
+			return false;
+		});
 	}
 }
