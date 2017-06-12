@@ -52,16 +52,6 @@ public class ExtensionMybatisDasHelper {
 		plugin.addExtension(Extension.create(Plugin.EP_MYBATIS_INCEPT,ExtensionDefinition4Incept.class, new String[][]{{"dataSource",dataSource},{"clazz",inceptorClass.getName()}}));
 	}
 
-	/**
-	 * <PRE>
-	 * 自动注册 mapper 子包下面的 Mapper接口。
-	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
-	 * </PRE>
-	 * @param p
-	 */
-	public static void autoAddMappingExtension(AbstractPlugin p) {
-		autoAddMappingExtension(p,DataSourceFactory.DATABASE_DSKEY,".mapper");
-	}
 
 	/**
 	 * <PRE>

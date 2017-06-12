@@ -31,16 +31,7 @@ public class ExtensionCtxHelper {
 		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_TXMGR_LISTENER, impl ));
 	}
 
-	/**
-	 * <PRE>
-	 * 自动注册 svc.api  svc.impl 包下的RuleService。 (接口在svc.api下，实现类在 svc.impl下面）。
-	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
-	 * </PRE>
-	 * @param p
-	 */
-	public static void autoAddRuleServiceExtension(AbstractPlugin p) {
-		autoAddRuleServiceExtension(p,".svc.api",".svc.impl");
-	}
+
 
 	/**
 	 * <PRE>

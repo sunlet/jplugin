@@ -129,26 +129,6 @@ public class ExtensionWebHelper {
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCTRLFILTER,"",sf));
 	}
 
-	/**
-	 * <pre>
-	 * 自动注册 export  子包下的 服务导出。
-	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
-	 * </pre>
-	 * @param p
-	 */
-	public static void autoAddServiceExportExtension(AbstractPlugin p) {
-		autoAddServiceExportExtension(p,".export");
-	}
-	/**
-	 * <pre>
-	 * 自动注册 controller 子包下的Web控制器。
-	 * 可以在控制台或者系统启动日志中搜索“$$$ Auto add extension”查看相关自动注册情况。 
-	 * </pre>
-	 * @param p
-	 */
-	public static void autoAddWebControllerExtension(AbstractPlugin p){
-		autoAddWebControllerExtension(p,".controller");
-	}
 	
 	/**
 	 * <PRE>
