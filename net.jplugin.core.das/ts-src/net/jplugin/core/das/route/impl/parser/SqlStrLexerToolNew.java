@@ -34,7 +34,7 @@ public class SqlStrLexerToolNew {
 	public List<String> parse(){
 		while(true){
 			//忽略空格
-			while (idx<buffer.length && buffer[idx]==' '){
+			while (idx<buffer.length && isWhiteSpace(buffer[idx])){
 				idx++;
 			}
 			//识别
@@ -65,6 +65,10 @@ public class SqlStrLexerToolNew {
 		return list;
 	}
 	
+	private boolean isWhiteSpace(char c) {
+		return  c==' '|| c=='\n' || c=='\r' || c=='\t';
+	}
+
 	private void parseFanPie() {
 		int start = idx;
 		while(++idx<buffer.length){
