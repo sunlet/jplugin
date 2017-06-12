@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.IDynamicService;
 import net.jplugin.ext.webasic.api.InvocationContext;
@@ -52,8 +55,14 @@ public class ESFHelper {
 //		}
 //	}
 
+	private static  int SERVICE_TIME_LIMIT = 6000;
+	static{
+		SERVICE_TIME_LIMIT = ConfigFactory.getIntConfig("platform.service-time-limit",6000);
+		PluginEnvirement.getInstance().getStartLogger().log("$$$ platform.service-time-limit is "+SERVICE_TIME_LIMIT);
+	}
+
 	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
-		
+		checkTimeOut(ctx.getMsgReceiveTime());
 		if (obj instanceof IDynamicService) 
 			throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
 		try{
@@ -72,12 +81,19 @@ public class ESFHelper {
 		}
 	}
 
+	private static void checkTimeOut(long msgReceiveTime) {
+		if (msgReceiveTime>0 && (System.currentTimeMillis()-msgReceiveTime) > SERVICE_TIME_LIMIT){
+			throw new RemoteExecuteException("1005","执行超时. limit="+SERVICE_TIME_LIMIT);
+		}
+	}
+
 	/**
 	 * Restful调用这个方法
 	 * @param cp
 	 * @throws Throwable
 	 */
 	public static void callRestfulService(ESFRestContext ctx,CallParam cp)  throws Throwable{
+		checkTimeOut(ctx.getMsgReceiveTime());
 		try{
 			ThreadLocalContextManager.instance.createContext();
 			//fill content

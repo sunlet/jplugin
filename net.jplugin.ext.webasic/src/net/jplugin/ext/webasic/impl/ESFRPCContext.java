@@ -14,7 +14,15 @@ public class ESFRPCContext {
 	String requestUrl;
 	String tenantId;
 	String globalReqId;
+	long msgReceiveTime;
 
+	public long getMsgReceiveTime() {
+		return msgReceiveTime;
+	}
+	public void setMsgReceiveTime(long msgReceiveTime) {
+		this.msgReceiveTime = msgReceiveTime;
+	}
+	
 	public String getOperatorToken() {
 		return operatorToken;
 	}
