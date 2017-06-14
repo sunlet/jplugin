@@ -25,13 +25,14 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-import net.jplugin.core.das.api.SqlMonitorListenerContext;
+import net.jplugin.core.das.api.monitor.SqlMonitorListenerContext;
+import net.jplugin.core.das.api.monitor.StatementContext;
 
 public class StatemenWrapper implements PreparedStatement {
 	Statement inner;
 	String theSql;
 	private String dataSourceName;
-	private SqlMonitorListenerContext ctx;
+	private StatementContext ctx;
 
 	public StatemenWrapper(String dsName, Statement s, String sql) {
 		this.inner = s;
@@ -39,10 +40,10 @@ public class StatemenWrapper implements PreparedStatement {
 		this.dataSourceName = dsName;
 	}
 	
-	public SqlMonitorListenerContext getCtx() {
+	public StatementContext getCtx() {
 		//目前在SqlMonitor.execute 的时候调用context，sql的值已经有了
 		if (this.ctx == null) {
-			this.ctx = SqlMonitorListenerContext.create();
+			this.ctx = SqlMonitorListenerContext.createStatementCtx();
 			ctx.setSql(theSql);
 			ctx.setDataSource(dataSourceName);
 		}

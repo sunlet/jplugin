@@ -2,9 +2,9 @@ package net.jplugin.core.das;
 
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.api.IConnectionWrapperService;
-import net.jplugin.core.das.api.ISqlMonitorListener;
 import net.jplugin.core.das.api.impl.ConnectionWrapperManager;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
+import net.jplugin.core.das.api.monitor.ISqlMonitorListener;
 import net.jplugin.core.das.monitor.MonitorConnWrapperService;
 import net.jplugin.core.das.monitor.SqlMonitorListenerManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;

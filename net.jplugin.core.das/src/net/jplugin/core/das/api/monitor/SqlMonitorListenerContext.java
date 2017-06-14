@@ -1,9 +1,9 @@
-package net.jplugin.core.das.api;
+package net.jplugin.core.das.api.monitor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SqlMonitorListenerContext{
+public abstract class SqlMonitorListenerContext{
 	String sql;
 	String dataSourceName;
 	private Exception exception;
@@ -25,9 +25,9 @@ public class SqlMonitorListenerContext{
 		return exception;
 	}
 
-	public static SqlMonitorListenerContext create() {
-		return new SqlMonitorListenerContext();
-	}
+//	public static SqlMonitorListenerContext create() {
+//		return new SqlMonitorListenerContext();
+//	}
 
 	public void setDataSource(String ds) {
 		this.dataSourceName = ds;
@@ -49,6 +49,14 @@ public class SqlMonitorListenerContext{
 	
 	public Object getAttribute(String key){
 		return attributes==null? null:attributes.get(key);
+	}
+
+	public static StatementContext createStatementCtx() {
+		return new StatementContext();
+	}
+
+	public static ResultSetContext createResultContext() {
+		return new ResultSetContext();
 	}
 
 }

@@ -1,7 +1,8 @@
 package net.jplugin.core.das.monitor;
 
-import net.jplugin.core.das.api.ISqlMonitorListener;
-import net.jplugin.core.das.api.SqlMonitorListenerContext;
+import net.jplugin.core.das.api.monitor.ISqlMonitorListener;
+import net.jplugin.core.das.api.monitor.ResultSetContext;
+import net.jplugin.core.das.api.monitor.StatementContext;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 public class SqlMonitorListenerManager {
@@ -21,7 +22,7 @@ public class SqlMonitorListenerManager {
 		return arr != null && arr.length > 0;
 	}
 
-	public void beforeExecute(SqlMonitorListenerContext ctx) {
+	public void beforeExecute(StatementContext ctx) {
 		for (ISqlMonitorListener o : arr) {
 			if (!o.beforeExecute(ctx))
 				throw new RuntimeException(
@@ -29,7 +30,7 @@ public class SqlMonitorListenerManager {
 		}
 	}
 
-	public void beforeNext(SqlMonitorListenerContext ctx) {
+	public void beforeNext(ResultSetContext ctx) {
 		for (ISqlMonitorListener o : arr) {
 			if (!o.beforeNext(ctx))
 				throw new RuntimeException(
@@ -37,14 +38,14 @@ public class SqlMonitorListenerManager {
 		}
 	}
 
-	public void afterExecute(SqlMonitorListenerContext ctx) {
+	public void afterExecute(StatementContext ctx) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			arr[i].afterExecute(ctx);
 		}
 
 	}
 
-	public void afterNext(SqlMonitorListenerContext ctx) {
+	public void afterNext(ResultSetContext ctx) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			arr[i].afterNext(ctx);
 		}

@@ -23,20 +23,21 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-import net.jplugin.core.das.api.SqlMonitorListenerContext;
+import net.jplugin.core.das.api.monitor.ResultSetContext;
+import net.jplugin.core.das.api.monitor.SqlMonitorListenerContext;
 
 public class ResultSetWrapper implements ResultSet{
 	ResultSet inner;
 	private String sql;
 	private String dataSourceName;
-	private SqlMonitorListenerContext ctx;
+	private ResultSetContext ctx;
 
 	public String getSql(){
 		return this.sql;
 	}
-	public SqlMonitorListenerContext getCtx() {
+	public ResultSetContext getCtx() {
 		if (this.ctx==null) {
-			this.ctx = SqlMonitorListenerContext.create();
+			this.ctx = SqlMonitorListenerContext.createResultContext();
 			ctx.setSql(sql);
 			ctx.setDataSource(dataSourceName);
 		}
