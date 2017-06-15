@@ -17,6 +17,7 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.RequestIdUtil;
 import net.jplugin.ext.webasic.api.WebFilter;
@@ -43,8 +44,11 @@ public class InitRequestInfoFilterNew implements WebFilter {
 //		} catch (UnsupportedEncodingException e) {
 //			throw new RuntimeException(e);
 //		}
+		//PUT http servlet reqeust to context
+		ThreadLocalContext tlContext = ThreadLocalContextManager.instance.getContext();
+		tlContext.setAttribute(ThreadLocalContext.ATTR_SERVLET_REQUEST, req);
 		
-		RequesterInfo requestInfo = ThreadLocalContextManager.getRequestInfo();
+		RequesterInfo requestInfo = tlContext.getRequesterInfo();
 		
 		//parse content
 		parseContent(requestInfo, req);

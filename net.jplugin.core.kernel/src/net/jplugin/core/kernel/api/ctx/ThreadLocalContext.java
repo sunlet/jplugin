@@ -11,6 +11,8 @@ import java.util.List;
  **/
 
 public class ThreadLocalContext {
+	public static final String ATTR_SERVLET_REQUEST="SERVLET-REQUEST";
+	
 	HashMap<String,Object> attributes = null;
 	HashMap<String,Object> sysAttribute = null;
 	List<ThreadLocalContextListener> listeners = null;
