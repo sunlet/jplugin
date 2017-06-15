@@ -10,14 +10,14 @@ import net.jplugin.core.das.api.monitor.StatementContext;
 
 public class SqlMonitor {
 
-	public static Object execute(StatemenWrapper stmt, String methodName, String sql, SqlCall sc) throws SQLException {
+	public static Object execute(StatemenWrapper stmt, String methodName, SqlCall sc) throws SQLException {
 		StatementContext ctx = stmt.getCtx();
 
 		SqlMonitorListenerManager.instance.beforeExecute(ctx);
 		try {
 			Object ret = sc.call();
 			if (ret instanceof ResultSet) {
-				return new ResultSetWrapper(stmt.getDataSourceName(), (ResultSet) ret, sql);
+				return new ResultSetWrapper(stmt.getDataSourceName(), (ResultSet) ret, stmt.getTheSql());
 			} else
 				return ret;
 		} catch (Exception e) {
@@ -71,5 +71,14 @@ public class SqlMonitor {
 		if (e instanceof SQLException)
 			throw (SQLException) e;
 		throw new RuntimeException(e);
+	}
+
+	public static ResultSet getResultSet(StatemenWrapper stmt,SqlCall sc) throws SQLException {
+		ResultSet ret = (ResultSet) sc.call();
+		if (ret==null)
+			return null;
+		else 
+			return new ResultSetWrapper(stmt.getDataSourceName(),ret,stmt.getTheSql());
+		
 	}
 }
