@@ -175,7 +175,7 @@ public final class HttpKit{
 	public static String _post(String url, Map<String,Object> datas,Map<String,String> extHeaders) throws  IOException, HttpStatusException{
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
-				return executeDummy(url,datas);
+				return executeDummy(url,datas,extHeaders);
 			}
 		}
 		
@@ -203,20 +203,20 @@ public final class HttpKit{
 		return handleResponse(httpClient, httpPost);
 	}
 
-	private static String executeDummy(String url, Map<String, Object> datas) {
+	private static String executeDummy(String url, Map<String, Object> datas, Map<String, String> extHeaders) {
 		if (url.indexOf('?')>=0) 
 			throw new RuntimeException("not impl get mode");
 		
 		HttpMock mock = HttpMock.createFromUrl(url);
 		if (datas!=null){
-			mock.request.putAllParameter(datas);
+			mock.request.putAllParameter(datas,extHeaders);
 		}
 		return mock.invoke();
 	}
 	public static String _get(String url,Map<String,String> extHeaders) throws IOException, HttpStatusException {
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
-				return executeDummy(url,null);
+				return executeDummy(url,null,extHeaders);
 			}
 		}
 		
