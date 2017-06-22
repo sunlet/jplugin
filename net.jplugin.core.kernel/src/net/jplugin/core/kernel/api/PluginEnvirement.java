@@ -8,7 +8,9 @@ import java.util.Set;
 
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
+import net.jplugin.common.kits.RequestIdKit;
 import net.jplugin.core.kernel.Plugin;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
 import net.jplugin.core.kernel.impl.PluginPrepareHelper;
@@ -231,7 +233,8 @@ public class PluginEnvirement {
 
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
-					ThreadLocalContextManager.instance.createContext();
+					ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+					ctx.getRequesterInfo().setRequestId(RequestIdKit.newRequestId());
 					registry.start(testAll,testTarget);	
 				}finally{
 					ThreadLocalContextManager.instance.releaseContext();

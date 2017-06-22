@@ -1,5 +1,8 @@
 package net.jplugin.core.kernel.kits;
 
+import net.jplugin.common.kits.RequestIdKit;
+import net.jplugin.core.kernel.api.ctx.RequesterInfo;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 import java.util.concurrent.*;
@@ -144,17 +147,23 @@ public final class ExecutorKit {
         public TheadLocalContextExecutorService(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
         }
-
+        
         @Override
-        protected void beforeExecute(Thread t, Runnable r) {
-            ThreadLocalContextManager.instance.createContext();
+        public void execute(Runnable command) {
+        	super.execute(new RunnableWrapper(command));
         }
 
-        @Override
-        protected void afterExecute(Runnable r, Throwable t) {
-            ThreadLocalContextManager.instance.releaseContext();
-        }
+//        @Override
+//        protected void beforeExecute(Thread t, Runnable r) {
+//            ThreadLocalContextManager.instance.createContext();
+//        }
+//
+//        @Override
+//        protected void afterExecute(Runnable r, Throwable t) {
+//            ThreadLocalContextManager.instance.releaseContext();
+//        }
     }
+ 
 
     /**
      * 支持自动维护ThreadLocalContext的支持周期调度的线程池
@@ -168,18 +177,52 @@ public final class ExecutorKit {
         public ScheduledTheadLocalContextExecutorService(int corePoolSize, ThreadFactory threadFactory) {
             super(corePoolSize, threadFactory);
         }
-
+        
         @Override
-        protected void beforeExecute(Thread t, Runnable r) {
-            ThreadLocalContextManager.instance.createContext();
+        public void execute(Runnable command) {
+        	super.execute(new RunnableWrapper(command));
         }
 
-        @Override
-        protected void afterExecute(Runnable r, Throwable t) {
-            ThreadLocalContextManager.instance.releaseContext();
-        }
+//        @Override
+//        protected void beforeExecute(Thread t, Runnable r) {
+//            ThreadLocalContextManager.instance.createContext();
+//        }
+//
+//        @Override
+//        protected void afterExecute(Runnable r, Throwable t) {
+//            ThreadLocalContextManager.instance.releaseContext();
+//        }
     }
-
+    
+    static class RunnableWrapper implements Runnable{
+    	Runnable inner;
+    	String tenantId;
+    	String requestId;
+    	public RunnableWrapper(Runnable runnable){
+    		//获取父线程状态变量
+    		RequesterInfo r = ThreadLocalContextManager.getRequestInfo();
+    		this.tenantId = r.getCurrentTenantId();
+    		this.requestId = r.getRequestId();
+    		
+    		this.inner = runnable;
+    	}
+		public void run() {
+			//子线程设置状态标量
+			try{
+				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+				RequesterInfo r = ctx.getRequesterInfo();
+				r.setCurrentTenantId(this.tenantId);
+				r.setRequestId(RequestIdKit.newRequestId());
+				r.setParentReqId(this.requestId);
+				
+				//执行过滤器，并执行Message
+				ExecutorKitFilterManager.filter(inner);
+			}finally{
+				  ThreadLocalContextManager.instance.releaseContext();
+			}
+		}
+    	
+    }
     private ExecutorKit() {
     }
 }

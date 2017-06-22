@@ -17,12 +17,12 @@ public class HttpRequestIdChain implements IHttpClientFilter {
 	public String filter(HttpClientFilterChain fc, HttpFilterContext ctx) throws IOException, HttpStatusException {
 		Map<String, String> map = ctx.getHeaders();
 		if (map==null) {
-			map = new HashMap();
+			map = new HashMap<String, String>();
 			ctx.setHeaders(map);
 		}
 		String reqId = ThreadLocalContextManager.getRequestInfo().getRequestId();
 		if (StringKit.isNotNull(reqId)){
-			map.put(InitRequestInfoFilterNew._GREQID, ThreadLocalContextManager.getRequestInfo().getRequestId());
+			map.put(InitRequestInfoFilterNew._REQID, reqId);
 		}
 		
 		return fc.next(ctx);

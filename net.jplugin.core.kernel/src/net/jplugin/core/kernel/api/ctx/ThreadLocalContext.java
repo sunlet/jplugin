@@ -11,18 +11,21 @@ import java.util.List;
  **/
 
 public class ThreadLocalContext {
-	public static final String ATTR_SERVLET_REQUEST="SERVLET-REQUEST";
+	public static final String ATTR_SERVLET_REQUEST="$servlet-request";
+
 	
 	HashMap<String,Object> attributes = null;
 	HashMap<String,Object> sysAttribute = null;
 	List<ThreadLocalContextListener> listeners = null;
 	RequesterInfo requesterInfo=new RequesterInfo();
-	
+
 	
 	public RequesterInfo getRequesterInfo() {
 		return requesterInfo;
 	}
 	
+
+
 	public void setAttribute(String key,Object val){
 		if (attributes == null){
 			attributes = new HashMap<String, Object>();
@@ -65,4 +68,7 @@ public class ThreadLocalContext {
 			}
 		}
 	}
+
+
+	
 }

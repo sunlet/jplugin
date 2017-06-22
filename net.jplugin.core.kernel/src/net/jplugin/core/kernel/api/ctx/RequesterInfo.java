@@ -17,6 +17,7 @@ public class RequesterInfo {
 	public static final String CLIENT_MBROWSER="mb";
 
 	String requestId;
+	String parentReqId;
 	String clientType;
 	String operatorToken;
 	String operatorId;
@@ -30,10 +31,21 @@ public class RequesterInfo {
 	Headers headers=new Headers();
 	
 	//following for request content
-
 	
 	public String getOperatorId() {
 		return operatorId;
+	}
+	public String getRequestId() {
+		return requestId;
+	}
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+	public String getParentReqId() {
+		return parentReqId;
+	}
+	public void setParentReqId(String parentReqId) {
+		this.parentReqId = parentReqId;
 	}
 	public void setOperatorId(String operatorId) {
 		this.operatorId = operatorId;
@@ -50,12 +62,12 @@ public class RequesterInfo {
 	public void setOperatorToken(String token) {
 		this.operatorToken = token;
 	}
-	public String getRequestId() {
-		return requestId;
-	}
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
-	}
+//	public String getRequestId() {
+//		return requestId;
+//	}
+//	public void setRequestId(String requestId) {
+//		this.requestId = requestId;
+//	}
 	public String getCurrentTenantId() {
 		return currentTenantId;
 	}

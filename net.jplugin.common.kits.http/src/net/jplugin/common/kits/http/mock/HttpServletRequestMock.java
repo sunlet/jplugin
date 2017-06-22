@@ -25,6 +25,8 @@ public class HttpServletRequestMock extends HttpServletRequestEmpty{
 	
 	static String URL_BASE = "http://localhost:8080";
 	static String CTX_PATH="/demo";
+	
+	Map<String,Object> headers=new HashMap<String, Object>(); 
 
 	public void setResponse(HttpServletResponseMock res){
 		this.res = res;
@@ -148,9 +150,28 @@ public class HttpServletRequestMock extends HttpServletRequestEmpty{
 		AssertKit.assertTrue(url.startsWith(URL_BASE + CTX_PATH));
 		this.serveletPath = url.substring(URL_BASE.length()+CTX_PATH.length());
 	}
-	public void putAllParameter(Map<String, Object> datas) {
+	public void putAllParameter(Map<String, Object> datas, Map<String, String> h) {
 		for (String k:datas.keySet()){
 			this.paraMap.put(k,(String) datas.get(k));
 		}
+		this.headers.putAll(h);
+	}
+	
+	
+	public String getHeader(String name) {
+		return (String) headers.get(name);
+	}
+	public Enumeration<String> getHeaderNames() {
+		final Iterator<String>  ii = headers.keySet().iterator();
+		return new Enumeration<String>() {
+			
+			public boolean hasMoreElements() {
+				return ii.hasNext();
+			}
+
+			public String nextElement() {
+				return ii.next();
+			}
+		};
 	}
 }

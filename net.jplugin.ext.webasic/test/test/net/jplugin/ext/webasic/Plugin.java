@@ -21,6 +21,7 @@ import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
 import test.net.jplugin.ext.webasic.restclient.TestDefaultValClient;
 import test.net.jplugin.ext.webasic.restclient.TestRemoteClient;
+import test.net.jplugin.ext.webasic.restclient.TestReqIdService;
 import test.net.jplugin.ext.webasic.restclient.TestRestClient;
 import test.net.jplugin.ext.webasic.restclient.WebCtrlFilterTest;
 import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
@@ -53,7 +54,8 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionWebHelper.addServiceExportExtension(this, "/webanno/service", ServiceExportTest.class);
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTestForAnno.class,RuleTestForAnno.class);
 		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
-
+		
+		ExtensionWebHelper.addServiceExportExtension(this,"/testReqId",TestReqIdService.class);
 		
 	}
 
@@ -72,6 +74,8 @@ public class Plugin extends AbstractPluginForTest{
 		new TestDynamicMethodClient().test();
 		new TestPathSearch().test();
 		new AnnoTest().test();
+		
+		TestReqIdService.calltest();
 	}
 	
 	@Override

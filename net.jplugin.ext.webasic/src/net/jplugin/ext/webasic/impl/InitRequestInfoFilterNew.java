@@ -35,7 +35,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
-	public static final String _GREQID = "_greqid_";
+	public static final String _REQID = "_reqid_";
 	private static final String APPLICATION_JSON = "application/json";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
@@ -69,7 +69,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	}
 
 	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
-		requestInfo.getHeaders().setHeader(_GREQID, req.getHeader(_GREQID));
+		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
 		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
 	}
 
@@ -107,10 +107,9 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		}
 		
 		//设置reqId
-		String reqId = (String) requestInfo.getHeaders().getHeader(_GREQID);
-		if (StringKit.isNull(reqId))
-			reqId = RequestIdUtil.newRequestId();
-		requestInfo.setRequestId(reqId);
+		String reqId = (String) requestInfo.getHeaders().getHeader(_REQID);
+		requestInfo.setParentReqId(reqId);
+		requestInfo.setRequestId(RequestIdUtil.newRequestId());
 		
 		//设置tenant
 		MtInvocationFilterHandler.instance.handle(requestInfo);

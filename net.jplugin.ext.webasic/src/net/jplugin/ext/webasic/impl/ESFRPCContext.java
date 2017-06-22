@@ -91,10 +91,8 @@ public class ESFRPCContext {
 		info.setCurrentTenantId(tid);
 		
 		//reqid
-		String gReqId = ctx.getGlobalReqId();
-		if (StringKit.isNull(gReqId))
-			gReqId = RequestIdUtil.newRequestId();
-		info.setRequestId(gReqId);
+		info.setParentReqId(ctx.getGlobalReqId());
+		info.setRequestId(RequestIdUtil.newRequestId());
 	}
 	
 

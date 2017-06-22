@@ -9,4 +9,8 @@ public class ExtensionKernelHelper {
 	public static void addAnnoAttrHandlerExtension(AbstractPlugin plugin, Class class1) {
 		plugin.addExtension(Extension.create(Plugin.EP_ANNO_FOR_ATTR, class1));
 	}
+	
+	public static void addExecutorFilterExtension(AbstractPlugin plugin,Class c){
+		plugin.addExtension(Extension.create(Plugin.EP_EXECUTOR_FILTER,c));
+	}
 }
