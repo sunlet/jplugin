@@ -1,5 +1,6 @@
 package net.jplugin.ext.gtrace;
 
+import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
@@ -9,6 +10,7 @@ import net.jplugin.ext.gtrace.impl.ExecuterFilter4TraceLog;
 import net.jplugin.ext.gtrace.impl.HttpClientFilter4TraceLog;
 import net.jplugin.ext.gtrace.impl.HttpFilter4TraceLog;
 import net.jplugin.ext.gtrace.impl.PluginInitFilter4Trace;
+import net.jplugin.ext.gtrace.impl.RuleFilter4TraceLog;
 import net.jplugin.ext.gtrace.impl.RunnableInitFilter4Trace;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
 
@@ -21,6 +23,7 @@ public class Plugin extends AbstractPlugin {
 		ExtensionWebHelper.addESFRpcFilterExtension(this, ESFRpcFilter4Trace.class);
 		ExtensionWebHelper.addESFRestFilterExtension(this, ESFRestFilter4Trace.class);
 		ExtensionKernelHelper.addPluginEnvInitFilterExtension(this, PluginInitFilter4Trace.class);
+		ExtensionCtxHelper.addRuleServiceFilterExtension(this, RuleFilter4TraceLog.class);
 	}
 	@Override
 	public void init() {
