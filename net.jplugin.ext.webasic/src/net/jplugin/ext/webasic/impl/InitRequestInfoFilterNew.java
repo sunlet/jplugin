@@ -11,15 +11,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.omg.PortableInterceptor.RequestInfo;
-
-import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.RequestIdKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
+import net.jplugin.core.kernel.kits.KernelKit;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
-import net.jplugin.ext.webasic.api.RequestIdUtil;
 import net.jplugin.ext.webasic.api.WebFilter;
 
 /**
@@ -105,11 +103,6 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			requestInfo.setOperatorId((String) map.get(_OID));
 			requestInfo.setClientAppCode((String) map.get(_AID));
 		}
-		
-		//设置reqId
-		String reqId = (String) requestInfo.getHeaders().getHeader(_REQID);
-		requestInfo.setParentReqId(reqId);
-		requestInfo.setRequestId(RequestIdUtil.newRequestId());
 		
 		//设置tenant
 		MtInvocationFilterHandler.instance.handle(requestInfo);

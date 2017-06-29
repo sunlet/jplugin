@@ -7,9 +7,10 @@ public class FilterChain<T>{
 		this.next = c;
 	}
 	
-	public Object next(T ctx) {
+	public Object next(T ctx) throws Throwable {
 		if (this.next==null){
-			throw new RuntimeException("Can't the call the next on the final filter nodes.");
+//			throw new RuntimeException("Can't the call the next on the final filter nodes.");
+			return null;
 		}else{
 			return this.next.filter.filter(this.next,ctx);
 		}

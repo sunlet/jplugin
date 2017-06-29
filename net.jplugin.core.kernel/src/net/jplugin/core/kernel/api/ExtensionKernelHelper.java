@@ -13,4 +13,14 @@ public class ExtensionKernelHelper {
 	public static void addExecutorFilterExtension(AbstractPlugin plugin,Class c){
 		plugin.addExtension(Extension.create(Plugin.EP_EXECUTOR_FILTER,c));
 	}
+	
+	public static void addHttpClientFilterExtension(AbstractPlugin p,Class c){
+		p.addExtension(Extension.create(Plugin.EP_HTTP_CLIENT_FILTER, c));
+	}
+	public static void addExeRunInitFilterExtension(AbstractPlugin p, Class c) {
+		p.addExtension(Extension.create(Plugin.EP_EXE_RUN_INIT_FILTER, c));
+	}
+	public static void addPluginEnvInitFilterExtension(AbstractPlugin p, Class c) {
+		p.addExtension(Extension.create(Plugin.EP_PLUGIN_ENV_INIT_FILTER, c));
+	}
 }

@@ -1,10 +1,29 @@
 package net.jplugin.common.kits.http;
 
-import net.jplugin.common.kits.JsonKit;
-import net.jplugin.common.kits.http.filter.HttpFilterContext;
-import net.jplugin.common.kits.http.filter.HttpFilterManager;
-import net.jplugin.common.kits.http.mock.HttpMock;
-import org.apache.http.*;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -30,25 +49,12 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.swing.text.html.FormSubmitEvent.MethodType;
-
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.security.KeyStore;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.filter.FilterChain;
+import net.jplugin.common.kits.filter.FilterManager;
+import net.jplugin.common.kits.filter.IFilter;
+import net.jplugin.common.kits.http.filter.HttpClientFilterContext;
+import net.jplugin.common.kits.http.mock.HttpMock;
 
 /**
  * Http操作工具类
@@ -71,6 +77,20 @@ public final class HttpKit{
     private static boolean unitTesting=false;
 
 	private static HttpClientBuilder clientBuilder;
+	private static FilterManager<HttpClientFilterContext> filterManager = new FilterManager<HttpClientFilterContext>();
+	
+	static{
+		//注意：在这里设置一个初始值，在Plugin环境下，Kernel中会重新设置filterManager
+		filterManager.addFilter(new IFilter<HttpClientFilterContext>() {
+			public Object filter(FilterChain fc, HttpClientFilterContext ctx) throws Throwable {
+				if (ctx.getMethod()==HttpClientFilterContext.Method.POST){
+					return HttpKit._post(ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
+				}else{
+					return HttpKit._get(ctx.getUrl(),ctx.getHeaders());
+				}
+			}
+		});
+	}
 	
 	static{
 		clientBuilder = initHttpClientBuilder();
@@ -262,11 +282,17 @@ public final class HttpKit{
 		System.out.println(s);
 	}
 	public static String post(String url, Map<String, Object> params) throws IOException, HttpStatusException {
-		HttpFilterContext ctx = new HttpFilterContext(HttpFilterContext.Method.POST, url, params);
-		return HttpFilterManager.execute(ctx);
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.POST, url, params);
+//		return HttpFilterManager.execute(ctx);
+		return (String) filterManager.filter(ctx);
 	}
 	public static String get(String url) throws IOException, HttpStatusException {
-		HttpFilterContext ctx = new HttpFilterContext(HttpFilterContext.Method.GET, url, null);
-		return HttpFilterManager.execute(ctx);
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null);
+//		return HttpFilterManager.execute(ctx);
+		return (String) filterManager.filter(ctx);
+	}
+	
+	public static void _setHttpFilterManager(FilterManager<HttpClientFilterContext> fm) {
+		filterManager = fm;
 	}
 }

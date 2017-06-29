@@ -17,6 +17,10 @@ public class ThreadLocalContextManager {
 		return ThreadLocalContextManager.instance.getContext().getRequesterInfo();
 	}
 	
+	public static ThreadLocalContext getCurrentContext(){
+		return instance.getContext();
+	}
+	
 //	public static ThreadLocalContext currentContet(){
 //		return ThreadLocalContextManager.instance.getContext();
 //	}

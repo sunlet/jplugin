@@ -7,7 +7,6 @@ public class Plugin extends AbstractPluginForTest{
 
 	@Override
 	public void test() throws Throwable {
-		new ExecutorKitFilterTest().test();
 	}
 
 	@Override

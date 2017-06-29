@@ -1,9 +1,10 @@
 package net.jplugin.ext.webasic.impl;
 
-import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.RequestIdKit;
+import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
-import net.jplugin.ext.webasic.api.RequestIdUtil;
+import net.jplugin.core.kernel.kits.KernelKit;
 
 public class ESFRPCContext {
 	String operatorToken;
@@ -90,9 +91,9 @@ public class ESFRPCContext {
 			tid = null;
 		info.setCurrentTenantId(tid);
 		
-		//reqid
-		info.setParentReqId(ctx.getGlobalReqId());
-		info.setRequestId(RequestIdUtil.newRequestId());
+//		//reqid
+//		String greqid = ctx.getGlobalReqId();
+//		KernelKit.setTraceAndSpan(info,greqid);
 	}
 	
 

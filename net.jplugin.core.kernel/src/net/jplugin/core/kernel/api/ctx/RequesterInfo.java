@@ -16,8 +16,8 @@ public class RequesterInfo {
 	public static final String CLIENT_BROWSER="b";
 	public static final String CLIENT_MBROWSER="mb";
 
-	String requestId;
-	String parentReqId;
+	String traceId;
+	String parSpanId;
 	String clientType;
 	String operatorToken;
 	String operatorId;
@@ -35,18 +35,20 @@ public class RequesterInfo {
 	public String getOperatorId() {
 		return operatorId;
 	}
-	public String getRequestId() {
-		return requestId;
+	public String getTraceId() {
+		return traceId;
 	}
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
+	public void setTraceId(String tId) {
+		this.traceId = tId;
 	}
-	public String getParentReqId() {
-		return parentReqId;
+
+	public String getParSpanId() {
+		return parSpanId;
 	}
-	public void setParentReqId(String parentReqId) {
-		this.parentReqId = parentReqId;
+	public void setParSpanId(String parSpanId) {
+		this.parSpanId = parSpanId;
 	}
+	
 	public void setOperatorId(String operatorId) {
 		this.operatorId = operatorId;
 	}

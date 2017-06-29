@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.api.PluginFilterManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.rclient.api.RemoteExecuteException;
+import net.jplugin.ext.webasic.Plugin;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.IDynamicService;
 import net.jplugin.ext.webasic.api.InvocationContext;
@@ -27,7 +30,10 @@ import net.jplugin.ext.webasic.impl.web.WebController;
 import net.jplugin.ext.webasic.impl.web.WebControllerSet;
 
 public class ESFHelper {
-	
+	public static void init(){
+		rpcFilterManager.init();
+		restFilterManager.init();
+	}
 //	/**
 //	 * RPC调用这个方法
 //	 * @param obj
@@ -60,22 +66,32 @@ public class ESFHelper {
 		SERVICE_TIME_LIMIT = ConfigFactory.getIntConfig("platform.service-time-limit",6000);
 		PluginEnvirement.getInstance().getStartLogger().log("$$$ platform.service-time-limit is "+SERVICE_TIME_LIMIT);
 	}
-
+	
+	static PluginFilterManager<Tuple2<ESFRPCContext, InvocationContext>> rpcFilterManager = new PluginFilterManager<>(Plugin.EP_ESF_RPC_FILTER, 
+			(fc,ctx)->{
+				ESFRPCContext.fill(ctx.first);
+				return ServiceFilterManager.INSTANCE.executeWithFilter(ctx.second,new IMethodCallback() {
+					public Object run() throws Throwable {
+						return RuleProxyHelper.invokeWithRule(ctx.second.getObject(), ctx.second.getMethod(), ctx.second.getArgs());
+					}
+				});
+			});
+	
 	public static Object invokeWithRule(ESFRPCContext ctx,String servicePath,final Object obj, final Method method, final Object[] args) throws Throwable{
 		checkTimeOut(ctx.getMsgReceiveTime());
 		if (obj instanceof IDynamicService) 
 			throw new RuntimeException("Dynamic implemented service, not support rpc invoke. "+servicePath);
 		try{
 			ThreadLocalContextManager.instance.createContext();
-			ESFRPCContext.fill(ctx);
-			
 			InvocationContext sfc = new InvocationContext(servicePath, obj, method, args);
 			
-			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
-				public Object run() throws Throwable {
-					return RuleProxyHelper.invokeWithRule(obj, method, args);
-				}
-			});
+			return rpcFilterManager.filter(Tuple2.with(ctx,sfc));
+//			ESFRPCContext.fill(ctx);
+//			return ServiceFilterManager.INSTANCE.executeWithFilter(sfc,new IMethodCallback() {
+//				public Object run() throws Throwable {
+//					return RuleProxyHelper.invokeWithRule(obj, method, args);
+//				}
+//			});
 		}finally{
 			ThreadLocalContextManager.instance.releaseContext();
 		}
@@ -86,7 +102,18 @@ public class ESFHelper {
 			throw new RemoteExecuteException("1005","执行超时. limit="+SERVICE_TIME_LIMIT);
 		}
 	}
-
+	
+	static PluginFilterManager<Tuple2<ESFRestContext,CallParam>> restFilterManager = new PluginFilterManager<>(Plugin.EP_ESF_REST_FILTER,
+			(fc,ctx)->{
+				//fill content
+				ESFRestContextHelper.fillContentForRestful(ctx.second,ctx.first);
+				//fill other attribute
+				InitRequestInfoFilterNew.fillFromBasicReqInfo(ThreadLocalContextManager.getRequestInfo());
+				//call the service
+				ServiceInvokerSet.instance.call(ctx.second);
+				return null;
+			});
+	
 	/**
 	 * Restful调用这个方法
 	 * @param cp
@@ -96,14 +123,7 @@ public class ESFHelper {
 		checkTimeOut(ctx.getMsgReceiveTime());
 		try{
 			ThreadLocalContextManager.instance.createContext();
-			//fill content
-			ESFRestContextHelper.fillContentForRestful(cp,ctx);
-			
-			//fill other attribute
-			InitRequestInfoFilterNew.fillFromBasicReqInfo(ThreadLocalContextManager.getRequestInfo());
-			
-			//call the service
-			ServiceInvokerSet.instance.call(cp);
+			restFilterManager.filter(Tuple2.with(ctx,cp));
 		}finally{
 			ThreadLocalContextManager.instance.releaseContext();
 		}

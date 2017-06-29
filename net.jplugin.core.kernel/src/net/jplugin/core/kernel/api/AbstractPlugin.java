@@ -171,7 +171,7 @@ public abstract class AbstractPlugin implements IPlugin {
 			}
 			
 			if(! ReflactKit.isTypeOf(e.getClazz(),finder.getExtensionClass())){
-				errors.add(new PluginError(this.getName(),"The extension is not sub class of the point required. extClass="+e.getClazz()+" required="+finder.getExtensionClass()));
+				errors.add(new PluginError(this.getName(),"The extension is not sub class of the point required. extClass="+e.getClazz()+" required="+finder.getExtensionClass()+" point="+pname));
 			}
 			
 			if (e.getClass().equals(String.class)){

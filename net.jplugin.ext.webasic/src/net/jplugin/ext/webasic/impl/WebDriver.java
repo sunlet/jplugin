@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.api.PluginFilterManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.Plugin;
+import net.jplugin.ext.webasic.api.HttpFilterContext;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.WebContext;
 import net.jplugin.ext.webasic.api.WebFilter;
@@ -34,12 +36,21 @@ public class WebDriver {
 	ConcurrentHashMap<String, IControllerSet> pathMap=new ConcurrentHashMap<String, IControllerSet>();
 	
 	private WebFilter[] filters;
+	
+	private PluginFilterManager<HttpFilterContext> filterManager=new PluginFilterManager<>(
+			net.jplugin.ext.webasic.Plugin.EP_HTTP_FILTER,
+			(fc, ctx) -> {
+				doHttpAcure(ctx.getRequest(), ctx.getResponse());
+				return null;
+			});
 	/**
 	 * @param extensionMap
 	 * @param webfilters 
 	 * @param controllerMap2 
 	 */
 	public void init() {
+		filterManager.init();
+		
 		controllerSets = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_CONTROLLERSET,IControllerSet.class);
 		filters = PluginEnvirement.getInstance().getExtensionObjects(Plugin.EP_WEBFILTER,WebFilter.class);
 		for (WebFilter f:filters){
@@ -71,27 +82,8 @@ public class WebDriver {
 		ThreadLocalContext tlc =null;
 		try{
 			tlc = ThreadLocalContextManager.instance.createContext();
+			filterManager.filter(HttpFilterContext.create(req, res));
 			
-			WebContext.initFromRequest(req);
-			if (doWebFilter(req,res)){
-				Throwable th = null;
-				try{
-					//获取ControllerMeta，并执行
-					String path = req.getServletPath();
-					ControllerMeta controllerMeta = this.parseControllerMeta(path);
-					if (controllerMeta!=null)
-						controllerMeta.controllerSet.dohttp(controllerMeta.servicePath, req, res, controllerMeta.operation);
-					else
-						throw new RuntimeException("Can't find controller for :"+path);
-					
-					doAfterWebFilter(req,res,null);
-				}catch(Throwable t){
-					th = t;
-					doAfterWebFilter(req,res,th);
-				}
-				//如果发生异常再次抛出
-				if (th!=null) throw th;
-			}
 		}catch(Throwable e){
 			e.printStackTrace();
 			getLogger().error("Error when service "+req.getRequestURI(),e);
@@ -101,6 +93,29 @@ public class WebDriver {
 			else throw (new ServletException(e));
 		}finally{
 			ThreadLocalContextManager.instance.releaseContext();
+		}
+	}
+
+	private void doHttpAcure(HttpServletRequest req, HttpServletResponse res) throws Throwable {
+		WebContext.initFromRequest(req);
+		if (doWebFilter(req,res)){
+			Throwable th = null;
+			try{
+				//获取ControllerMeta，并执行
+				String path = req.getServletPath();
+				ControllerMeta controllerMeta = this.parseControllerMeta(path);
+				if (controllerMeta!=null)
+					controllerMeta.controllerSet.dohttp(controllerMeta.servicePath, req, res, controllerMeta.operation);
+				else
+					throw new RuntimeException("Can't find controller for :"+path);
+				
+				doAfterWebFilter(req,res,null);
+			}catch(Throwable t){
+				th = t;
+				doAfterWebFilter(req,res,th);
+			}
+			//如果发生异常再次抛出
+			if (th!=null) throw th;
 		}
 	}
 	

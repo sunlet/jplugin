@@ -36,4 +36,25 @@ public class KernelKit {
 	private static String getEnvType(){
 		return System.getProperty("plugin.env");
 	}
+//	
+//	public static void setTraceAndSpan(RequesterInfo info, String greqid) {
+//		if (greqid!=null){
+//			Tuple2<String, String> tuple2 = RequestIdKit.parse(greqid);
+//			info.setTraceId(tuple2.first);
+//			info.setParSpanId(tuple2.second);
+//		}else{
+//			info.setTraceId(RequestIdKit.newTraceId());
+//			info.setParSpanId(null);
+//		}
+//	}
+//	
+//	public static SpanStack getOrCreateSpanStack(ThreadLocalContext ctx) {
+//		SpanStack ss = (SpanStack) ctx.getAttribute(ThreadLocalContext.ATTR_SPAN_STACK);
+//		if (ss==null) {
+//			ss = new SpanStack();
+//			ctx.setAttribute(ThreadLocalContext.ATTR_SPAN_STACK, ss);
+//		}
+//		return ss;
+//	}
+	
 }

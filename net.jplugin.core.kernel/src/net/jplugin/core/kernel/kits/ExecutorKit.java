@@ -1,11 +1,15 @@
 package net.jplugin.core.kernel.kits;
 
-import net.jplugin.common.kits.RequestIdKit;
-import net.jplugin.core.kernel.api.ctx.RequesterInfo;
-import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
-import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
-
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 支持自动维护ThreadLocalContext的线程池工具类
@@ -171,16 +175,30 @@ public final class ExecutorKit {
     private static class ScheduledTheadLocalContextExecutorService extends ScheduledThreadPoolExecutor {
 
         public ScheduledTheadLocalContextExecutorService(int corePoolSize) {
-            super(corePoolSize);
+            super(corePoolSize, new ThreadFactoryWrapper(Executors.defaultThreadFactory()));
         }
 
         public ScheduledTheadLocalContextExecutorService(int corePoolSize, ThreadFactory threadFactory) {
-            super(corePoolSize, threadFactory);
+            super(corePoolSize, new ThreadFactoryWrapper(threadFactory));
         }
-        
+
         @Override
         public void execute(Runnable command) {
-        	super.execute(new RunnableWrapper(command));
+            super.execute(new RunnableWrapper(command));
+        }
+
+        static class ThreadFactoryWrapper implements ThreadFactory {
+
+            ThreadFactory inner;
+
+            public ThreadFactoryWrapper(ThreadFactory threadFactory) {
+                this.inner = threadFactory;
+            }
+
+            @Override
+            public Thread newThread(Runnable r) {
+                return inner.newThread(new RunnableWrapper(r));
+            }
         }
 
 //        @Override
@@ -194,35 +212,7 @@ public final class ExecutorKit {
 //        }
     }
     
-    static class RunnableWrapper implements Runnable{
-    	Runnable inner;
-    	String tenantId;
-    	String requestId;
-    	public RunnableWrapper(Runnable runnable){
-    		//获取父线程状态变量
-    		RequesterInfo r = ThreadLocalContextManager.getRequestInfo();
-    		this.tenantId = r.getCurrentTenantId();
-    		this.requestId = r.getRequestId();
-    		
-    		this.inner = runnable;
-    	}
-		public void run() {
-			//子线程设置状态标量
-			try{
-				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
-				RequesterInfo r = ctx.getRequesterInfo();
-				r.setCurrentTenantId(this.tenantId);
-				r.setRequestId(RequestIdKit.newRequestId());
-				r.setParentReqId(this.requestId);
-				
-				//执行过滤器，并执行Message
-				ExecutorKitFilterManager.filter(inner);
-			}finally{
-				  ThreadLocalContextManager.instance.releaseContext();
-			}
-		}
-    	
-    }
+
     private ExecutorKit() {
     }
 }

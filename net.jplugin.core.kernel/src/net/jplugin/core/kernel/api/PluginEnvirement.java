@@ -8,7 +8,7 @@ import java.util.Set;
 
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
-import net.jplugin.common.kits.RequestIdKit;
+import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -39,10 +39,19 @@ public class PluginEnvirement {
 	
 	private IStartLogger startLogger = new StartUpLoggerImpl();
 
-	
+
+	private PluginFilterManager<Tuple2<Boolean, String>> startFilterManager = new PluginFilterManager<>(
+			net.jplugin.core.kernel.Plugin.EP_PLUGIN_ENV_INIT_FILTER, (fc, ctx) -> {
+				registry.start(ctx.first, ctx.second);
+				return null;
+			});
 	
 	public static PluginEnvirement getInstance() {
 		return INSTANCE;
+	}
+	
+	public  void initStartFilter(){
+		this.startFilterManager.init();
 	}
 	
 	public IStartLogger getStartLogger() {
@@ -234,8 +243,11 @@ public class PluginEnvirement {
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
 					ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
-					ctx.getRequesterInfo().setRequestId(RequestIdKit.newRequestId());
-					registry.start(testAll,testTarget);	
+//					KernelKit.getOrCreateSpanStack(ctx).pushSpan(Span.SYSTEM_INIT);
+//					ctx.getRequesterInfo().setTraceId(RequestIdKit.newTraceId());
+					
+					startFilterManager.filter(Tuple2.with(testAll,testTarget));
+//					registry.start(testAll,testTarget);	
 				}finally{
 					ThreadLocalContextManager.instance.releaseContext();
 				}

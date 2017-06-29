@@ -200,4 +200,14 @@ public class ExtensionWebHelper {
 			return false;
 		});
 	}
+	
+	public static void addHttpFilterExtension(AbstractPlugin p,Class c){
+		p.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_HTTP_FILTER, c));
+	}
+	public static void addESFRpcFilterExtension(AbstractPlugin p,Class c){
+		p.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_ESF_RPC_FILTER, c));
+	}
+	public static void addESFRestFilterExtension(AbstractPlugin p,Class c){
+		p.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_ESF_REST_FILTER, c));
+	}
 }

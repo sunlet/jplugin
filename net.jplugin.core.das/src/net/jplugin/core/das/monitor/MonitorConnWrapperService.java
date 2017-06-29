@@ -8,7 +8,7 @@ public class MonitorConnWrapperService implements IConnectionWrapperService{
 	
 	@Override
 	public Connection wrapper(String dataSourceName, Connection connection) {
-		if (SqlMonitorListenerManager.instance.hasListener())
+		if (SqlMonitorListenerManager.instance.hasListener() || SqlMonitor.hasFilter)
 			return new ConnectionWrapper(connection,dataSourceName);
 		else 
 			return connection;

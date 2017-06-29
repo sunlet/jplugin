@@ -5,22 +5,22 @@ import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 public class ExecutorKitFilterManager {
-	static FilterManager<Runnable> httpClientFilterManager = new FilterManager<>();
+	static FilterManager<RunnableWrapper> httpClientFilterManager = new FilterManager<>();
 
 	public static void init() {
-		IFilter<Runnable>[] filters = PluginEnvirement.getInstance()
+		IFilter<RunnableWrapper>[] filters = PluginEnvirement.getInstance()
 				.getExtensionObjects(net.jplugin.core.kernel.Plugin.EP_EXECUTOR_FILTER, IFilter.class);
-		for (IFilter<Runnable> f : filters) {
+		for (IFilter<RunnableWrapper> f : filters) {
 			httpClientFilterManager.addFilter(f);
 		}
 		// 最后增加一个执行的
 		httpClientFilterManager.addFilter((fc, ctx) -> {
-			ctx.run();
+			ctx.inner.run();
 			return null;
 		});
 	}
 
-	public static void filter(Runnable r) {
+	public static void filter(RunnableWrapper r) {
 		httpClientFilterManager.filter(r);
 	}
 }

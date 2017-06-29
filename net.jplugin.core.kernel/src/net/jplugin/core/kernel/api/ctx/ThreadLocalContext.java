@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ThreadLocalContext {
 	public static final String ATTR_SERVLET_REQUEST="$servlet-request";
-
 	
 	HashMap<String,Object> attributes = null;
 	HashMap<String,Object> sysAttribute = null;
@@ -56,6 +55,12 @@ public class ThreadLocalContext {
 		else 
 			addContextListener(ruleContextListener);
 	}
+	
+//	public Span getCurrentSpan(){
+//		SpanStack ss = (SpanStack) this.getAttribute(ATTR_SPAN_STACK);
+//		if (ss==null) return null;
+//		else return ss.getCurrent();
+//	}
 	
 	/**
 	 * The method can't be called outside this module,so it must not be publie.

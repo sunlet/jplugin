@@ -4,8 +4,10 @@ import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.api.IConnectionWrapperService;
 import net.jplugin.core.das.api.impl.ConnectionWrapperManager;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
+import net.jplugin.core.das.api.monitor.ISqlExecFilter;
 import net.jplugin.core.das.api.monitor.ISqlMonitorListener;
 import net.jplugin.core.das.monitor.MonitorConnWrapperService;
+import net.jplugin.core.das.monitor.SqlMonitor;
 import net.jplugin.core.das.monitor.SqlMonitorListenerManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -18,6 +20,7 @@ public class Plugin extends AbstractPlugin {
 	public static final String EP_CONN_WRAPPER = "EP_CONN_WRAPPER";
 	
 	public static final String EP_SQL_LISTENER = "EP_SQL_LISTENER";
+	public static final String EP_SQL_EXEC_FILTER = "EP_SQL_EXEC_FILTER";
 	
 
 	public Plugin(){
@@ -25,6 +28,8 @@ public class Plugin extends AbstractPlugin {
 		this.addExtensionPoint(ExtensionPoint.create(EP_CONN_WRAPPER, IConnectionWrapperService.class));
 		
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_LISTENER, ISqlMonitorListener.class));
+		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_EXEC_FILTER, ISqlExecFilter.class));
+
 		//用来监控sql的ConnectionWrapper
 		ExtensionDasHelper.addConnWrapperExtension(this, MonitorConnWrapperService.class);
 	}
@@ -39,6 +44,7 @@ public class Plugin extends AbstractPlugin {
 		DataSourceFactory.init();
 		ConnectionWrapperManager.init();
 		SqlMonitorListenerManager.instance.init();
+		SqlMonitor.initExecFilter();
 	}
 
 

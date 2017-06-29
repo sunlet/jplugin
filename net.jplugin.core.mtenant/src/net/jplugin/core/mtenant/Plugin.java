@@ -1,10 +1,10 @@
 package net.jplugin.core.mtenant;
 
-import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
@@ -58,6 +58,7 @@ public class Plugin extends AbstractPlugin{
 //			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
 			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
+			ExtensionKernelHelper.addHttpClientFilterExtension(this, MTenantChain.class);
 		}else{
 			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant DISABLED!");
 		}
@@ -66,7 +67,7 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public void onCreateServices() {
 		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
-			HttpFilterManager.addFilter(new MTenantChain());
+//			HttpFilterManager.addFilter(new MTenantChain());
 			AbstractSqlMultiTenantHanlder.initInstance();
 		}
 	}

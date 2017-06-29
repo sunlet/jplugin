@@ -1,5 +1,6 @@
 package test.net.jplugin.ext.webasic;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import net.jplugin.common.kits.http.HttpStatusException;
 import net.jplugin.core.ctx.ExtensionCtxHelper;
@@ -21,7 +22,6 @@ import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
 import test.net.jplugin.ext.webasic.restclient.TestDefaultValClient;
 import test.net.jplugin.ext.webasic.restclient.TestRemoteClient;
-import test.net.jplugin.ext.webasic.restclient.TestReqIdService;
 import test.net.jplugin.ext.webasic.restclient.TestRestClient;
 import test.net.jplugin.ext.webasic.restclient.WebCtrlFilterTest;
 import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
@@ -55,7 +55,6 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTestForAnno.class,RuleTestForAnno.class);
 		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
 		
-		ExtensionWebHelper.addServiceExportExtension(this,"/testReqId",TestReqIdService.class);
 		
 	}
 
@@ -64,7 +63,7 @@ public class Plugin extends AbstractPluginForTest{
 		return CoreServicePriority.WEBSERVICE +1;
 	}
 
-	public void test() throws IOException, HttpStatusException {
+	public void test() throws IOException, HttpStatusException, InterruptedException, ExecutionException {
 		RestMethod4Pojo.test();
 		new TestRestClient().test();
 		new TestRestClient().testProxyFactory();
@@ -75,7 +74,9 @@ public class Plugin extends AbstractPluginForTest{
 		new TestPathSearch().test();
 		new AnnoTest().test();
 		
-		TestReqIdService.calltest();
+//		TestReqIdService.calltest();
+		
+
 	}
 	
 	@Override

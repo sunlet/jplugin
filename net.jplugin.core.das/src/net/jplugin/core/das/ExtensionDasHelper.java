@@ -28,4 +28,7 @@ public class ExtensionDasHelper {
 		plugin.addExtension(Extension.create(Plugin.EP_SQL_LISTENER, clz));
 	}
 
+	public static void addSqlExecFilterExtension(AbstractPlugin plugin,Class clz){
+		plugin.addExtension(Extension.create(Plugin.EP_SQL_EXEC_FILTER, clz));
+	}
 }

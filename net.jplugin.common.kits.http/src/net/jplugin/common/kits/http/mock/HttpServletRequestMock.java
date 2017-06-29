@@ -154,7 +154,8 @@ public class HttpServletRequestMock extends HttpServletRequestEmpty{
 		for (String k:datas.keySet()){
 			this.paraMap.put(k,(String) datas.get(k));
 		}
-		this.headers.putAll(h);
+		if (h!=null)
+			this.headers.putAll(h);
 	}
 	
 	

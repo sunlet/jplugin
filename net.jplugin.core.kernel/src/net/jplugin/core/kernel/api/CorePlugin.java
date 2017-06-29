@@ -32,6 +32,8 @@ public class CorePlugin {
 		addIfExists(ret,"net.jplugin.ext.staticweb.Plugin");
 		//file
 		addIfExists(ret,"net.jplugin.ext.filesvr.Plugin");
+		//tracelog
+		addIfExists(ret, "net.jplugin.ext.gtrace.Plugin");
 
 		// return
 		return ret;
