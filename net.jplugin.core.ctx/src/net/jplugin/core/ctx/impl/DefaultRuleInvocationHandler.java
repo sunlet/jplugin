@@ -6,7 +6,9 @@ import java.lang.reflect.Method;
 import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.ctx.api.Rule.TxType;
+import net.jplugin.core.ctx.api.RuleServiceFilterContext;
 import net.jplugin.core.ctx.api.TransactionManager.Status;
+import net.jplugin.core.kernel.api.PluginFilterManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -19,8 +21,17 @@ import net.jplugin.core.service.api.ServiceFactory;
 
 public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 
-	private TransactionManagerAdaptor txm;
+	static private TransactionManagerAdaptor txm;
+	private static PluginFilterManager<RuleServiceFilterContext> filterManager = new PluginFilterManager<>(
+			net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE_FILTER, (fc, ctx) -> {
+				return invokeWithTx(ctx.getProxyObject(), ctx.getObject(), ctx.getMethod(), ctx.getArgs(), ctx.getAnnotation());
+			});
 
+	
+	public static void init(){
+		filterManager.init();
+		initTx();
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -29,7 +40,7 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	 * java.lang.Object, java.lang.reflect.Method, java.lang.Object[],
 	 * net.luis.plugin.ctx.impl.Rule)
 	 */
-	public Object invokeWithLog(Object proxyObj, Object oldService, Method method,
+	public static Object invokeWithLog(Object proxyObj, Object oldService, Method method,
 			Object[] args, Rule meta) throws Throwable {
 		Throwable throwable = null;
 		RuleInvocationContext invokCtx = new RuleInvocationContext();
@@ -51,7 +62,8 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 				ThreadLocalContextManager.instance.createContext();
 				isCreate = true;
 			}
-			return invokeWithTx(proxyObj,oldService,method,args,meta);
+			return filterManager.filter(RuleServiceFilterContext.create(proxyObj, oldService, method, args, meta));
+//			return invokeWithTx(proxyObj,oldService,method,args,meta);
 		}finally{
 			if (isCreate){
 				ThreadLocalContextManager.instance.releaseContext();
@@ -64,7 +76,7 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	 * @param args
 	 * @param meta
 	 */
-	public Object invokeWithTx(Object proxyObj, Object oldService, Method method,
+	public static Object invokeWithTx(Object proxyObj, Object oldService, Method method,
 			Object[] args, Rule meta) throws Throwable {
 		initTx();
 		TxType type = meta.methodType();
@@ -104,7 +116,7 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	 * @return 
 	 * @throws Throwable 
 	 */
-	private Throwable getRethrow(Throwable th) throws Throwable {
+	private static Throwable getRethrow(Throwable th) throws Throwable {
 		if (th instanceof InvocationTargetException){
 			return ((InvocationTargetException)th).getTargetException();
 		}else{
@@ -115,13 +127,10 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	/**
 	 * 
 	 */
-	private void initTx() {
-		if (txm ==null){
-			synchronized (this) {
+	private static void initTx() {
+	
 				if (txm==null){
 					txm = (TransactionManagerAdaptor) ServiceFactory.getService(TransactionManager.class);
 				}
-			}
-		}
 	}
 }

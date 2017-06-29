@@ -31,6 +31,9 @@ public class ExtensionCtxHelper {
 		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_TXMGR_LISTENER, impl ));
 	}
 
+	public static void addRuleServiceFilterExtension(AbstractPlugin plugin,Class impl){
+		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE_FILTER, impl ));
+	}
 
 
 	/**
