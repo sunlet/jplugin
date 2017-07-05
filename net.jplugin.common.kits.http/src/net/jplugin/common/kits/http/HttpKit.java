@@ -26,6 +26,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -220,7 +221,29 @@ public final class HttpKit{
 			}
 		}
 		
+		//下面设置http调用参数
+		useInvokeParam(httpPost);
+		
+		//调用
 		return handleResponse(httpClient, httpPost);
+	}
+	private static void useInvokeParam(HttpRequestBase httpReqBase) {
+		HttpInvokeParam invokeParam = manager.getParam();
+		if (invokeParam != null) {
+			try {
+				Builder configBuilder = RequestConfig.custom();
+				if (invokeParam.socketTimeOut != 0) {
+					configBuilder.setSocketTimeout(invokeParam.socketTimeOut);
+				}
+				if (invokeParam.connectTimeout != 0) {
+					configBuilder.setConnectTimeout(invokeParam.connectTimeout);
+				}
+
+				httpReqBase.setConfig(configBuilder.build());
+			} finally {
+				manager.clearParam();
+			}
+		}
 	}
 
 	private static String executeDummy(String url, Map<String, Object> datas, Map<String, String> extHeaders) {
@@ -249,6 +272,9 @@ public final class HttpKit{
 				httpGet.setHeader(en.getKey(),en.getValue());
 			}
 		}
+		
+		//下面设置http调用参数
+		useInvokeParam(httpGet);
 		
 		return handleResponse(httpClient, httpGet);
 	}
@@ -294,5 +320,15 @@ public final class HttpKit{
 	
 	public static void _setHttpFilterManager(FilterManager<HttpClientFilterContext> fm) {
 		filterManager = fm;
+	}
+	
+	//HttpInvoke Param 
+	private static HttpInvokeParamManager manager = new HttpInvokeParamManager();
+	
+	public static void setInvokeParam(HttpInvokeParam p){
+		manager.setParam(p);
+	}
+	public static void clearInvokeParam(){
+		manager.clearParam();
 	}
 }
