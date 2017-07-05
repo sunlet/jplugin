@@ -7,6 +7,8 @@ package net.jplugin.core.rclient.api;
  **/
 
 public class RemoteExecuteException extends RuntimeException {
+	public static final String ACCESS_FORBIDDEN = "AccessForbidden";
+	
 	String code;
 
 	/**
