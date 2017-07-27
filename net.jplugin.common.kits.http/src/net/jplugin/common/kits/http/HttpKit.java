@@ -51,6 +51,8 @@ import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
 import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.client.InvocationParam;
+import net.jplugin.common.kits.client.ClientInvocationManager;
 import net.jplugin.common.kits.filter.FilterChain;
 import net.jplugin.common.kits.filter.FilterManager;
 import net.jplugin.common.kits.filter.IFilter;
@@ -228,21 +230,13 @@ public final class HttpKit{
 		return handleResponse(httpClient, httpPost);
 	}
 	private static void useInvokeParam(HttpRequestBase httpReqBase) {
-		HttpInvokeParam invokeParam = manager.getParam();
+		InvocationParam invokeParam = ClientInvocationManager.INSTANCE.getAndClearParam();
 		if (invokeParam != null) {
-			try {
-				Builder configBuilder = RequestConfig.custom();
-				if (invokeParam.socketTimeOut != 0) {
-					configBuilder.setSocketTimeout(invokeParam.socketTimeOut);
-				}
-				if (invokeParam.connectTimeout != 0) {
-					configBuilder.setConnectTimeout(invokeParam.connectTimeout);
-				}
-
-				httpReqBase.setConfig(configBuilder.build());
-			} finally {
-				manager.clearParam();
+			Builder configBuilder = RequestConfig.custom();
+			if (invokeParam.getServiceTimeOut() != 0) {
+				configBuilder.setSocketTimeout(invokeParam.getServiceTimeOut());
 			}
+			httpReqBase.setConfig(configBuilder.build());
 		}
 	}
 
@@ -322,13 +316,13 @@ public final class HttpKit{
 		filterManager = fm;
 	}
 	
-	//HttpInvoke Param 
-	private static HttpInvokeParamManager manager = new HttpInvokeParamManager();
-	
-	public static void setInvokeParam(HttpInvokeParam p){
-		manager.setParam(p);
-	}
-	public static void clearInvokeParam(){
-		manager.clearParam();
-	}
+//	//HttpInvoke Param 
+//	private static ClientInvocationManager manager = new ClientInvocationManager();
+//	
+//	public static void setInvokeParam(InvocationParam p){
+//		manager.setParam(p);
+//	}
+//	public static void clearInvokeParam(){
+//		manager.clearParam();
+//	}
 }

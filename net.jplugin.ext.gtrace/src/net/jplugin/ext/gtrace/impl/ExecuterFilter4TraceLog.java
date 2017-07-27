@@ -20,7 +20,7 @@ public class ExecuterFilter4TraceLog implements IExecutorFilter{
 		r.setTraceId((String) wrapper.getAttribute(RunWrapperConstants.TRACE_ID));
 
 		SpanStack ss = GTraceKit.getOrCreateSpanStack(ctx);
-		ss.pushSpan(Span.EXPORT);
+		ss.pushSpan(Span.INTERNAL_ASYN);
 		try{
 			return fc.next(wrapper);
 		}finally{

@@ -7,6 +7,7 @@ import net.jplugin.core.kernel.api.IPluginEnvInitFilter;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.gtrace.api.Span;
+import net.jplugin.ext.gtrace.api.SpanStack;
 import net.jplugin.ext.gtrace.kits.GTraceKit;
 
 public class PluginInitFilter4Trace implements IPluginEnvInitFilter{
@@ -14,10 +15,16 @@ public class PluginInitFilter4Trace implements IPluginEnvInitFilter{
 	@Override
 	public Object filter(FilterChain fc, Tuple2<Boolean, String> fctx) throws Throwable {
 		ThreadLocalContext ctx = ThreadLocalContextManager.getCurrentContext();
-		GTraceKit.getOrCreateSpanStack(ctx).pushSpan(Span.SYSTEM_INIT);
 		ctx.getRequesterInfo().setTraceId(RequestIdKit.newTraceId());
 		
-		return fc.next(fctx);
+		SpanStack ss = GTraceKit.getOrCreateSpanStack(ctx);
+		ss.pushSpan(Span.SYSTEM_INIT);
+		try{
+			return fc.next(fctx);
+		}finally{
+			ss.popSpan();
+		}
+		
 	}
 
 }

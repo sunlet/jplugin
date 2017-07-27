@@ -25,7 +25,7 @@ public class RequestIdKit {
 	
 
 	public static String newTraceId() {
-		return traceIdKit.newId();
+		return System.currentTimeMillis()+"-"+traceIdKit.newId();
 	}
 
 	public static String newSpanId() {
