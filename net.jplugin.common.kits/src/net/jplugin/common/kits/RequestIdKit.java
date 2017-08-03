@@ -38,6 +38,7 @@ public class RequestIdKit {
 		System.out.println(newTraceId());
 		System.out.println(newTraceId());
 		System.out.println(newTraceId());
+		System.out.println(newSpanId());
 	}
 
 	public static Tuple2<String, String> parse(String s) {
