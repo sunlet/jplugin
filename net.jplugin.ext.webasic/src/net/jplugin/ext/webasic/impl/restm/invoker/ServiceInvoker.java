@@ -71,6 +71,14 @@ public class ServiceInvoker implements IServiceInvoker{
 		boolean required;
 	}
 
+	static HashMap<Class,Object> nullDefaultMap = new HashMap();
+	static{
+		nullDefaultMap.put(int.class, new Integer(0));
+		nullDefaultMap.put(double.class, new Double(0));
+		nullDefaultMap.put(float.class, new Float(0));
+		nullDefaultMap.put(long.class, new Long(0));
+	}
+	
 	private Object getFromRequest(Map paraMap, ParaInfo paraInfo,
 			Class<?> clz, int idx) {
 		if (!paraMap.containsKey(paraInfo.name) && paraInfo.required){
@@ -86,11 +94,13 @@ public class ServiceInvoker implements IServiceInvoker{
 		}
 		
 		if (StringKit.isNull(val)){
-			return null;
+			Object o = nullDefaultMap.get(clz);
+			return o;
 		}else{
 			return JsonKit.json2ObjectEx(val, clz);
 		}
 	}
+
 
 	private ParaInfo getParaInfo(Annotation[] anno,int index) {
 		ParaInfo pi = new ParaInfo();
