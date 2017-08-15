@@ -12,6 +12,7 @@ import net.jplugin.ext.gtrace.impl.HttpFilter4TraceLog;
 import net.jplugin.ext.gtrace.impl.PluginInitFilter4Trace;
 import net.jplugin.ext.gtrace.impl.RuleFilter4TraceLog;
 import net.jplugin.ext.gtrace.impl.RunnableInitFilter4Trace;
+import net.jplugin.ext.gtrace.impl.ScheduledExeFilter4Trace;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
 
 public class Plugin extends AbstractPlugin {
@@ -24,6 +25,7 @@ public class Plugin extends AbstractPlugin {
 		ExtensionWebHelper.addESFRestFilterExtension(this, ESFRestFilter4Trace.class);
 		ExtensionKernelHelper.addPluginEnvInitFilterExtension(this, PluginInitFilter4Trace.class);
 		ExtensionCtxHelper.addRuleServiceFilterExtension(this, RuleFilter4TraceLog.class);
+		ExtensionKernelHelper.addScheduledExecutionFilterExtension(this, ScheduledExeFilter4Trace.class);
 	}
 	@Override
 	public void init() {

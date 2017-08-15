@@ -8,11 +8,13 @@ import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
 import net.jplugin.core.kernel.api.IExeRunnableInitFilter;
 import net.jplugin.core.kernel.api.IExecutorFilter;
 import net.jplugin.core.kernel.api.IPluginEnvInitFilter;
+import net.jplugin.core.kernel.api.IScheduledExecutionFilter;
 import net.jplugin.core.kernel.api.IStartup;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.impl.HttpClientFilterManager;
 import net.jplugin.core.kernel.kits.ExecutorKitFilterManager;
 import net.jplugin.core.kernel.kits.RunnableInitFilterManager;
+import net.jplugin.core.kernel.kits.scheduled.ScheduledFilterManager;
 
 /**
  *
@@ -28,6 +30,7 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_HTTP_CLIENT_FILTER = "EP_HTTP_CLIENT_FILTER";
 	public static final String EP_EXE_RUN_INIT_FILTER = "EP_EXE_RUN_INIT_FILTER";
 	public static final String EP_PLUGIN_ENV_INIT_FILTER = "EP_PLUGIN_ENV_INIT_FILTER";
+	public static final String EP_EXE_SCHEDULED_FILTER = "EP_EXE_SCHEDULED_FILTER";
 
 	public Plugin(){
 		addExtensionPoint(ExtensionPoint.create(EP_STARTUP, IStartup.class));
@@ -36,6 +39,7 @@ public class Plugin extends AbstractPlugin{
 		addExtensionPoint(ExtensionPoint.create(EP_EXE_RUN_INIT_FILTER,IExeRunnableInitFilter.class));
 		addExtensionPoint(ExtensionPoint.create(EP_HTTP_CLIENT_FILTER,IHttpClientFilter.class));	
 		addExtensionPoint(ExtensionPoint.create(EP_PLUGIN_ENV_INIT_FILTER,IPluginEnvInitFilter.class));	
+		addExtensionPoint(ExtensionPoint.create(EP_EXE_SCHEDULED_FILTER,IScheduledExecutionFilter.class));	
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.AbstractPlugin#getPrivority()
@@ -53,11 +57,11 @@ public class Plugin extends AbstractPlugin{
 		ExecutorKitFilterManager.init();
 		RunnableInitFilterManager.init();
 		PluginEnvirement.getInstance().initStartFilter();
+		ScheduledFilterManager.init();
 	}
 	
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 

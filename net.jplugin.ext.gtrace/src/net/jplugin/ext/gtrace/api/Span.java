@@ -7,6 +7,8 @@ public class Span {
 	public static final int INTERNAL_CALL=3;
 	public static final int INTERNAL_ASYN=4;
 	public static final int SQL_EXEC=5;
+	public static final int SCHDULE_EXEC=6;
+	public static final int SPAN_DEFAULT = 9;//用来容错的默认span
 	
 	int type;
 	String id;

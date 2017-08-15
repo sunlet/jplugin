@@ -23,4 +23,8 @@ public class ExtensionKernelHelper {
 	public static void addPluginEnvInitFilterExtension(AbstractPlugin p, Class c) {
 		p.addExtension(Extension.create(Plugin.EP_PLUGIN_ENV_INIT_FILTER, c));
 	}
+	
+	public static void addScheduledExecutionFilterExtension(AbstractPlugin p, Class c) {
+		p.addExtension(Extension.create(Plugin.EP_EXE_SCHEDULED_FILTER, c));
+	}
 }

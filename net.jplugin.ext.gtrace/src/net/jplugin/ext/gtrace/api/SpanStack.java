@@ -11,8 +11,11 @@ public class SpanStack {
 
 	public Span getCurrent() {
 		int s = list.size();
-		if (s < 1)
-			throw new RuntimeException("No span.");
+		if (s < 1){
+//			throw new RuntimeException("No span.");
+			//提高容错性，这里push一个默认的span
+			return pushSpan(Span.SPAN_DEFAULT);
+		}
 		return list.get(s-1);
 	}
 	

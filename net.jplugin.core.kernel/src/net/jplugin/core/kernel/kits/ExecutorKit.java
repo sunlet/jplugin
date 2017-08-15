@@ -5,11 +5,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import net.jplugin.core.kernel.kits.scheduled.ScheduledExecutorServiceWrapper;
 
 /**
  * 支持自动维护ThreadLocalContext的线程池工具类
@@ -100,7 +101,8 @@ public final class ExecutorKit {
      * @return 线程池
      */
     public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
-        return new ScheduledTheadLocalContextExecutorService(1);
+    	return new ScheduledExecutorServiceWrapper(Executors.newSingleThreadScheduledExecutor());
+//        return new ScheduledTheadLocalContextExecutorService(1);
     }
 
     /**
@@ -110,7 +112,8 @@ public final class ExecutorKit {
      * @return 线程池
      */
     public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory) {
-        return new ScheduledTheadLocalContextExecutorService(1, threadFactory);
+    	return new ScheduledExecutorServiceWrapper(Executors.newSingleThreadScheduledExecutor(threadFactory));
+//        return new ScheduledTheadLocalContextExecutorService(1, threadFactory);
     }
 
     /**
@@ -120,7 +123,8 @@ public final class ExecutorKit {
      * @return 线程池
      */
     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
-        return new ScheduledTheadLocalContextExecutorService(corePoolSize);
+    	return new ScheduledExecutorServiceWrapper(Executors.newScheduledThreadPool(corePoolSize));
+//        return new ScheduledTheadLocalContextExecutorService(corePoolSize);
     }
 
     /**
@@ -132,7 +136,8 @@ public final class ExecutorKit {
      */
     public static ScheduledExecutorService newScheduledThreadPool(
             int corePoolSize, ThreadFactory threadFactory) {
-        return new ScheduledTheadLocalContextExecutorService(corePoolSize, threadFactory);
+    	return new ScheduledExecutorServiceWrapper(Executors.newScheduledThreadPool(corePoolSize,threadFactory));
+//        return new ScheduledTheadLocalContextExecutorService(corePoolSize, threadFactory);
     }
 
     /**
@@ -169,48 +174,48 @@ public final class ExecutorKit {
     }
  
 
-    /**
-     * 支持自动维护ThreadLocalContext的支持周期调度的线程池
-     */
-    private static class ScheduledTheadLocalContextExecutorService extends ScheduledThreadPoolExecutor {
-
-        public ScheduledTheadLocalContextExecutorService(int corePoolSize) {
-            super(corePoolSize, new ThreadFactoryWrapper(Executors.defaultThreadFactory()));
-        }
-
-        public ScheduledTheadLocalContextExecutorService(int corePoolSize, ThreadFactory threadFactory) {
-            super(corePoolSize, new ThreadFactoryWrapper(threadFactory));
-        }
-
-        @Override
-        public void execute(Runnable command) {
-            super.execute(new RunnableWrapper(command));
-        }
-
-        static class ThreadFactoryWrapper implements ThreadFactory {
-
-            ThreadFactory inner;
-
-            public ThreadFactoryWrapper(ThreadFactory threadFactory) {
-                this.inner = threadFactory;
-            }
-
-            @Override
-            public Thread newThread(Runnable r) {
-                return inner.newThread(new RunnableWrapper(r));
-            }
-        }
-
-//        @Override
-//        protected void beforeExecute(Thread t, Runnable r) {
-//            ThreadLocalContextManager.instance.createContext();
+//    /**
+//     * 支持自动维护ThreadLocalContext的支持周期调度的线程池
+//     */
+//    private static class ScheduledTheadLocalContextExecutorService extends ScheduledThreadPoolExecutor {
+//
+//        public ScheduledTheadLocalContextExecutorService(int corePoolSize) {
+//            super(corePoolSize, new ThreadFactoryWrapper(Executors.defaultThreadFactory()));
+//        }
+//
+//        public ScheduledTheadLocalContextExecutorService(int corePoolSize, ThreadFactory threadFactory) {
+//            super(corePoolSize, new ThreadFactoryWrapper(threadFactory));
 //        }
 //
 //        @Override
-//        protected void afterExecute(Runnable r, Throwable t) {
-//            ThreadLocalContextManager.instance.releaseContext();
+//        public void execute(Runnable command) {
+//            super.execute(new RunnableWrapper(command));
 //        }
-    }
+//
+//        static class ThreadFactoryWrapper implements ThreadFactory {
+//
+//            ThreadFactory inner;
+//
+//            public ThreadFactoryWrapper(ThreadFactory threadFactory) {
+//                this.inner = threadFactory;
+//            }
+//
+//            @Override
+//            public Thread newThread(Runnable r) {
+//                return inner.newThread(new RunnableWrapper(r));
+//            }
+//        }
+//
+////        @Override
+////        protected void beforeExecute(Thread t, Runnable r) {
+////            ThreadLocalContextManager.instance.createContext();
+////        }
+////
+////        @Override
+////        protected void afterExecute(Runnable r, Throwable t) {
+////            ThreadLocalContextManager.instance.releaseContext();
+////        }
+//    }
     
 
     private ExecutorKit() {

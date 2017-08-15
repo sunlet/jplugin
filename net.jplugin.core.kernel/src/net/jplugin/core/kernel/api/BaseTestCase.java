@@ -7,6 +7,10 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 public class BaseTestCase extends TestCase {
 	private ThreadLocalContext ctx;
+	
+	public BaseTestCase(){
+		PluginEnvirement.INSTANCE.resolveRefAnnotation(this);
+	}
 
 	@Override
 	protected void setUp() throws Exception {
