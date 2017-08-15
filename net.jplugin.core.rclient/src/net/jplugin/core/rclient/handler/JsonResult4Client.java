@@ -6,6 +6,8 @@ import java.util.Map;
 import net.jplugin.common.kits.JsonKit;
 
 public class JsonResult4Client {
+	public static final String JSON_FORMAT_INDICATOR="$sef";
+	
 	boolean success;
 	String code="0";
 	String msg;

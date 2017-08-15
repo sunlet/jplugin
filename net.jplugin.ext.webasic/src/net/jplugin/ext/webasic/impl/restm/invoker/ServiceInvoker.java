@@ -2,6 +2,7 @@ package net.jplugin.ext.webasic.impl.restm.invoker;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,9 +10,12 @@ import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.SerializKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.config.api.RefConfig;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.rclient.handler.RestHandler;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -35,7 +39,7 @@ import net.jplugin.ext.webasic.impl.restm.RestMethodState.State;
  * @version 创建时间：2015-2-3 下午05:51:42
  **/
 
-public class ServiceInvoker implements IServiceInvoker{
+public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvoker{
 	ObjectCallHelper helper;
 	
 	/**
@@ -43,6 +47,27 @@ public class ServiceInvoker implements IServiceInvoker{
 	 */
 	public ServiceInvoker(ObjectDefine d) {
 		this.helper = new ObjectCallHelper(d);
+		validate(this.helper);
+	}
+
+	private void validate(ObjectCallHelper helper) {
+		Object o = helper.getObject();
+		Method[] methods = o.getClass().getMethods();
+		for (Method m:methods){
+			
+			Annotation[][] annos = m.getParameterAnnotations();
+			for (Annotation[] arr:annos){
+				for (Annotation a:arr){
+					if (a instanceof Para){
+						Para p = (Para) a;
+						if (JsonResult.JSONP_FUNCTION_PARAM.equals(p.name())){
+							throw new RuntimeException("Param annotation can't use same name with Jsonp callback param. "+ o.getClass().getName()+" "+m.getName());
+						}
+					}
+				}
+			}
+		}
+		
 	}
 
 	/**
@@ -172,7 +197,7 @@ public class ServiceInvoker implements IServiceInvoker{
 			hm.put("result", result);
 			jr.setContent(hm);
 //			rr.setContent("return",result);
-			cp.setResult(jr.toJson());
+			cp.setResult(jr.toJson(getJsonFormat(cp)));
 		}catch(MethodIllegleAccessException e){
 			disposeException(cp, e);
 		}catch(Exception e){
@@ -222,7 +247,7 @@ public class ServiceInvoker implements IServiceInvoker{
 			hm.put("result", result);
 			jr.setContent(hm);
 //			rr.setContent("return",result);
-			cp.setResult(jr.toJson());
+			cp.setResult(jr.toJson(getJsonFormat(cp)));
 		}catch(InvocationTargetException e){
 			Throwable targetEx = e.getTargetException();
 			disposeException(cp, targetEx);
@@ -234,6 +259,24 @@ public class ServiceInvoker implements IServiceInvoker{
 		}
 	}
 
+	@RefConfig(path="platform.service-export-format",defaultValue="1")
+	Integer service_export_format;
+	private Tuple2<Integer,String> getJsonFormat(CallParam cp) {
+		int format;
+		
+		//get format
+		String o = cp.getParamMap().get(JsonResult.JSON_FORMAT_INDICATOR);
+		if (o!=null){
+			format = Integer.parseInt(o);
+		}else{
+			format = service_export_format;
+		}
+		
+		//get jsonp
+		String cb = cp.getParamMap().get(JsonResult.JSONP_FUNCTION_PARAM);
+		return Tuple2.with(format,cb);
+	}
+
 	private void disposeException(CallParam cp, Throwable e) {
 		RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e);
 
@@ -241,7 +284,7 @@ public class ServiceInvoker implements IServiceInvoker{
 		jr.setSuccess(false);
 		jr.setMsg(exInfo.getMsg());//get message
 		jr.setCode(exInfo.getCode());//get code
-		cp.setResult(jr.toJson());
+		cp.setResult(jr.toJson(getJsonFormat(cp)));
 		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getMessage(),e);
 	}
 

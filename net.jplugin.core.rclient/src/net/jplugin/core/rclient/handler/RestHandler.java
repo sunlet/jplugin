@@ -50,6 +50,8 @@ public static final Object MIX_PARA_VALUE = "1";
 				
 				HashMap< String, Object> map = new HashMap<String, Object>();
 				map.put(MIX_PARA,MIX_PARA_VALUE );
+				map.put(JsonResult4Client.JSON_FORMAT_INDICATOR, "1");
+				
 				Annotation[][] paraAnootation = method.getParameterAnnotations();
 				if (args!=null){
 					for (int i=0; i<args.length;i++){

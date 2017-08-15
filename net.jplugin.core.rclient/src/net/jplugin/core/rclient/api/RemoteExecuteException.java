@@ -17,13 +17,23 @@ package net.jplugin.core.rclient.api;
  **/
 
 public class RemoteExecuteException extends RuntimeException {
-	public static final String PARAM_ERROR="-1000"; //参数错误
-	public static final String NO_LOGON="-1001";//未登录
-	public static final String NO_PERMISSION="-1002";//无权限访问
-	public static final String NO_RISK="-1003";//违背风控规则
+	public static final int ERROR_NO_LOGON		= 1024;//未登录
+	public static final int ERROR_PARAM_ERROR	= 1023; //参数错误
+	public static final int ERROR_NO_PERMISSION	= 1022;//无权限访问
+	public static final int ERROR_RISK_ACCESS	= 1021;//违背风控规则
+	public static final int ERROR_DEFAULT		= -1;//服务端异常，原因不明
+	
 	public static final String ACCESS_FORBIDDEN = "AccessForbidden";//这个在SSO以及APP权限判断时使用，User时不用
 
 	String code;
+
+	
+	/**
+	 * 
+	 */
+	public RemoteExecuteException(int message) {
+		this(String.valueOf(message));
+	}
 
 	/**
 	 * 
@@ -41,6 +51,9 @@ public class RemoteExecuteException extends RuntimeException {
 	// // TODO Auto-generated constructor stub
 	// }
 	//
+	public RemoteExecuteException(int aCode, String message) {
+		this(String.valueOf(aCode),message);
+	}
 	/**
 	 * @param message
 	 */
@@ -49,6 +62,9 @@ public class RemoteExecuteException extends RuntimeException {
 		this.code = aCode;
 	}
 
+	public RemoteExecuteException(int aCode, String message, Throwable cause) {
+		this(String.valueOf(aCode),message,cause);
+	}
 	/**
 	 * @param message
 	 */
