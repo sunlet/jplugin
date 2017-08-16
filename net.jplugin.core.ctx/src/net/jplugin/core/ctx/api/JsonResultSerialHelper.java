@@ -45,10 +45,10 @@ public class JsonResultSerialHelper {
 		//目前的实现，content是根据类型1的映射，所以过程相对复杂，只处理result节点
 		if (content!=null){
 			if (content instanceof Map){
-				//result为方法返回的节点，如果不是Map类型，作为result节点。如果是Map类型，先对这个节点校验，把这个节点扁平化.
 				Object result = ((Map)content).get("result");
 				if (result!=null){
-					if (result instanceof Map){
+					if (result instanceof JsonRootMap){
+						//检查后作为根部元素
 						if ( ((Map)result).containsKey("errno"))
 							throw new RuntimeException("Method can't return a map with key:errno");
 						if ( ((Map)result).containsKey("errmsg"))
@@ -57,7 +57,8 @@ public class JsonResultSerialHelper {
 							throw new RuntimeException("Method can't return a map with key:success");
 						m.putAll((Map)result);
 					}else{
-						m.put("result", result);
+						//作为data节点
+						m.put("data", result);
 					}
 				}
 			}else{
