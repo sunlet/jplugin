@@ -5,15 +5,6 @@ package net.jplugin.core.rclient.api;
  * @author: LiuHang
  * @version 创建时间：2015-2-14 上午11:27:10
  * 
-<pre>
-1.  -1000 参数校验异常
-2.  -1001 未登录
-3.  -1002 无权限访问  
-4.  -1003 违反风控规则
-5.  -1到-999，系统自定义的错误返回码 
-6.  0  默认的正常的返回码
-7.  >1 自定义的正常返回码
-</pre>
  **/
 
 public class RemoteExecuteException extends RuntimeException {
