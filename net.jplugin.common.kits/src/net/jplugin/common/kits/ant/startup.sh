@@ -24,6 +24,7 @@ JVM_OPTION="${JVM_OPTION} -Xms512m -Xmx1500m"
 nohup java ${JVM_OPTION} -cp $CLASSPATH \
 	-Djplugin.home="../" \
 	-server \
+	-Dfile.encoding=utf-8 \
 net.jplugin.core.kernel.PluginApp >../logs/console.log 2>&1 &
 
-echo "Standalone app started, Please see ${plugin.home}/logs/console.log to see the detail"
+echo "Standalone app started, Please see APP_HOME/logs/console.log to see the detail"

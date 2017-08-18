@@ -15,5 +15,5 @@ rem set JVM_OPTION=%JVM_OPTION% -Xms512m -Xmx1024m
 rem set JVM_OPTION=%JVM_OPTION% -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8797,server=y,suspend=y
 
 @echo on
-java -Djplugin.home=%jplugin.home% %JVM_OPTION% -cp %CLASSPATH%  -server net.jplugin.core.kernel.PluginApp
+java -Djplugin.home=%jplugin.home% %JVM_OPTION% -cp %CLASSPATH%  -server -Dfile.encoding=utf-8 net.jplugin.core.kernel.PluginApp
  
