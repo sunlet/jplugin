@@ -8,8 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.core.config.api.RefConfig;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.PluginFilterManager;
+import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.ILogService;
@@ -27,7 +29,7 @@ import net.jplugin.ext.webasic.api.WebFilter;
  * @version 创建时间：2015-2-2 下午05:57:36
  **/
 
-public class WebDriver {
+public class WebDriver extends RefAnnotationSupport{
 	public static WebDriver INSTANCE = new WebDriver();
 	public static final String SERVICE_CALL = "/service";
 //	public static final String OPERATION_KEY = "_o";
@@ -195,12 +197,20 @@ public class WebDriver {
 //		return null;
 //	}
 	
+	@RefConfig(path="platform.web-uri-parse-type",defaultValue="0")
+	Integer webUriParseType;
+	public ControllerMeta parseControllerMeta(String path) {
+		if (webUriParseType==1)
+			return parseB2F(path);
+		else 
+			return parseF2B(path);
+	}
 	/**
 	 * 从前往后找
 	 * @param path
 	 * @return
 	 */
-	public ControllerMeta parseControllerMeta(String path) {
+	private ControllerMeta parseF2B(String path) {
 		//除去点
 		int dotPos = path.lastIndexOf('.');
 		if ( dotPos >= 0){
@@ -232,6 +242,32 @@ public class WebDriver {
 			}
 			pos++;
 		}
+	}
+	//从后往前找
+	private ControllerMeta parseB2F(String path){
+		//��ȥ��
+		int dotPos = path.lastIndexOf('.');
+		if ( dotPos >= 0){
+			path = path.substring(0,dotPos);
+		}
+		
+		IControllerSet ctroller = pathMap.get(path);
+
+		if (ctroller!=null)
+			return new ControllerMeta(ctroller,path,null);
+
+		int splitPos = path.lastIndexOf('/');
+
+		//����0��ʱ���ʺϣ�ֻ��һ��path
+		if (splitPos>0){
+			String prePath = path.substring(0, splitPos);
+			String postPath = path.substring(splitPos+1);
+			ctroller = pathMap.get(prePath);
+			
+			if (ctroller!=null)
+				return new ControllerMeta(ctroller,prePath,postPath);
+		}
+		return null;
 	}
 
 //	
