@@ -12,6 +12,8 @@ import java.util.List;
 
 public class ThreadLocalContext {
 	public static final String ATTR_SERVLET_REQUEST="$servlet-request";
+	public static final String ATTR_USING_DEF_TENANT="$using-def-tenant";
+
 	
 	HashMap<String,Object> attributes = null;
 	HashMap<String,Object> sysAttribute = null;

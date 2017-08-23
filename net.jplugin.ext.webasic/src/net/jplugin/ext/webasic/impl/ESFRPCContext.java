@@ -87,9 +87,11 @@ public class ESFRPCContext {
 		
 		//tenantid
 		String tid = ctx.getTenantId();
-		if ("".equals(tid)) 
-			tid = null;
-		info.setCurrentTenantId(tid);
+//		if ("".equals(tid)) 
+//			tid = null;
+//		info.setCurrentTenantId(tid);
+		MtInvocationFilterHandler.instance.checkAndSet(info, tid);
+		
 		
 //		//reqid
 //		String greqid = ctx.getGlobalReqId();

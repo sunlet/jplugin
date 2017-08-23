@@ -17,6 +17,8 @@ import test.net.jplugin.ext.webasic.annotation.WebControllerTest;
 import test.net.jplugin.ext.webasic.annotation.WebExControllerTest;
 import test.net.jplugin.ext.webasic.dynamicmethod.DynamicMethodTest;
 import test.net.jplugin.ext.webasic.dynamicmethod.TestDynamicMethodClient;
+import test.net.jplugin.ext.webasic.mttest.MtTestClient;
+import test.net.jplugin.ext.webasic.mttest.MtTestForRequest;
 import test.net.jplugin.ext.webasic.restclient.IService;
 import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
@@ -54,7 +56,9 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionWebHelper.addServiceExportExtension(this, "/webanno/service", ServiceExportTest.class);
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTestForAnno.class,RuleTestForAnno.class);
 		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
-		
+
+		ExtensionWebHelper.addServiceExportExtension(this,"/mttestclient",MtTestForRequest.class);
+
 		
 	}
 
@@ -73,7 +77,7 @@ public class Plugin extends AbstractPluginForTest{
 		new TestDynamicMethodClient().test();
 		new TestPathSearch().test();
 		new AnnoTest().test();
-		
+		new MtTestClient().test();
 //		TestReqIdService.calltest();
 		
 
