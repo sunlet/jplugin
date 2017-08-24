@@ -17,7 +17,6 @@ public class MtInvocationFilterHandler{
 	private ReqParamAt paraAt;
 	private String reqParamName;
 	private String reqDefaultTenant;
-	private boolean nullTenantAllowed; //default value is true
 	private boolean enable;
 
 	public MtInvocationFilterHandler(){
@@ -28,7 +27,6 @@ public class MtInvocationFilterHandler{
 		String reqParamAt = ConfigFactory.getStringConfigWithTrim("mtenant.req-param-at");
 		reqParamName = ConfigFactory.getStringConfigWithTrim("mtenant.req-param-name");
 		reqDefaultTenant = ConfigFactory.getStringConfigWithTrim("mtenant.req-default-tenant");
-		nullTenantAllowed = !"false".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("mtenant.null-tenant-allowed"));
 		
 		if (StringKit.isNull(reqParamAt)) throw new RuntimeException("config mtenant.req-param-at is  null");
 		if (StringKit.isNull(reqParamName)) {
@@ -37,7 +35,6 @@ public class MtInvocationFilterHandler{
 		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.req-param-at="+reqParamAt);
 		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.req-param-name="+reqParamName);
 		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.req-default-tenant="+reqDefaultTenant);
-		PluginEnvirement.INSTANCE.getStartLogger().log("@@@mtenant.null-tenant-allowed="+nullTenantAllowed);
 		
 		paraAt = ReqParamAt.valueOf(reqParamAt);
 	}
@@ -84,11 +81,6 @@ public class MtInvocationFilterHandler{
 			//设置一个标志位，目前用了默认的tenant
 			ThreadLocalContextManager.getCurrentContext().setAttribute(ThreadLocalContext.ATTR_USING_DEF_TENANT, true);
 			reqInfo.setCurrentTenantId(reqDefaultTenant);
-		}else{
-			// check allow null
-			if (!nullTenantAllowed){
-				throw new RuntimeException("Mtenant is enabled , config [null-tenant-allowed] is false, but the tenantid is null. url:" + reqInfo.getRequestUrl());
-			}
 		}
 	}	
 	

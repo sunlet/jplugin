@@ -8,6 +8,8 @@ import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
+import net.jplugin.core.mtenant.tidv.TenantIDValidator;
+import net.jplugin.ext.webasic.ExtensionWebHelper;
 
 public class Plugin extends AbstractPlugin{
 	
@@ -59,6 +61,9 @@ public class Plugin extends AbstractPlugin{
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
 			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
 			ExtensionKernelHelper.addHttpClientFilterExtension(this, MTenantChain.class);
+			//检查空值
+			ExtensionWebHelper.addServiceFilterExtension(this, TenantIDValidator.class);
+			ExtensionWebHelper.addWebCtrlFilterExtension(this, TenantIDValidator.class);
 		}else{
 			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant DISABLED!");
 		}
@@ -69,6 +74,8 @@ public class Plugin extends AbstractPlugin{
 		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
 //			HttpFilterManager.addFilter(new MTenantChain());
 			AbstractSqlMultiTenantHanlder.initInstance();
+			//初始化配置
+			TenantIDValidator.init();
 		}
 	}
 

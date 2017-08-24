@@ -12,5 +12,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.log"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.ext.webasic"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.rclient"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
