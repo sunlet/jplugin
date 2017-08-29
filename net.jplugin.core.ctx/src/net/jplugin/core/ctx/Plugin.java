@@ -11,6 +11,7 @@ import net.jplugin.core.ctx.api.IRuleServiceFilter;
 import net.jplugin.core.ctx.api.ITransactionManagerListener;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
+import net.jplugin.core.ctx.impl.RuleInvocationContext;
 import net.jplugin.core.ctx.impl.RuleServiceAttrAnnoHandler;
 import net.jplugin.core.ctx.impl.TransactionManagerAdaptor;
 import net.jplugin.core.ctx.impl.TxMgrListenerManager;
@@ -64,6 +65,9 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
 	public void onCreateServices() {
+		TransactionManagerAdaptor.init();
+		RuleInvocationContext.init();
+		
 //		TransactionManager[] txms = PluginEnvirement.getInstance().getExtensionObjects(EP_TX_SERVICE_IMPLEMENTATION,TransactionManager.class);
 //		if (txms.length==0){
 //			txmf.init(null);
@@ -81,6 +85,7 @@ public class Plugin extends AbstractPlugin{
 		TxMgrListenerManager.init();
 		
 		DefaultRuleInvocationHandler.init();
+		
 	}
 	public void init() {
 		// TODO Auto-generated method stub

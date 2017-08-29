@@ -1,8 +1,10 @@
 package net.jplugin.core.ctx.impl;
 
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.TransactionHandler;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.ctx.api.TransactionSync;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  *
@@ -16,6 +18,12 @@ public class TransactionManagerAdaptor implements TransactionManager{
 	public TransactionManagerAdaptor(){
 		this.inner = new TransactionManagerImpl();
 	}
+	
+	public static boolean isLogTx;
+	public static void init(){
+		isLogTx = "true".equalsIgnoreCase(ConfigFactory.getStringConfig("platform.log-tx-exec"));
+		PluginEnvirement.INSTANCE.getStartLogger().log("platform.log-tx-exec value is:"+isLogTx);
+	}
 
 	public void begin(){
 		this.begin("");
@@ -25,9 +33,11 @@ public class TransactionManagerAdaptor implements TransactionManager{
 			TxMgrListenerManager.beforeBegin();
 			inner.begin();
 			TxMgrListenerManager.afterBegin();
-			RuleLoggerHelper.dolog("tx begin success -"+desc);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx begin success -"+desc);
 		}catch(Exception e){
-			RuleLoggerHelper.dolog("tx begin error. -"+desc,e);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx begin error. -"+desc,e);
 			rethrow(e);
 		}
 	}
@@ -39,10 +49,12 @@ public class TransactionManagerAdaptor implements TransactionManager{
 			TxMgrListenerManager.beforeCommit();
 			inner.commit();
 			TxMgrListenerManager.afterCommit(true);
-			RuleLoggerHelper.dolog("tx commit success. -"+desc);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx commit success. -"+desc);
 		}catch(Exception e){
 			TxMgrListenerManager.afterCommit(false);
-			RuleLoggerHelper.dolog("tx commit error. -"+desc,e);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx commit error. -"+desc,e);
 			rethrow(e);
 		}
 	}
@@ -58,9 +70,11 @@ public class TransactionManagerAdaptor implements TransactionManager{
 		try{
 			TxMgrListenerManager.beforeRollback();
 			inner.rollback();
-			RuleLoggerHelper.dolog("tx rollback success. -"+desc);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx rollback success. -"+desc);
 		}catch(Exception e){
-			RuleLoggerHelper.dolog("tx rollback error. -"+desc,e);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx rollback error. -"+desc,e);
 			rethrow(e);
 		}
 	}
@@ -68,9 +82,11 @@ public class TransactionManagerAdaptor implements TransactionManager{
 	public void setRollbackOnly() {
 		try{
 			inner.setRollbackOnly();
-			RuleLoggerHelper.dolog("tx rollbackonly success. ");
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx rollbackonly success. ");
 		}catch(Exception e){
-			RuleLoggerHelper.dolog("tx rollbackonly error. ",e);
+			if(isLogTx)
+				RuleLoggerHelper.dolog("tx rollbackonly error. ",e);
 			rethrow(e);
 		}
 	}

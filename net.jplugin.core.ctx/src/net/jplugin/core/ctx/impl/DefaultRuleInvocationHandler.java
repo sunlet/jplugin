@@ -86,7 +86,8 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 			if (initTxStatus == TransactionManager.Status.NOTX) {
 				txm.begin(method.getName());
 			}else{
-				RuleLoggerHelper.dolog("tx no need begin -"+method.getName());
+				if (TransactionManagerAdaptor.isLogTx)
+					RuleLoggerHelper.dolog("tx no need begin -"+method.getName());
 			}
 			try {
 				Object ret = invokeWithLog(proxyObj, oldService, method, args, meta);
@@ -94,7 +95,8 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 				if (initTxStatus == TransactionManager.Status.NOTX) {
 					txm.commit(method.getName());
 				}else{
-					RuleLoggerHelper.dolog("tx no need commit -"+method.getName());
+					if (TransactionManagerAdaptor.isLogTx)
+						RuleLoggerHelper.dolog("tx no need commit -"+method.getName());
 				}
 
 				return ret;
@@ -102,7 +104,8 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 				if (initTxStatus == TransactionManager.Status.NOTX) {
 					txm.rollback(method.getName());
 				}else{
-					RuleLoggerHelper.dolog("tx no need rollback -"+method.getName());
+					if (TransactionManagerAdaptor.isLogTx)
+						RuleLoggerHelper.dolog("tx no need rollback -"+method.getName());
 				}
 				throw getRethrow(th);
 			}

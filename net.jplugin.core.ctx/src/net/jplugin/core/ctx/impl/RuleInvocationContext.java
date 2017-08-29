@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.Rule;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  *
@@ -33,13 +35,20 @@ public class RuleInvocationContext {
 		this.begin = new Date();
 	}
 
+	static boolean isLogRule;
+	public static void init(){
+		isLogRule = "true".equalsIgnoreCase(ConfigFactory.getStringConfig("platform.log-rule-exec"));
+		PluginEnvirement.INSTANCE.getStartLogger().log("platform.log-rule-exec value is:"+isLogRule);
+	}
 	/**
 	 * @param athrowable
 	 */
 	public void end(Throwable athrowable) {
 		this.throwable = athrowable;
 		this.end = new Date();
-		doLog();
+		if (isLogRule){
+			doLog();
+		}
 	}
 
 	
