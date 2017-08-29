@@ -10,9 +10,19 @@ import org.apache.log4j.Priority;
  **/
 
 public interface Logger {
+	public static final int DEBUG=Level.DEBUG_INT;
+	public static final int INFO=Level.INFO_INT;
+	public static final int WARN=Level.WARN_INT;
+	public static final int ERROR=Level.ERROR_INT;
+	public static final int FATAL=Level.FATAL_INT;
 
+	public abstract void debug(String format, Object... args);
+	public abstract void info(String format, Object... args);
+	public abstract void warn(String format, Object... args);
+	public abstract void fatal(String format, Object... args);
+	
 	public abstract void debug(Object message, Throwable t);
-
+	
 	public abstract void debug(Object message);
 
 	public abstract void error(Object message, Throwable t);

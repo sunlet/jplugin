@@ -1,13 +1,12 @@
 package net.jplugin.core.log.api;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
 
-import net.jplugin.core.log.impl.BridgedLoggerService;
+import net.jplugin.core.log.impl.LogServiceImpl;
 
 public class LogFactory {
-	static BridgedLoggerService logService = null;
+	static LogServiceImpl logService = null;
 	
 	static boolean inited=false;
 	public static  synchronized void init(){
@@ -15,7 +14,7 @@ public class LogFactory {
 			return ;
 		}
 		inited = true;
-		logService = new BridgedLoggerService();
+		logService = new LogServiceImpl();
 		//为了避免第三方软件中直接调用LOG4J接口的情况打印找不到配置红色信息，先配置一个基础的
 		//待系统启动过程中重新加载log配置
 		org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
@@ -24,7 +23,7 @@ public class LogFactory {
 	}
 	
 	public static synchronized void initCommonLoggerService(){
-		logService.initCommonLoggerService();
+		logService.initFromConfig();
 	}
 	
 	public static Logger getLogger(Class c){
