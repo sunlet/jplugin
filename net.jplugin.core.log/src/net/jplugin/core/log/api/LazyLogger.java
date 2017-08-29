@@ -111,6 +111,9 @@ public class LazyLogger implements Logger{
 		throw new RuntimeException("not support");
 		
 	}
+	public void error(String format, Object... args) {
+		throw new RuntimeException("not support");
+	}
 	
 	
 }

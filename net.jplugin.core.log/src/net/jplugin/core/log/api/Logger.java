@@ -19,6 +19,7 @@ public interface Logger {
 	public abstract void debug(String format, Object... args);
 	public abstract void info(String format, Object... args);
 	public abstract void warn(String format, Object... args);
+	public abstract void error(String format, Object... args);
 	public abstract void fatal(String format, Object... args);
 	
 	public abstract void debug(Object message, Throwable t);
