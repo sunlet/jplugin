@@ -3,12 +3,17 @@ package test.net.jplugin.core.mtenant;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.mtenant.ExtensionMTenantHelper;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
+import test.net.jplugin.core.mtenant.iterator.TenantIteratorTest;
+import test.net.jplugin.core.mtenant.iterator.TenantListProvider;
 
 public class Plugin extends AbstractPluginForTest {
 	public Plugin() {
 		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))) {
 			ExtensionWebHelper.addServiceExportExtension(this, "/mtenant", TestCtrller.class);
+			
+			ExtensionMTenantHelper.addTenantListProvidorExtension(this, TenantListProvider.class);
 		}
 	}
 
@@ -31,6 +36,9 @@ public class Plugin extends AbstractPluginForTest {
 //			String retVal = (String) ObjectKit.findObject(retMap, "content/result");
 //			AssertKit.assertEqual(retVal, "OK");
 //		}
+		
+		new TenantIteratorTest().testRunnable();
+		new TenantIteratorTest().testCallable();
 
 	}
 

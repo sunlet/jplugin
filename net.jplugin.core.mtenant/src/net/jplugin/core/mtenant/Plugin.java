@@ -5,9 +5,12 @@ import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
+import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.mtenant.api.ITenantListProvidor;
 import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
+import net.jplugin.core.mtenant.tenantforschedu.TenantListProvidorManager;
 import net.jplugin.core.mtenant.tidv.TenantIDValidator;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
 
@@ -54,8 +57,14 @@ public class Plugin extends AbstractPlugin{
 	 * #如果碰到忽略多租户处理的注释，则忽略该SQL的处理：\/* IGNORE-TANENT *\/
 	 * </pre>
 	 */
+	public static final String EP_TENANTLIST_PROVIDOR = "EP_TENANTLIST_PROVIDOR";
 	public Plugin(){
-		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
+		MtenantStatus.init();
+		
+		this.addExtensionPoint(ExtensionPoint.create(EP_TENANTLIST_PROVIDOR, ITenantListProvidor.class));
+
+		if (MtenantStatus.enabled()){
+			
 			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
 //			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
@@ -71,11 +80,13 @@ public class Plugin extends AbstractPlugin{
 	
 	@Override
 	public void onCreateServices() {
-		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
+		if (MtenantStatus.enabled()){
 //			HttpFilterManager.addFilter(new MTenantChain());
 			AbstractSqlMultiTenantHanlder.initInstance();
 			//初始化配置
 			TenantIDValidator.init();
+			
+			TenantListProvidorManager.instance.init();
 		}
 	}
 

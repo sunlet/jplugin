@@ -7,11 +7,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits.http"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.config"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.ctx"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.das"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.event"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.job"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.kernel"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.lock"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.log"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.rclient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
