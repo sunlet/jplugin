@@ -5,6 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.5.2.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
