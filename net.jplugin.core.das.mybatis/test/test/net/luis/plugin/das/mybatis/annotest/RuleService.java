@@ -3,6 +3,8 @@ package test.net.luis.plugin.das.mybatis.annotest;
 import java.util.List;
 
 import net.jplugin.common.kits.ObjectRef;
+import net.jplugin.core.ctx.api.Rule;
+import net.jplugin.core.ctx.api.Rule.TxType;
 import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.das.mybatis.impl.IMapperHandler;
 import net.jplugin.core.das.mybatis.impl.IMybatisService;
@@ -25,6 +27,7 @@ public class RuleService implements IRule{
 		
 	}
 	
+	@Rule(methodType=TxType.REQUIRED)
 	@Override
 	public void addAndRollback(String f1, String f2) {
 		IMybatisService svc = ServiceFactory.getService(IMybatisService.class);

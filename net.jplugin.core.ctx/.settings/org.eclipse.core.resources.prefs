@@ -19,6 +19,7 @@ encoding//src/net/jplugin/core/ctx/api/TransactionManager.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/TransactionSync.java=UTF-8
 encoding//src/net/jplugin/core/ctx/impl/DefaultRuleInvocationHandler.java=UTF-8
 encoding//src/net/jplugin/core/ctx/impl/RuleInterceptor.java=UTF-8
+encoding//src/net/jplugin/core/ctx/impl/RuleInterceptor_old.java=UTF-8
 encoding//src/net/jplugin/core/ctx/impl/RuleInvocationContext.java=UTF-8
 encoding//src/net/jplugin/core/ctx/impl/RuleInvocationHandler.java=UTF-8
 encoding//src/net/jplugin/core/ctx/impl/RuleLoggerHelper.java=UTF-8

@@ -23,23 +23,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleMetaException;
 
-public class RuleInterceptor implements InvocationHandler {
+public class RuleInterceptor_old implements InvocationHandler {
 	Class<?> interfaceClass;
 	RuleInvocationHandler handler;
 	Object oldService;
 	MethodMetaLocater locator;
 
-//	public RuleInterceptor(){}
+	public RuleInterceptor_old(){}
 	
-	private RuleInterceptor(Class<?> cls, Object old, RuleInvocationHandler h) {
-		this.interfaceClass = cls;
-		this.oldService = old;
-		this.handler = h;
+	public RuleInterceptor_old(Class<?> cls) {
+		interfaceClass = cls;
 		valid();
-		locator = new MethodMetaLocater(cls,old.getClass());
+		locator = new MethodMetaLocater(cls);
 	}
 
 	/**
@@ -49,9 +48,9 @@ public class RuleInterceptor implements InvocationHandler {
 	 * @return
 	 */
 	public static Object getProxyInstance(Class clazz,Object oldImpl,RuleInvocationHandler handler){
-		RuleInterceptor ei = new RuleInterceptor(clazz,oldImpl,handler);
-//		ei.handler = handler;
-//		ei.oldService = oldImpl;
+		RuleInterceptor_old ei = new RuleInterceptor_old(clazz);
+		ei.handler = handler;
+		ei.oldService = oldImpl;
 		return Proxy.newProxyInstance(oldImpl.getClass().getClassLoader(), new Class[]{clazz}, ei);
 	}
 	
@@ -138,21 +137,20 @@ public class RuleInterceptor implements InvocationHandler {
 			return sb.toString();
 		}
 		
-		public MethodMetaLocater(Class intfClazz, Class implClazz) {
+		public MethodMetaLocater(Class cls) {
 
-			List<Method> dupMethod = getDupMethods(intfClazz);
-			List<Method> singleMethod = getSingleMethods(intfClazz);
+			List<Method> dupMethod = getDupMethods(cls);
+			List<Method> singleMethod = getSingleMethods(cls);
 
 			for (Method m : singleMethod) {
-//				Rule meta = m.getAnnotation(Rule.class);
-				Rule meta = computeAnnotation(m,implClazz);
+				Rule meta = m.getAnnotation(Rule.class);
 //				AssertKit.assertNotNull(meta, "meta");
-				singleMetaMap.put(m.getName(), meta);
+				singleMetaMap.put(m.getName(), (Rule) m
+						.getAnnotation(Rule.class));
 			}
 
 			for (Method m : dupMethod) {
-//				Rule meta = m.getAnnotation(Rule.class);
-				Rule meta = computeAnnotation(m,implClazz);
+				Rule meta = m.getAnnotation(Rule.class);
 //				AssertKit.assertNotNull(meta, "meta");
 
 				List<MethodParaInfo> list = dupMetaMap.get(m.getName());
@@ -163,27 +161,6 @@ public class RuleInterceptor implements InvocationHandler {
 
 				list.add(new MethodParaInfo(meta, m.getParameterTypes()));
 			}
-		}
-		
-		/**
-		 * 优先找实现类中的annotation；然后再找接口中的，保持兼容
-		 * @param intfMethod
-		 * @param implClazz
-		 * @return
-		 */
-		private Rule computeAnnotation(Method intfMethod,Class implClazz){
-			Method implMethod ;
-			try {
-				implMethod = implClazz.getMethod(intfMethod.getName(), intfMethod.getParameterTypes());
-			} catch (Exception e) {
-				throw new RuntimeException("The impl class not impl the interface."+intfMethod.getClass().getName()+" "+implClazz.getName());
-			}
-			Rule meta = implMethod.getAnnotation(Rule.class);
-			
-			if (meta == null) 
-				meta = intfMethod.getAnnotation(Rule.class);
-			
-			return meta;
 		}
 
 		public Rule findMeta(Method m){
