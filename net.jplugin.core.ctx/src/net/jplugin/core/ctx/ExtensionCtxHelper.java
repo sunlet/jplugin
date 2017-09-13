@@ -68,8 +68,10 @@ public class ExtensionCtxHelper {
 		kit = new ResolverKit<>();
 		kit.find(pkg, (c) -> {
 			for (Entry<Class, List<Class>> en : mappings.entrySet()) {
-				if (en.getKey().isAssignableFrom(c))
-					en.getValue().add(c);
+				if (en.getKey().isAssignableFrom(c)){
+					if (!c.isInterface())
+						en.getValue().add(c);
+				}
 			}
 			return false;
 		});
