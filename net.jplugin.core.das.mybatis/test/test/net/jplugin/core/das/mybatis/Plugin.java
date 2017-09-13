@@ -4,10 +4,8 @@ import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
-import net.jplugin.core.das.route.ExtensionDasRouteHelper;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
-import net.jplugin.core.rclient.ExtendsionClientHelper;
 import net.jplugin.core.service.ExtensionServiceHelper;
 import net.jplugin.core.service.api.ServiceFactory;
 import test.net.jplugin.core.das.mybatis.anno.IRuleTestForMybatisAnno;
@@ -26,6 +24,8 @@ import test.net.luis.plugin.das.mybatis.annotest.RuleService;
 import test.net.luis.plugin.das.mybatis.sesstest.SessionTest;
 import test.net.luis.plugin.das.mybatis.txtest.ITxTestDB1Mapper;
 import test.net.luis.plugin.das.mybatis.txtest.ITxTestDB2Mapper;
+import test.net.luis.plugin.das.mybatis.txtest.MapperProxyTest;
+import test.net.luis.plugin.das.mybatis.txtest.RefMapperTest;
 import test.net.luis.plugin.das.mybatis.txtest.TxTest;
 import test.net.luis.plugin.das.mybatis.xmltest.IXMLMapper;
 import test.net.luis.plugin.das.mybatis.xmltest.XMLBaticsTest;
@@ -63,6 +63,10 @@ public class Plugin extends AbstractPluginForTest{
 		new XMLBaticsTest2DB_2().test();
 		
 		new TxTest().test();
+		new MapperProxyTest().test();
+		new MapperProxyTest().test();
+		new RefMapperTest().test();
+		new RefMapperTest().test();
 		
 		new SessionTest().test();
 		
