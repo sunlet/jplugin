@@ -1,13 +1,12 @@
 package net.jplugin.core.das.mybatis;
 
-import org.apache.ibatis.plugin.Interceptor;
-
 import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.das.mybatis.api.ExtensionDefinition4Incept;
 import net.jplugin.core.das.mybatis.api.ExtensionDefinition4Mapping;
 import net.jplugin.core.das.mybatis.api.MyBatisServiceFactory;
 import net.jplugin.core.das.mybatis.impl.DefaultMybaticsService4JianRong;
 import net.jplugin.core.das.mybatis.impl.IMybatisService;
+import net.jplugin.core.das.mybatis.impl.MybatisMapperAnnoHandler;
 import net.jplugin.core.das.mybatis.impl.MybatisServiceAnnoHandler;
 import net.jplugin.core.das.mybatis.impl.sess.MybatisTransactionManagerListener;
 import net.jplugin.core.kernel.api.AbstractPlugin;
@@ -32,6 +31,7 @@ public class Plugin extends AbstractPlugin{
 		ExtensionServiceHelper.addServiceExtension(this, IMybatisService.class.getName(), DefaultMybaticsService4JianRong.class);
 		ExtensionCtxHelper.addTxMgrListenerExtension(this, MybatisTransactionManagerListener.class);
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this,MybatisServiceAnnoHandler.class );
+		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this,MybatisMapperAnnoHandler.class );
 	}
 	
 	private boolean noMybatis() {
