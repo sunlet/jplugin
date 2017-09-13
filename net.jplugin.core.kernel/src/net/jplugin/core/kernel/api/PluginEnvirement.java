@@ -253,11 +253,14 @@ public class PluginEnvirement {
 				}
 			}
 			
-			logStart(registry.getErrors());
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				trigStartListener(null,null);
+			
+				logStart(registry.getErrors());
 			}else{
 				trigStartListener(null,registry.getErrors());
+				
+				logStart(registry.getErrors());
 				
 				try{
 					Thread.sleep(3000);
