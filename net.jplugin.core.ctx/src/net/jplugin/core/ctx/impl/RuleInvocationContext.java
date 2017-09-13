@@ -35,10 +35,10 @@ public class RuleInvocationContext {
 		this.begin = new Date();
 	}
 
-	static boolean isLogRule;
+//	static boolean isLogRule;
 	public static void init(){
-		isLogRule = "true".equalsIgnoreCase(ConfigFactory.getStringConfig("platform.log-rule-exec"));
-		PluginEnvirement.INSTANCE.getStartLogger().log("platform.log-rule-exec value is:"+isLogRule);
+//		isLogRule = "true".equalsIgnoreCase(ConfigFactory.getStringConfig("platform.log-rule-exec"));
+//		PluginEnvirement.INSTANCE.getStartLogger().log("platform.log-rule-exec value is:"+isLogRule);
 	}
 	/**
 	 * @param athrowable
@@ -46,7 +46,7 @@ public class RuleInvocationContext {
 	public void end(Throwable athrowable) {
 		this.throwable = athrowable;
 		this.end = new Date();
-		if (isLogRule){
+		if (meta.log()){
 			doLog();
 		}
 	}
@@ -66,10 +66,27 @@ public class RuleInvocationContext {
 	 */
 	private void doLog() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("-RuleInvoked:").append(method.getName()).append(" begin=").append(local.get().format(begin));
+		sb.append("-RuleInvoked:").append(method.getName()).append(meta.actionDesc());
+		sb.append(" begin=").append(local.get().format(begin));
 		sb.append(" end=").append(local.get().format(end));
 		sb.append(" dural=").append(end.getTime()-begin.getTime());
 		sb.append(" result=").append(throwable==null? "OK":"EXCEPTION");
+		
+		if (meta.logIndexes().length>0 && args!=null){
+			sb.append(" param={");
+			int[] idxs = meta.logIndexes();
+			for (int i=0;i<idxs.length;i++){
+				int idx = idxs[i];
+				if (idx<args.length)
+					sb.append(args[idx].toString());
+				
+				if (i!=idxs.length-1){
+					sb.append(",");
+				}
+			}
+			sb.append("}");
+		}
+		
 		RuleLoggerHelper.dolog(sb.toString(),throwable);
 	}
 

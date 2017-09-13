@@ -8,7 +8,7 @@ import test.net.jplugin.core.das.mybatis.MybtestBean;
 
 public interface IRule {
 	
-	@Rule(methodType=TxType.REQUIRED)
+	@Rule(methodType=TxType.REQUIRED,log=true,logIndexes={0,1})
 	public void add(String f1,String f2);
 	
 //	@Rule(methodType=TxType.REQUIRED)

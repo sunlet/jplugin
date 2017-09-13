@@ -18,7 +18,7 @@ public @interface Rule {
 
 	public TxType methodType() default TxType.ANY;
 	
-	public int keyIndex() default -1;
+	public boolean log() default false;
 	
 	public int[] logIndexes()  default {};
 
