@@ -26,7 +26,7 @@ public class HttpServiceResult {
 		return result;
 	}
 	
-
+	private HttpServiceResult(){}
 	public static HttpServiceResult create(String json) {
 		HttpServiceResult hsr = new HttpServiceResult();
 		Map map = JsonKit.json2Map(json);

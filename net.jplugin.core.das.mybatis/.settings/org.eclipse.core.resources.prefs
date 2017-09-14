@@ -28,6 +28,7 @@ encoding//test/test/net/jplugin/core/das/mybatis/anno/RefAnnoDemo.java=UTF-8
 encoding//test/test/net/jplugin/core/das/mybatis/anno/RefAnnoDemo2.java=UTF-8
 encoding//test/test/net/jplugin/core/das/mybatis/anno/RuleTestForMybatisAnno.java=UTF-8
 encoding//test/test/net/jplugin/core/das/mybatis/anno/ServiceImplForAnno.java=UTF-8
+encoding//test/test/net/jplugin/core/das/mybatis/bind/IMybtestMapperForBind.java=UTF-8
 encoding//test/test/net/jplugin/core/das/mybatis/ts/DbCreate.java=UTF-8
 encoding//test/test/net/jplugin/core/das/mybatis/ts/RouteTest.java=UTF-8
 encoding//test/test/net/jplugin/core/das/mybatis/ts/TbRoute0.java=UTF-8

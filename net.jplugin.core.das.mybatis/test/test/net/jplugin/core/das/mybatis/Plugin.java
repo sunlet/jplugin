@@ -50,6 +50,8 @@ public class Plugin extends AbstractPluginForTest{
 		//测试anno
 		ExtensionCtxHelper.addRuleExtension(this, IRuleTestForMybatisAnno.class, RuleTestForMybatisAnno.class);
 		ExtensionServiceHelper.addServiceExtension(this, IServiceForAnno.class.getName(), ServiceImplForAnno.class);
+		
+		ExtensionMybatisDasHelper.autoBindMapperExtension(this, ".bind");
 	}
 	@Override
 	public void test() throws Throwable {

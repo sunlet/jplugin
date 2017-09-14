@@ -218,14 +218,10 @@ public class PluginEnvirement {
 				
 				//加载测试插件
 				if (testAll){
-					try{
-						addPlugin("test."+obj);
-					}catch(Exception e){}
+					addPluginIfExists("test."+obj);
 				}else{
 					if ( ("test."+obj).equals(testTarget)){
-						try{
-							addPlugin("test."+obj);
-						}catch(Exception e){}
+						addPluginIfExists("test."+obj);
 					}
 				}
 			}
@@ -237,6 +233,7 @@ public class PluginEnvirement {
 			this.stateLevel = STAT_LEVEL_WIRING;
 			registry.wire();
 			registry.makeServices();
+			registry.clearClassCache();
 			this.stateLevel = STAT_LEVEL_INITING;
 			this.annoResolveHelper.resolveHistory();
 
@@ -285,7 +282,15 @@ public class PluginEnvirement {
 		}
 	}
 
-
+	private void addPluginIfExists(Object obj) {
+		String cname = (String) obj;
+		try {
+			Class.forName(cname);
+		} catch (ClassNotFoundException e) {
+			return;
+		}
+		addPlugin(obj);
+	}
 
 	/**
 	 * @param obj

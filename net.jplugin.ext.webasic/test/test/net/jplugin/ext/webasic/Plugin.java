@@ -15,6 +15,7 @@ import test.net.jplugin.ext.webasic.annotation.RuleTestForAnno;
 import test.net.jplugin.ext.webasic.annotation.ServiceExportTest;
 import test.net.jplugin.ext.webasic.annotation.WebControllerTest;
 import test.net.jplugin.ext.webasic.annotation.WebExControllerTest;
+import test.net.jplugin.ext.webasic.bind.TestBind;
 import test.net.jplugin.ext.webasic.dynamicmethod.DynamicMethodTest;
 import test.net.jplugin.ext.webasic.dynamicmethod.TestDynamicMethodClient;
 import test.net.jplugin.ext.webasic.mttest.MtTestClient;
@@ -59,6 +60,8 @@ public class Plugin extends AbstractPluginForTest{
 
 		ExtensionWebHelper.addServiceExportExtension(this,"/mttestclient",MtTestForRequest.class);
 
+		ExtensionWebHelper.autoBindControllerExtension(this, ".bind");
+		ExtensionWebHelper.autoBindServiceExportExtension(this, ".bind");
 		
 	}
 
@@ -68,6 +71,7 @@ public class Plugin extends AbstractPluginForTest{
 	}
 
 	public void test() throws IOException, HttpStatusException, InterruptedException, ExecutionException {
+		
 		RestMethod4Pojo.test();
 		new TestRestClient().test();
 		new TestRestClient().testProxyFactory();
@@ -80,7 +84,7 @@ public class Plugin extends AbstractPluginForTest{
 		new MtTestClient().test();
 //		TestReqIdService.calltest();
 		
-
+		new TestBind().test();
 	}
 	
 	@Override

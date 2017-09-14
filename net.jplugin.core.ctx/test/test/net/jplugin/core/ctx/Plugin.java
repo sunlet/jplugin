@@ -5,6 +5,7 @@ import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import test.net.jplugin.core.ctx.bind.BindTest;
 
 public class Plugin extends AbstractPluginForTest {
 	
@@ -12,6 +13,8 @@ public class Plugin extends AbstractPluginForTest {
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTest.class, RuleTestImpl.class);
 		
 		ExtensionCtxHelper.addTxMgrListenerExtension(this, TxManagerListenerTest.class);
+		
+		ExtensionCtxHelper.autoBindRuleServiceExtension(this, ".bind");
 	}
 
 	@Override
@@ -33,6 +36,7 @@ public class Plugin extends AbstractPluginForTest {
 			AssertKit.assertEqual(e.getMessage(), "HAHAHA");
 		}
 		
+		new BindTest().test();
 	}
 
 }

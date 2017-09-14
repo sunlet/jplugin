@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.reso.ResolverKit;
+import net.jplugin.core.ctx.api.BindRuleService;
+import net.jplugin.core.ctx.api.BindRuleService.DefaultInterface;
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
@@ -35,6 +38,40 @@ public class ExtensionCtxHelper {
 		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE_FILTER, impl ));
 	}
 
+	/**
+	 * 自动遍历pkgPath子包下面的所有类，找到BindRuleService 标注，自动注册为RuleService扩展。
+	 * @param p
+	 * @param pkgPath
+	 */
+	public static void autoBindRuleServiceExtension(AbstractPlugin p, String pkgPath) {
+		for(Class c:p.filterContainedClasses(pkgPath,BindRuleService.class)){
+			BindRuleService anno = (BindRuleService) c.getAnnotation(BindRuleService.class);
+			Class interfaceClazz = anno.interfaceClass();
+			if (interfaceClazz.getName().equals(DefaultInterface.class.getName())){
+				interfaceClazz = computeInterfaceCls(c);
+			}
+			if (StringKit.isNull(anno.name())){
+				addRuleExtension(p, interfaceClazz, c);
+				PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for rule service: interface="
+						+ interfaceClazz.getName() + " impl=" + c.getName());
+			}else{
+				addRuleExtension(p, anno.name(),interfaceClazz, c);
+				PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for rule service: interface="
+						+ interfaceClazz.getName() + " impl=" + c.getName());
+			}
+		}
+	}
+
+	private static Class computeInterfaceCls(Class impClazz) {
+		Class[] clazzs = impClazz.getInterfaces();
+		if (clazzs.length==0){
+			throw new RuntimeException("Class must implement a interface, so as to be defined as a RuleService impl. "+impClazz.getName());
+		}
+		if (clazzs.length>1){
+			throw new RuntimeException("Class with multiple interfaces, must specify one interface in annotation. "+impClazz.getName());
+		}
+		return clazzs[0];
+	}
 
 	/**
 	 * <PRE>
@@ -51,6 +88,7 @@ public class ExtensionCtxHelper {
 	 * @param apiPkgPath  接口类相对于Plugin类的相对包路径。
 	 * @param implPkgPath  实现类相对于Plugin类的相对包路径。
 	 */
+	@Deprecated
 	public static void autoAddRuleServiceExtension(AbstractPlugin p, String apiPkgPath, String implPkgPath) {
 		String pkg = p.getClass().getPackage().getName() + apiPkgPath;
 		ResolverKit kit = new ResolverKit<>();

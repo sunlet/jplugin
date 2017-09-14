@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/net/jplugin/core/ctx/ExtensionCtxHelper.java=UTF-8
 encoding//src/net/jplugin/core/ctx/Plugin.java=UTF-8
+encoding//src/net/jplugin/core/ctx/api/BindRuleService.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/CtxRuntimeException.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/ITransactionManagerListener.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/JsonResult.java=UTF-8
