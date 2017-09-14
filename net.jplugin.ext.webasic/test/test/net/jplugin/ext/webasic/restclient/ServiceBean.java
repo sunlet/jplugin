@@ -54,7 +54,9 @@ public class ServiceBean {
 		throw new RuntimeException("test ex");
 	}
 	public void remoteEx(){
-		throw new RemoteExecuteException("100","test remote ex",new Exception("ccc"));
+		RemoteExecuteException ex = new RemoteExecuteException("100","test remote ex",new Exception("ccc"));
+		ex.setNeedLog(false);
+		throw ex;
 	}
 	
 	public void indirectEx(){

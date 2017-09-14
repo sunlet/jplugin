@@ -20,6 +20,7 @@ public class RemoteExecuteException extends RuntimeException {
 	
 
 	String code;
+	boolean needLog=true;
 
 	
 	/**
@@ -70,6 +71,15 @@ public class RemoteExecuteException extends RuntimeException {
 	public String getCode() {
 		return code;
 	}
+
+	public boolean isNeedLog() {
+		return needLog;
+	}
+
+	public void setNeedLog(boolean needLog) {
+		this.needLog = needLog;
+	}
+	
 
 	// /**
 	// * @param cause

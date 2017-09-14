@@ -17,6 +17,7 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.ILogService;
+import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.rclient.handler.RestHandler;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IDynamicService;
@@ -285,7 +286,14 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 		jr.setMsg(exInfo.getMsg());//get message
 		jr.setCode(exInfo.getCode());//get code
 		cp.setResult(jr.toJson(getJsonFormat(cp)));
-		ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getMessage(),e);
+		if (!
+				(
+						(e instanceof RemoteExecuteException) 
+						&& 
+						(!((RemoteExecuteException) e).isNeedLog())
+				)
+			)
+			ServiceFactory.getService(ILogService.class).getLogger(this.getClass().getName()).error(e.getMessage(),e);
 	}
 
 	//为了兼容 return节点

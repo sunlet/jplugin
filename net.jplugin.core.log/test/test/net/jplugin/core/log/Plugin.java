@@ -17,7 +17,7 @@ public class Plugin extends AbstractPluginForTest{
 		Logger log2 = LogFactory.getLogger(this.getClass().getName());
 		log1.error("*** in log test 1, by log2");
 		log2.error("*** in log test 2, by log2");
-		log2.error("abc{}abc{}abcabc","hahaha",111,new Exception());
+//		log2.error("abc{}abc{}abcabc","hahaha",111,new Exception());
 	}
 
 	@Override
