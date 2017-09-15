@@ -15,7 +15,7 @@ import net.jplugin.ext.webasic.ExtensionWebHelper;
  *     ExtensionWebHelper.autoBindControllerExtension(this, ".controller");
  *     ExtensionCtxHelper.autoBindRuleServiceExtension(this, ".service");
  *     ExtensionMybatisDasHelper.autoBindMapperExtension(this, ".mapper");
- *     ExtensionESFHelper.autoBindRemoteProxyExtension(this,"remote");
+ *     ExtensionESFHelper.autoBindRemoteProxyExtension(this,".remote");
  * 	}
  * </PRE>
  * <PRE>
