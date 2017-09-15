@@ -33,7 +33,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
-	public static final String _REQID = "_reqid_";
+	public static final String _REQID = "ReqSerialKey";
 	private static final String APPLICATION_JSON = "application/json";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {

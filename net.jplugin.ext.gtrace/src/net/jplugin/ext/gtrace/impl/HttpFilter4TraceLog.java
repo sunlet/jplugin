@@ -11,7 +11,7 @@ import net.jplugin.ext.webasic.api.IHttpFilter;
 
 public class HttpFilter4TraceLog implements IHttpFilter{
 
-	public static final String _REQID = "_reqid_";
+	public static final String _REQID = "ReqSerialKey";
 
 	@Override
 	public Object filter(FilterChain fc, net.jplugin.ext.webasic.api.HttpFilterContext ctx) throws Throwable {
