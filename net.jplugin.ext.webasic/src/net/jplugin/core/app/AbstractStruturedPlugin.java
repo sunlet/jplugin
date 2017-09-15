@@ -7,6 +7,18 @@ import net.jplugin.ext.webasic.ExtensionWebHelper;
 
 /**
  * <PRE>
+ * 这个基类不再推荐使用，以后推荐 @BindXXX 标注的方式批量注册扩展。
+ * 用户Plugin直接从AbstractPlugin继承，在构造函数中用下面的方式注册扩展，然后在代码当中@BindXXX 类标注
+ * 
+ * 	public Plugin(){
+ *     ExtensionWebHelper.autoBindServiceExportExtension(this,".export");
+ *     ExtensionWebHelper.autoBindControllerExtension(this, ".controller");
+ *     ExtensionCtxHelper.autoBindRuleServiceExtension(this, ".service");
+ *     ExtensionMybatisDasHelper.autoBindMapperExtension(this, ".mapper");
+ *     ExtensionESFHelper.autoBindRemoteProxyExtension(this,"remote");
+ * 	}
+ * </PRE>
+ * <PRE>
  * 这是一个结构化的注册扩展的Plugin基类，也就是说：如果插件程序结构符合规定的目录标准，集成自该类的插件会自动注册常用的扩展。
  * 具体来说，会自动注册
  *      export 包下的 服务。
@@ -20,6 +32,7 @@ import net.jplugin.ext.webasic.ExtensionWebHelper;
  * @author LiuHang
  *
  */
+@Deprecated
 public abstract class AbstractStruturedPlugin extends AbstractPlugin{
 	public AbstractStruturedPlugin(){
 		ExtensionWebHelper.autoAddServiceExportExtension(this,".export");
