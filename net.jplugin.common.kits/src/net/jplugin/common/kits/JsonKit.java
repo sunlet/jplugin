@@ -97,7 +97,7 @@ public class JsonKit {
 		}
 		return m;
 	}
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 		TestBean o = new TestBean();
 		TestBean o2 = new TestBean();
 		TestBean[] arr = new TestBean[]{o,o2};
@@ -112,6 +112,17 @@ public class JsonKit {
 		
 		System.out.println(object2Json(list));
 	}
+	public static void main(String[] args) {
+		TestBean[] arr = new TestBean[2];
+		arr[0]= new TestBean();
+		arr[1] = new TestBean();
+		String json = JsonKit.object2Json(arr);
+		System.out.println(json);
+		
+		Object obj = JsonKit.json2ObjectEx(json,arr.getClass());
+		System.out.println(JsonKit.object2JsonEx(obj));
+	}
+	
 	public static void main2(String[] args) throws Exception {
 		
 		int[] arr = new int[]{1,2,3};
@@ -200,4 +211,5 @@ class TestBean {
 		this.age = age;
 	}
 
+	
 }
