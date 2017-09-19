@@ -8,9 +8,9 @@ import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.mtenant.api.ITenantListProvidor;
+import net.jplugin.core.mtenant.api.TenantListProvidorManager;
 import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
-import net.jplugin.core.mtenant.tenantforschedu.TenantListProvidorManager;
 import net.jplugin.core.mtenant.tidv.TenantIDValidator;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
 

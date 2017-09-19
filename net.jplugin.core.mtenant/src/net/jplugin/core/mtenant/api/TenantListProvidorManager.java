@@ -1,9 +1,8 @@
-package net.jplugin.core.mtenant.tenantforschedu;
+package net.jplugin.core.mtenant.api;
 
 import java.util.List;
 
 import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.core.mtenant.api.ITenantListProvidor;
 
 public class TenantListProvidorManager {
 	public static TenantListProvidorManager instance = new TenantListProvidorManager();

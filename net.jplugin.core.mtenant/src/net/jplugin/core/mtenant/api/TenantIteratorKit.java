@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.mtenant.MtenantStatus;
-import net.jplugin.core.mtenant.tenantforschedu.TenantListProvidorManager;
 /**
  * <li>如果当前不是多租户模式，则直接执行一次返回结果，租户号null
  * <li>如果是多租户模式，但是没有配置TenantListProvidor，则抛出异常
