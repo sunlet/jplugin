@@ -59,11 +59,7 @@ import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.common.kits.http.filter.HttpClientFilterContext;
 import net.jplugin.common.kits.http.mock.HttpMock;
 
-/**
- * Http操作工具类
- * @author liyy
- * @date 2014-05-20
- */
+
 public final class HttpKit{
 	
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024; //8KB
@@ -301,14 +297,24 @@ public final class HttpKit{
 		String s = HttpKit.get("http://192.133.212.11/32234");
 		System.out.println(s);
 	}
+	
 	public static String post(String url, Map<String, Object> params) throws IOException, HttpStatusException {
 		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.POST, url, params);
-//		return HttpFilterManager.execute(ctx);
 		return (String) filterManager.filter(ctx);
 	}
+	
+	public static String postWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.POST, url, params,headers);
+		return (String) filterManager.filter(ctx);
+	}
+	
 	public static String get(String url) throws IOException, HttpStatusException {
 		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null);
-//		return HttpFilterManager.execute(ctx);
+		return (String) filterManager.filter(ctx);
+	}
+	
+	public static String getWithHeader(String url,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null,headers);
 		return (String) filterManager.filter(ctx);
 	}
 	

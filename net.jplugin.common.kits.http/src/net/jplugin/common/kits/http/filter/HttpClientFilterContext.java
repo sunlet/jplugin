@@ -10,9 +10,13 @@ public class HttpClientFilterContext {
 	Map<String,String> headers;
 	
 	public HttpClientFilterContext(Method m,String u,Map<String,Object> p){
+		this(m,u,p,null);
+	}
+	public HttpClientFilterContext(Method m,String u,Map<String,Object> aParams,Map<String,String> aHeaders){
 		this.method = m;
 		this.url = u;
-		this.params = p;
+		this.params = aParams;
+		this.headers = aHeaders;
 	}
 	
 	public Method getMethod() {
