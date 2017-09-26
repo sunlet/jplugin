@@ -21,6 +21,7 @@ import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
 import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
+import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvoker;
 import net.jplugin.ext.webasic.impl.rests.ServiceControllerSet;
 import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.web.WebControllerSet;
@@ -91,6 +92,7 @@ public class Plugin extends AbstractPlugin{
 		ServiceFilterManager.INSTANCE.init();
 		WebCtrlFilterManager.INSTANCE.init();
 		
+		ServiceInvoker.initCompatibleReturn();
 //		HttpFilterManager.addFilter(new HttpRequestIdChain());
 		
 		MtInvocationFilterHandler.init();

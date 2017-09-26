@@ -15,6 +15,7 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.RefConfig;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.rclient.api.RemoteExecuteException;
@@ -192,7 +193,7 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 			jr.setSuccess(state.success);
 			
 			HashMap<String, Object> hm = new HashMap();
-			if (compatibleReturn()){
+			if (restCompatibleReturn){
 				hm.put("return", result);
 			}
 			hm.put("result", result);
@@ -242,7 +243,7 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 			jr.setSuccess(state.success);
 			
 			HashMap<String, Object> hm = new HashMap();
-			if (compatibleReturn()){
+			if (restCompatibleReturn){
 				hm.put("return", result);
 			}
 			hm.put("result", result);
@@ -297,21 +298,33 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 	}
 
 	//为了兼容 return节点
-	Boolean restCompatibleReturn;
-	private boolean compatibleReturn() {
-		if (restCompatibleReturn==null){
-			synchronized (this) {
-				String cfg = ConfigFactory.getStringConfig("platform.rest-compatible-return");
-				if (cfg!=null) cfg = cfg.trim();
-				if ("true".equals(cfg)){
-					restCompatibleReturn = true;
-				}else{
-					restCompatibleReturn = false;
-				}
-			}
+	static Boolean restCompatibleReturn;
+	public static void initCompatibleReturn(){
+		String cfg = ConfigFactory.getStringConfig("platform.rest-compatible-return");
+		if (cfg!=null) cfg = cfg.trim();
+		if ("true".equalsIgnoreCase(cfg)){
+			restCompatibleReturn = true;
+		}else{
+			restCompatibleReturn = false;
 		}
-		return restCompatibleReturn;
+		PluginEnvirement.INSTANCE.getStartLogger().log("platform.rest-compatible-return = "+restCompatibleReturn);
 	}
+//	
+//	private boolean compatibleReturn() {
+//		if (restCompatibleReturn==null){
+//			synchronized (this) {
+//				String cfg = ConfigFactory.getStringConfig("platform.rest-compatible-return");
+//				if (cfg!=null) cfg = cfg.trim();
+//				if ("true".equals(cfg)){
+//					restCompatibleReturn = true;
+//				}else{
+//					restCompatibleReturn = false;
+//				}
+//				System.out.println("platform.rest-compatible-return = "+restCompatibleReturn);
+//			}
+//		}
+//		return restCompatibleReturn;
+//	}
 
 	private Object invokeWithServiceFilter(String servicePath,final ObjectAndMethod oam, final Object[] paraValue) throws Throwable {
 		InvocationContext ctx = new InvocationContext(servicePath,oam.object,oam.method,paraValue);
