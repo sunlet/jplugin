@@ -92,7 +92,16 @@ public class MultiDbSqlHelper {
 	}
 
 	private static void handleOneSql(String schema, String[] list) {
-		String command = list[0].toUpperCase();
+		
+		String command=null;
+		for (int i=0;i<list.length;i++){
+			if (!list[i].startsWith("/*")){
+				command = list[i].toUpperCase();
+				break;
+			}
+		}
+		if (command == null) 
+			throw new RuntimeException("Error sql:"+toSql(list));
 
 		if (SELECT.equals(command)) {
 			handleSelect(list, schema);
@@ -213,14 +222,21 @@ public class MultiDbSqlHelper {
 
 	private static void handleTableName(String[] list, int i, String schema) {
 		String word = list[i];
+		
+		//如果是 (，则不处理
+		if ("(".equals(word))
+			return;
+
+		// 如果这个位置是注释，则处理下一个
 		if (word.startsWith("/*")) {
-			// 如果这个位置是注释，则处理下一个
 			handleTableName(list, i + 1, schema);
-		} else {
-			if (word.indexOf(".") >= 0)
-				throw new RuntimeException("The table name to handle must not contain [.] ,but is " + word);
-			list[i] = schema + "." + word;
 		}
+		
+		//处理表名称
+		if (word.indexOf(".") >= 0)
+				throw new RuntimeException("The table name to handle must not contain [.] ,but is " + word);
+		list[i] = schema + "." + word;
+		
 	}
 
 	public static void main(String[] args) {
