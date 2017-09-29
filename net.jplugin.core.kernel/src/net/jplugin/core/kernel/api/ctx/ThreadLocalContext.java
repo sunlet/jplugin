@@ -52,7 +52,7 @@ public class ThreadLocalContext {
 	}
 	
 	public void addContextListenerOnce(ThreadLocalContextListener ruleContextListener) {
-		if (listeners==null || listeners.contains(ruleContextListener)) 
+		if (listeners!=null && listeners.contains(ruleContextListener)) 
 			return;
 		else 
 			addContextListener(ruleContextListener);
