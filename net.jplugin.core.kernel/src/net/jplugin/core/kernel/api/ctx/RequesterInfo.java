@@ -142,10 +142,10 @@ public class RequesterInfo {
 		public void setJsonContent(String jsonContent) {
 			this.jsonContent = jsonContent;
 			
-			//只有在content是Map的情况下才fillItemsToParamContent
-			if (!StringKit.isNull(jsonContent) && jsonContent.trim().startsWith("{")){
-				fillItemsToParamContent();
-			}
+//			//只有在content是Map的情况下才fillItemsToParamContent
+//			if (!StringKit.isNull(jsonContent) && jsonContent.trim().startsWith("{")){
+			fillItemsToParamContent();
+//			}
 		}
 		
 		private void fillItemsToParamContent() {
@@ -154,6 +154,10 @@ public class RequesterInfo {
 			
 			if (StringKit.isNull(this.jsonContent))
 				return;//不做任何转换，认为没参数
+
+			//应对_FULL_MATCH的情况，参数不是map，忽略
+			if (!jsonContent.trim().startsWith("{"))
+				return;
 			
 			Map map = JsonKit.json2Map(this.jsonContent);
 			for (Object key : map.keySet()){
