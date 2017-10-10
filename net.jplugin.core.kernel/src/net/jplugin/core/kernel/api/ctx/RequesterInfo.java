@@ -141,8 +141,11 @@ public class RequesterInfo {
 		}
 		public void setJsonContent(String jsonContent) {
 			this.jsonContent = jsonContent;
-			fillItemsToParamContent();
-////2016-12-08注释掉			parseAndCacheJsonContent();
+			
+			//只有在content是Map的情况下才fillItemsToParamContent
+			if (!StringKit.isNull(jsonContent) && jsonContent.trim().startsWith("{")){
+				fillItemsToParamContent();
+			}
 		}
 		
 		private void fillItemsToParamContent() {

@@ -145,7 +145,9 @@ public static final Object MIX_PARA_VALUE = "1";
 						break;
 					}
 				}
-				if (StringKit.isNull(paramName)){
+				
+				//FULL MATCH的情况，直接用argX来传递；服务端会通过MIXED模式去处理，如果不是MIXED模式，就随他吧。
+				if (StringKit.isNull(paramName) || paramName.equals(Para._FULL_MATCH_)){
 					paramName = "arg"+index;
 				}
 				return paramName;

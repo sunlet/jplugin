@@ -34,9 +34,15 @@ public class RestMethod4Pojo {
 		return a+b;
 	}
 	
+//	public String testFullMatchCheck(@Para(name="_FULL_MATCH_") String b){
+//		return b;
+//	}
+	
 	public Integer add(int a,int b){
 		return a+b;
 	}
+	
+
 
 	@Para(name="aa")
 	public Integer addWithAnno(@Para(name="a") int a,@Para(name="b") int b){

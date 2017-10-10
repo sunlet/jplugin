@@ -18,6 +18,10 @@ public class ServiceBean {
 		return a+b;
 	}
 	
+	public Integer testFullMatch(@Para(name="_FULL_MATCH_") int  a){
+		return a+1;
+	}
+	
 	/* (non-Javadoc)
 	 * @see test.net.jplugin.ext.webasic.restclient.IService#add(java.lang.String, java.lang.String)
 	 */

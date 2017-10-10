@@ -17,6 +17,7 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.rclient.api.RemoteExecuteException;
 import net.jplugin.core.rclient.handler.RestHandler;
@@ -65,6 +66,11 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 						if (JsonResult.JSONP_FUNCTION_PARAM.equals(p.name())){
 							throw new RuntimeException("Param annotation can't use same name with Jsonp callback param. "+ o.getClass().getName()+" "+m.getName());
 						}
+						
+						if (Para._FULL_MATCH_.equals(p.name()) && m.getParameterTypes().length!=1){
+							//一定只有一个参数
+							throw new RuntimeException("_FULL_MATCH_ can only be used for method with ONE parameter. "+ o.getClass().getName()+" "+m.getName());
+						}
 					}
 				}
 			}
@@ -84,6 +90,12 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 			throw new RuntimeException("Method mismatch!");
 		}
 		Object[] ret = new Object[parameterTypes.length];
+		
+		//尝试处理FULL_MATCH模式
+		if (tryDuleFullMatch(req,ret,paraAnootation,parameterTypes)){
+			return ret;
+		}
+		
 		Map paraMap = req.getParamMap();
 		for (int i=0;i<parameterTypes.length;i++){
 			ParaInfo paraInfo = getParaInfo(paraAnootation[i],i);
@@ -91,6 +103,50 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 			ret[i] =  getFromRequest(paraMap,paraInfo,parameterTypes[i],i);
 		}
 		return ret;
+	}
+
+	private boolean tryDuleFullMatch(CallParam req, Object[] ret, Annotation[][] annos, Class<?>[] parameterTypes) {
+		if (ret.length!=1) 
+			return false; 
+		
+		Annotation[] anno = annos[0];
+		for (Annotation a:anno){
+			if (a.annotationType()==Para.class){
+				String name = ((Para)a).name().trim();
+				if (Para._FULL_MATCH_.equals(name)){
+					String fullJson;
+					if (req.paramMap!=null && !req.paramMap.isEmpty()){
+						//如果参数不为NULL或EMPTY，则肯定无需判断jsonContent.(如果是json方式调用，json内容也已经同步到paramMap里面了）
+						//这里先判断MIX标记，如果MIX标记存在，直接用arg0，否则用整个内容
+						if (RestHandler.MIX_PARA_VALUE.equals(req.paramMap.get(RestHandler.MIX_PARA)))
+							fullJson = req.paramMap.get("arg0");
+						else
+							fullJson = JsonKit.object2JsonEx(req.paramMap);
+					}else{
+						//Json方式调用，并且参数表不为map的情况才会执行到这里
+						String jsonContent = ThreadLocalContextManager.getRequestInfo().getContent().getJsonContent();
+						if (!StringKit.isNull(jsonContent)){
+							fullJson = jsonContent;
+						}else
+							fullJson = null;
+					}
+					
+					//对结果赋值
+					if (fullJson!=null){
+						ret[0] = JsonKit.json2ObjectEx(fullJson, parameterTypes[0]);		
+					}else{
+						ret[0] = null;
+						//检查必需性
+						if (((Para)a).required()){
+							throw new RuntimeException("Required param is not exists!"+req.operation);
+						}
+					}
+					//返回true
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	static class ParaInfo{

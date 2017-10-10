@@ -39,6 +39,9 @@ public class TestRestClient {
 			ret = true;
 		}
 		if (!ret) throw new RuntimeException("fail");
+		
+		int r = service.testFullMatch(1);
+		AssertKit.assertEqual(2, r);
 	}
 	
 	
