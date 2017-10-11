@@ -1,5 +1,6 @@
 package net.jplugin.common.kits.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
@@ -41,6 +42,7 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -61,7 +63,7 @@ import net.jplugin.common.kits.http.mock.HttpMock;
 
 
 public final class HttpKit{
-	
+	private static final String APPLICATION_JSON = "application/json";
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024; //8KB
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -211,7 +213,13 @@ public final class HttpKit{
 				params.add(new BasicNameValuePair(key, JsonKit.object2JsonEx(value)));
 //				params.add(new BasicNameValuePair(key, value.toString()));
 		}
-		httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
+		
+		if (params!=null && extHeaders!=null && isJsonFormat(extHeaders) ){
+			ByteArrayInputStream bais = new ByteArrayInputStream(JsonKit.object2JsonEx(params).getBytes(UTF_8));
+			httpPost.setEntity(new InputStreamEntity(bais));
+		}else
+			httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
+		
 		//设置headers
 		if (extHeaders!=null){
 			for (Entry<String, String> en:extHeaders.entrySet()){
@@ -225,6 +233,11 @@ public final class HttpKit{
 		//调用
 		return handleResponse(httpClient, httpPost);
 	}
+	
+	private static boolean isJsonFormat(Map<String, String> extHeaders) {
+		return APPLICATION_JSON.equalsIgnoreCase(extHeaders.get("ContentType"));
+	}
+	
 	private static void useInvokeParam(HttpRequestBase httpReqBase) {
 		InvocationParam invokeParam = ClientInvocationManager.INSTANCE.getAndClearParam();
 		if (invokeParam != null) {
