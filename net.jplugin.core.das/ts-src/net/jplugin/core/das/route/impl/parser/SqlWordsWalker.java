@@ -122,4 +122,22 @@ public class SqlWordsWalker{
 			}
 		}
 	}
+	
+	
+	public  String toSql(){
+		return appendToBuffer(new StringBuffer(),words);
+	}
+	private  String appendToBuffer(StringBuffer sb,String[] list) {
+		boolean first = true;
+		for (String s : list) {
+			if (first) {
+				sb.append(s);
+				first = false;
+			} else if (s.equals("(")){
+				sb.append(s);
+			} else
+				sb.append(" ").append(s);
+		}
+		return sb.toString();
+	}
 }

@@ -14,7 +14,7 @@ public class SqlStrLexerToolNew {
 	/**
 	 * <PRE>
 	 * 单词: SELECT  ABC  23.23  AND OR _NOT
-	 * 运算符：'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>  !
+	 * 运算符：'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>  ! !=
 	 * 分界符：'('  ')' ','
 	 * 字符串常量：'   ' 带转义符
 	 * 注释： /star.....star/
@@ -143,7 +143,8 @@ public class SqlStrLexerToolNew {
 		}else{
 			char c1 = buffer[idx];
 			char c2 = buffer[idx+1];
-			if ( (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>')) {
+//			if ( (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>') ) {
+			if ( (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>') || (c1=='!'&& c2=='=')) {
 				list.add(new String(buffer,idx,2));
 				idx = idx + 1;
 				return;
