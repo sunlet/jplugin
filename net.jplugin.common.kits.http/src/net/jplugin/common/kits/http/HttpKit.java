@@ -236,7 +236,7 @@ public final class HttpKit{
 	}
 	
 	private static boolean isJsonFormat(Map<String, String> extHeaders) {
-		return ContentKit.isApplicationJson(extHeaders.get("ContentType"));
+		return ContentKit.isApplicationJson(extHeaders.get("Content-Type"));
 	}
 	
 	private static void useInvokeParam(HttpRequestBase httpReqBase) {
