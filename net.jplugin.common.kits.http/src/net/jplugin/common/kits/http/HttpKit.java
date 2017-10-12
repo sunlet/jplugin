@@ -43,6 +43,7 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -214,8 +215,9 @@ public final class HttpKit{
 		}
 		
 		if (datas!=null && extHeaders!=null && isJsonFormat(extHeaders) ){
-			ByteArrayInputStream bais = new ByteArrayInputStream(JsonKit.object2JsonEx(datas).getBytes(UTF_8));
-			httpPost.setEntity(new InputStreamEntity(bais));
+//			ByteArrayInputStream bais = new ByteArrayInputStream(JsonKit.object2JsonEx(datas).getBytes(UTF_8));
+//			httpPost.setEntity(new InputStreamEntity(bais));
+			httpPost.setEntity(new StringEntity(JsonKit.object2JsonEx(datas),UTF_8));
 		}else
 			httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
 		
