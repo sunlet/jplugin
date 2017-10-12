@@ -16,6 +16,7 @@ package net.jplugin.core.ctx.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +68,27 @@ public class RuleInterceptor implements InvocationHandler {
 		if (!interfaceClass.isInterface()) {
 			throw new RuleMetaException("cls " + interfaceClass
 					+ " must be interface!");
+		}
+		
+		//实现类上的Rule标记只能加到接口对应的方法上
+		Method[] mds = oldService.getClass().getDeclaredMethods();
+		if (mds!=null){
+			for (Method m:mds){
+				Rule rule = m.getAnnotation(Rule.class);
+				if (rule!=null){
+					Method interfm=null;
+					if (!Modifier.isPublic(m.getModifiers()))
+						throw new RuntimeException("Rule annotation must be used for public methods. "+oldService.getClass().getName()+","+m.getName());
+
+					try{
+						interfm = this.interfaceClass.getMethod(m.getName(), m.getParameterTypes());
+					}catch(Exception e){
+						interfm = null;
+					}
+					if (interfm ==null)
+						throw new RuntimeException("Rule annotation can't be used for methods not present in rule interface. "+oldService.getClass().getName()+","+m.getName());
+				}
+			}
 		}
 
 //		for (Method m : interfaceClass.getMethods()) {
