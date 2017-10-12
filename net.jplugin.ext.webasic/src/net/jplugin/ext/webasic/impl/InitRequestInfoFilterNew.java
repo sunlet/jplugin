@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.jplugin.common.kits.RequestIdKit;
+import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
@@ -34,7 +35,6 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
 	public static final String _REQID = "ReqSerialKey";
-	private static final String APPLICATION_JSON = "application/json";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
 //		try {
@@ -130,8 +130,9 @@ public class InitRequestInfoFilterNew implements WebFilter {
 
 	private void parseContent(RequesterInfo reqInfo, HttpServletRequest req) {
 		Content content = reqInfo.getContent();
-		content.setContentType(req.getContentType());
-		if (APPLICATION_JSON.equals(content.getContentType())) {
+		String theContentType = req.getContentType();
+		content.setContentType(theContentType);
+		if (ContentKit.isApplicationJson(theContentType)) {//用ContentKit,startwith判断，支持 application/json;encoding... 的样式
 			InputStream is = null;
 			String json;
 			try {

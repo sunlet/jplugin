@@ -63,7 +63,6 @@ import net.jplugin.common.kits.http.mock.HttpMock;
 
 
 public final class HttpKit{
-	private static final String APPLICATION_JSON = "application/json";
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024; //8KB
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -214,8 +213,8 @@ public final class HttpKit{
 //				params.add(new BasicNameValuePair(key, value.toString()));
 		}
 		
-		if (params!=null && extHeaders!=null && isJsonFormat(extHeaders) ){
-			ByteArrayInputStream bais = new ByteArrayInputStream(JsonKit.object2JsonEx(params).getBytes(UTF_8));
+		if (datas!=null && extHeaders!=null && isJsonFormat(extHeaders) ){
+			ByteArrayInputStream bais = new ByteArrayInputStream(JsonKit.object2JsonEx(datas).getBytes(UTF_8));
 			httpPost.setEntity(new InputStreamEntity(bais));
 		}else
 			httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
@@ -235,7 +234,7 @@ public final class HttpKit{
 	}
 	
 	private static boolean isJsonFormat(Map<String, String> extHeaders) {
-		return APPLICATION_JSON.equalsIgnoreCase(extHeaders.get("ContentType"));
+		return ContentKit.isApplicationJson(extHeaders.get("ContentType"));
 	}
 	
 	private static void useInvokeParam(HttpRequestBase httpReqBase) {
