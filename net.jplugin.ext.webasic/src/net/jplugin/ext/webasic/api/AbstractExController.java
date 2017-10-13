@@ -14,7 +14,9 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleResult;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.ext.webasic.kits.StreamContentKit;
 
 public class AbstractExController {
 	private static final String WA_CK = "wa_ck";
@@ -44,6 +46,17 @@ public class AbstractExController {
 
 	public HttpServletResponse getRes() {
 		return (HttpServletResponse) ThreadLocalContextManager.instance.getContext().getAttribute(HTTP_RES);
+	}
+	
+	/**
+	 * 获取Request流中json内容
+	 * @return
+	 */
+	public String getStreamJsonContent(){
+		//最终修改成这样
+//		return ThreadLocalContextManager.getRequestInfo().getContent().getJsonContent();
+		//目前暂时这样
+		return StreamContentKit.getContent(getReq());
 	}
 
 	public String getParam(String nm) {

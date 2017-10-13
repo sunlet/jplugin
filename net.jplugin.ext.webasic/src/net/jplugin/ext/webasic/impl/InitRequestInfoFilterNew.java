@@ -20,6 +20,7 @@ import net.jplugin.core.kernel.kits.KernelKit;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.WebFilter;
+import net.jplugin.ext.webasic.kits.StreamContentKit;
 
 /**
  * This filter must not conflict with InitRequestInfoFilter。This is two seperate
@@ -133,31 +134,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		String theContentType = req.getContentType();
 		content.setContentType(theContentType);
 		if (ContentKit.isApplicationJson(theContentType)) {//用ContentKit,startwith判断，支持 application/json;encoding... 的样式
-			InputStream is = null;
-			String json;
-			try {
-				req.getInputStream();
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] buffer = new byte[512];
-				int len;
-				is = req.getInputStream();
-				if (is == null) {
-					json = "";
-				} else {
-					while ((len = is.read(buffer)) > 0) {
-						os.write(buffer, 0, len);
-					}
-					json = os.toString("utf-8");
-				}
-			} catch (IOException e) {
-				throw new RuntimeException("get json error:" + e.getMessage(), e);
-			} finally {
-				if (is != null)
-					try {
-						is.close();
-					} catch (Exception e) {
-					}
-			}
+			String json = StreamContentKit.readReqStream(req);
 			content.setJsonContent(json);
 		} else {
 			Enumeration nms = req.getParameterNames();
@@ -169,6 +146,8 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			content.setParamContent(param);
 		}
 	}
+
+
 
 	public void doAfter(HttpServletRequest req, HttpServletResponse res, Throwable th) {
 	}
