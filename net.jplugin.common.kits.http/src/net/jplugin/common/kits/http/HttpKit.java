@@ -1,6 +1,5 @@
 package net.jplugin.common.kits.http;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
@@ -42,7 +41,6 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -53,13 +51,15 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.JsonKit;
-import net.jplugin.common.kits.client.InvocationParam;
 import net.jplugin.common.kits.client.ClientInvocationManager;
+import net.jplugin.common.kits.client.InvocationParam;
 import net.jplugin.common.kits.filter.FilterChain;
 import net.jplugin.common.kits.filter.FilterManager;
 import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.common.kits.http.filter.HttpClientFilterContext;
+import net.jplugin.common.kits.http.filter.HttpClientFilterContext.Method;
 import net.jplugin.common.kits.http.mock.HttpMock;
 
 
@@ -80,15 +80,13 @@ public final class HttpKit{
 	private static HttpClientBuilder clientBuilder;
 	private static FilterManager<HttpClientFilterContext> filterManager = new FilterManager<HttpClientFilterContext>();
 	
+//	static class FinalFilter implements 
+	
 	static{
 		//注意：在这里设置一个初始值，在Plugin环境下，Kernel中会重新设置filterManager
 		filterManager.addFilter(new IFilter<HttpClientFilterContext>() {
 			public Object filter(FilterChain fc, HttpClientFilterContext ctx) throws Throwable {
-				if (ctx.getMethod()==HttpClientFilterContext.Method.POST){
-					return HttpKit._post(ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
-				}else{
-					return HttpKit._get(ctx.getUrl(),ctx.getHeaders());
-				}
+				return HttpExecution.execute(ctx);
 			}
 		});
 	}
@@ -336,6 +334,28 @@ public final class HttpKit{
 		filterManager = fm;
 	}
 	
+	public static class HttpExecution {
+		public static Object execute(HttpClientFilterContext ctx) throws Throwable{
+			//在这里验证，因为filter过程可能修改
+			validate(ctx);
+			//call
+			if (ctx.getMethod()==HttpClientFilterContext.Method.POST){
+				return HttpKit._post(ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
+			}else{
+				return HttpKit._get(ctx.getUrl(),ctx.getHeaders());
+			}		
+		}
+		
+		private static void validate(HttpClientFilterContext ctx) {
+			Method m = ctx.getMethod();
+			Map<String, Object> params = ctx.getParams();
+			//validate
+			AssertKit.assertNotNull(m, "http method");
+			//get, params must empty
+			AssertKit.assertTrue(m==Method.POST || (m==Method.GET && (params==null || params.isEmpty())));
+		}
+	}
+
 //	//HttpInvoke Param 
 //	private static ClientInvocationManager manager = new ClientInvocationManager();
 //	
