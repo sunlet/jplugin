@@ -6,13 +6,15 @@ import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 public class StreamContentKit {
 
 	public static String getContent(HttpServletRequest req) {
 		String json = ThreadLocalContextManager.getRequestInfo().getContent().getJsonContent();
-		if (json == null){
+		
+		if (json == null && ContentKit.jsonCheckCompirable){
 			//从流中读取
 			try{
 				json = readReqStream(req);

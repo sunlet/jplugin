@@ -1,6 +1,8 @@
 package net.jplugin.ext.webasic;
 
 import net.jplugin.common.kits.filter.IFilter;
+import net.jplugin.common.kits.http.ContentKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -97,6 +99,9 @@ public class Plugin extends AbstractPlugin{
 		
 		MtInvocationFilterHandler.init();
 		ESFHelper.init();
+		
+		//初始化一下兼容设置
+		ContentKit.init(Boolean.parseBoolean(ConfigFactory.getStringConfig("platform.json-check-compatible","true")));
 	}
 
 	public void init() {
