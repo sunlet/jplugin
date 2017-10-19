@@ -28,8 +28,10 @@ import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.ConnectionConfig;
@@ -191,7 +193,12 @@ public final class HttpKit{
 		return clientBuilder.build();
 	}
 	
+	@Deprecated
 	public static String _post(String url, Map<String,Object> datas,Map<String,String> extHeaders) throws  IOException, HttpStatusException{
+		return _handleWithEntity(Method.POST,url,datas,extHeaders);
+	}
+	
+	public static String _handleWithEntity(Method method,String url, Map<String,Object> datas,Map<String,String> extHeaders) throws  IOException, HttpStatusException{
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,datas,extHeaders);
@@ -199,7 +206,7 @@ public final class HttpKit{
 		}
 		
 		CloseableHttpClient httpClient = createHttpClient();
-		HttpPost httpPost = new HttpPost(url);
+		HttpEntityEnclosingRequestBase httpPost = (HttpEntityEnclosingRequestBase) createRequest(method,url);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
 		Set<Entry<String,Object>> temps = datas.entrySet();
@@ -258,7 +265,12 @@ public final class HttpKit{
 		}
 		return mock.invoke();
 	}
+	
+	@Deprecated
 	public static String _get(String url,Map<String,String> extHeaders) throws IOException, HttpStatusException {
+		return _handleWithoutEntity(Method.GET,url,extHeaders);
+	}
+	public static String _handleWithoutEntity(Method method,String url,Map<String,String> extHeaders) throws IOException, HttpStatusException {
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
 				return executeDummy(url,null,extHeaders);
@@ -266,7 +278,8 @@ public final class HttpKit{
 		}
 		
 		CloseableHttpClient httpClient = createHttpClient();
-		HttpGet httpGet = new HttpGet(url);
+		HttpRequestBase httpGet = createRequest(method,url);
+		
 		
 		//设置headers
 		if (extHeaders!=null){
@@ -281,13 +294,29 @@ public final class HttpKit{
 		return handleResponse(httpClient, httpGet);
 	}
 
+	private static HttpRequestBase createRequest(Method method, String url) {
+		switch(method){
+		case POST:
+			return new HttpPost(url);
+		case GET:
+			return new HttpGet(url);
+		case PUT:
+			return new HttpPut(url);
+		case DELETE:
+			return new HttpGet(url);
+		default:
+			throw new RuntimeException("not support method:"+method);	
+		}
+	}
+	
 	public static String handleResponse(CloseableHttpClient client, HttpRequestBase request) throws IOException, HttpStatusException {
 		String responseText = "";
 		request.setHeader("Connection", "close");
 		HttpResponse response = client.execute(request);
 		if (response != null) {
 			int code = response.getStatusLine().getStatusCode();
-			if (code == 200){
+//			if (code == 200){
+			if (code>=200 && code <=206){ //根据http协议，2xx都是成功返回
 				responseText = EntityUtils.toString(response.getEntity());
 				EntityUtils.consume(response.getEntity());
 			}else
@@ -320,6 +349,11 @@ public final class HttpKit{
 		return (String) filterManager.filter(ctx);
 	}
 	
+	public static String putWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.PUT, url, params,headers);
+		return (String) filterManager.filter(ctx);
+	}
+	
 	public static String get(String url) throws IOException, HttpStatusException {
 		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null);
 		return (String) filterManager.filter(ctx);
@@ -327,6 +361,10 @@ public final class HttpKit{
 	
 	public static String getWithHeader(String url,Map<String,String> headers) throws IOException, HttpStatusException {
 		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null,headers);
+		return (String) filterManager.filter(ctx);
+	}
+	public static String deleteWithHeader(String url,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.DELETE, url, null,headers);
 		return (String) filterManager.filter(ctx);
 	}
 	
@@ -339,11 +377,13 @@ public final class HttpKit{
 			//在这里验证，因为filter过程可能修改
 			validate(ctx);
 			//call
-			if (ctx.getMethod()==HttpClientFilterContext.Method.POST){
-				return HttpKit._post(ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
-			}else{
-				return HttpKit._get(ctx.getUrl(),ctx.getHeaders());
-			}		
+			Method method = ctx.getMethod();
+			if (method==HttpClientFilterContext.Method.POST || method==HttpClientFilterContext.Method.PUT){
+				return HttpKit._handleWithEntity(method,ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
+			}else if (method==HttpClientFilterContext.Method.GET || method==HttpClientFilterContext.Method.DELETE){
+				return HttpKit._handleWithoutEntity(method,ctx.getUrl(),ctx.getHeaders());
+			}
+			throw new RuntimeException("not supported http method:"+method);
 		}
 		
 		private static void validate(HttpClientFilterContext ctx) {
@@ -352,7 +392,7 @@ public final class HttpKit{
 			//validate
 			AssertKit.assertNotNull(m, "http method");
 			//get, params must empty
-			AssertKit.assertTrue(m==Method.POST || (m==Method.GET && (params==null || params.isEmpty())));
+			AssertKit.assertTrue(m==Method.POST || m==Method.PUT || ( (m==Method.GET || m==Method.DELETE) && (params==null || params.isEmpty())));
 		}
 	}
 

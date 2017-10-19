@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.filter.FilterChain;
 import net.jplugin.common.kits.http.filter.HttpClientFilterContext;
+import net.jplugin.common.kits.http.filter.HttpClientFilterContext.Method;
 import net.jplugin.common.kits.http.filter.IHttpClientFilter;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -25,9 +26,10 @@ public class MTenantChain implements IHttpClientFilter {
 			return fc.next(ctx);
 		}
 		
-		if (ctx.getMethod() == HttpClientFilterContext.Method.POST){
+		Method method = ctx.getMethod();
+		if (method == HttpClientFilterContext.Method.POST || method == HttpClientFilterContext.Method.PUT){
 			handlePost(ctx,tid);
-		}else if (ctx.getMethod() == HttpClientFilterContext.Method.GET){
+		}else if (method == HttpClientFilterContext.Method.GET || method == HttpClientFilterContext.Method.DELETE){
 			handleGet(ctx,tid);
 		}
 		return fc.next(ctx);

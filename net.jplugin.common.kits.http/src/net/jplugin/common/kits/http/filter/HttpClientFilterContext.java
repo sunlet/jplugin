@@ -3,7 +3,7 @@ package net.jplugin.common.kits.http.filter;
 import java.util.Map;
 
 public class HttpClientFilterContext {
-	public enum Method{POST,GET}
+	public enum Method{POST,GET, PUT, DELETE}
 	Method method;
 	String url;
 	Map<String,Object> params;
