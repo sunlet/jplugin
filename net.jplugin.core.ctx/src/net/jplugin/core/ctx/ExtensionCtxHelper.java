@@ -1,5 +1,6 @@
 package net.jplugin.core.ctx;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.reso.ResolverKit;
 import net.jplugin.core.ctx.api.BindRuleService;
 import net.jplugin.core.ctx.api.BindRuleService.DefaultInterface;
+import net.jplugin.core.ctx.api.BindRuleServiceSet;
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
@@ -46,19 +48,31 @@ public class ExtensionCtxHelper {
 	public static void autoBindRuleServiceExtension(AbstractPlugin p, String pkgPath) {
 		for(Class c:p.filterContainedClasses(pkgPath,BindRuleService.class)){
 			BindRuleService anno = (BindRuleService) c.getAnnotation(BindRuleService.class);
-			Class interfaceClazz = anno.interfaceClass();
-			if (interfaceClazz.getName().equals(DefaultInterface.class.getName())){
-				interfaceClazz = computeInterfaceCls(c);
+			handleOneRuleBind(p, c, anno);
+		}
+		
+		for(Class<?> c:p.filterContainedClasses(pkgPath,BindRuleServiceSet.class)){
+			Annotation[] annos = c.getAnnotationsByType(BindRuleService.class);
+			for (Annotation a:annos){
+				handleOneRuleBind(p, c, a);
 			}
-			if (StringKit.isNull(anno.name())){
-				addRuleExtension(p, interfaceClazz, c);
-				PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for rule service: interface="
-						+ interfaceClazz.getName() + " impl=" + c.getName());
-			}else{
-				addRuleExtension(p, anno.name(),interfaceClazz, c);
-				PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for rule service: interface="
-						+ interfaceClazz.getName() + " impl=" + c.getName());
-			}
+		}
+	}
+
+	private static void handleOneRuleBind(AbstractPlugin p, Class c, Annotation a) {
+		BindRuleService anno = (BindRuleService) a;
+		Class interfaceClazz = anno.interfaceClass();
+		if (interfaceClazz.getName().equals(DefaultInterface.class.getName())){
+			interfaceClazz = computeInterfaceCls(c);
+		}
+		if (StringKit.isNull(anno.name())){
+			addRuleExtension(p, interfaceClazz, c);
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for rule service: interface="
+					+ interfaceClazz.getName() + " impl=" + c.getName());
+		}else{
+			addRuleExtension(p, anno.name(),interfaceClazz, c);
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for rule service: interface="
+					+ interfaceClazz.getName() + " impl=" + c.getName());
 		}
 	}
 
