@@ -312,16 +312,35 @@ public final class HttpKit{
 	public static String handleResponse(CloseableHttpClient client, HttpRequestBase request) throws IOException, HttpStatusException {
 		String responseText = "";
 		request.setHeader("Connection", "close");
-		HttpResponse response = client.execute(request);
-		if (response != null) {
-			int code = response.getStatusLine().getStatusCode();
-//			if (code == 200){
-			if (code>=200 && code <=206){ //根据http协议，2xx都是成功返回
-				responseText = EntityUtils.toString(response.getEntity());
-				EntityUtils.consume(response.getEntity());
-			}else
-				throw new HttpStatusException("Status Error:"+code);
+		
+		try{
+			HttpResponse response = client.execute(request);
+			if (response != null) {
+				int code = response.getStatusLine().getStatusCode();
+	//			if (code == 200){
+				if (code>=200 && code <=206){ //根据http协议，2xx都是成功返回
+					responseText = EntityUtils.toString(response.getEntity());
+					EntityUtils.consume(response.getEntity());
+					//重新设置状态
+					request.reset();
+				}else{
+					request.abort();//异常结束调用about
+					throw new HttpStatusException("Status Error:"+code);
+				}
+			}
+		}catch(Exception ex){
+			//异常，则about
+			if (!request.isAborted()){
+				request.abort();
+			}
+			//继续抛出异常
+			if (ex instanceof IOException)
+				throw (IOException)ex;
+			if (ex instanceof HttpStatusException)
+				throw (HttpStatusException)ex;
+			throw new RuntimeException(ex.getMessage(),ex);
 		}
+		
 		return responseText;
 	}
 
