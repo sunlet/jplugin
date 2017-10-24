@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.api.sqlrefactor.ISqlRefactor;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
-import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.mtenant.impl.kit.parse.SqlParser;
 import net.jplugin.mtenant.impl.kit.parse.impl.DeleteSqlParser;
 import net.jplugin.mtenant.impl.kit.parse.impl.InsertSqlParser;
@@ -19,7 +19,7 @@ import net.jplugin.mtenant.impl.kit.parse.impl.SelectSqlParser;
 import net.jplugin.mtenant.impl.kit.parse.impl.UpdateSqlParser;
 import net.jplugin.mtenant.impl.kit.util.StringUtils;
 
-public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlder{
+public class SqlMultiTenantHanlderMergeImpl implements ISqlRefactor{
 	/**
 	 * @param dataSourceName
 	 * @param sql
@@ -28,7 +28,8 @@ public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlde
 	private static ConcurrentHashMap<String, List<String>> ignores = null;
 	private static Logger logger = LogFactory.getLogger(SqlMultiTenantHanlderMergeImpl.class);
 
-	public  String handle(String dataSourceName, String sql,Connection conn) {
+	
+	public  String refactSql(String dataSourceName, String sql,Connection conn) {
 
 		String result = handleInner(dataSourceName, sql,conn);
 		if (logger.isDebugEnabled()){
@@ -153,4 +154,5 @@ public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlde
 		}*/
 		return dealSql;
 	}
+
 }

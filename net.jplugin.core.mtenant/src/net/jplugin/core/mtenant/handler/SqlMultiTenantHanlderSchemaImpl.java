@@ -5,13 +5,13 @@ import java.sql.SQLException;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.api.sqlrefactor.ISqlRefactor;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
-import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 
-public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanlder {
+public class SqlMultiTenantHanlderSchemaImpl implements ISqlRefactor {
 	/**
 	 * @param dataSourceName
 	 * @param sql
@@ -46,9 +46,11 @@ public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanld
 			}
 		}
 	}
+	
 
-	@Override
-	public  String handle(String dataSourceName, String sql,Connection conn) {
+
+//	@Override
+	public  String refactSql(String dataSourceName, String sql,Connection conn) {
 		init();
 		String result = handleInner(dataSourceName, sql,conn);
 		if (logger.isDebugEnabled()){
@@ -112,4 +114,6 @@ public class SqlMultiTenantHanlderSchemaImpl extends AbstractSqlMultiTenantHanld
 		}
 		return false;
 	}
+
+
 }

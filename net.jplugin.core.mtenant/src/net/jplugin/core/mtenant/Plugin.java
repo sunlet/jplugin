@@ -9,10 +9,10 @@ import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.mtenant.api.ITenantListProvidor;
 import net.jplugin.core.mtenant.api.TenantListProvidorManager;
-import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
-import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
+import net.jplugin.core.mtenant.handler.SqlMultiTenantHanlderSchemaImpl;
 import net.jplugin.core.mtenant.tidv.TenantIDValidator;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
+import net.jplugin.mtenant.impl.kit.SqlMultiTenantHanlderMergeImpl;
 
 public class Plugin extends AbstractPlugin{
 	
@@ -65,10 +65,12 @@ public class Plugin extends AbstractPlugin{
 
 		if (MtenantStatus.enabled()){
 			
-			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
+//			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
+			registeSqlRefectorExtension();
+			
 //			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
-			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfigWithTrim("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfigWithTrim("mtenant.field"));
 			ExtensionKernelHelper.addHttpClientFilterExtension(this, MTenantChain.class);
 			//检查空值
 			ExtensionWebHelper.addServiceFilterExtension(this, TenantIDValidator.class);
@@ -78,11 +80,32 @@ public class Plugin extends AbstractPlugin{
 		}
 	}
 	
+	private void registeSqlRefectorExtension() {
+		String s = ConfigFactory.getStringConfigWithTrim("mtenant.db-strategy");
+		if (s==null){
+			s = "schema";
+//			s = "merge";
+		}
+		Class clazz=null;
+		if ("schema".equals(s)){
+			clazz = SqlMultiTenantHanlderSchemaImpl.class;
+//			instance = new SqlMultiTenantHanlderSchemaImpl();
+		}else if ("merge".equals(s)){
+			clazz= SqlMultiTenantHanlderMergeImpl.class;
+//			instance = new SqlMultiTenantHanlderMergeImpl();
+		}else
+			throw new RuntimeException("Error mtenant.db.strategy configed : "+s);
+		
+		ExtensionDasHelper.addSqlRefactorExtension(this, clazz);
+		PluginEnvirement.getInstance().getStartLogger().log("多租户数据库策略:"+s+"  "+clazz.getName());
+
+	}
+
 	@Override
 	public void onCreateServices() {
 		if (MtenantStatus.enabled()){
 //			HttpFilterManager.addFilter(new MTenantChain());
-			AbstractSqlMultiTenantHanlder.initInstance();
+//			AbstractSqlMultiTenantHanlder.initInstance();
 			//初始化配置
 			TenantIDValidator.init();
 			

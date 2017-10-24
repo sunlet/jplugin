@@ -5,7 +5,7 @@ import net.jplugin.core.config.api.ConfigFactory;
 public class MtenantStatus {
 	private static boolean enable;
 	public static void init(){
-		enable = "true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"));
+		enable = "true".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("mtenant.enable"));
 	}
 	public static boolean enabled(){
 		return enable;
