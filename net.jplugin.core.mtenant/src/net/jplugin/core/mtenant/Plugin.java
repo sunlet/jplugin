@@ -8,8 +8,10 @@ import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.mtenant.api.ITenantListProvidor;
+import net.jplugin.core.mtenant.api.ITenantStoreStrategyProvidor;
 import net.jplugin.core.mtenant.api.TenantListProvidorManager;
 import net.jplugin.core.mtenant.handler.SqlMultiTenantHanlderSchemaImpl;
+import net.jplugin.core.mtenant.handler2.TenantStoreStrategyManager;
 import net.jplugin.core.mtenant.tidv.TenantIDValidator;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
 import net.jplugin.mtenant.impl.kit.SqlMultiTenantHanlderMergeImpl;
@@ -58,10 +60,13 @@ public class Plugin extends AbstractPlugin{
 	 * </pre>
 	 */
 	public static final String EP_TENANTLIST_PROVIDOR = "EP_TENANTLIST_PROVIDOR";
+	public static final String EP_TENANT_STORESTG_PROVIDOR = "EP_TENANT_STORESTG_PROVIDOR";
 	public Plugin(){
 		MtenantStatus.init();
 		
 		this.addExtensionPoint(ExtensionPoint.create(EP_TENANTLIST_PROVIDOR, ITenantListProvidor.class));
+		this.addExtensionPoint(ExtensionPoint.create(EP_TENANT_STORESTG_PROVIDOR, ITenantStoreStrategyProvidor.class));
+
 
 		if (MtenantStatus.enabled()){
 			
@@ -110,6 +115,7 @@ public class Plugin extends AbstractPlugin{
 			TenantIDValidator.init();
 			
 			TenantListProvidorManager.instance.init();
+			TenantStoreStrategyManager.instance.init();
 		}
 	}
 
