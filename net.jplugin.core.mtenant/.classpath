@@ -13,5 +13,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.ext.webasic"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.rclient"/>
+	<classpathentry kind="lib" path="lib/jsqlparser-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
