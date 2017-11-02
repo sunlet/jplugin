@@ -97,6 +97,12 @@
 		</dependency>
 -->
 		<dependency>
+		    <groupId>com.github.jsqlparser</groupId>
+		    <artifactId>jsqlparser</artifactId>
+		    <version>1.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.20.0-GA</version>
