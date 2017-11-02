@@ -1,14 +1,14 @@
 package test.net.jplugin.core.mtenant.sqlhandlervisit;
 
 import net.jplugin.common.kits.AssertKit;
-import net.jplugin.core.mtenant.handler2.SqlHandlerVisitor;
+import net.jplugin.core.mtenant.handler2.SqlHandlerVisitorForMixed;
 import net.sf.jsqlparser.JSQLParserException;
 
 public class SqlHandlerVisitorTest {
 //	static String cloumnName = "column1";
 	static String cloumnName = "";
 	
-	public static void main(String[] args) throws JSQLParserException {
+	public static void test() throws JSQLParserException {
 		testSelect();
 		testInsert();
 		testUpdate();
@@ -17,7 +17,7 @@ public class SqlHandlerVisitorTest {
 	}
 	
 	private static void testPerform() throws JSQLParserException {
-		SqlHandlerVisitor v = new SqlHandlerVisitor("sssss",cloumnName,"1001");
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
 		String from,to;
 		
 		long start = System.currentTimeMillis();
@@ -29,7 +29,7 @@ public class SqlHandlerVisitorTest {
 	}
 
 	private static void testDelete() throws JSQLParserException {
-		SqlHandlerVisitor v = new SqlHandlerVisitor("sssss",cloumnName,"1001");
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
 		String from,to;
 		
 		from = "delete from t1 ";
@@ -46,7 +46,7 @@ public class SqlHandlerVisitorTest {
 	}
 
 	static void testUpdate() throws JSQLParserException{
-		SqlHandlerVisitor v = new SqlHandlerVisitor("sssss",cloumnName,"1001");
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
 		String from,to;
 		
 		from = "update t1 set f1=1,f2=2";
@@ -63,7 +63,7 @@ public class SqlHandlerVisitorTest {
 	}
 
 	private static void testInsert() throws JSQLParserException {
-		SqlHandlerVisitor v = new SqlHandlerVisitor("sssss",cloumnName,"1001");
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
 		String from,to;
 		
 		from = "insert into t1 (f1,f2) values (?,'a')";
@@ -82,7 +82,7 @@ public class SqlHandlerVisitorTest {
 	}
 
 	private static void testSelect() throws JSQLParserException {
-		SqlHandlerVisitor v = new SqlHandlerVisitor("sssss",cloumnName,"1001");
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
 		String from,to;
 		
 		from = "select * from t1 t where f1=1 and f2=2 or f3=3 and f4=4";

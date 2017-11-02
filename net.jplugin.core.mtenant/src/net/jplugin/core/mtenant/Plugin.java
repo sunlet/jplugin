@@ -11,6 +11,8 @@ import net.jplugin.core.mtenant.api.ITenantListProvidor;
 import net.jplugin.core.mtenant.api.ITenantStoreStrategyProvidor;
 import net.jplugin.core.mtenant.api.TenantListProvidorManager;
 import net.jplugin.core.mtenant.handler.SqlMultiTenantHanlderSchemaImpl;
+import net.jplugin.core.mtenant.handler2.SqlHandlerVisitorForMixed;
+import net.jplugin.core.mtenant.handler2.SqlMultiTenantHanlderMixedImpl;
 import net.jplugin.core.mtenant.handler2.TenantStoreStrategyManager;
 import net.jplugin.core.mtenant.tidv.TenantIDValidator;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
@@ -98,6 +100,8 @@ public class Plugin extends AbstractPlugin{
 		}else if ("merge".equals(s)){
 			clazz= SqlMultiTenantHanlderMergeImpl.class;
 //			instance = new SqlMultiTenantHanlderMergeImpl();
+		}else if ("mixed".equals(s)){
+			clazz= SqlMultiTenantHanlderMixedImpl.class;
 		}else
 			throw new RuntimeException("Error mtenant.db.strategy configed : "+s);
 		
@@ -116,6 +120,7 @@ public class Plugin extends AbstractPlugin{
 			
 			TenantListProvidorManager.instance.init();
 			TenantStoreStrategyManager.instance.init();
+			SqlHandlerVisitorForMixed.init();
 		}
 	}
 

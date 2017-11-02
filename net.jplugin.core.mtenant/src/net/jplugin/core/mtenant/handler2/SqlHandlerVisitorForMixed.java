@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnalyticExpression;
@@ -109,16 +111,27 @@ import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
 
-public class SqlHandlerVisitor
+public class SqlHandlerVisitorForMixed
 		implements StatementVisitor, SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
+
+	static String tenantColumnName;
+	public static void init(){
+		tenantColumnName = ConfigFactory.getStringConfigWithTrim("mtenant.field");
+		if (StringKit.isNull(tenantColumnName)){
+			tenantColumnName = "mtenant_id";
+		}
+		PluginEnvirement.getInstance().getStartLogger().log("**mtenant.field="+tenantColumnName);
+	}
+	
 	SqlRefactor sqlRefactor;
 	String schemaName;
-	String columnName;
-	String tenantId;
+	String tenantId;//是否有值决定是否处理字段
 
-	public SqlHandlerVisitor(String aSchemaName,String aColumnName,String tid){
+	public SqlHandlerVisitorForMixed(String aSchemaName){
+		this(aSchemaName,null);
+	}
+	public SqlHandlerVisitorForMixed(String aSchemaName,String tid){
 		this.schemaName = aSchemaName;
-		this.columnName = aColumnName;
 		this.tenantId = tid;
 		this.sqlRefactor = new SqlRefactor();
 	}
@@ -636,7 +649,7 @@ public class SqlHandlerVisitor
 		private  Expression computeNewExp(Expression exp, String name) {
 			//cteate new eq
 			EqualsTo eq = new EqualsTo();
-			eq.setLeftExpression(new Column(new Table(null,name), columnName));
+			eq.setLeftExpression(new Column(new Table(null,name), tenantColumnName));
 			eq.setRightExpression(getTenantIdExpression());
 
 			if (exp==null){
@@ -685,27 +698,27 @@ public class SqlHandlerVisitor
 			return tb.getName();
 		}
 
-		public  void handleCreateTable(SqlHandlerVisitor sqlHandlerVisitor, CreateTable createTable) {
+		public  void handleCreateTable(SqlHandlerVisitorForMixed sqlHandlerVisitor, CreateTable createTable) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		public  void handleTruncate(SqlHandlerVisitor sqlHandlerVisitor, Truncate truncate) {
+		public  void handleTruncate(SqlHandlerVisitorForMixed sqlHandlerVisitor, Truncate truncate) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		public  void handleDrop(SqlHandlerVisitor sqlHandlerVisitor, Drop drop) {
+		public  void handleDrop(SqlHandlerVisitorForMixed sqlHandlerVisitor, Drop drop) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		public  void handleReplace(SqlHandlerVisitor sqlHandlerVisitor, Replace replace) {
+		public  void handleReplace(SqlHandlerVisitorForMixed sqlHandlerVisitor, Replace replace) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		public  void handleInsert(SqlHandlerVisitor sqlHandlerVisitor, Insert insert) {
+		public  void handleInsert(SqlHandlerVisitorForMixed sqlHandlerVisitor, Insert insert) {
 			Table table = insert.getTable();
 			if (table == null) 
 				throw new RuntimeException("table can't be null");
@@ -713,7 +726,7 @@ public class SqlHandlerVisitor
 			handleTableNameReturnColumnPrefix(table);
 			
 			if (handleColumn()){
-				insert.getColumns().add(new Column(new Table(), columnName));
+				insert.getColumns().add(new Column(new Table(), tenantColumnName));
 			
 				if (insert.isUseValues()){
 					ExpressionList exlist = (ExpressionList) insert.getItemsList();
@@ -743,7 +756,7 @@ public class SqlHandlerVisitor
 		}
 
 		private boolean handleColumn() {
-			return StringKit.isNotNull(columnName);
+			return StringKit.isNotNull(tenantId);
 		}
 		private StringValue getTenantIdExpression() {
 			return new StringValue("'"+tenantId+"'");

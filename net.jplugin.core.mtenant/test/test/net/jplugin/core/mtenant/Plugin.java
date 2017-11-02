@@ -8,6 +8,7 @@ import net.jplugin.ext.webasic.ExtensionWebHelper;
 import test.net.jplugin.core.mtenant.iterator.TenantIteratorTest;
 import test.net.jplugin.core.mtenant.iterator.TenantListProvider;
 import test.net.jplugin.core.mtenant.mdbsqlhelper.MultidbSqlHelperTest;
+import test.net.jplugin.core.mtenant.sqlhandlervisit.SqlHandlerVisitorTest;
 
 public class Plugin extends AbstractPluginForTest {
 	public Plugin() {
@@ -40,6 +41,8 @@ public class Plugin extends AbstractPluginForTest {
 		new MultidbSqlHelperTest().test();
 		new TenantIteratorTest().testRunnable();
 		new TenantIteratorTest().testCallable();
+		
+		SqlHandlerVisitorTest.test();
 
 	}
 
