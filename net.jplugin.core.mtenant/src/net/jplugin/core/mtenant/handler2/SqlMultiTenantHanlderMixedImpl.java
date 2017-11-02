@@ -80,7 +80,7 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 		}
 		
 		//重写sql
-		return handle(sql, dataSourceName, tid);
+		return handle(sql, dataSourceName,schemaPrefix, tid);
 	}
 
 	
@@ -92,14 +92,15 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 	}
 	
 
-	private static String handle(String sql, String originalDataSource,String tid) {
-		Strategy stg = getStrategy(sql, originalDataSource);
+	private static String handle(String sql, String dataSourceName, String schemaPrefix,String tid) {
+		Strategy stg = getStrategy(sql, dataSourceName);
 		
 		SqlHandlerVisitorForMixed v;
+		String finalSchema = schemaPrefix +"_"+stg.getSchemaPostfix();
 		if (stg.getMode()==Mode.SHARE){
-			v = new SqlHandlerVisitorForMixed(stg.getFinalSchema(), tid);
+			v = new SqlHandlerVisitorForMixed(finalSchema, tid);
 		}else{
-			v = new SqlHandlerVisitorForMixed(stg.getFinalSchema());
+			v = new SqlHandlerVisitorForMixed(finalSchema);
 		}
 		
 		try {
@@ -128,7 +129,7 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 	private static Strategy getDefaultStrategy(String sql, String dataSource, String tid) {
 		Strategy s = new Strategy();
 		s.setMode(Mode.ONESELF);
-		s.setFinalSchema(dataSource+"_"+tid);
+		s.setSchemaPostfix(tid);
 		return s;
 	}
 

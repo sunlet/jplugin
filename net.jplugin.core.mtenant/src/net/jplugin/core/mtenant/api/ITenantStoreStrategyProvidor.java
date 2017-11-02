@@ -12,20 +12,19 @@ public interface ITenantStoreStrategyProvidor {
 	
 	public static class Strategy{
 		String finalDataSource;//暂时不用
-		String finalSchema;
+		String schemaPostfix;
 		Mode mode;
-		
 		public String getFinalDataSource() {
 			return finalDataSource;
 		}
 		public void setFinalDataSource(String finalDataSource) {
 			this.finalDataSource = finalDataSource;
 		}
-		public String getFinalSchema() {
-			return finalSchema;
+		public String getSchemaPostfix() {
+			return schemaPostfix;
 		}
-		public void setFinalSchema(String finalSchema) {
-			this.finalSchema = finalSchema;
+		public void setSchemaPostfix(String schemaPostfix) {
+			this.schemaPostfix = schemaPostfix;
 		}
 		public Mode getMode() {
 			return mode;
@@ -33,7 +32,6 @@ public interface ITenantStoreStrategyProvidor {
 		public void setMode(Mode mode) {
 			this.mode = mode;
 		}
-		
 	}
 }
 
