@@ -220,7 +220,9 @@ public class SqlHandlerVisitorForMixed
 		this.sqlRefactor.handleSelect(plainSelect);
 		
 		//再处理其他语句
-		plainSelect.getFromItem().accept(this);
+		if (plainSelect.getFromItem()!=null)
+			plainSelect.getFromItem().accept(this);
+		
 		if (plainSelect.getJoins() != null) {
 			for (Iterator joinsIt = plainSelect.getJoins().iterator(); joinsIt.hasNext();) {
 				Join join = (Join) joinsIt.next();
@@ -617,6 +619,10 @@ public class SqlHandlerVisitorForMixed
 			//只处理简单类型
 			List<String> tableList = new ArrayList<>(3);
 			FromItem fromItem = plainSelect.getFromItem();
+			
+			if (fromItem==null) 
+				return; //应该是系统sql ，比如select now()
+			
 			if (fromItem instanceof Table){
 				String temp = handleTableNameReturnColumnPrefix((Table) fromItem);
 				tableList.add(temp);
