@@ -64,6 +64,7 @@ import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
 import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
+import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.expression.operators.relational.ItemsListVisitor;
 import net.sf.jsqlparser.expression.operators.relational.JsonOperator;
 import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
@@ -147,6 +148,8 @@ public class SqlHandlerVisitorForMixed
     		visit((Update)statement);
     	else if (statement instanceof Delete)
     		visit((Delete)statement);
+    	else if (statement instanceof Replace)
+    		visit((Replace)statement);
     	return statement.toString();
 	}
 	
@@ -186,12 +189,24 @@ public class SqlHandlerVisitorForMixed
 		sqlRefactor.handleInsert(this,insert);
 		if (insert.getSelect()!=null)
 			insert.getSelect().accept(this);
+		
+		//好像新版本是不再需要了，因为子查询有属性Select，加上也没关系。Replace类似的地方需要
+		ItemsList itemlist = insert.getItemsList();
+		if (itemlist instanceof SubSelect){
+			((SubSelect)itemlist).getSelectBody().accept(this);
+		}
 	}
 
 	@Override
 	public void visit(Replace replace) {
 		//先处理本语句
 		sqlRefactor.handleReplace(this,replace);
+		
+		//处理子查询等
+		ItemsList itemlist = replace.getItemsList();
+		if (itemlist instanceof SubSelect){
+			((SubSelect)itemlist).getSelectBody().accept(this);
+		}
 	}
 
 	@Override
@@ -719,9 +734,34 @@ public class SqlHandlerVisitorForMixed
 			
 		}
 
-		public  void handleReplace(SqlHandlerVisitorForMixed sqlHandlerVisitor, Replace replace) {
-			// TODO Auto-generated method stub
+		public  void handleReplace(SqlHandlerVisitorForMixed sqlHandlerVisitor, Replace insert) {
+			Table table = insert.getTable();
+			if (table == null) 
+				throw new RuntimeException("table can't be null");
 			
+			handleTableNameReturnColumnPrefix(table);
+			
+			if (handleColumn()){
+				insert.getColumns().add(new Column(new Table(), tenantColumnName));
+			
+				if (insert.isUseValues()){
+					ExpressionList exlist = (ExpressionList) insert.getItemsList();
+					handleExpressionListForInsertReplace(exlist);
+				}else{
+					ItemsList items = insert.getItemsList();
+					if (items instanceof SubSelect ){
+						SubSelect ss = (SubSelect) items;
+						SelectBody body = ss.getSelectBody();
+						if (body instanceof PlainSelect){
+							PlainSelect ps = ((PlainSelect)body);
+							handleSelectItemForInsert((PlainSelect)ps);
+						}else{
+							throw new RuntimeException("Not support now");
+						}
+					}else
+						throw new RuntimeException("not support now");
+				}
+			}
 		}
 
 		public  void handleInsert(SqlHandlerVisitorForMixed sqlHandlerVisitor, Insert insert) {
@@ -735,8 +775,8 @@ public class SqlHandlerVisitorForMixed
 				insert.getColumns().add(new Column(new Table(), tenantColumnName));
 			
 				if (insert.isUseValues()){
-					ExpressionList exlist = (ExpressionList) insert.getItemsList();
-					exlist.getExpressions().add(getTenantIdExpression());
+					ItemsList itemList = insert.getItemsList();
+					handleExpressionListForInsertReplace(itemList);
 				}else{
 					Select select = insert.getSelect();
 					SelectBody body = select.getSelectBody();
@@ -749,6 +789,18 @@ public class SqlHandlerVisitorForMixed
 						}
 					}else
 						throw new RuntimeException("error gramma");
+				}
+			}
+		}
+
+		private void handleExpressionListForInsertReplace(ItemsList itemList) {
+			if (itemList instanceof ExpressionList){
+				ExpressionList exlist = (ExpressionList) itemList;
+				exlist.getExpressions().add(getTenantIdExpression());
+			}else if (itemList instanceof MultiExpressionList){
+				MultiExpressionList mlist = (MultiExpressionList) itemList;
+				for (ExpressionList l:mlist.getExprList()){
+					l.getExpressions().add(getTenantIdExpression());
 				}
 			}
 		}

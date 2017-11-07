@@ -14,6 +14,30 @@ public class SqlHandlerVisitorTest {
 		testUpdate();
 		testDelete();
 //		testPerform();
+		testReplace();
+	}
+	
+	private static void testReplace() throws JSQLParserException{
+		
+		
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
+		String from,to;
+		
+		from = "replace into customer (customer_id,customer_name,city,tfield) "+
+				"values ('aaa','bbb','ccc','ddd','eee')";
+		
+		to = v.handle(from);
+		System.out.println();
+		System.out.println(from);
+		System.out.println(to);
+		
+		from = "replace into customer (customer_id,customer_name,city,tfield) "+
+				"select customer_id,CONCAT(customer_name,'a'),city,tfield from customer;";
+		
+		to = v.handle(from);
+		System.out.println();
+		System.out.println(from);
+		System.out.println(to);
 	}
 	
 	private static void testPerform() throws JSQLParserException {
@@ -67,6 +91,13 @@ public class SqlHandlerVisitorTest {
 		String from,to;
 		
 		from = "insert into t1 (f1,f2) values (?,'a')";
+		to = v.handle(from);
+//		AssertKit.assertEqual("INSERT INTO T1 (f1, f2, column1) VALUES (?, 'a', '1001')", to);
+		System.out.println();
+		System.out.println(from);
+		System.out.println(to);
+		
+		from = "insert into t1 (f1,f2) values (?,'a'),(?,'b')";
 		to = v.handle(from);
 //		AssertKit.assertEqual("INSERT INTO T1 (f1, f2, column1) VALUES (?, 'a', '1001')", to);
 		System.out.println();
