@@ -20,12 +20,16 @@ public class Plugin extends AbstractPlugin{
 	
 	public static final String EP_MYBATIS_MAPPER = "EP_MYBATIS_MAPPER";
 	public static final String EP_MYBATIS_INCEPT = "EP_MYBATIS_INCEPT";
+	
+	public static boolean enabled;
 
 	public Plugin(){
 		if (noMybatis()){
 			PluginEnvirement.INSTANCE.getStartLogger().log("Mybatis env not found,skipped!");
+			enabled = false;
 			return;
 		}
+		enabled = true;
 		this.addExtensionPoint(ExtensionPoint.create(EP_MYBATIS_MAPPER, ExtensionDefinition4Mapping.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_MYBATIS_INCEPT,ExtensionDefinition4Incept.class));
 		ExtensionServiceHelper.addServiceExtension(this, IMybatisService.class.getName(), DefaultMybaticsService4JianRong.class);

@@ -13,6 +13,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.ext.webasic"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.rclient"/>
-	<classpathentry kind="lib" path="lib/jsqlparser-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jsqlparser-1.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/com/github/jsqlparser/jsqlparser/1.1/jsqlparser-1.1-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.das.mybatis"/>
+	<classpathentry kind="lib" path="/net.jplugin.core.das.mybatis/lib/mybatis-3.2.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

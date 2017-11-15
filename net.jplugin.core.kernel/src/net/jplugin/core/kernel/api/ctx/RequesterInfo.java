@@ -1,5 +1,7 @@
 package net.jplugin.core.kernel.api.ctx;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,17 +146,25 @@ public class RequesterInfo {
 			
 //			//只有在content是Map的情况下才fillItemsToParamContent
 //			if (!StringKit.isNull(jsonContent) && jsonContent.trim().startsWith("{")){
-			fillItemsToParamContent();
+			try {
+				fillItemsToParamContent();
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException("Encoding error,jsoncontent:"+jsonContent,e);
+			}
 //			}
 		}
 		
-		private void fillItemsToParamContent() {
+		private void fillItemsToParamContent() throws UnsupportedEncodingException {
 			if (paramContent==null) 
 				paramContent = new HashMap<String,String>();
 			
 			if (StringKit.isNull(this.jsonContent))
 				return;//不做任何转换，认为没参数
 
+			//尝试做一遍decode,为节省开销，判断是%开头才进行
+			jsonContent = jsonContent.trim();
+			if (jsonContent.startsWith("%"))
+				jsonContent = URLDecoder.decode(jsonContent,"utf-8");
 			//应对_FULL_MATCH的情况，参数不是map，忽略
 			if (!jsonContent.trim().startsWith("{"))
 				return;
