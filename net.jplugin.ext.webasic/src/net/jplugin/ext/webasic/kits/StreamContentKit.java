@@ -3,6 +3,7 @@ package net.jplugin.ext.webasic.kits;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +19,8 @@ public class StreamContentKit {
 			//从流中读取
 			try{
 				json = readReqStream(req);
+				if (json!=null)
+					json = new URLDecoder().decode(json.trim(),"utf-8");
 			}catch(Exception e){
 				//忽略异常
 			}
