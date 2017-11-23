@@ -1,10 +1,11 @@
 package net.jplugin.common.kits.client;
 
+import net.jplugin.common.kits.tuple.Tuple2;
+
 public class InvocationParam {
 	int serviceTimeOut;
 	String serviceAddress;
-	Boolean rpcAsync;
-	ICallback rpcCallback;
+	Tuple2<Boolean,ICallback> rpcAsync;
 	
 	private InvocationParam(){}
 
@@ -26,8 +27,7 @@ public class InvocationParam {
 		if (b!=null && !b && callback!=null){
 			throw new RuntimeException("同步调用不要传入callbck");
 		}
-		this.rpcAsync = b;
-		this.rpcCallback = callback;
+		this.rpcAsync = Tuple2.with(b,callback);
 		return this;
 	}
 	
@@ -49,13 +49,7 @@ public class InvocationParam {
 		return serviceAddress;
 	}
 
-	public Boolean getRpcAsync() {
+	public Tuple2<Boolean,ICallback> getRpcAsync() {
 		return rpcAsync;
 	}
-
-	public ICallback getRpcCallback() {
-		return rpcCallback;
-	}
-	
-	
 }
