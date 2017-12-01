@@ -7,7 +7,9 @@ public class ClientInvocationManager {
 	public void setParam(InvocationParam p){
 		param.set(p);
 	}
-	
+	public InvocationParam getParam() {
+		return param.get();
+	}
 	public InvocationParam getAndClearParam() {
 		InvocationParam p = param.get();
 		if (p!=null) 
