@@ -55,7 +55,7 @@ public class TenantIteratorKit {
 		try{
 			if (runnableOrCallable instanceof Runnable){
 				
-				cleanMybasticsCacheIfNeeded();
+//				cleanMybasticsCacheIfNeeded();
 
 				((Runnable)runnableOrCallable).run();
 				return new TenantResult(tid,null,null);
@@ -67,17 +67,17 @@ public class TenantIteratorKit {
 			return new TenantResult(tid,null,t);
 		}
 	}
-
-	private static void cleanMybasticsCacheIfNeeded() {
-		if (net.jplugin.core.das.mybatis.Plugin.enabled){
-			Set<String> names = DataSourceFactory.getDataSourceNames();
-			for (String name:names){
-				IMybatisService svc = MyBatisServiceFactory.getService(name);
-				if (svc!=null){
-					svc.openSession().clearCache();
-				}
-			}
-		}
-	}
+//
+//	private static void cleanMybasticsCacheIfNeeded() {
+//		if (net.jplugin.core.das.mybatis.Plugin.enabled){
+//			Set<String> names = DataSourceFactory.getDataSourceNames();
+//			for (String name:names){
+//				IMybatisService svc = MyBatisServiceFactory.getService(name);
+//				if (svc!=null){
+//					svc.openSession().clearCache();
+//				}
+//			}
+//		}
+//	}
 	
 }
