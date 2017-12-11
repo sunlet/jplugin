@@ -1,9 +1,12 @@
 package test.net.jplugin.core.das.mybatis;
 
+import java.sql.SQLException;
+
 import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
+import net.jplugin.core.das.mybatis.api.MysqlPageInterceptor;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.service.ExtensionServiceHelper;
@@ -14,6 +17,8 @@ import test.net.jplugin.core.das.mybatis.anno.RefAnnoDemo;
 import test.net.jplugin.core.das.mybatis.anno.RefAnnoDemo2;
 import test.net.jplugin.core.das.mybatis.anno.RuleTestForMybatisAnno;
 import test.net.jplugin.core.das.mybatis.anno.ServiceImplForAnno;
+import test.net.jplugin.core.das.mybatis.cachetest.CacheTest;
+import test.net.jplugin.core.das.mybatis.cachetest.ICacheMapper;
 import test.net.jplugin.core.das.mybatis.ts.DbCreate;
 import test.net.jplugin.core.das.mybatis.ts.RouteTest;
 import test.net.jplugin.core.das.mybatis.ts.TbRoute0Mapper;
@@ -33,7 +38,7 @@ import test.net.luis.plugin.das.mybatis.xmltest.XMLBaticsTest2DB_2;
 
 public class Plugin extends AbstractPluginForTest{
 
-	public Plugin(){
+	public Plugin() {
 		ExtensionMybatisDasHelper.addMappingExtension(this, IMybtestMapper.class);
 		ExtensionMybatisDasHelper.addMappingExtension(this, IXMLMapper.class);
 		ExtensionCtxHelper.addRuleExtension(this, IRule.class.getName(),IRule.class, RuleService.class);
@@ -52,6 +57,9 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionServiceHelper.addServiceExtension(this, IServiceForAnno.class.getName(), ServiceImplForAnno.class);
 		
 		ExtensionMybatisDasHelper.autoBindMapperExtension(this, ".bind");
+		//测试mybatis缓存
+		ExtensionMybatisDasHelper.addMappingExtension(this, ICacheMapper.class);
+		ExtensionMybatisDasHelper.addInctprorExtension(this, MysqlPageInterceptor.class);
 	}
 	@Override
 	public void test() throws Throwable {
@@ -74,6 +82,9 @@ public class Plugin extends AbstractPluginForTest{
 		
 		DbCreate.create();
 		new RouteTest().test();
+		
+		
+		CacheTest.INSTANCE.test();
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.LocalCacheScope;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -58,11 +59,15 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		if (globalConfigResource!=null){
 			//注意：在global config情况下，通过扩展配置配置的Inteceptor还是会加入的
 			configuration = buildGlobalConfiguration(globalConfigResource);
+			configuration.setLocalCacheScope(LocalCacheScope.STATEMENT);
+			//关闭本地的session cache
 			if (configuration.getEnvironment()!=null)
 				throw new RuntimeException("The global config for Mybatis MUST NOT has enviremonent element: "+globalConfigResource);
 			configuration.setEnvironment(environment);
 		}else{
 			configuration = new Configuration(environment);
+			//关闭本地的session cache
+			configuration.setLocalCacheScope(LocalCacheScope.STATEMENT);
 			for (String c:mappers){
 				try {
 					if (c.endsWith(".xml")||c.endsWith(".XML")){
