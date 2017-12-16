@@ -9,6 +9,7 @@ import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
 import test.net.jplugin.core.das.route.stringint.DeleteTest;
 import test.net.jplugin.core.das.route.stringint.InsertSelectTest;
 import test.net.jplugin.core.das.route.stringint.UpdateTest;
+import test.net.jplugin.core.das.route.where.WhereExpressionVisitorTest;
 
 public class Plugin extends AbstractPluginForTest {
 
@@ -32,6 +33,7 @@ public class Plugin extends AbstractPluginForTest {
 		new DeleteTest().test();
 		DbCreateDate.create();
 		new DateTest().test();
+		new WhereExpressionVisitorTest().test();
 	}
 
 	@Override

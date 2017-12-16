@@ -11,9 +11,12 @@ import java.util.Map.Entry;
 import net.jplugin.common.kits.CalenderKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
+import net.jplugin.core.das.route.api.KeyValueForAlgm;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
+import net.jplugin.core.das.route.impl.algms.TimeBasedSpanUtil.LocalDateMaintain;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
 
 public class MonthAlgm  implements ITsAlgorithm{
 
@@ -49,8 +52,11 @@ public class MonthAlgm  implements ITsAlgorithm{
 
 	
 	@Override
-	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
-		return TimeBasedSpanUtil.get(this, dataSource, tableName, this.trackMonths,(ld,units)->ld.minusMonths(units));
+	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,ValueType valueType,KeyValueForAlgm kva) {
+//		return TimeBasedSpanUtil.get(this, dataSource, tableName, this.trackMonths,(ld,units)->ld.minusMonths(units));
+		LocalDateMaintain timeMaintainer = (ld,units)->ld.minusMonths(units);
+		return TimeBasedSpanUtil.getResults(this,dataSource,tableName,valueType,kva,timeMaintainer,this.trackMonths);
+
 	}
 
 }

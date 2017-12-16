@@ -38,6 +38,7 @@ public class PluginEnvirement {
 	private int stateLevel=STAT_LEVEL_PREPAREING;
 	
 	private IStartLogger startLogger = new StartUpLoggerImpl();
+	private boolean unitTesting = false;
 
 
 	private PluginFilterManager<Tuple2<Boolean, String>> startFilterManager = new PluginFilterManager<>(
@@ -62,6 +63,14 @@ public class PluginEnvirement {
 		return this.stateLevel;
 	}
 	
+	public boolean isUnitTesting() {
+		return unitTesting;
+	}
+
+	public void setUnitTesting(boolean unitTesting) {
+		this.unitTesting = unitTesting;
+	}
+
 	public void stop(){
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ now to stop plugin envirment");
 		this.registry.destroy();

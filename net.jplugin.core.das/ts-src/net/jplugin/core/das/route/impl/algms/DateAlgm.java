@@ -5,9 +5,13 @@ import java.sql.Date;
 import net.jplugin.common.kits.CalenderKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
+import net.jplugin.core.das.route.api.KeyValueForAlgm;
+import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
 import net.jplugin.core.das.route.api.RouterDataSource;
+import net.jplugin.core.das.route.api.RouterException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.algms.TimeBasedSpanUtil.LocalDateMaintain;
 
 public class DateAlgm  implements ITsAlgorithm{
 
@@ -16,6 +20,7 @@ public class DateAlgm  implements ITsAlgorithm{
 	protected void setTrackDays(int m){
 		this.trackDays = m;
 	}
+	
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
 		long time;
@@ -39,10 +44,10 @@ public class DateAlgm  implements ITsAlgorithm{
 		return tableBaseName+"_"+CalenderKit.getShortDateString(time);
 	}
 
-
 	@Override
-	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
-		return TimeBasedSpanUtil.get(this, dataSource, tableName, this.trackDays,(ld,units)->ld.minusDays(units));
+	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName, ValueType valueType,KeyValueForAlgm kva) {
+		LocalDateMaintain timeMaintainer = (ld,units)->ld.minusDays(units);
+		return TimeBasedSpanUtil.getResults(this,dataSource,tableName,valueType,kva,timeMaintainer,this.trackDays);
 	}
 
 }

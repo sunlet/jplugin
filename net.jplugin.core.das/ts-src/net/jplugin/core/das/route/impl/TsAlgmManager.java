@@ -7,10 +7,12 @@ import java.util.Map;
 
 import net.jplugin.core.das.route.Plugin;
 import net.jplugin.core.das.route.api.RouterDataSource;
+import net.jplugin.core.das.route.api.RouterException;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
+import net.jplugin.core.das.route.api.KeyValueForAlgm;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -23,13 +25,48 @@ public class TsAlgmManager {
 			return new KeyTypeValueRespect();
 		};
 	};
-	
-	public static DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
+
+	public static DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,KeyValueForAlgm kva) {
 		TableConfig tc = dataSource.getConfig().findTableConfig(tableName);
 		ITsAlgorithm algm = algmMap.get(tc.getSplitAlgm());
+		
+		//必要时转换类型，同时各值的类型一致性
+		//注意，当kva没有数据，或者数据为null时，返回的type为null
+		ValueType type = checkAndConvertKeyValue(kva);
+		
+		
 		if (algm==null)
 			throw new TablesplitException("error algm:"+tc.getSplitAlgm()+" for table:"+tableName);
-		return algm.getDataSourceInfos(dataSource,tableName);
+		return algm.getMultiResults(dataSource,tableName,type,kva);
+	}
+
+	private static ValueType checkAndConvertKeyValue(KeyValueForAlgm kva) {
+		Object[] vals = kva.getConstValue();
+		ValueType type = null;
+		if (vals!=null){
+			for (int i=0;i<vals.length;i++){
+				Object o = vals[i];
+				//null值不做判断和处理
+				if (o!=null){
+					KeyTypeValueRespect r = convertValueRespect(o);
+					vals[i] = r.value;
+					if (type!=null){
+						if (!type.equals(r.valueType))
+							throw new RouterException("All the values in the sql must be same type. "+type+" "+r.valueType);
+						else
+							//这是正常的
+							;
+					}else{
+						type = r.valueType;
+					}
+				}
+			}
+		}
+		return type;
+	}
+
+	public static DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
+		return getMultiResults(dataSource,tableName,new KeyValueForAlgm(net.jplugin.core.das.route.api.KeyValueForAlgm.Operator.ALL ,null));
 	}
 	
 	public static ITsAlgorithm.Result getResult(RouterDataSource compondDataSource,String tbBaseName,Object key){
@@ -95,6 +132,8 @@ public class TsAlgmManager {
 			this.value = value;
 		}
 	}
+
+
 
 
 }
