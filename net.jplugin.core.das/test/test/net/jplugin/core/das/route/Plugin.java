@@ -9,6 +9,8 @@ import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
 import test.net.jplugin.core.das.route.stringint.DeleteTest;
 import test.net.jplugin.core.das.route.stringint.InsertSelectTest;
 import test.net.jplugin.core.das.route.stringint.UpdateTest;
+import test.net.jplugin.core.das.route.where.InSectUtilTest;
+import test.net.jplugin.core.das.route.where.VisitorExpressionManagerTest;
 import test.net.jplugin.core.das.route.where.WhereExpressionVisitorTest;
 
 public class Plugin extends AbstractPluginForTest {
@@ -34,6 +36,8 @@ public class Plugin extends AbstractPluginForTest {
 		DbCreateDate.create();
 		new DateTest().test();
 		new WhereExpressionVisitorTest().test();
+		new VisitorExpressionManagerTest().test();
+		new InSectUtilTest().test();
 	}
 
 	@Override

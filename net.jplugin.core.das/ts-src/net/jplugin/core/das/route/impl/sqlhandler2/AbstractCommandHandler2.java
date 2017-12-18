@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.jplugin.common.kits.ObjectKit;
 import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
@@ -20,6 +21,9 @@ import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
+import net.jplugin.core.kernel.api.RefAnnotationSupport;
+import net.jplugin.core.log.api.Logger;
+import net.jplugin.core.log.api.RefLogger;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnalyticExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
@@ -90,7 +94,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
 
-public abstract class AbstractCommandHandler2 {
+public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	protected net.sf.jsqlparser.statement.Statement statement =null;
 	protected String sqlString;
 	protected RouterConnection connetion;
@@ -124,11 +128,26 @@ public abstract class AbstractCommandHandler2 {
 			this.operator = o;
 			this.value = varr;
 		}
+		
+		public String toString(){
+			return operator+" "+ arrToString(value);
+		}
+
+		private String arrToString(Value[] v) {
+			String ret = "";
+			for (int i=0;i<v.length;i++){
+				ret = ret + "{"+ v[i]+"}  ";
+			}
+			return ret;
+		}
 	}
 	public static class Value{
 		public boolean isParamedKey;
 		public Object keyConstValue;
 		public int keyParamIndex;
+		public String toString(){
+			return "Param:"+isParamedKey +" VAL:"+ keyConstValue+  " Index:"+ keyParamIndex;
+		}
 	}
 	
 	public String getTableName() {
@@ -175,7 +194,7 @@ public abstract class AbstractCommandHandler2 {
 	 * 在getKeyFilter过程中要调用setTableName方法设置tableName
 	 * @return
 	 */
-	protected abstract KeyFilter getKeyFilter();
+	protected abstract List<KeyFilter> getKeyFilter();
 	protected void maintainSqlMeta(Meta meta) {
 	}
 	protected abstract void temporyChangeTableNameTo(String nm);
@@ -183,20 +202,22 @@ public abstract class AbstractCommandHandler2 {
 	
 	public final  SqlHandleResult handle(){
 		//获取表名称和KeyFilter
-		KeyFilter kf = getKeyFilter();
+		List<KeyFilter> kf = getKeyFilter();
 //		//设置表名称
 //		this.tableName = kf.first;
 		//返回结果
 		return getHandleResult(kf);
 	}
 	
-	protected final SqlHandleResult getHandleResult(KeyFilter kf){
+	@RefLogger
+	Logger logger;
+	protected final SqlHandleResult getHandleResult(List<KeyFilter> kfList){
 //		//这里只支持EQ
 //		if (kf==null) throw new RouterException("found null KeyFilter."+this.sqlString);
 //		if (kf.operator!=Operator.EQUAL)
 //			throw new RouterException("Only EQUAL be supported in basic impl."+this.sqlString);
 		
-		if (kf == null)
+		if (kfList == null || kfList.isEmpty())
 			throw new RouterException("Found null KeyFilter."+this.sqlString);
 		
 		//获取配置
@@ -205,21 +226,24 @@ public abstract class AbstractCommandHandler2 {
 			throw new TablesplitException("Table not configed in the router databse."+tableName);
 		
 		//转换为常亮值
-		KeyValueForAlgm keyValue = transformKeyFilterToConst(kf);
+		KeyValueForAlgm[] keyValueArr = transformKeyFilterToConst(kfList);
 		//根据算法计算
 		DataSourceInfo[] algmResults;
 		
-		//根据情况调用不同接口
-		if (keyValue.getOperator()==Operator.EQUAL){
-			Result result = TsAlgmManager.getResult(connetion.getDataSource(), tableName, keyValue.getConstValue()[0]);
-			algmResults = convertToOneDataSourceInfo(result);
-		}else{
-			algmResults = TsAlgmManager.getMultiResults(connetion.getDataSource(), tableName, keyValue);
+		//查询
+		algmResults = getDataSourceInfosFromKeyValueArr(keyValueArr);
+		if (logger.isInfoEnabled()){
+			if (algmResults!=null)
+				for (DataSourceInfo a:algmResults){
+					logger.info("\tDataSourceInfo:"+a);
+				}
+			else logger.info("\tGet Null DataSource");
 		}
+		
 		
 		SqlHandleResult result = new SqlHandleResult();
 
-		if (algmResults.length==0){
+		if (algmResults==null || algmResults.length==0){
 			throw new RuntimeException("Can't find the dest table.");
 		}else if (algmResults.length==1 && algmResults[0].getDestTbs().length==1){
 			result.setTargetDataSourceName(algmResults[0].getDsName());
@@ -237,6 +261,34 @@ public abstract class AbstractCommandHandler2 {
 			return result;
 		}
 	}
+	
+	private DataSourceInfo[] getDataSourceInfosFromKeyValueArr(KeyValueForAlgm[] keyValueArr) {
+		if (keyValueArr.length==1){
+			KeyValueForAlgm keyValue = keyValueArr[0];
+			return getDataSourceInfosFromOneKeyFilter(keyValue);
+		}
+		
+		List<DataSourceInfo[]> metrix= new ArrayList<>(keyValueArr.length);
+		for (int i=0;i<keyValueArr.length;i++){
+			metrix.add( getDataSourceInfosFromOneKeyFilter(keyValueArr[i]));
+		}
+		
+		//计算交集
+		return InSectUtil.computeInsect(metrix);
+	}
+	
+	private DataSourceInfo[] getDataSourceInfosFromOneKeyFilter(KeyValueForAlgm keyValue) {
+		//根据情况调用不同接口
+		DataSourceInfo[] algmResults;
+		if (keyValue.getOperator()==Operator.EQUAL){
+			Result result = TsAlgmManager.getResult(connetion.getDataSource(), tableName, keyValue.getConstValue()[0]);
+			algmResults = convertToOneDataSourceInfo(result);
+		}else{
+			algmResults = TsAlgmManager.getMultiResults(connetion.getDataSource(), tableName, keyValue);
+		}
+		return algmResults;
+	}
+
 
 	private DataSourceInfo[] convertToOneDataSourceInfo(Result result) {
 		DataSourceInfo[] dsi = new DataSourceInfo[1];
@@ -250,11 +302,18 @@ public abstract class AbstractCommandHandler2 {
 	 * @param where
 	 * @return
 	 */
-	protected final KeyFilter getKeyFilterFromWhere(Expression where) {
+	protected final List<KeyFilter> getKeyFilterFromWhere(Expression where) {
 		String colName =getTableCfg().getKeyField();
-		WhereExpressionVisitor whereVisitor = new WhereExpressionVisitor(this.tableName,colName);
-		where.accept(whereVisitor);
-		return whereVisitor.getKeyFilter();
+		
+		List<KeyFilter> list = VisitorExpressionManager.getKeyFilterList(where, colName);
+		if (list==null || list.isEmpty())
+			return null;
+		else
+			return list;
+		
+//		VisitorForAndExpression whereVisitor = new VisitorForAndExpression(colName);
+//		where.accept(whereVisitor);
+//		return whereVisitor.getKnownFilter();
 	}
 
 	protected final String getFinalSql(String finalTableName) {
@@ -266,6 +325,13 @@ public abstract class AbstractCommandHandler2 {
 		}
 	}
 
+	private KeyValueForAlgm[] transformKeyFilterToConst(List<KeyFilter> kf) {
+		KeyValueForAlgm[] arr = new KeyValueForAlgm[kf.size()];
+		for (int i=0;i<arr.length;i++){
+			arr[i] = transformKeyFilterToConst(kf.get(i));
+		}
+		return arr;
+	}
 	private KeyValueForAlgm transformKeyFilterToConst(KeyFilter kf) {
 		Object[] constValues = new Object[kf.value.length];
 		KeyValueForAlgm kvfa = new KeyValueForAlgm(kf.operator, constValues);

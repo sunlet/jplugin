@@ -24,7 +24,7 @@ public class CombinedStatement extends EmptyStatement{
 		this.conn = c;
 	}
 	@Override
-	public boolean execute(String sql) throws SQLException {
+	public final boolean execute(String sql) throws SQLException {
 		if (!sql.trim().startsWith("SELECT "))
 			throw new TablesplitException("span table sql only support SELECT ...");
 		this.executeQuery(sql);
@@ -32,7 +32,7 @@ public class CombinedStatement extends EmptyStatement{
 	}
 
 	@Override
-	public ResultSet executeQuery(String sql) throws SQLException {
+	public final ResultSet executeQuery(String sql) throws SQLException {
 		if (this.closed) throw new TablesplitException("can't call in a closed statement");
 		ParseResult pr = CombinedSqlParser.parse(sql);
 		

@@ -13,6 +13,7 @@ import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
 import net.jplugin.core.das.route.api.KeyValueForAlgm;
+import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -29,6 +30,7 @@ public class TsAlgmManager {
 	public static DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,KeyValueForAlgm kva) {
 		TableConfig tc = dataSource.getConfig().findTableConfig(tableName);
 		ITsAlgorithm algm = algmMap.get(tc.getSplitAlgm());
+		
 		
 		//必要时转换类型，同时各值的类型一致性
 		//注意，当kva没有数据，或者数据为null时，返回的type为null

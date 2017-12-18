@@ -6,7 +6,7 @@ import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.test;
 import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
 import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.KeyFilter;
-import net.jplugin.core.das.route.impl.sqlhandler2.WhereExpressionVisitor;
+import net.jplugin.core.das.route.impl.sqlhandler2.VisitorForAndExpression;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.Statement;
@@ -84,10 +84,10 @@ public class WhereExpressionVisitorTest {
 
 	private KeyFilter parse(String sql,String tb,String key) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
-		WhereExpressionVisitor wev = new WhereExpressionVisitor(tb, key);
+		VisitorForAndExpression wev = new VisitorForAndExpression(key);
 		Statement stmt = pm.parse(new StringReader(sql));
 		((PlainSelect)((Select)stmt).getSelectBody()).getWhere().accept(wev);
-		return wev.getKeyFilter();
+		return wev.getKnownFilter();
 	}
 	
 	public static void main(String[] args) throws JSQLParserException {

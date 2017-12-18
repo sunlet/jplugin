@@ -72,7 +72,7 @@ import net.sf.jsqlparser.expression.operators.relational.RegExpMySQLOperator;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
-public class WhereExpressionVisitor implements ExpressionVisitor {
+public class VisitorForAndExpression implements ExpressionVisitor {
 
 //	private KeyFilter keyFilter;
 //	private List<Expression> keyExpressions;
@@ -80,9 +80,12 @@ public class WhereExpressionVisitor implements ExpressionVisitor {
 	Value left = null;
 	Value right = null;
 	Value eq = null;
-	List<Value> inList = new ArrayList<>();
+	List<Value> inList = null;
+	
+	//计算的同时得到OrRoots
+	List<Expression> otherIntersectExpressions = null;
 
-	public WhereExpressionVisitor(String tb,String keyColName) {
+	public VisitorForAndExpression(String keyColName) {
 		this.keyColumnName = keyColName;
 	}
 	
@@ -90,7 +93,7 @@ public class WhereExpressionVisitor implements ExpressionVisitor {
 	 * EQ优先，IN其次，BETWEEN再次。如果都没有，则返回null，而不是返回ALL。
 	 * @return
 	 */
-	public KeyFilter getKeyFilter() {
+	public KeyFilter getKnownFilter() {
 		if (eq!=null) 
 			return new KeyFilter(Operator.EQUAL, new Value[]{eq});
 		
@@ -102,17 +105,27 @@ public class WhereExpressionVisitor implements ExpressionVisitor {
 		}
 		return null;
 	}
+	/**
+	 * 获取Or节点，和现有KnownFilter是交集关系
+	 * @return
+	 */
+	public List<Expression> getOtherIntersectExpressions(){
+		return this.otherIntersectExpressions;
+	}
+	
+	/**
+	 * 清除现有内容，但是保留构造函数传入的内容
+	 */
+	public void clear(){
+		left =null;
+		right = null;
+		eq = null;
+		inList = null;
+	}
 
 
 	@Override
 	public void visit(AndExpression andExpression) {
-//		Expression left = andExpression.getLeftExpression();
-//		Expression right = andExpression.getRightExpression();
-//		if (left instanceof Column){
-//			if (right instanceof StringValue){
-//				
-//			}
-//		}
 		andExpression.getLeftExpression().accept(this);
 		andExpression.getRightExpression().accept(this);
 	}
@@ -120,6 +133,9 @@ public class WhereExpressionVisitor implements ExpressionVisitor {
 	@Override
 	public void visit(OrExpression orExpression) {
 		// ignore
+		if (this.otherIntersectExpressions==null)
+			this.otherIntersectExpressions = new ArrayList<>();
+		this.otherIntersectExpressions.add(orExpression);
 	}
 
 
@@ -168,7 +184,7 @@ public class WhereExpressionVisitor implements ExpressionVisitor {
 
 	private void checkAndAddIn(Expression leftExpression, ItemsList rightItemsList) {
 		//因为都是and条件，如果已经有一个了，新的可以不判断了
-		if (!inList.isEmpty()) 
+		if (inList!=null) 
 			return;
 		
 		if (checkLeftColunn(leftExpression)){
@@ -184,7 +200,7 @@ public class WhereExpressionVisitor implements ExpressionVisitor {
 					else 
 						return;
 				}
-				inList.addAll(values);
+				inList = values;
 			}
 		}
 	}

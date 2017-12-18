@@ -1,12 +1,14 @@
 package net.jplugin.core.das.route.impl.sqlhandler2;
 
+import java.util.List;
+
 import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
 
 public class DeleteHandler2 extends AbstractCommandHandler2 {
 
 	@Override
-	protected KeyFilter getKeyFilter() {
+	protected List<KeyFilter> getKeyFilter() {
 		// TODO Auto-generated method stub
 		return null;
 	}

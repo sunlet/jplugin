@@ -13,7 +13,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 public class InsertHandler2 extends AbstractCommandHandler2 {
 
 	@Override
-	public KeyFilter getKeyFilter() {
+	public List<KeyFilter> getKeyFilter() {
 		Insert insertStmt = (Insert) this.statement;
 		if (!insertStmt.isUseValues())
 			throw new RuntimeException("Can't support sql not use values.");

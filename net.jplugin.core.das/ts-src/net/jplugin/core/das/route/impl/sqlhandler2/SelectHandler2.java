@@ -33,7 +33,7 @@ public class SelectHandler2 extends AbstractCommandHandler2 {
 	private PlainSelect innerSelect;
 
 	@Override
-	public KeyFilter getKeyFilter() {
+	public List<KeyFilter> getKeyFilter() {
 		Select select = (Select) this.statement;
 		SelectBody body = select.getSelectBody();
 		PlainSelect ps = getMostInnerSelect(body);
@@ -44,13 +44,15 @@ public class SelectHandler2 extends AbstractCommandHandler2 {
 
 		super.setTableName(table.getName());
 
-		KeyFilter kf = null;
+		List<KeyFilter> kf = null;
 		Expression where = ps.getWhere();
 		if (where!=null)
 			kf = super.getKeyFilterFromWhere(where);
 		
-		if (kf==null)
-			kf = new KeyFilter(Operator.ALL,new Value[]{});
+		if (kf==null || kf.isEmpty()){
+			kf = new ArrayList(1);
+			kf.add(new KeyFilter(Operator.ALL,new Value[]{}));
+		}
 		return kf;
 	}
 	
