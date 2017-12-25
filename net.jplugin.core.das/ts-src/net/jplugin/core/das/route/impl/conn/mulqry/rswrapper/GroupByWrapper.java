@@ -25,12 +25,14 @@ import java.util.Map;
 import net.jplugin.core.das.route.impl.conn.mulqry.EmptyQueryableResultSet;
 
 /**
+ * 
  * <pre>
- * 我们对SQL的要求：
- * 或者 group by后面不带order by，系统自动添加orderby
- * 或者 group by带包含所有字段的 order by
+ * 实现方法：
+ * 跨表查询，有groupby时候不能有orderby，然后系统把groupby的内容作为orderby。
+ * 因为如果有orderby，和groupby不一致的时候，会导致查询到多条重复groupby的记录。
+ * 添加一个隐含字段。f__g__b__o ,内容为相关字段的CONCAT.
  * </pre>
- * @author Administrator
+ * @author LiuHang
  *
  */
 public class GroupByWrapper extends EmptyQueryableResultSet{
