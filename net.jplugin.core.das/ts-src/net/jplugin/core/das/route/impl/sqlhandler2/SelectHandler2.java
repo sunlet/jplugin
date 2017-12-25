@@ -4,18 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.jplugin.common.kits.StringKit;
-import net.jplugin.common.kits.tuple.Tuple2;
-import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
+import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.RouterException;
-import net.jplugin.core.das.route.impl.TsAlgmManager;
-import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
-import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.KeyFilter;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.OracleHint;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.FromItem;
@@ -33,7 +28,7 @@ public class SelectHandler2 extends AbstractCommandHandler2 {
 	private PlainSelect innerSelect;
 
 	@Override
-	public List<KeyFilter> getKeyFilter() {
+	public List<RouterKeyFilter> getKeyFilter() {
 		Select select = (Select) this.statement;
 		SelectBody body = select.getSelectBody();
 		PlainSelect ps = getMostInnerSelect(body);
@@ -44,14 +39,14 @@ public class SelectHandler2 extends AbstractCommandHandler2 {
 
 		super.setTableName(table.getName());
 
-		List<KeyFilter> kf = null;
+		List<RouterKeyFilter> kf = null;
 		Expression where = ps.getWhere();
 		if (where!=null)
 			kf = super.getKeyFilterFromWhere(where);
 		
 		if (kf==null || kf.isEmpty()){
 			kf = new ArrayList(1);
-			kf.add(new KeyFilter(Operator.ALL,new Value[]{}));
+			kf.add(new RouterKeyFilter(Operator.ALL,new Object[]{}));
 		}
 		return kf;
 	}

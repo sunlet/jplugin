@@ -3,9 +3,8 @@ package net.jplugin.core.das.route.impl.sqlhandler2;
 import java.util.List;
 
 import net.jplugin.common.kits.StringKit;
-import net.jplugin.common.kits.tuple.Tuple2;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
-import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -13,7 +12,7 @@ import net.sf.jsqlparser.statement.insert.Insert;
 public class InsertHandler2 extends AbstractCommandHandler2 {
 
 	@Override
-	public List<KeyFilter> getKeyFilter() {
+	public List<RouterKeyFilter> getKeyFilter() {
 		Insert insertStmt = (Insert) this.statement;
 		if (!insertStmt.isUseValues())
 			throw new RuntimeException("Can't support sql not use values.");

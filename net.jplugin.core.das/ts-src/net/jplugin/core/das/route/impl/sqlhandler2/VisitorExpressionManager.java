@@ -4,18 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.jplugin.common.kits.AssertKit;
-import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
-import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.KeyFilter;
-import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.Value;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
+import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.sf.jsqlparser.expression.Expression;
 
 public class VisitorExpressionManager {
-	public static List<KeyFilter> getKeyFilterList(Expression where,String fieldName, List<Object> parameters){
+	public static List<RouterKeyFilter> getKeyFilterList(Expression where,String fieldName, List<Object> parameters){
 		VisitorForAndExpression andVisitor = new VisitorForAndExpression(fieldName,parameters);
 		where.accept(andVisitor);
 		
 		//如果不需要继续找交集列表，则直接返回
-		KeyFilter knownFilter = andVisitor.getKnownFilter();
+		RouterKeyFilter knownFilter = andVisitor.getKnownFilter();
 		if (knownFilter!=null) {
 			ArrayList list = new ArrayList<>(1);
 			list.add(knownFilter);
@@ -28,18 +27,18 @@ public class VisitorExpressionManager {
 			return null;
 		
 		//获取需要先并后交的大列表套装
-		List<List<KeyFilter>> resultsToInsect = new ArrayList(intersectExpList.size());
+		List<List<RouterKeyFilter>> resultsToInsect = new ArrayList(intersectExpList.size());
 		VisitorForOrExpression orVisitor = new VisitorForOrExpression();
 		for (Expression exp:intersectExpList){
 			orVisitor.clear();
-			List<KeyFilter> result = getResultToIntersect(andVisitor, orVisitor, exp);
+			List<RouterKeyFilter> result = getResultToIntersect(andVisitor, orVisitor, exp);
 			resultsToInsect.add(result);
 		}
 		
 		//每一个并集做技术型合并
-		List<KeyFilter> resultFilters=new ArrayList<>(resultsToInsect.size());
-		for (List<KeyFilter> list:resultsToInsect){
-			KeyFilter filter = getUnionFilter(list);
+		List<RouterKeyFilter> resultFilters=new ArrayList<>(resultsToInsect.size());
+		for (List<RouterKeyFilter> list:resultsToInsect){
+			RouterKeyFilter filter = getUnionFilter(list);
 			if (filter!=null)
 				resultFilters.add(filter);
 		}
@@ -58,12 +57,12 @@ public class VisitorExpressionManager {
 	 * @param exp
 	 * @return
 	 */
-	private static List<KeyFilter> getResultToIntersect(VisitorForAndExpression andVisitor,
+	private static List<RouterKeyFilter> getResultToIntersect(VisitorForAndExpression andVisitor,
 			VisitorForOrExpression orVisitor, Expression exp) {
 		orVisitor.travelUnionExpressions(exp);
 		List<Expression> unionExpressions = orVisitor.get();
 		//直接再查询一次
-		List<KeyFilter> result = new ArrayList(unionExpressions.size());
+		List<RouterKeyFilter> result = new ArrayList(unionExpressions.size());
 		for (Expression uExp:unionExpressions){
 			andVisitor.clear();
 			uExp.accept(andVisitor);
@@ -79,19 +78,19 @@ public class VisitorExpressionManager {
 	 * @param list
 	 * @return
 	 */
-	private static KeyFilter getUnionFilter(List<KeyFilter> list) {
+	private static RouterKeyFilter getUnionFilter(List<RouterKeyFilter> list) {
 		AssertKit.assertTrue(list.size()>1);
-		List<Value> values = new ArrayList<>();
-		for (KeyFilter kf:list){
+		List<Object> values = new ArrayList<>();
+		for (RouterKeyFilter kf:list){
 			/*注意：只要存在空的就尽早返回,所以空不能在前面过滤掉*/
-			if (kf==null || kf.operator==Operator.ALL/*貌似不太可能出现这个*/ || kf.operator == Operator.BETWEEN) 
+			if (kf==null || kf.getOperator()==Operator.ALL/*貌似不太可能出现这个*/ || kf.getOperator() == Operator.BETWEEN) 
 				return null;
-			if (kf.operator==Operator.EQUAL || kf.operator==Operator.IN){
-				for (Value v:kf.value){
+			if (kf.getOperator()==Operator.EQUAL || kf.getOperator()==Operator.IN){
+				for (Object v:kf.getConstValue()){
 					values.add(v);
 				}
 			}
 		}
-		return new KeyFilter(Operator.IN, values.toArray(new Value[values.size()]));
+		return new RouterKeyFilter(Operator.IN, values.toArray(new Object[values.size()]));
 	}
 }

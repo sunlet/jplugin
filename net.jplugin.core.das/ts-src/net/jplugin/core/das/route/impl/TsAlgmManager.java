@@ -12,8 +12,8 @@ import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
-import net.jplugin.core.das.route.api.KeyValueForAlgm;
-import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
+import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -27,7 +27,7 @@ public class TsAlgmManager {
 		};
 	};
 
-	public static DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,KeyValueForAlgm kva) {
+	public static DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,RouterKeyFilter kva) {
 		TableConfig tc = dataSource.getConfig().findTableConfig(tableName);
 		ITsAlgorithm algm = algmMap.get(tc.getSplitAlgm());
 		
@@ -42,7 +42,7 @@ public class TsAlgmManager {
 		return algm.getMultiResults(dataSource,tableName,type,kva);
 	}
 
-	private static ValueType checkAndConvertKeyValue(KeyValueForAlgm kva) {
+	private static ValueType checkAndConvertKeyValue(RouterKeyFilter kva) {
 		Object[] vals = kva.getConstValue();
 		ValueType type = null;
 		if (vals!=null){
@@ -68,7 +68,7 @@ public class TsAlgmManager {
 	}
 
 	public static DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName) {
-		return getMultiResults(dataSource,tableName,new KeyValueForAlgm(net.jplugin.core.das.route.api.KeyValueForAlgm.Operator.ALL ,null));
+		return getMultiResults(dataSource,tableName,new RouterKeyFilter(net.jplugin.core.das.route.api.RouterKeyFilter.Operator.ALL ,null));
 	}
 	
 	public static ITsAlgorithm.Result getResult(RouterDataSource compondDataSource,String tbBaseName,Object key){

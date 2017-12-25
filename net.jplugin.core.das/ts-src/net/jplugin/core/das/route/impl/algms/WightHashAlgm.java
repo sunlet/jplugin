@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
-import net.jplugin.core.das.route.api.KeyValueForAlgm;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
@@ -127,7 +127,7 @@ public class WightHashAlgm implements ITsAlgorithm{
 		
 	}
 	@Override
-	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,ValueType valueType,KeyValueForAlgm kva) {
+	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName,ValueType valueType,RouterKeyFilter kva) {
 		throw new RuntimeException("not impl");
 	}
 }

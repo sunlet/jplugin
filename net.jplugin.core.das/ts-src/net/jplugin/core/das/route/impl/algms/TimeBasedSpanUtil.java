@@ -27,8 +27,8 @@ import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
-import net.jplugin.core.das.route.api.KeyValueForAlgm;
-import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
+import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterException;
@@ -41,7 +41,7 @@ public class TimeBasedSpanUtil {
 	}
 	
 	public static DataSourceInfo[] getResults(ITsAlgorithm algm, RouterDataSource dataSource, String tableName,
-			ValueType valueType,KeyValueForAlgm kva, LocalDateMaintain timeMaintainer, int trackDays) {
+			ValueType valueType,RouterKeyFilter kva, LocalDateMaintain timeMaintainer, int trackDays) {
 		if (kva.getOperator()==Operator.ALL) 
 			return TimeBasedSpanUtil.get(algm, dataSource, tableName, trackDays,timeMaintainer);
 		else if (kva.getOperator()==Operator.BETWEEN)

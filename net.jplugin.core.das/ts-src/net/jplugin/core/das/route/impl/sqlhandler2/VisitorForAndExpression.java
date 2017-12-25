@@ -3,10 +3,8 @@ package net.jplugin.core.das.route.impl.sqlhandler2;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
-import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.KeyFilter;
-import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.Value;
-import net.jplugin.core.das.route.impl.util.ConstValueExpressionKit;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
+import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnalyticExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
@@ -79,10 +77,10 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 //	private List<Expression> keyExpressions;
 	private String keyColumnName;
 	private List<Object> parameters;
-	Value left = null;
-	Value right = null;
-	Value eq = null;
-	List<Value> inList = null;
+	Object left = null;
+	Object right = null;
+	Object eq = null;
+	List<Object> inList = null;
 	
 	//计算的同时得到OrRoots
 	List<Expression> otherIntersectExpressions = null;
@@ -97,15 +95,15 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 	 * EQ优先，IN其次，BETWEEN再次。如果都没有，则返回null，而不是返回ALL。
 	 * @return
 	 */
-	public KeyFilter getKnownFilter() {
+	public RouterKeyFilter getKnownFilter() {
 		if (eq!=null) 
-			return new KeyFilter(Operator.EQUAL, new Value[]{eq});
+			return new RouterKeyFilter(Operator.EQUAL, new Object[]{eq});
 		
 		if (inList!=null && !inList.isEmpty())
-			return new KeyFilter(Operator.IN, inList.toArray(new Value[inList.size()]));
+			return new RouterKeyFilter(Operator.IN, inList.toArray(new Object[inList.size()]));
 		
 		if (left!=null || right!=null){
-			return new KeyFilter(Operator.BETWEEN, new Value[]{left,right});
+			return new RouterKeyFilter(Operator.BETWEEN, new Object[]{left,right});
 		}
 		return null;
 	}
@@ -199,9 +197,9 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 				List<Expression> expressions = ((ExpressionList)rightItemsList).getExpressions();
 				
 				//只要有一个数据不满足，则忽略该条件；所以要先全部取出来
-				List<Value> values = new ArrayList();
+				List<Object> values = new ArrayList();
 				for (Expression item:expressions){
-					Value v = tryComputeValue(item);
+					Object v = tryComputeValue(item);
 					if (v!=null) 
 						values.add(v);
 					else 
@@ -211,35 +209,38 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 			}
 		}
 	}
-	private Value tryComputeValue(Expression item) {
-		Value v = new Value();
-		Object constv = ConstValueExpressionKit.tryGetConstValue(item);
-		
-		if (constv!=null){
-			v.isParamedKey = false;
-			v.keyConstValue = constv;
-			return v;
-		}
-		
-		if (item instanceof JdbcParameter){
-			v.isParamedKey = true;
-			v.keyParamIndex = ((JdbcParameter)item).getIndex()-1;
-			return v;
-		}
-		
-		if (item instanceof Function){
-			Object o = FunctionEvalueManager.evalueNonStrickly(item,this.parameters);
-			if (o!=null){
-				v.isParamedKey = false;
-				v.keyConstValue = o;
-				return v;
-			}else{
-				return null;
-			}
-		}
-		
-		return null;
+	private Object tryComputeValue(Expression item) {
+		return FunctionEvalueManager.evalueNonStrickly(item, parameters);
 	}
+//	private Object tryComputeValue(Expression item) {
+//		Value v = new Value();
+//		Object constv = ConstValueExpressionKit.tryGetConstValue(item);
+//		
+//		if (constv!=null){
+//			v.isParamedKey = false;
+//			v.keyConstValue = constv;
+//			return v;
+//		}
+//		
+//		if (item instanceof JdbcParameter){
+//			v.isParamedKey = true;
+//			v.keyParamIndex = ((JdbcParameter)item).getIndex()-1;
+//			return v;
+//		}
+//		
+//		if (item instanceof Function){
+//			Object o = FunctionEvalueManager.evalueNonStrickly(item,this.parameters);
+//			if (o!=null){
+//				v.isParamedKey = false;
+//				v.keyConstValue = o;
+//				return v;
+//			}else{
+//				return null;
+//			}
+//		}
+//		
+//		return null;
+//	}
 
 	private boolean checkLeftColunn(Expression leftExpression) {
 		if (! (leftExpression instanceof Column)) 
@@ -254,7 +255,7 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 			return;
 		
 		if (checkLeftColunn(leftExpression)){
-			Value v = tryComputeValue(rightExpression);
+			Object v = tryComputeValue(rightExpression);
 			if (v!=null){
 				right = v;
 			}
@@ -265,7 +266,7 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 			return;
 		
 		if (checkLeftColunn(leftExpression)){
-			Value v = tryComputeValue(rightExpression);
+			Object v = tryComputeValue(rightExpression);
 			if (v!=null){
 				eq = v;
 			}
@@ -277,7 +278,7 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 			return;
 		
 		if (checkLeftColunn(leftExpression)){
-			Value v = tryComputeValue(rightExpression);
+			Object v = tryComputeValue(rightExpression);
 			if (v!=null){
 				left = v;
 			}

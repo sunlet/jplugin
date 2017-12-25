@@ -20,7 +20,7 @@ public interface ITsAlgorithm {
 	 * @param kva 
 	 * @return
 	 */
-	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName, ValueType type, KeyValueForAlgm kva);
+	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName, ValueType type, RouterKeyFilter kva);
 	
 	public enum ValueType{
 		LONG,STRING,DATE, TIMESTAMP

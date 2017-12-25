@@ -10,7 +10,7 @@ import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
-import net.jplugin.core.das.route.api.KeyValueForAlgm;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
 
 public class HashAlgm  implements ITsAlgorithm{
 
@@ -44,7 +44,7 @@ public class HashAlgm  implements ITsAlgorithm{
 	 * 目前都是返回所有的表，其实对于IN类型可以做一些优化的。
 	 */
 	@Override
-	public DataSourceInfo[] getMultiResults(RouterDataSource compondDataSource, String tableBaseName,ValueType valueType ,KeyValueForAlgm kva) {
+	public DataSourceInfo[] getMultiResults(RouterDataSource compondDataSource, String tableBaseName,ValueType valueType ,RouterKeyFilter kva) {
 		TableConfig tableCfg = compondDataSource.getConfig().findTableConfig(tableBaseName);
 		int splits = tableCfg.getSplits();
 		DataSourceConfig[] dscfg = compondDataSource.getConfig().getDataSourceConfig();

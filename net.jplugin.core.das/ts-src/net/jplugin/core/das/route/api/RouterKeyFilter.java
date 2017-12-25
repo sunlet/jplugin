@@ -3,7 +3,7 @@ package net.jplugin.core.das.route.api;
 
 
 
-public class KeyValueForAlgm{
+public class RouterKeyFilter{
 	/**
 	 * <PRE>
 	 * EQUAL:等于
@@ -16,7 +16,7 @@ public class KeyValueForAlgm{
 	Operator operator;
 	Object[] constValue;
 	
-	public KeyValueForAlgm(Operator o,Object[] obj){
+	public RouterKeyFilter(Operator o,Object[] obj){
 		this.operator = o;
 		this.constValue = obj;
 	}
@@ -27,4 +27,11 @@ public class KeyValueForAlgm{
 		return constValue;
 	}
 	
+	public String toString(){
+		StringBuffer sb =new StringBuffer(operator.toString());
+		for (int i=0;i<constValue.length;i++){
+			sb.append(constValue[i]+" , ");
+		}
+		return sb.toString();
+	}
 }

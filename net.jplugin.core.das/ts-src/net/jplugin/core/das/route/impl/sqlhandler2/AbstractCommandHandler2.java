@@ -11,8 +11,8 @@ import net.jplugin.common.kits.ObjectKit;
 import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
-import net.jplugin.core.das.route.api.KeyValueForAlgm;
-import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
+import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.RouterException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.TablesplitException;
@@ -122,34 +122,34 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	 * </pre>
 	 */
 	
-	public static class KeyFilter {
-		public net.jplugin.core.das.route.api.KeyValueForAlgm.Operator operator;
-		public Value[] value;
-		public KeyFilter(Operator o,Value[] varr){
-			this.operator = o;
-			this.value = varr;
-		}
-		
-		public String toString(){
-			return operator+" "+ arrToString(value);
-		}
-
-		private String arrToString(Value[] v) {
-			String ret = "";
-			for (int i=0;i<v.length;i++){
-				ret = ret + "{"+ v[i]+"}  ";
-			}
-			return ret;
-		}
-	}
-	public static class Value{
-		public boolean isParamedKey;
-		public Object keyConstValue;
-		public int keyParamIndex;
-		public String toString(){
-			return "Param:"+isParamedKey +" VAL:"+ keyConstValue+  " Index:"+ keyParamIndex;
-		}
-	}
+//	public static class KeyFilter {
+//		public net.jplugin.core.das.route.api.KeyValueForAlgm.Operator operator;
+//		public Value[] value;
+//		public KeyFilter(Operator o,Value[] varr){
+//			this.operator = o;
+//			this.value = varr;
+//		}
+//		
+//		public String toString(){
+//			return operator+" "+ arrToString(value);
+//		}
+//
+//		private String arrToString(Value[] v) {
+//			String ret = "";
+//			for (int i=0;i<v.length;i++){
+//				ret = ret + "{"+ v[i]+"}  ";
+//			}
+//			return ret;
+//		}
+//	}
+//	public static class Value{
+//		public boolean isParamedKey;
+//		public Object keyConstValue;
+//		public int keyParamIndex;
+//		public String toString(){
+//			return "Param:"+isParamedKey +" VAL:"+ keyConstValue+  " Index:"+ keyParamIndex;
+//		}
+//	}
 	
 	public String getTableName() {
 		return tableName;
@@ -195,7 +195,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	 * 在getKeyFilter过程中要调用setTableName方法设置tableName
 	 * @return
 	 */
-	protected abstract List<KeyFilter> getKeyFilter();
+	protected abstract List<RouterKeyFilter> getKeyFilter();
 	protected void maintainSqlMeta(Meta meta) {
 	}
 	protected abstract void temporyChangeTableNameTo(String nm);
@@ -203,7 +203,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	
 	public final  SqlHandleResult handle(){
 		//获取表名称和KeyFilter
-		List<KeyFilter> kf = getKeyFilter();
+		List<RouterKeyFilter> kf = getKeyFilter();
 //		//设置表名称
 //		this.tableName = kf.first;
 		//返回结果
@@ -212,7 +212,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	
 	@RefLogger
 	Logger logger;
-	protected final SqlHandleResult getHandleResult(List<KeyFilter> kfList){
+	protected final SqlHandleResult getHandleResult(List<RouterKeyFilter> kfList){
 //		//这里只支持EQ
 //		if (kf==null) throw new RouterException("found null KeyFilter."+this.sqlString);
 //		if (kf.operator!=Operator.EQUAL)
@@ -227,7 +227,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			throw new TablesplitException("Table not configed in the router databse."+tableName);
 		
 		//转换为常亮值
-		KeyValueForAlgm[] keyValueArr = transformKeyFilterToConst(kfList);
+		RouterKeyFilter[] keyValueArr = kfList.toArray(new RouterKeyFilter[kfList.size()]);
 		//根据算法计算
 		DataSourceInfo[] algmResults;
 		
@@ -267,9 +267,9 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		}
 	}
 	
-	private DataSourceInfo[] getDataSourceInfosFromKeyValueArr(KeyValueForAlgm[] keyValueArr) {
+	private DataSourceInfo[] getDataSourceInfosFromKeyValueArr(RouterKeyFilter[] keyValueArr) {
 		if (keyValueArr.length==1){
-			KeyValueForAlgm keyValue = keyValueArr[0];
+			RouterKeyFilter keyValue = keyValueArr[0];
 			return getDataSourceInfosFromOneKeyFilter(keyValue);
 		}
 		
@@ -282,7 +282,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		return InSectUtil.computeInsect(metrix);
 	}
 	
-	private DataSourceInfo[] getDataSourceInfosFromOneKeyFilter(KeyValueForAlgm keyValue) {
+	private DataSourceInfo[] getDataSourceInfosFromOneKeyFilter(RouterKeyFilter keyValue) {
 		//根据情况调用不同接口
 		DataSourceInfo[] algmResults;
 		if (keyValue.getOperator()==Operator.EQUAL){
@@ -307,10 +307,10 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	 * @param where
 	 * @return
 	 */
-	protected final List<KeyFilter> getKeyFilterFromWhere(Expression where) {
+	protected final List<RouterKeyFilter> getKeyFilterFromWhere(Expression where) {
 		String colName =getTableCfg().getKeyField();
 		
-		List<KeyFilter> list = VisitorExpressionManager.getKeyFilterList(where, colName,this.parameters);
+		List<RouterKeyFilter> list = VisitorExpressionManager.getKeyFilterList(where, colName,this.parameters);
 		if (list==null || list.isEmpty())
 			return null;
 		else
@@ -330,26 +330,27 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		}
 	}
 
-	private KeyValueForAlgm[] transformKeyFilterToConst(List<KeyFilter> kf) {
-		KeyValueForAlgm[] arr = new KeyValueForAlgm[kf.size()];
-		for (int i=0;i<arr.length;i++){
-			arr[i] = transformKeyFilterToConst(kf.get(i));
-		}
-		return arr;
-	}
-	private KeyValueForAlgm transformKeyFilterToConst(KeyFilter kf) {
-		Object[] constValues = new Object[kf.value.length];
-		KeyValueForAlgm kvfa = new KeyValueForAlgm(kf.operator, constValues);
-		for (int i=0;i<kf.value.length;i++){
-			Value v = kf.value[i];
-			if (v!=null && v.isParamedKey){
-				if (v.keyParamIndex >= this.parameters.size()) 
-					throw new RouterException("param out of index. param len="+this.parameters.size());
-				kvfa.getConstValue()[i] = this.parameters.get(v.keyParamIndex);
-			}
-		}
-		return kvfa;
-	}
+//	private KeyValueForAlgm[] transformKeyFilterToConst(List<KeyValueForAlgm> kf) {
+//		return kf.toArray(new KeyValueForAlgm[kf.size()]);
+////		KeyValueForAlgm[] arr = new KeyValueForAlgm[kf.size()];
+////		for (int i=0;i<arr.length;i++){
+////			arr[i] = transformKeyFilterToConst(kf.get(i));
+////		}
+////		return arr;
+//	}
+//	private KeyValueForAlgm transformKeyFilterToConst(KeyFilter kf) {
+//		Object[] constValues = new Object[kf.value.length];
+//		KeyValueForAlgm kvfa = new KeyValueForAlgm(kf.operator, constValues);
+//		for (int i=0;i<kf.value.length;i++){
+//			Value v = kf.value[i];
+//			if (v!=null && v.isParamedKey){
+//				if (v.keyParamIndex >= this.parameters.size()) 
+//					throw new RouterException("param out of index. param len="+this.parameters.size());
+//				kvfa.getConstValue()[i] = this.parameters.get(v.keyParamIndex);
+//			}
+//		}
+//		return kvfa;
+//	}
 
 	private TableConfig getTableCfg() {
 		if (this.tableConfig != null)
