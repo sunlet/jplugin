@@ -30,6 +30,8 @@ import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.CountStarWrapper;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedPreparedStatement extends CombinedStatement implements PreparedStatement{
 
@@ -68,13 +70,16 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 		ResultSetList temp = genResultSetListFromStatementList(sqlParseResult);
 		
 		//根据count(*)模式返回不同的值
-		if (sqlParseResult.getMeta().getCountStar()==1){
-			this.theResultSet = new ResultSetForCount(temp);
-			return this.theResultSet;
-		}else{
-			this.theResultSet = temp;
-			return theResultSet;
-		}
+		this.theResultSet =  WrapperManager.INSTANCE.wrap(temp);
+		return this.theResultSet;
+		
+//		if (sqlParseResult.getMeta().getCountStar()==1){
+//			this.theResultSet = new CountStarWrapper(temp);
+//			return this.theResultSet;
+//		}else{
+//			this.theResultSet = temp;
+//			return theResultSet;
+//		}
 	}
 
 	private ResultSetList genResultSetListFromStatementList(ParseResult pr) {

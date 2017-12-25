@@ -16,6 +16,7 @@ import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
 import net.jplugin.core.das.route.api.RouterException;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.RouterConnectionCallContext;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
@@ -254,7 +255,11 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			CombinedSqlParser.Meta meta = new CombinedSqlParser.Meta();
 			meta.setSourceTb(tableName);
 			meta.setDataSourceInfos(algmResults);
+			
+			RouterConnectionCallContext.setStatement(this.statement);
 			maintainSqlMeta(meta);//维护OrderBy，count 
+			RouterConnectionCallContext.setMeta(meta);
+			
 			String newSql = CombinedSqlParser.combine(sqlString, meta);
 			result.setResultSql(newSql);
 			result.setTargetDataSourceName(CombinedSqlParser.SPANALL_DATASOURCE);
@@ -305,7 +310,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	protected final List<KeyFilter> getKeyFilterFromWhere(Expression where) {
 		String colName =getTableCfg().getKeyField();
 		
-		List<KeyFilter> list = VisitorExpressionManager.getKeyFilterList(where, colName);
+		List<KeyFilter> list = VisitorExpressionManager.getKeyFilterList(where, colName,this.parameters);
 		if (list==null || list.isEmpty())
 			return null;
 		else

@@ -1,6 +1,7 @@
 package test.net.jplugin.core.das.route;
 
 import net.jplugin.core.das.ExtensionDasHelper;
+import net.jplugin.core.das.route.ExtensionDasRouteHelper;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import test.net.jplugin.core.das.route.date.DateTest;
@@ -12,6 +13,7 @@ import test.net.jplugin.core.das.route.stringint.UpdateTest;
 import test.net.jplugin.core.das.route.where.InSectUtilTest;
 import test.net.jplugin.core.das.route.where.VisitorExpressionManagerTest;
 import test.net.jplugin.core.das.route.where.WhereExpressionVisitorTest;
+import test.net.jplugin.core.das.route.where.funcs.MytestFunctionHandler;
 
 public class Plugin extends AbstractPluginForTest {
 
@@ -22,6 +24,8 @@ public class Plugin extends AbstractPluginForTest {
 //		ExtensionDasHelper.addDataSourceExtension(this,"router-ds-2" , "router-ds-2");
 		
 		ExtensionDasHelper.addSqlListenerExtension(this, SqlMonitorListenerTest.class);
+		
+		ExtensionDasRouteHelper.addSqlFunctionExtension(this,"Mytest",MytestFunctionHandler.class);
 	}
 	
 	

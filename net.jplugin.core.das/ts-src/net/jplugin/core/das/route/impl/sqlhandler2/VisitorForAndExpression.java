@@ -6,6 +6,7 @@ import java.util.List;
 import net.jplugin.core.das.route.api.KeyValueForAlgm.Operator;
 import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.KeyFilter;
 import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.Value;
+import net.jplugin.core.das.route.impl.util.ConstValueExpressionKit;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnalyticExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
@@ -77,6 +78,7 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 //	private KeyFilter keyFilter;
 //	private List<Expression> keyExpressions;
 	private String keyColumnName;
+	private List<Object> parameters;
 	Value left = null;
 	Value right = null;
 	Value eq = null;
@@ -85,8 +87,10 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 	//计算的同时得到OrRoots
 	List<Expression> otherIntersectExpressions = null;
 
-	public VisitorForAndExpression(String keyColName) {
+
+	public VisitorForAndExpression(String keyColName, List<Object> aParameters) {
 		this.keyColumnName = keyColName;
+		this.parameters = aParameters;
 	}
 	
 	/**
@@ -180,6 +184,9 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 	public void visit(MinorThanEquals e) {
 		checkAndAddRight(e.getLeftExpression(),e.getRightExpression());
 	}
+	@Override
+	public void visit(Function function) {
+	}
 
 
 	private void checkAndAddIn(Expression leftExpression, ItemsList rightItemsList) {
@@ -206,35 +213,31 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 	}
 	private Value tryComputeValue(Expression item) {
 		Value v = new Value();
-		if (item instanceof StringValue){
+		Object constv = ConstValueExpressionKit.tryGetConstValue(item);
+		
+		if (constv!=null){
 			v.isParamedKey = false;
-			v.keyConstValue = ((StringValue)item).getValue();
+			v.keyConstValue = constv;
 			return v;
-		}else if (item instanceof LongValue){
-			v.isParamedKey = false;
-			v.keyConstValue = ((LongValue)item).getValue();
-			return v;
-		}else if (item instanceof DoubleValue){
-			v.isParamedKey = false;
-			v.keyConstValue = ((DoubleValue)item).getValue();
-			return v;
-		}else if (item instanceof JdbcParameter){
+		}
+		
+		if (item instanceof JdbcParameter){
 			v.isParamedKey = true;
 			v.keyParamIndex = ((JdbcParameter)item).getIndex()-1;
 			return v;
-		}else if (item instanceof DateValue){
-			v.isParamedKey = false;
-			v.keyConstValue = ((DateValue)item).getValue();
-			return v;
-		}else if (item instanceof TimeValue){
-			v.isParamedKey = false;
-			v.keyConstValue = ((TimeValue)item).getValue();
-			return v;
-		}else if (item instanceof TimestampValue){	
-			v.isParamedKey = false;
-			v.keyConstValue = ((TimestampValue)item).getValue();
-			return v;
 		}
+		
+		if (item instanceof Function){
+			Object o = FunctionEvalueManager.evalueNonStrickly(item,this.parameters);
+			if (o!=null){
+				v.isParamedKey = false;
+				v.keyConstValue = o;
+				return v;
+			}else{
+				return null;
+			}
+		}
+		
 		return null;
 	}
 
@@ -285,9 +288,6 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 	public void visit(NullValue nullValue) {
 	}
 
-	@Override
-	public void visit(Function function) {
-	}
 
 	@Override
 	public void visit(SignedExpression signedExpression) {

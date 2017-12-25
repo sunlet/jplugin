@@ -102,10 +102,10 @@ public class VisitorExpressionManagerTest {
 
 	private List<KeyFilter> parse(String sql,String key) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
-		VisitorForAndExpression wev = new VisitorForAndExpression(key);
+		VisitorForAndExpression wev = new VisitorForAndExpression(key,null);
 		Statement stmt = pm.parse(new StringReader(sql));
 		Expression where = ((PlainSelect)((Select)stmt).getSelectBody()).getWhere();
-		return VisitorExpressionManager.getKeyFilterList(where, key);
+		return VisitorExpressionManager.getKeyFilterList(where, key,null);
 	}
 	public static void main(String[] args) throws JSQLParserException {
 		new VisitorExpressionManagerTest().test();

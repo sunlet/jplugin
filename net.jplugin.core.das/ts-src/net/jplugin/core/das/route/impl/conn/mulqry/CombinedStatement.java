@@ -13,6 +13,8 @@ import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.conn.EmptyStatement;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.CountStarWrapper;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedStatement extends EmptyStatement{
 	List<Statement> statementList = new ArrayList();
@@ -40,13 +42,16 @@ public class CombinedStatement extends EmptyStatement{
 		ResultSetList resutSet = genResultSetList(pr);
 		
 		//根据count(*)模式返回不同的值
-		if (pr.getMeta().getCountStar()==1){
-			this.theResultSet = new ResultSetForCount(resutSet);
-			return this.theResultSet;
-		}else{
-			this.theResultSet = resutSet;
-			return theResultSet;
-		}
+		this.theResultSet =  WrapperManager.INSTANCE.wrap(resutSet);
+		return this.theResultSet;
+//		
+//		if (pr.getMeta().getCountStar()==1){
+//			this.theResultSet = new CountStarWrapper(resutSet);
+//			return this.theResultSet;
+//		}else{
+//			this.theResultSet = resutSet;
+//			return theResultSet;
+//		}
 	}
 	
 	private ResultSetList genResultSetList(ParseResult pr) throws SQLException {

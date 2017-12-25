@@ -80,11 +80,17 @@ public class WhereExpressionVisitorTest {
 		sql = "select * from TB where f1>1 and f1<2  or  f1 in (1,2,?)";
 		kf = parse(sql,"TB","f1");
 		AssertKit.assertEqual(kf,null);
+		
+		sql = "select * from TB where f1=Mytest(1,2,3)";
+		kf = parse(sql,"TB","f1");
+		AssertKit.assertEqual(kf.operator, Operator.EQUAL);
+		AssertKit.assertEqual(kf.value[0].keyConstValue, 6L);
+		AssertKit.assertEqual(kf.value[0].isParamedKey, false);
 	}
 
 	private KeyFilter parse(String sql,String tb,String key) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
-		VisitorForAndExpression wev = new VisitorForAndExpression(key);
+		VisitorForAndExpression wev = new VisitorForAndExpression(key,null);
 		Statement stmt = pm.parse(new StringReader(sql));
 		((PlainSelect)((Select)stmt).getSelectBody()).getWhere().accept(wev);
 		return wev.getKnownFilter();

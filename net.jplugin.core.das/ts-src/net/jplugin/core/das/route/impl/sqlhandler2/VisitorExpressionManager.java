@@ -10,8 +10,8 @@ import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2.Value
 import net.sf.jsqlparser.expression.Expression;
 
 public class VisitorExpressionManager {
-	public static List<KeyFilter> getKeyFilterList(Expression where,String fieldName){
-		VisitorForAndExpression andVisitor = new VisitorForAndExpression(fieldName);
+	public static List<KeyFilter> getKeyFilterList(Expression where,String fieldName, List<Object> parameters){
+		VisitorForAndExpression andVisitor = new VisitorForAndExpression(fieldName,parameters);
 		where.accept(andVisitor);
 		
 		//如果不需要继续找交集列表，则直接返回

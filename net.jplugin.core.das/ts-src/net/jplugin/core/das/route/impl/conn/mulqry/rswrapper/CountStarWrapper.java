@@ -1,4 +1,4 @@
-package net.jplugin.core.das.route.impl.conn.mulqry;
+package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -22,10 +22,12 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-public class ResultSetForCount extends EmptyQueryableResultSet{
+import net.jplugin.core.das.route.impl.conn.mulqry.EmptyQueryableResultSet;
+
+public class CountStarWrapper extends EmptyQueryableResultSet{
 	ResultSet list;
 	
-	ResultSetForCount(ResultSet l){
+	public CountStarWrapper(ResultSet l){
 		this.list = l;
 	}
 	
@@ -74,7 +76,7 @@ public class ResultSetForCount extends EmptyQueryableResultSet{
 	public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
 		return new BigDecimal(count);
 	}
-
+	
 	public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
 		return new BigDecimal(count);
 	}
