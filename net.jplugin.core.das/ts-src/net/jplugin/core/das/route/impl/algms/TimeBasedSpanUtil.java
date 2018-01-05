@@ -76,9 +76,12 @@ public class TimeBasedSpanUtil {
 		if (leftValue==null){
 			right = convetToLoalDate(valueType,rightValue);
 			left = dm.maintain(right, trackDays);
-		}else{
+		}else if (rightValue==null){
 			left = convetToLoalDate(valueType,leftValue);
 			right = dm.maintain(left, -trackDays);
+		}else{
+			left = convetToLoalDate(valueType,leftValue);
+			right = convetToLoalDate(valueType,rightValue);
 		}
 		
 		List<LocalDateTime> list = new ArrayList();
