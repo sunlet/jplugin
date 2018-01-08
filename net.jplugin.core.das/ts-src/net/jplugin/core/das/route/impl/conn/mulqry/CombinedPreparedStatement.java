@@ -89,6 +89,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 			for (Statement st:this.statementList){
 				tempList.add(((PreparedStatement)st).executeQuery());
 			}
+//			makeWrapperForDebug(tempList);
 			//制造结果
 			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
 			return ret;
@@ -103,6 +104,24 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 			else throw new TablesplitException(e.getMessage(),e);
 		}
 	}
+	private void makeWrapperForDebug(List<ResultSet> list) {
+		List<ResultSet> tempList= new ArrayList(list.size());
+		tempList.addAll(list);
+		list.clear();
+		
+		for (int i=0;i<tempList.size();i++){
+			list.add(new ResultWrapperForDebug(tempList.get(i)));
+		}
+	}
+
+	private int getSize(ResultSet rs) throws SQLException {
+		int size =0;
+		while(rs.next()){
+			size++;
+		}
+		return size;
+	}
+
 	@Override
 	public int executeUpdate() throws SQLException {
 		throw new TablesplitException("not support");

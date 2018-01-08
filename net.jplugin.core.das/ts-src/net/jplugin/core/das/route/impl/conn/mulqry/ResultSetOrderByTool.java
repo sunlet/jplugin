@@ -7,7 +7,7 @@ import java.sql.Types;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.PriorityQueue;
 
 import net.jplugin.core.das.route.api.TablesplitException;
 
@@ -15,7 +15,8 @@ public class ResultSetOrderByTool {
 	enum OrderColumnType{STRING,BIGINTEGER,BIGDECIMAL,SQLDATE,SQLTIME,SQLTIMESTAMP}
 	enum Direction{ASC,DESC}
 	ColumnMeta[] columnMetas;
-	TreeSet<OrderComparor> comparorSet;
+//	TreeSet<OrderComparor> comparorSet;
+	PriorityQueue<OrderComparor> comparorQueue;
 	
 	public ResultSetOrderByTool(List<String> orderParam, ResultSet aResultSet) {
 		//下面初始化columnMetas
@@ -28,7 +29,7 @@ public class ResultSetOrderByTool {
 		}
 		//下面初始化comparorSet
 		if (orderParam!=null && orderParam.size()>0)
-			comparorSet = new TreeSet<OrderComparor>(new Comparator<OrderComparor>() {
+			comparorQueue = new PriorityQueue<OrderComparor>(new Comparator<OrderComparor>() {
 				@Override
 				public int compare(OrderComparor o1, OrderComparor o2) {
 					return doCompare(o1.getComparorValue(),o2.getComparorValue(),columnMetas);
@@ -55,7 +56,7 @@ public class ResultSetOrderByTool {
 				}
 			});
 		else 
-			comparorSet = new TreeSet<OrderComparor>(new Comparator<OrderComparor>() {
+			comparorQueue = new PriorityQueue<OrderComparor>(new Comparator<OrderComparor>() {
 				@Override
 				public int compare(OrderComparor o1, OrderComparor o2) {
 					return o1.rsIndex - o2.rsIndex;
@@ -168,7 +169,8 @@ public class ResultSetOrderByTool {
 
 	//取出
 	public OrderComparor pollFirst(){
-		return comparorSet.pollFirst();
+//		return comparorSet.pollFirst();
+		return comparorQueue.poll();
 	}
 	
 	//放入
@@ -176,7 +178,7 @@ public class ResultSetOrderByTool {
 		try{
 			//放入，重新排序
 			update(oc,rs);
-			comparorSet.add(oc);
+			comparorQueue.add(oc);
 		}catch(SQLException s){
 			throw new TablesplitException(s.getMessage(),s);
 		}

@@ -45,7 +45,7 @@ public class TimeBasedSpanUtil {
 			ValueType valueType, Object[] value, ChronoUnit unit) {
 		LocalDateTime[] arr = new LocalDateTime[value.length];
 		for(int i=0;i<arr.length;i++){
-			arr[i] = convetToLoalDate(valueType,value[0]);
+			arr[i] = convetToLoalDate(valueType,value[i]);
 		}
 		
 		return getFromTimeList(algm, dataSource, tableName, arr);
