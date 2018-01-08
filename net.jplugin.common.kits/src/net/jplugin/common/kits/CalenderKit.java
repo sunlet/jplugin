@@ -54,6 +54,16 @@ public class CalenderKit {
 			throw new RuntimeException("parse error:"+timeString);
 		}
 	}
+	
+	public static Date getTimeFromString(String timeString,String patten) {
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.applyPattern(patten);
+		try {
+			return sdf.parse(timeString);
+		} catch (ParseException e) {
+			throw new RuntimeException("parse error:"+timeString);
+		}
+	}
 	public static String getDateString(long timeLong) {
 		return getFormatedTimeString(timeLong, date_pattern);
 	}
