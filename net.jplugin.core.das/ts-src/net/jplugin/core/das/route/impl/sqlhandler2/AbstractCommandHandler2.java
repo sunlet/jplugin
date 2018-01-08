@@ -297,6 +297,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 
 	private DataSourceInfo[] convertToOneDataSourceInfo(Result result) {
 		DataSourceInfo[] dsi = new DataSourceInfo[1];
+		dsi[0] = new DataSourceInfo();
 		dsi[0].setDsName(result.getDataSource());
 		dsi[0].setDestTbs(new String[]{result.getTableName()});
 		return dsi;
