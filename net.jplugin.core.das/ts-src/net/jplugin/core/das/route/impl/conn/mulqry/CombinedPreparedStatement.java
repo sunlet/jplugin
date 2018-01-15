@@ -29,28 +29,35 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
-import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.CountStarWrapper;
+import net.jplugin.core.das.route.impl.CombinedSqlContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedPreparedStatement extends CombinedStatement implements PreparedStatement{
 
-	ParseResult sqlParseResult;
+//	ParseResult sqlParseResult;
+	
+	private CombinedSqlContext sqlExeContext;
+
 	public CombinedPreparedStatement(Connection conn, String sql){
 		super(conn);
 		//解析
-		sqlParseResult = CombinedSqlParser.parse(sql);
+//		sqlParseResult = CombinedSqlParser.parseAndMakeContext(sql);
+		sqlExeContext = CombinedSqlParser.parseAndMakeContext(sql);
 		//产生statement 列表
-		fillStatementList(sqlParseResult);
+		fillStatementList();
 	}
 	
-	private void fillStatementList(ParseResult pr){
+	private void fillStatementList(){
 		try{
-			for (DataSourceInfo dsi:pr.getMeta().getDataSourceInfos()){
+			DataSourceInfo[] dataSourceInfos = this.sqlExeContext.getDataSourceInfos();
+			String sqlToExecute = this.sqlExeContext.getFinalSql();
+			String sourceTableToReplace = this.sqlExeContext.getOriginalTableName();//后面会修改
+			
+			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				//每一个表都获取一个Statement，并不重用
 				for (String destTbName:dsi.getDestTbs()){
-					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(pr.getSql(), pr.getMeta().getSourceTb(), destTbName));
+					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(sqlToExecute,sourceTableToReplace, destTbName));
 					statementList.add(stmt);
 				}
 			}
@@ -67,7 +74,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 
 	@Override
 	public ResultSet executeQuery() throws SQLException {
-		ResultSetList temp = genResultSetListFromStatementList(sqlParseResult);
+		ResultSetList temp = genResultSetListFromStatementList();
 		
 		//根据count(*)模式返回不同的值
 		this.theResultSet =  WrapperManager.INSTANCE.wrap(temp);
@@ -82,7 +89,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 //		}
 	}
 
-	private ResultSetList genResultSetListFromStatementList(ParseResult pr) {
+	private ResultSetList genResultSetListFromStatementList() {
 		List<ResultSet> tempList = new ArrayList<ResultSet>();
 		try{
 			//逐个执行查询
@@ -91,7 +98,8 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 			}
 //			makeWrapperForDebug(tempList);
 			//制造结果
-			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
+//			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
+			ResultSetList ret = new ResultSetList(this,tempList,this.sqlExeContext);
 			return ret;
 		}catch(Exception e){
 			//发生异常的情况下，statement 会在本statement关闭的时候关闭，但是resultSet不会，需要处理一下

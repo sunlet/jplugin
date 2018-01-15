@@ -27,8 +27,13 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.CombinedSqlContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.das.route.impl.conn.mulqry.ResultSetOrderByTool.OrderComparor;
+import net.jplugin.core.das.route.impl.util.SelectSqlKit;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
 
 /**
  * 实现一个类型为 ResultSet.TYPE_FORWARD_ONLY的ResultSet
@@ -48,12 +53,32 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	private ResultSetMetaData metadata;
 	
 	
-	ResultSetList(Statement s, List<ResultSet> rsList, List<String> orderParam){
+	ResultSetList(Statement s, List<ResultSet> rsList, CombinedSqlContext combindSqlContext){
 		this.stmt = s;
 		this.list.addAll(rsList);
-		prepareFetch(orderParam);
+		prepareFetch(getOrderParam(combindSqlContext));
 	}
 	
+	private List<String> getOrderParam(CombinedSqlContext ctx) {
+		net.sf.jsqlparser.statement.Statement jsqlStatement = ctx.getStatement();
+		PlainSelect inner = SelectSqlKit.getMostInnerSelect((Select) jsqlStatement, ctx.getOriginalSql());
+
+		//获取select列表
+		List<OrderByElement> orderby = inner.getOrderByElements();
+		if (orderby==null || orderby.size()==0) 
+			return null;
+		ArrayList<String> ret = new ArrayList<>();
+		for (int i=0;i<orderby.size();i++){
+			if (i!=0) ret.add(",");
+			OrderByElement obe = orderby.get(i);
+			String[] arrs = obe.toString().split(" ");
+			for (String e:arrs){
+				ret.add(e);
+			}
+		}
+		return ret;
+	}
+
 	public List<ResultSet> getList(){
 		return this.list;
 	}

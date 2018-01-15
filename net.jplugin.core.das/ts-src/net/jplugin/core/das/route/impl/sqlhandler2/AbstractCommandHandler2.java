@@ -2,97 +2,28 @@ package net.jplugin.core.das.route.impl.sqlhandler2;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import net.jplugin.common.kits.ObjectKit;
-import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
+import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
+import net.jplugin.core.das.route.api.RouterException;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
-import net.jplugin.core.das.route.api.RouterException;
-import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.RouterConnectionCallContext;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
-import net.sf.jsqlparser.expression.AllComparisonExpression;
-import net.sf.jsqlparser.expression.AnalyticExpression;
-import net.sf.jsqlparser.expression.AnyComparisonExpression;
-import net.sf.jsqlparser.expression.CaseExpression;
-import net.sf.jsqlparser.expression.CastExpression;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
-import net.sf.jsqlparser.expression.DateValue;
-import net.sf.jsqlparser.expression.DoubleValue;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.ExpressionVisitor;
-import net.sf.jsqlparser.expression.ExtractExpression;
-import net.sf.jsqlparser.expression.Function;
-import net.sf.jsqlparser.expression.HexValue;
-import net.sf.jsqlparser.expression.IntervalExpression;
-import net.sf.jsqlparser.expression.JdbcNamedParameter;
-import net.sf.jsqlparser.expression.JdbcParameter;
-import net.sf.jsqlparser.expression.JsonExpression;
-import net.sf.jsqlparser.expression.KeepExpression;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.MySQLGroupConcat;
-import net.sf.jsqlparser.expression.NotExpression;
-import net.sf.jsqlparser.expression.NullValue;
-import net.sf.jsqlparser.expression.NumericBind;
-import net.sf.jsqlparser.expression.OracleHierarchicalExpression;
-import net.sf.jsqlparser.expression.OracleHint;
-import net.sf.jsqlparser.expression.Parenthesis;
-import net.sf.jsqlparser.expression.RowConstructor;
-import net.sf.jsqlparser.expression.SignedExpression;
-import net.sf.jsqlparser.expression.StringValue;
-import net.sf.jsqlparser.expression.TimeKeyExpression;
-import net.sf.jsqlparser.expression.TimeValue;
-import net.sf.jsqlparser.expression.TimestampValue;
-import net.sf.jsqlparser.expression.UserVariable;
-import net.sf.jsqlparser.expression.WhenClause;
-import net.sf.jsqlparser.expression.WithinGroupExpression;
-import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
-import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
-import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseOr;
-import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseXor;
-import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
-import net.sf.jsqlparser.expression.operators.arithmetic.Division;
-import net.sf.jsqlparser.expression.operators.arithmetic.Modulo;
-import net.sf.jsqlparser.expression.operators.arithmetic.Multiplication;
-import net.sf.jsqlparser.expression.operators.arithmetic.Subtraction;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
-import net.sf.jsqlparser.expression.operators.relational.Between;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
-import net.sf.jsqlparser.expression.operators.relational.ExistsExpression;
-import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
-import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
-import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
-import net.sf.jsqlparser.expression.operators.relational.JsonOperator;
-import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
-import net.sf.jsqlparser.expression.operators.relational.Matches;
-import net.sf.jsqlparser.expression.operators.relational.MinorThan;
-import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
-import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
-import net.sf.jsqlparser.expression.operators.relational.RegExpMatchOperator;
-import net.sf.jsqlparser.expression.operators.relational.RegExpMySQLOperator;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
 
 public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
@@ -196,8 +127,8 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	 * @return
 	 */
 	protected abstract List<RouterKeyFilter> getKeyFilter();
-	protected void maintainSqlMeta(Meta meta) {
-	}
+//	protected void maintainSqlMeta(Meta meta) {
+//	}
 	protected abstract void temporyChangeTableNameTo(String nm);
 	
 	
@@ -256,9 +187,9 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			meta.setSourceTb(tableName);
 			meta.setDataSourceInfos(algmResults);
 			
-			RouterConnectionCallContext.setStatement(this.statement);
-			maintainSqlMeta(meta);//维护OrderBy，count 
-			RouterConnectionCallContext.setMeta(meta);
+//			RouterConnectionCallContext.setStatement(this.statement);
+//			maintainSqlMeta(meta);//维护OrderBy，count 
+//			RouterConnectionCallContext.setMeta(meta);
 			
 			String newSql = CombinedSqlParser.combine(sqlString, meta);
 			result.setResultSql(newSql);
