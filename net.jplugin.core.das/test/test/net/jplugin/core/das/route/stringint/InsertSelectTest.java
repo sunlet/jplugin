@@ -150,6 +150,8 @@ public class InsertSelectTest {
 				AssertKit.assertEqual(6, getCount(conn,"select count(*) from tb_route1 where f3='a'"));
 			}
 		});
+		
+		new LimitTest().test();
 	}
 
 	private void print(List<Map<String, String>> list) {

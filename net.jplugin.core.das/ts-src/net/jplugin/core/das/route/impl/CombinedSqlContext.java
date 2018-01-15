@@ -6,6 +6,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Limit;
+import net.sf.jsqlparser.statement.select.Select;
 
 public class CombinedSqlContext extends AttributedObject {
 	private static final String COMBINED_SQL_CONTEXT = "COMBINED_SQL_CONTEXT";
@@ -22,7 +23,7 @@ public class CombinedSqlContext extends AttributedObject {
 	/**
 	 * statement，最终的，中间如果要修改直接修改。最后拿statement生成 finalSql
 	 */
-	private Statement statement;
+	private Select statement;
 	/**
 	 * 最后的sql
 	 */
@@ -45,11 +46,11 @@ public class CombinedSqlContext extends AttributedObject {
 		this.originalSql = originalSql;
 	}
 
-	public Statement getStatement() {
+	public Select getStatement() {
 		return statement;
 	}
 
-	public void setStatement(Statement statement) {
+	public void setStatement(Select statement) {
 		this.statement = statement;
 	}
 

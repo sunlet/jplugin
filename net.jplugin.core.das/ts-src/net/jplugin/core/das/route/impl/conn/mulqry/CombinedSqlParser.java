@@ -11,6 +11,7 @@ import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.Select;
 
 public class CombinedSqlParser {
 	public static final String SPANALL_DATASOURCE = "##SPANALL##";
@@ -66,7 +67,7 @@ public class CombinedSqlParser {
 			throw new RuntimeException("sql parse error:"+originalSql);
 		}
 		
-		ctx.setStatement(statement);
+		ctx.setStatement((Select) statement);
 		WrapperManager.INSTANCE.handleContextInitial(ctx);
 		ctx.setFinalSql(ctx.getStatement().toString());//设置最终sql
 		
