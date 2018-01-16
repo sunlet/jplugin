@@ -68,7 +68,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 				}catch(Exception e1){}
 			}
 			statementList.clear();
-			throw new TablesplitException(e.getMessage(),e);
+			throw new TablesplitException(e.getMessage() + "  "+ CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 				}catch(Exception e1){}
 			}
 			if (e instanceof RuntimeException) throw (RuntimeException)e;
-			else throw new TablesplitException(e.getMessage(),e);
+			else throw new TablesplitException(e.getMessage() + "  "+ CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
 	private void makeWrapperForDebug(List<ResultSet> list) {

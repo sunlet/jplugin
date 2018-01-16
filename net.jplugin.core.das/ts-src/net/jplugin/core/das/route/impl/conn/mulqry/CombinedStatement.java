@@ -80,7 +80,7 @@ public class CombinedStatement extends EmptyStatement{
 				}catch(Exception e1){}
 			}
 			if (e instanceof RuntimeException) throw (RuntimeException)e;
-			else throw new TablesplitException(e.getMessage(),e);
+			else throw new TablesplitException(e.getMessage()+" sql="+ CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
 
