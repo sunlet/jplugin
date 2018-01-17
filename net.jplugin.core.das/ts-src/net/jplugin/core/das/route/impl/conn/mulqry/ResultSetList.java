@@ -61,7 +61,9 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	
 	private List<String> getOrderParam(CombinedSqlContext ctx) {
 		net.sf.jsqlparser.statement.Statement jsqlStatement = ctx.getStatement();
-		PlainSelect inner = SelectSqlKit.getMostInnerSelect((Select) jsqlStatement, ctx.getOriginalSql());
+		//获取外层语句的orderby，而不是内层
+//		PlainSelect inner = SelectSqlKit.getMostInnerSelect((Select) jsqlStatement, ctx.getOriginalSql());
+		PlainSelect inner = (PlainSelect) ((Select) jsqlStatement).getSelectBody();
 
 		//获取select列表
 		List<OrderByElement> orderby = inner.getOrderByElements();
