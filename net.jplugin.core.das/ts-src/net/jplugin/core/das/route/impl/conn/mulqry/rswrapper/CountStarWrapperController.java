@@ -21,9 +21,6 @@ public class CountStarWrapperController implements WrapperController{
 
 	@Override
 	public boolean needWrap() {
-//		CombinedSqlParser.Meta meta = (Meta) RouterConnectionCallContext.getMeta();
-//		return meta.getCountStar()==Meta.COUNG_STAR_YES;
-
 		CombinedSqlContext ctx = CombinedSqlContext.get();
 		Object flag = ctx.getAttribute(COUNT_STAR);
 		return (flag!=null && (boolean)flag);
