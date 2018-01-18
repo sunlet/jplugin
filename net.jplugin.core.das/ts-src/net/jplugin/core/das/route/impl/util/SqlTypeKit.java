@@ -41,7 +41,7 @@ TIMESTAMP 	java.sql.Timestamp
  */
 public class SqlTypeKit {
 	
-	public static Transformer service = new CommonTransformer();
+	public static Transformer<Object> service = new CommonTransformer();
 	
 	private static Map<Class, Transformer> transformers = new HashMap<Class, Transformer>();
 
@@ -66,7 +66,7 @@ public class SqlTypeKit {
 		if (c==Double.class || c==double.class)
 			return (T)t.getDouble(obj);
 		if (c==BigDecimal.class)
-			return (T)t.getBigDecimal(obj,0);//??????
+			return (T)t.getBigDecimal(obj);
 		if (c==byte[].class)
 			return (T)t.getBytes(obj);
 		if (c==Date.class)
@@ -80,7 +80,7 @@ public class SqlTypeKit {
 		throw new SQLException("not supported class:"+c.getName());
 	}
 
-	private static class CommonTransformer implements Transformer {
+	private static class CommonTransformer implements Transformer<Object> {
 
 		Transformer get(Object o) throws SQLException {
 			Transformer t = transformers.get(o.getClass());
@@ -131,8 +131,8 @@ public class SqlTypeKit {
 		}
 
 		@Override
-		public BigDecimal getBigDecimal(Object o, int scale) throws SQLException {
-			return get(o).getBigDecimal(o,scale);
+		public BigDecimal getBigDecimal(Object o) throws SQLException {
+			return get(o).getBigDecimal(o);
 		}
 
 		@Override
@@ -294,7 +294,7 @@ public class SqlTypeKit {
 		}
 
 		@Override
-		public BigDecimal getBigDecimal(byte[] o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(byte[] o) throws SQLException {
 			throw new RuntimeException("not support");
 		}
 
@@ -337,7 +337,7 @@ public class SqlTypeKit {
 
 	private static class FromBigDecimalTransformer extends BasicNumicaTransformer<BigDecimal> {
 		@Override
-		public BigDecimal getBigDecimal(BigDecimal o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(BigDecimal o) throws SQLException {
 			return o;
 		}
 	}
@@ -345,7 +345,7 @@ public class SqlTypeKit {
 	private static class FromDoubleTransformer extends BasicNumicaTransformer<Double> {
 
 		@Override
-		public BigDecimal getBigDecimal(Double o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Double o) throws SQLException {
 			return new BigDecimal(o);
 		}
 
@@ -354,7 +354,7 @@ public class SqlTypeKit {
 	private static class FromFloatTransformer extends BasicNumicaTransformer<Float> {
 
 		@Override
-		public BigDecimal getBigDecimal(Float o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Float o) throws SQLException {
 			return new BigDecimal(o);
 		}
 
@@ -363,7 +363,7 @@ public class SqlTypeKit {
 	private static class FromLongTransformer extends BasicNumicaTransformer<Long> {
 
 		@Override
-		public BigDecimal getBigDecimal(Long o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Long o) throws SQLException {
 			return new BigDecimal(o);
 		}
 
@@ -372,7 +372,7 @@ public class SqlTypeKit {
 	static class FromIntTransformer extends BasicNumicaTransformer<Integer> {
 
 		@Override
-		public BigDecimal getBigDecimal(Integer o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Integer o) throws SQLException {
 			return new BigDecimal(o);
 		}
 
@@ -381,7 +381,7 @@ public class SqlTypeKit {
 	static class FromByteTransformer extends BasicNumicaTransformer<Byte> {
 
 		@Override
-		public BigDecimal getBigDecimal(Byte o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Byte o) throws SQLException {
 			return new BigDecimal(o);
 		}
 
@@ -389,7 +389,7 @@ public class SqlTypeKit {
 
 	static class FromShortTransformer extends BasicNumicaTransformer<Byte> {
 		@Override
-		public BigDecimal getBigDecimal(Byte o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Byte o) throws SQLException {
 			return new BigDecimal(o);
 		}
 	}
@@ -437,7 +437,7 @@ public class SqlTypeKit {
 		}
 
 		@Override
-		public BigDecimal getBigDecimal(Boolean o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(Boolean o) throws SQLException {
 			throw new SQLException("not support.");
 		}
 
@@ -521,7 +521,7 @@ public class SqlTypeKit {
 		}
 
 		@Override
-		public BigDecimal getBigDecimal(String o, int scale) throws SQLException {
+		public BigDecimal getBigDecimal(String o) throws SQLException {
 			return BigDecimal.valueOf(Double.parseDouble(o));
 		}
 
@@ -611,7 +611,7 @@ public class SqlTypeKit {
 		}
 
 		@Override
-		public final BigDecimal getBigDecimal(T o, int scale) throws SQLException {
+		public final BigDecimal getBigDecimal(T o) throws SQLException {
 			throw new SQLException("not support");
 		}
 
@@ -734,7 +734,7 @@ interface Transformer<T> {
 
 	public Double getDouble(T o) throws SQLException;
 
-	public BigDecimal getBigDecimal(T o, int scale) throws SQLException;
+	public BigDecimal getBigDecimal(T o) throws SQLException;
 
 	public byte[] getBytes(T o) throws SQLException;
 

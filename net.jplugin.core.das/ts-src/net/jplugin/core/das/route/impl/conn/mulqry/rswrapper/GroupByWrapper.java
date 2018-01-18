@@ -19,10 +19,14 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import net.jplugin.core.das.route.impl.conn.mulqry.EmptyQueryableResultSet;
+import net.jplugin.core.das.route.impl.util.BaseResultSetRow;
+import net.sf.jsqlparser.expression.Expression;
 
 /**
  * 
@@ -35,418 +39,258 @@ import net.jplugin.core.das.route.impl.conn.mulqry.EmptyQueryableResultSet;
  * @author LiuHang
  *
  */
-public class GroupByWrapper extends EmptyQueryableResultSet{
-	ResultSet list;
-	
-	public GroupByWrapper(ResultSet l){
-		this.list = l;
-	}
-	
-	long count = -1;
+public class GroupByWrapper extends BaseResultSetRow{
+	ResultSet inner;
 
-	public boolean next() throws SQLException {
-		if (count == -1){
-			long temp = 0;
-			while(list.next()){
-				temp += list.getLong(1);
-			}
-			count = temp;
-			return true;
-		}else
-			return false;
-	}
-	
-	public byte getByte(int columnIndex) throws SQLException {
-		return (byte) count;
-	}
-
-	public short getShort(int columnIndex) throws SQLException {
-		return (short) count;
-	}
-
-	public int getInt(int columnIndex) throws SQLException {
-		return (int) count;
-	}
-
-	public long getLong(int columnIndex) throws SQLException {
-		return count;
-	}
-
-	public float getFloat(int columnIndex) throws SQLException {
-		return count;
-	}
-
-	public double getDouble(int columnIndex) throws SQLException {
-		return count;
-	}
-
-	public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-		return new BigDecimal(count);
-	}
-
-	public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-		return new BigDecimal(count);
-	}
-	
-	public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-		return new BigDecimal(count);
-	}
-	public Object getObject(int columnIndex) throws SQLException {
-		return count;
-	}
-
-	public Object getObject(String columnLabel) throws SQLException {
-		return count;
-	}
-
-
-	public byte getByte(String columnLabel) throws SQLException {
-		return (byte) count;
-	}
-
-	public short getShort(String columnLabel) throws SQLException {
-		return (short) count;
-	}
-
-	public int getInt(String columnLabel) throws SQLException {
-		return (int) count;
-	}
-
-	public long getLong(String columnLabel) throws SQLException {
-		return count;
-	}
-
-	public float getFloat(String columnLabel) throws SQLException {
-		return count;
-	}
-
-	public double getDouble(String columnLabel) throws SQLException {
-		return count;
-	}
-
-	public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
-		return new BigDecimal(count);
-	}
-	
-	public String getString(int columnIndex) throws SQLException {
-		return Long.toString(count);
-	}
-	public String getString(String columnLabel) throws SQLException {
-		return Long.toString(count);
-	}
+	private int columnCount;
 	
 	/**
-	 * 一下为delegate实现
+	 * 实际字段比可用字段少一个
+	 * @param l
+	 * @throws SQLException
 	 */
-	public ResultSetMetaData getMetaData() throws SQLException {
-		return list.getMetaData();
-	}
-	public void close() throws SQLException {
-		list.close();
-	}
-
-	public boolean wasNull() throws SQLException {
-		return list.wasNull();
-	}
-
-	public boolean getBoolean(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public byte[] getBytes(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Date getDate(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Time getTime(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Timestamp getTimestamp(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public InputStream getAsciiStream(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public InputStream getUnicodeStream(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public InputStream getBinaryStream(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-
-
-	public boolean getBoolean(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public byte[] getBytes(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Date getDate(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Time getTime(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Timestamp getTimestamp(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public InputStream getAsciiStream(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public InputStream getUnicodeStream(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public InputStream getBinaryStream(String columnLabel) throws SQLException {
-		return list.getBinaryStream(columnLabel);
-	}
-
-	public SQLWarning getWarnings() throws SQLException {
-		return list.getWarnings();
-	}
-
-	public void clearWarnings() throws SQLException {
-		list.clearWarnings();
-	}
-
-	public String getCursorName() throws SQLException {
-		return list.getCursorName();
-	}
-
-
-
-	public int findColumn(String columnLabel) throws SQLException {
-		return list.findColumn(columnLabel);
-	}
-
-	public Reader getCharacterStream(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Reader getCharacterStream(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public boolean isBeforeFirst() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public boolean isAfterLast() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public boolean isFirst() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public boolean isLast() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public void beforeFirst() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public void afterLast() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public boolean first() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public boolean last() throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public int getRow() throws SQLException {
-		return list.getRow();
-	}
-
-	public boolean absolute(int row) throws SQLException {
-		return list.absolute(row);
-	}
-
-	public boolean relative(int rows) throws SQLException {
-		return list.relative(rows);
-	}
-
-	public boolean previous() throws SQLException {
-		return list.previous();
-	}
-
-	public void setFetchDirection(int direction) throws SQLException {
-		list.setFetchDirection(direction);
-	}
-
-	public int getFetchDirection() throws SQLException {
-		return list.getFetchDirection();
-	}
-
-	public void setFetchSize(int rows) throws SQLException {
-		list.setFetchSize(rows);
-	}
-
-	public int getFetchSize() throws SQLException {
-		return list.getFetchSize();
-	}
-
-	public int getType() throws SQLException {
-		return list.getType();
-	}
-
-	public int getConcurrency() throws SQLException {
-		return list.getConcurrency();
-	}
-
-	public void refreshRow() throws SQLException {
-	}
-
-	public Statement getStatement() throws SQLException {
-		return list.getStatement();
-	}
-
-	public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Ref getRef(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Blob getBlob(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Clob getClob(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Array getArray(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Object getObject(String columnLabel, Map<String, Class<?>> map) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Ref getRef(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Blob getBlob(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Clob getClob(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Array getArray(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Date getDate(String columnLabel, Calendar cal) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Time getTime(int columnIndex, Calendar cal) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Time getTime(String columnLabel, Calendar cal) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public URL getURL(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public URL getURL(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public RowId getRowId(int columnIndex) throws SQLException {
-		return list.getRowId(columnIndex);
-	}
-
-	public RowId getRowId(String columnLabel) throws SQLException {
-		return list.getRowId(columnLabel);
-	}
-
-	public int getHoldability() throws SQLException {
-		return list.getHoldability();
-	}
-
-	public boolean isClosed() throws SQLException {
-		return list.isClosed();
-	}
-
-	public NClob getNClob(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public NClob getNClob(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public SQLXML getSQLXML(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public SQLXML getSQLXML(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public String getNString(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public String getNString(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Reader getNCharacterStream(int columnIndex) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public Reader getNCharacterStream(String columnLabel) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
-	public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
-		throw new RuntimeException("not support");
-	}
-
+	public GroupByWrapper(ResultSet l,List<Expression> colExpressions) throws SQLException{
+		super(l.getMetaData(),l.getMetaData().getColumnCount()-1);
+		this.inner = l;
+		this.columnCount = inner.getMetaData().getColumnCount();
+		initExpressionAggrator(colExpressions);
+	}
+
+	long count = -1;
+	boolean beforeFirst = true;//还没有next过
+	boolean afterLast = false;//已经next到最后了
+	boolean currentIsLastRow = false;//当前是最后一行
 	
+	List<ExpressionAggregrator> aggregrateList;
+	
+	private void initExpressionAggrator(List<Expression> colExpressions) {
+		int size = colExpressions.size();
+		aggregrateList = new ArrayList(size);
+		for (int i=0;i<size;i++){
+			aggregrateList.add(new ExpressionAggregrator(colExpressions.get(i)));
+		}
+	}
+	/**
+	 * 用最后一个字段分组
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean next() throws SQLException {
+		initCurrentRowValue();
+		initExpressionAggregateStatus();
+
+		//是否最后一行
+		if (currentIsLastRow){
+			this.afterLast = true;
+			return false;
+		}
+		//是否先next一次
+		if (this.beforeFirst){
+			boolean b = inner.next();
+			if (!b) return false;
+		}
+		
+		//到这里可以确定beforeFirst为false了
+		this.beforeFirst = false;
+		
+		//必然return true
+		String  currentGroupKey = inner.getString(columnCount);
+		fetchValue();
+		
+		while(inner.next()){
+			String temp = inner.getString(columnCount);
+			if (equal(temp,currentGroupKey)){
+				fetchValue();
+			}else{
+				//返回true
+				return true;
+			}
+		}
+		//仍然返回true，但是这已经是最后一条
+		currentIsLastRow = true;
+		return true;
+	}
+
+	private void initExpressionAggregateStatus() {
+		for (int i=0;i<this.columnCount;i++){
+			this.aggregrateList.get(i).resetState();
+		}
+	}
+	private boolean equal(String a, String b) {
+		if  (a==null){
+			if (b==null) return true;
+			else return false;
+		}else{
+			if (a.equals(b)) return true;
+			else return false;
+		}
+	}
+
+	private void fetchValue() throws SQLException {
+		for (int i=0;i<this.columnCount;i++){
+			Object v = inner.getObject(i+1);
+			this.aggregrateList.get(i).aggrateItem(v);
+		}
+	}
+
+	@Override
+	public void close() throws SQLException {
+		inner.close();
+	}
+
+	@Override
+	public SQLWarning getWarnings() throws SQLException {
+		return null;
+	}
+
+	@Override
+	public void clearWarnings() throws SQLException {
+	}
+
+	@Override
+	public String getCursorName() throws SQLException {
+		return inner.getCursorName();
+	}
+
+	@Override
+	public Statement getStatement() throws SQLException {
+		return inner.getStatement();
+	}
+	
+	@Override
+	public ResultSetMetaData getMetaData() throws SQLException {
+		return new TruncedMetaDataAdaptor(inner.getMetaData(),1);
+	}
+
+	@Override
+	public boolean isBeforeFirst() throws SQLException {
+		return this.beforeFirst;
+	}
+
+	@Override
+	public boolean isAfterLast() throws SQLException {
+		return this.afterLast;
+	}
+
+	@Override
+	public boolean isClosed() throws SQLException {
+		return inner.isClosed();
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		return inner.unwrap(iface);
+	}
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		return inner.isWrapperFor(iface);
+	}
+	
+	static class TruncedMetaDataAdaptor implements ResultSetMetaData{
+		
+		private ResultSetMetaData meta;
+		private int trunkSize;
+
+		public TruncedMetaDataAdaptor(ResultSetMetaData metaData, int aTrunkSize) {
+			this.meta = metaData;
+			this.trunkSize = aTrunkSize;
+		}
+
+		public int getColumnCount() throws SQLException {
+			return meta.getColumnCount() - this.trunkSize;
+		}
+
+		//以下方法都是adaptor方法
+		public <T> T unwrap(Class<T> iface) throws SQLException {
+			return meta.unwrap(iface);
+		}
+
+		public boolean isAutoIncrement(int column) throws SQLException {
+			return meta.isAutoIncrement(column);
+		}
+
+		public boolean isCaseSensitive(int column) throws SQLException {
+			return meta.isCaseSensitive(column);
+		}
+
+		public boolean isSearchable(int column) throws SQLException {
+			return meta.isSearchable(column);
+		}
+
+		public boolean isWrapperFor(Class<?> iface) throws SQLException {
+			return meta.isWrapperFor(iface);
+		}
+
+		public boolean isCurrency(int column) throws SQLException {
+			return meta.isCurrency(column);
+		}
+
+		public int isNullable(int column) throws SQLException {
+			return meta.isNullable(column);
+		}
+
+		public boolean isSigned(int column) throws SQLException {
+			return meta.isSigned(column);
+		}
+
+		public int getColumnDisplaySize(int column) throws SQLException {
+			return meta.getColumnDisplaySize(column);
+		}
+
+		public String getColumnLabel(int column) throws SQLException {
+			return meta.getColumnLabel(column);
+		}
+
+		public String getColumnName(int column) throws SQLException {
+			return meta.getColumnName(column);
+		}
+
+		public String getSchemaName(int column) throws SQLException {
+			return meta.getSchemaName(column);
+		}
+
+		public int getPrecision(int column) throws SQLException {
+			return meta.getPrecision(column);
+		}
+
+		public int getScale(int column) throws SQLException {
+			return meta.getScale(column);
+		}
+
+		public String getTableName(int column) throws SQLException {
+			return meta.getTableName(column);
+		}
+
+		public String getCatalogName(int column) throws SQLException {
+			return meta.getCatalogName(column);
+		}
+
+		public int getColumnType(int column) throws SQLException {
+			return meta.getColumnType(column);
+		}
+
+		public String getColumnTypeName(int column) throws SQLException {
+			return meta.getColumnTypeName(column);
+		}
+
+		public boolean isReadOnly(int column) throws SQLException {
+			return meta.isReadOnly(column);
+		}
+
+		public boolean isWritable(int column) throws SQLException {
+			return meta.isWritable(column);
+		}
+
+		public boolean isDefinitelyWritable(int column) throws SQLException {
+			return meta.isDefinitelyWritable(column);
+		}
+
+		public String getColumnClassName(int column) throws SQLException {
+			return meta.getColumnClassName(column);
+		}
+		
+		
+	}
+
 }

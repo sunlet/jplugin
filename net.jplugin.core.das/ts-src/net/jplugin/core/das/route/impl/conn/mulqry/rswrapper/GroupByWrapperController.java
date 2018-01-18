@@ -1,6 +1,7 @@
 package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,11 @@ public class GroupByWrapperController implements WrapperController{
 		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
 		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
 		if (b!=null && b){
-			rs = new GroupByWrapper(rs);
+			try {
+				rs = new GroupByWrapper(rs,null);
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage()+" "+CombinedSqlContext.get().getOriginalSql(),e);
+			}
 			
 			List<OrderByElement> oldOrderBy = (List<OrderByElement>) combinedSqlContext.getAttribute(OLD_ORDERBY);
 			if (oldOrderBy!=null){
