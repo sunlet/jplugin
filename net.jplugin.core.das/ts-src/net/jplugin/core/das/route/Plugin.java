@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.api.impl.TxManagedDataSource;
+import net.jplugin.core.das.route.api.IAggregationFunctionHandler;
 import net.jplugin.core.das.route.api.IFunctionHandler;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
 import net.jplugin.core.das.route.api.RouterDataSource;
@@ -43,7 +44,7 @@ public class Plugin extends AbstractPlugin {
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, LimitWrapperController.class);
 
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_FUNCTION, IFunctionHandler.class,true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_AGG_FUNCTION, ClassDefine.class,true));
+		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_AGG_FUNCTION, IAggregationFunctionHandler.class,true));
 
 	}
 	@Override

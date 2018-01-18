@@ -12,11 +12,11 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 public class FunctionHandlerManager {
 	public static FunctionHandlerManager INSTANCE = new FunctionHandlerManager();
 	Map<String, IFunctionHandler> funcHandlers = new HashMap();
-	Map<String, ClassDefine> aggFunctions;
+	Map<String, IAggregationFunctionHandler> aggFunctions;
 
 	public void init() {
 		aggFunctions = PluginEnvirement.getInstance()
-				.getExtensionMap(net.jplugin.core.das.route.Plugin.EP_SQL_AGG_FUNCTION, ClassDefine.class);
+				.getExtensionMap(net.jplugin.core.das.route.Plugin.EP_SQL_AGG_FUNCTION, IAggregationFunctionHandler.class);
 
 		funcHandlers = PluginEnvirement.getInstance()
 				.getExtensionMap(net.jplugin.core.das.route.Plugin.EP_SQL_FUNCTION, IFunctionHandler.class);
@@ -33,17 +33,23 @@ public class FunctionHandlerManager {
 		return f;
 	}
 	
-	public IAggregationFunctionHandler createAggFunctionHandler(String name){
-		ClassDefine aggFuncDef = aggFunctions.get(name);
-		if (aggFuncDef == null)
+	public IAggregationFunctionHandler getAggFunctionHandler(String name) {
+		if (name == null)
 			return null;
-		try {
-			return (IAggregationFunctionHandler) aggFuncDef.getClazz().newInstance();
-		} catch (InstantiationException e) {
-			throw new RuntimeException(name + " error", e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(name + " error", e);
-		}
-
+		IAggregationFunctionHandler f = aggFunctions.get(name);
+		return f;
 	}
+//	public IAggregationFunctionHandler createAggFunctionHandler(String name){
+//		ClassDefine aggFuncDef = aggFunctions.get(name);
+//		if (aggFuncDef == null)
+//			return null;
+//		try {
+//			return (IAggregationFunctionHandler) aggFuncDef.getClazz().newInstance();
+//		} catch (InstantiationException e) {
+//			throw new RuntimeException(name + " error", e);
+//		} catch (IllegalAccessException e) {
+//			throw new RuntimeException(name + " error", e);
+//		}
+//
+//	}
 }

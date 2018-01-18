@@ -27,6 +27,7 @@ import java.util.Map;
 import net.jplugin.core.das.route.impl.conn.mulqry.EmptyQueryableResultSet;
 import net.jplugin.core.das.route.impl.util.BaseResultSetRow;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.statement.select.SelectItem;
 
 /**
  * 
@@ -49,11 +50,11 @@ public class GroupByWrapper extends BaseResultSetRow{
 	 * @param l
 	 * @throws SQLException
 	 */
-	public GroupByWrapper(ResultSet l,List<Expression> colExpressions) throws SQLException{
+	public GroupByWrapper(ResultSet l,List<SelectItem> initialItems) throws SQLException{
 		super(l.getMetaData(),l.getMetaData().getColumnCount()-1);
 		this.inner = l;
 		this.columnCount = inner.getMetaData().getColumnCount();
-		initExpressionAggrator(colExpressions);
+		initExpressionAggrator(initialItems);
 	}
 
 	long count = -1;
@@ -63,11 +64,11 @@ public class GroupByWrapper extends BaseResultSetRow{
 	
 	List<ExpressionAggregrator> aggregrateList;
 	
-	private void initExpressionAggrator(List<Expression> colExpressions) {
-		int size = colExpressions.size();
+	private void initExpressionAggrator(List<SelectItem> initialItems) {
+		int size = initialItems.size();
 		aggregrateList = new ArrayList(size);
 		for (int i=0;i<size;i++){
-			aggregrateList.add(new ExpressionAggregrator(colExpressions.get(i)));
+			aggregrateList.add(new ExpressionAggregrator(initialItems.get(i)));
 		}
 	}
 	/**

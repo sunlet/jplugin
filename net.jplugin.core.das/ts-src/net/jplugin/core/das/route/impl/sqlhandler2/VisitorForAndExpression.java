@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
+import net.jplugin.core.das.route.impl.util.FunctionEvalueKit;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnalyticExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
@@ -210,7 +211,7 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 		}
 	}
 	private Object tryComputeValue(Expression item) {
-		return FunctionEvalueManager.evalueNonStrickly(item, parameters);
+		return FunctionEvalueKit.evalueNonStrickly(item, parameters);
 	}
 //	private Object tryComputeValue(Expression item) {
 //		Value v = new Value();

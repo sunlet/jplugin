@@ -1,18 +1,23 @@
-package net.jplugin.core.das.route.impl.sqlhandler2;
+package net.jplugin.core.das.route.impl.util;
 
 import java.util.List;
 
+import net.jplugin.core.das.route.api.AggFunctionEvalueContext;
 import net.jplugin.core.das.route.api.IFunctionHandler;
 import net.jplugin.core.das.route.function.FunctionHandlerManager;
-import net.jplugin.core.das.route.impl.util.ConstValueExpressionKit;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
-public class FunctionEvalueManager {
+public class FunctionEvalueKit {
 
-	public static Object evalueNonStrickly(Expression expression, List<Object> parameters) {
+	public static Object evalueAggFunction(String funcName,AggFunctionEvalueContext afc,Object currentRowValue){
+		
+		return null;
+	}
+	
+	public static Object evalueNonStrickly(Expression expression, List<Object> parameters){
 		//求参数值
 		if (expression instanceof JdbcParameter){
 			return parameters.get((((JdbcParameter)expression).getIndex()-1));

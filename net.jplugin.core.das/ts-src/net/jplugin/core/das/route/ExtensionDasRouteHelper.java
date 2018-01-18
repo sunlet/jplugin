@@ -18,6 +18,6 @@ public class ExtensionDasRouteHelper {
 	}
 	
 	public static void addAggSqlFunctionExtension(AbstractPlugin plugin,String name,Class c){
-		plugin.addExtension(Extension.create(net.jplugin.core.das.route.Plugin.EP_SQL_AGG_FUNCTION,name.toUpperCase(),ClassDefine.class,new String[][]{{"clazz",c.getName()}}));
+		plugin.addExtension(Extension.create(net.jplugin.core.das.route.Plugin.EP_SQL_AGG_FUNCTION,name.toUpperCase(),c));
 	}
 }

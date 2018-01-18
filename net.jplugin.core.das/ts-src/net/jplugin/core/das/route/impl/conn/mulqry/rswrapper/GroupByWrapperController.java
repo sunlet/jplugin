@@ -16,11 +16,13 @@ import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
+import net.sf.jsqlparser.statement.select.SelectItem;
 
 public class GroupByWrapperController implements WrapperController{
 
 	private static final String OLD_ORDERBY = "OLD_ORDERBY";
 	private static final String USING_GROUPBY = "USING_GROUPBY";
+	private static final String GROUPBY_SQL_SELECTLIST = "GROUPBY_SQL_SELECTLIST";
 
 	@Override
 	public boolean needWrap() {
@@ -38,7 +40,8 @@ public class GroupByWrapperController implements WrapperController{
 		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
 		if (b!=null && b){
 			try {
-				rs = new GroupByWrapper(rs,null);
+				List<SelectItem> initialItems = (List<SelectItem>) combinedSqlContext.getAttribute(GROUPBY_SQL_SELECTLIST);
+				rs = new GroupByWrapper(rs,initialItems);
 			} catch (SQLException e) {
 				throw new RuntimeException(e.getMessage()+" "+CombinedSqlContext.get().getOriginalSql(),e);
 			}
@@ -53,28 +56,33 @@ public class GroupByWrapperController implements WrapperController{
 
 	@Override
 	public void handleContextInitial(CombinedSqlContext ctx) {
-		/* 没有完全实现，先注释掉
-		SelectBody bd = ctx.getStatement().getSelectBody();
-		PlainSelect inner = SelectSqlKit.getMostInnerSelect(bd, ctx.getOriginalSql());
-		List<Expression> groupbylist = inner.getGroupByColumnReferences();
-		
-		if (groupbylist!=null && !groupbylist.isEmpty()){
-			//新增一个组合字段
-			SelectExpressionItem itemToAdd = makeSelectItem(groupbylist);
-			inner.getSelectItems().add(itemToAdd);
-			ctx.setAttribute(USING_GROUPBY, true);
+		if (1==2){
+			SelectBody bd = ctx.getStatement().getSelectBody();
+			PlainSelect inner = SelectSqlKit.getMostInnerSelect(bd, ctx.getOriginalSql());
+			List<Expression> groupbylist = inner.getGroupByColumnReferences();
 			
-			//旧的orderby拿下来
-			List<OrderByElement> oldorderby = inner.getOrderByElements();
-			if (oldorderby!=null && !oldorderby.isEmpty()){
-				ctx.setAttribute(OLD_ORDERBY, oldorderby);
+			if (groupbylist!=null && !groupbylist.isEmpty()){
+				//产生ExpressionList, 这里用一个新的List，因为后面这个List会修改，增加一个新的项目
+				List<SelectItem> initialSelectItems = new ArrayList(inner.getSelectItems().size());
+				initialSelectItems.addAll(inner.getSelectItems());
+				ctx.setAttribute(GROUPBY_SQL_SELECTLIST, initialSelectItems);
+				
+				//新增一个组合字段
+				SelectExpressionItem itemToAdd = makeSelectItem(groupbylist);
+				inner.getSelectItems().add(itemToAdd);
+				ctx.setAttribute(USING_GROUPBY, true);
+				
+				//旧的orderby拿下来
+				List<OrderByElement> oldorderby = inner.getOrderByElements();
+				if (oldorderby!=null && !oldorderby.isEmpty()){
+					ctx.setAttribute(OLD_ORDERBY, oldorderby);
+				}
+				
+				//增加新的orderby
+				inner.setOrderByElements(makeNewOrderBy(groupbylist));
 			}
-			
-			//增加新的orderby
-			inner.setOrderByElements(makeNewOrderBy(groupbylist));
 		}
-		*/
-		
+
 	}
 	
 	private List<OrderByElement> makeNewOrderBy(List<Expression> groupbylist) {
