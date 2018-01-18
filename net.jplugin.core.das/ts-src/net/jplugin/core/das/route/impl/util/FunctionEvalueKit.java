@@ -11,11 +11,6 @@ import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 
 public class FunctionEvalueKit {
-
-	public static Object evalueAggFunction(String funcName,AggFunctionEvalueContext afc,Object currentRowValue){
-		
-		return null;
-	}
 	
 	public static Object evalueNonStrickly(Expression expression, List<Object> parameters){
 		//求参数值

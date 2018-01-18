@@ -1,5 +1,7 @@
 package net.jplugin.core.das.route.api;
 
-public class AggFunctionEvalueContext {
+import net.jplugin.common.kits.AttributedObject;
+
+public class AggFunctionEvalueContext extends AttributedObject{
 
 }
