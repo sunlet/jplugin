@@ -8,6 +8,15 @@ public class AttributedObject {
 	public Object getAttribute(String key) {
 		return attributes == null ? null : attributes.get(key);
 	}
+	
+	public void clearAttributes(){
+		if (attributes!=null)
+			this.attributes.clear();
+	}
+	
+	public boolean containAttribute(String key){
+		return attributes==null || attributes.containsKey(key);
+	}
 
 	public void setAttribute(String key, Object val) {
 		if (attributes == null) {
