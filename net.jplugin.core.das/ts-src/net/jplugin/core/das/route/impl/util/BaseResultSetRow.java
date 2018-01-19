@@ -88,7 +88,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 		}
 	}
 	
-	public void initCurrentRowValue(){
+	public void clearCurrentRowValue(){
 		if (data==null)
 			data = new ArrayList(meta.metaList.size());
 		else{
@@ -98,6 +98,10 @@ public abstract class BaseResultSetRow implements ResultSet{
 		}
 	}
 	
+	public BaseResultSetRow(Meta m){
+		this.meta = m;
+	}
+	
 	protected BaseResultSetRow(ResultSetMetaData rsMetaData) throws SQLException{
 		this(rsMetaData,rsMetaData.getColumnCount());
 	}
@@ -105,7 +109,12 @@ public abstract class BaseResultSetRow implements ResultSet{
 		this.meta = new Meta(rsMetaData,colCount);
 	}
 	
-	
+	public Meta getBaseResultSetRowMeta(){
+		return this.meta;
+	}
+	public List<Object> getBaseResultSetRowData(){
+		return this.data;
+	}
 
 	protected void setData(List<Object> data) throws SQLException {
 		if (data.size()!=this.meta.size()){

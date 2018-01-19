@@ -42,7 +42,6 @@ import net.sf.jsqlparser.statement.select.SelectItem;
  */
 public class GroupByWrapper extends BaseResultSetRow{
 	ResultSet inner;
-
 	private int columnCount;
 	
 	/**
@@ -51,7 +50,7 @@ public class GroupByWrapper extends BaseResultSetRow{
 	 * @throws SQLException
 	 */
 	public GroupByWrapper(ResultSet l,List<SelectItem> initialItems) throws SQLException{
-		super(l.getMetaData(),l.getMetaData().getColumnCount()-1);
+		super(l.getMetaData(),l.getMetaData().getColumnCount()-2);
 		this.inner = l;
 		this.columnCount = inner.getMetaData().getColumnCount();
 		initExpressionAggrator(initialItems);
@@ -77,8 +76,8 @@ public class GroupByWrapper extends BaseResultSetRow{
 	 * @throws SQLException
 	 */
 	public boolean next() throws SQLException {
-		initCurrentRowValue();
-		initExpressionAggregateStatus();
+		clearCurrentRowValue();
+		clearExpressionAggregateStatus();
 
 		//是否最后一行
 		if (currentIsLastRow){
@@ -103,6 +102,9 @@ public class GroupByWrapper extends BaseResultSetRow{
 			if (equal(temp,currentGroupKey)){
 				fetchValue();
 			}else{
+				//更新改行数据
+				initCurrentRowData();
+				
 				//返回true
 				return true;
 			}
@@ -112,7 +114,14 @@ public class GroupByWrapper extends BaseResultSetRow{
 		return true;
 	}
 
-	private void initExpressionAggregateStatus() {
+	private void initCurrentRowData() {
+		int size = aggregrateList.size();
+		for (int i=0;i<size;i++){
+			Object result = aggregrateList.get(i).getResult();
+		}
+		
+	}
+	private void clearExpressionAggregateStatus() {
 		for (int i=0;i<this.columnCount;i++){
 			this.aggregrateList.get(i).resetState();
 		}
@@ -130,7 +139,8 @@ public class GroupByWrapper extends BaseResultSetRow{
 	private void fetchValue() throws SQLException {
 		for (int i=0;i<this.columnCount;i++){
 			Object v = inner.getObject(i+1);
-			this.aggregrateList.get(i).aggrateItem(v);
+			int valueCnt = inner.getInt(i+2);
+			this.aggregrateList.get(i).aggrateItem(v,valueCnt);
 		}
 	}
 

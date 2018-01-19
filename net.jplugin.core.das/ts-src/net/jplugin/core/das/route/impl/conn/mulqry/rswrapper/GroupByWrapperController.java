@@ -23,7 +23,9 @@ public class GroupByWrapperController implements WrapperController{
 	private static final String OLD_ORDERBY = "OLD_ORDERBY";
 	private static final String USING_GROUPBY = "USING_GROUPBY";
 	private static final String GROUPBY_SQL_SELECTLIST = "GROUPBY_SQL_SELECTLIST";
+	private static SelectItem ROW_COUNT_ITEM = makeRowCountItem();
 
+	
 	@Override
 	public boolean needWrap() {
 //		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
@@ -32,6 +34,16 @@ public class GroupByWrapperController implements WrapperController{
 //			return true;
 //		}
 		return false;
+	}
+
+	private static SelectItem makeRowCountItem() {
+		Function func = new Function();
+		func.setName("COUNT");
+		func.setAllColumns(true);
+		SelectExpressionItem item = new SelectExpressionItem();
+		item.setExpression(func);
+		item.setAlias(new Alias("_GROUP_BY_AUTOADD_"));
+		return item;
 	}
 
 	@Override
@@ -48,7 +60,7 @@ public class GroupByWrapperController implements WrapperController{
 			
 			List<OrderByElement> oldOrderBy = (List<OrderByElement>) combinedSqlContext.getAttribute(OLD_ORDERBY);
 			if (oldOrderBy!=null){
-				rs = new GroupByMemoryOrderByWrapper(rs,oldOrderBy);
+				rs = new GroupByMemoryOrderByWrapper((GroupByWrapper) rs,oldOrderBy);
 			}
 		}
 		return rs;
@@ -67,10 +79,14 @@ public class GroupByWrapperController implements WrapperController{
 				initialSelectItems.addAll(inner.getSelectItems());
 				ctx.setAttribute(GROUPBY_SQL_SELECTLIST, initialSelectItems);
 				
-				//新增一个组合字段
+				//设置标志
+				ctx.setAttribute(USING_GROUPBY, true);
+				
+				//新增一个组合字段和一个Count字段
 				SelectExpressionItem itemToAdd = makeSelectItem(groupbylist);
 				inner.getSelectItems().add(itemToAdd);
-				ctx.setAttribute(USING_GROUPBY, true);
+				inner.getSelectItems().add(ROW_COUNT_ITEM);
+
 				
 				//旧的orderby拿下来
 				List<OrderByElement> oldorderby = inner.getOrderByElements();
