@@ -18,8 +18,8 @@ public class RequestIdKit {
 			long idx = al.getAndIncrement();
 			// 达到上限，重新申请一个UUID
 			if (Long.MAX_VALUE - idx < LIMIT)
-				startuuID = UUIDKit.getUUID();
-			return startuuID + "-" + al.getAndIncrement();
+				startuuID = UUIDKit.getShortUUID();
+			return startuuID + "-" + idx;
 		}
 	}
 	
@@ -35,10 +35,17 @@ public class RequestIdKit {
 	
 
 	public static void main(String[] args) {
-		System.out.println(newTraceId());
-		System.out.println(newTraceId());
-		System.out.println(newTraceId());
+//		System.out.println(newTraceId());
+//		System.out.println(newTraceId());
+//		System.out.println(newTraceId());
+		for (int i=0;i<100000;i++)
 		System.out.println(newSpanId());
+		
+//		System.out.println(newSpanId());
+//		System.out.println(newSpanId());
+//		System.out.println(newSpanId());
+//		System.out.println(newSpanId());
+//		System.out.println(newSpanId());
 	}
 
 	public static Tuple2<String, String> parse(String s) {
