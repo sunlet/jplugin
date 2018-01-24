@@ -15,7 +15,7 @@ public class AttributedObject {
 	}
 	
 	public boolean containAttribute(String key){
-		return attributes==null || attributes.containsKey(key);
+		return attributes!=null && attributes.containsKey(key);
 	}
 
 	public void setAttribute(String key, Object val) {
