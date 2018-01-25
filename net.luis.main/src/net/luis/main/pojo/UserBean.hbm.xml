@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="net.luis.main.pojo">
+<class name="UserBean" table="luisuserbean" dynamic-insert="true" dynamic-update="true" node="用户信息" batch-size="5">
+	<id name="id" type="long" column="id"><generator class="native"/></id>
+	
+	 <property name="name" type="string"  node="boss服务器路径" >
+	     <column name="name"  />
+	 </property>	
+		
+	 <property name="age" type="int"  node="boss服务器路径" >
+	     <column name="age"  />
+	 </property>	
+
+	 <property name="updatetime" type="timestamp"  node="boss服务器路径" >
+	     <column name="updatetime"  />
+	 </property>	
+
+	 <property name="born" type="date"  node="boss服务器路径" >
+	     <column name="born"  />
+	 </property>		
+
+<!--  <property name="bossappurl" type="string"  node="boss服务器路径" >
+	     <column name="bossappurl"  />
+	   </property>
+	    <property name="brmfileurl" type="string"  node="brm文件服务器地址" >
+	     <column name="brmfileurl"  />
+	   </property>
+	   <property name="brmurl" type="string"  node="brm地址" >
+	     <column name="brmurl"  />
+	   </property>
+	   <property name="brmcompanyid" type="long"  node="brm公司id" >
+	     <column name="brmcompanyid"  />
+	   </property>
+	   <property name="companyimage" type="string"  node="公司图片" >
+	     <column name="companyimage"  />
+	   </property>
+	      	   <property name="telno" type="string"  node="电话" >
+	     <column name="telno"  />
+	   </property>
+	      	   <property name="kehulx" type="string"  node="客户类型" >
+	     <column name="kehulx"  />
+	   </property>
+	      	   <property name="loginpw" type="string"  node="密码" >
+	     <column name="loginpw"  />
+	   </property>
+	      	   <property name="loginpwre" type="string"  node="密码确认" >
+	     <column name="loginpwre"  />
+	   </property>
+	      	   <property name="nicheng" type="string"  node="昵称" >
+	     <column name="nicheng"  />
+	   </property>
+	      	   <property name="qyguimo" type="string"  node="企业规模" >
+	     <column name="qyguimo"  />
+	   </property>
+	      	   <property name="companyname" type="string"  node="企业名称" >
+	     <column name="companyname"  />
+	   </property>
+	      	   <property name="companyshortname" type="string"  node="企业简称" >
+	     <column name="companyshortname"  />
+	   </property>
+	      	   <property name="companywebsite" type="string"  node="企业官网" >
+	     <column name="companywebsite"  />
+	   </property>
+	      	   <property name="fax" type="string"  node="传真" >
+	     <column name="fax"  />
+	   </property>
+	      	   <property name="sshangye" type="string"  node="所属行业" >
+	     <column name="sshangye"  />
+	   </property>
+	      	   <property name="adress" type="string"  node="所在地区" >
+	     <column name="adress"  />
+	   </property>
+	      	   <property name="xingming" type="string"  node="姓名" >
+	     <column name="xingming"  />
+	   </property>
+	      	   <property name="yanzhengm" type="string"  node="验证码" >
+	     <column name="yanzhengm"  />
+	   </property>
+	      	   <property name="loginname" type="string"  node="用户名" >
+	     <column name="loginname"  />
+	   </property>
+	      	   <property name="usertype" type="string"  node="用户种类" >
+	     <column name="usertype"  />
+	   </property>
+	      	   <property name="accounttype" type="string"  node="用户种类" >
+	     <column name="accounttype"  />
+	   </property>
+	      	   <property name="email" type="string"  node="邮箱" >
+	     <column name="email"  />
+	   </property>
+	      	   <property name="usefulflag" type="string"  node="有效标志" >
+	     <column name="usefulflag" default="'1'" />
+	   </property>  
+	   <property name="ustatus" type="string"  node="状态" >
+	     <column name="ustatus" default="'0'" />
+	   </property>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+		<property name="chuangjiansj" type="timestamp"  node="创建时间" >
+	     <column name="chuangjiansj"  />
+	   </property>	
+	   <property name="creator" type="long"  node="创建者" >
+	     <column name="creator"  />
+	   </property>
+	   <property name="qyescode" type="string"  node="qyescode" >
+	     <column name="qyescode"  />
+	   </property>
+	   <property name="simpleCode" type="string"  node="simpleCode" >
+	     <column name="simple_code"  />
+	   </property>
+	   <property name="recommendid" type="long"  node="推荐者" >
+	     <column name="recommendid"  />
+	   </property>
+	   <property name="companydomain" type="string"  node="companydomain" >
+	     <column name="companydomain"  />
+	   </property>
+	   <property name="province" type="string"  node="province" >
+	     <column name="province"  length="30"/>
+	   </property>
+	   <property name="city" type="string"  node="city" >
+	     <column name="city"  length="30"/>
+	   </property>
+	   <property name="mainindustry" type="string"  node="mainindustry" >
+	     <column name="mainindustry"  length="30"/>
+	   </property>
+	   <property name="subindustry" type="string"  node="subindustry" >
+	     <column name="subindustry"  length="30"/>
+	   </property>
+	   <property name="autoadd" type="string"  node="autoadd" >
+	     <column name="autoadd"  length="1"/>
+	   </property>
+	   <property name="summary" type="string"  node="summary" >
+	     <column name="summary"  length="255"/>
+	   </property>
+	   <property name="proxy" type="string"  node="proxy" >
+	     <column name="proxy"  length="2"/>
+	   </property>
+	   <property name="invitePermission" type="string"  node="invitePermission" >
+	     <column name="invite_permission"  length="2"/>
+	   </property>
+	   <property name="enableStatus" type="string"  node="enableStatus" >
+	     <column name="enable_status"  length="2"/>
+	   </property>
+	   <property name="lastmodifytime" type="timestamp" column="lastmodifytime" node="lastmodifytime" />
+   -->
+    </class>
+    </hibernate-mapping>    
