@@ -33,6 +33,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 	
 	List<Object> data;
 	Meta meta;
+	private boolean wasNull;
 	
 	public static class Meta{
 		List<MetaItem> metaList=null;
@@ -93,6 +94,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 	}
 	
 	public void clearCurrentRowValue(){
+		this.wasNull = false;
 		if (data==null){
 			data = new ArrayList(meta.metaList.size());
 			for (int i=0;i<this.meta.size();i++){
@@ -146,7 +148,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 
 	@Override
 	public final boolean wasNull() throws SQLException {
-		throw new SQLException("not impl");
+		return this.wasNull;
 	}
 
 	@Override
@@ -155,7 +157,13 @@ public abstract class BaseResultSetRow implements ResultSet{
 	}
 	
 	private Object getData(int columnIndex){
-		return data.get(columnIndex-1);
+		Object temp = data.get(columnIndex-1);
+		if (temp==null){
+			this.wasNull = true;
+		}else{
+			this.wasNull = false;
+		}
+		return temp;
 	}
 
 	@Override

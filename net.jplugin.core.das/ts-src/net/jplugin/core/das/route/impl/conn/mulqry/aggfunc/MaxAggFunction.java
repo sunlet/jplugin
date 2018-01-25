@@ -29,31 +29,36 @@ public class MaxAggFunction extends BaseMathAggFunctionHandler {
 		if (oldValue == null)
 			oldValue = currentValue;
 		else
-			oldValue = min(javaType, oldValue, currentValue);
+			oldValue = max(javaType, oldValue, currentValue);
 
 		ctx.setAttribute(OLD_VALUE, oldValue);
 	}
 
-	private Object min(Class javaType, Object a, Object b) throws SQLException {
-		if (javaType == Integer.class || javaType == int.class) {
-			return (Integer) a > (Integer) b ? a:b;
-		}
-		if (javaType == Short.class || javaType == short.class) {
-			return (Short) a >(Short) b ? a:b;
-		}
-		if (javaType == Byte.class || javaType == short.class) {
-			return (Byte) a > (Byte) b ? a:b;
-		}
-		if (javaType == Float.class || javaType == float.class) {
-			return (Float) a > (Float) b ? a:b;
-		}
-		if (javaType == Double.class || javaType == double.class) {
-			return (Double) a > (Double) b ? a:b;
-		}
-		if (javaType == BigDecimal.class) {
-			return ((BigDecimal) a).compareTo((BigDecimal) b)>0 ? a:b;
-		}
-		throw new SQLException("unsupport type to sum:" + javaType);
+	private Object max(Class javaType, Object a, Object b) throws SQLException {
+//		if (javaType == Integer.class || javaType == int.class) {
+//			return (Integer) a > (Integer) b ? a:b;
+//		}
+//		if (javaType == Short.class || javaType == short.class) {
+//			return (Short) a >(Short) b ? a:b;
+//		}
+//		if (javaType == Byte.class || javaType == short.class) {
+//			return (Byte) a > (Byte) b ? a:b;
+//		}
+//		if (javaType == Float.class || javaType == float.class) {
+//			return (Float) a > (Float) b ? a:b;
+//		}
+//		if (javaType == Double.class || javaType == double.class) {
+//			return (Double) a > (Double) b ? a:b;
+//		}
+//		if (javaType == BigDecimal.class) {
+//			return ((BigDecimal) a).compareTo((BigDecimal) b)>0 ? a:b;
+//		}
+		if (a instanceof Comparable && b instanceof Comparable){
+			int result =  ((Comparable)a).compareTo((Comparable)b);
+			return result>=0? a:b;
+		}else
+			throw new SQLException("unsupport type :" + javaType);
+		
 	}
 	
 
