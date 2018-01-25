@@ -28,11 +28,11 @@ public class GroupByWrapperController implements WrapperController{
 	
 	@Override
 	public boolean needWrap() {
-//		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
-//		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
-//		if (b!=null && b){
-//			return true;
-//		}
+		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
+		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
+		if (b!=null && b){
+			return true;
+		}
 		return false;
 	}
 
@@ -47,7 +47,7 @@ public class GroupByWrapperController implements WrapperController{
 	}
 
 	@Override
-	public ResultSet wrap(ResultSet rs) {
+	public ResultSet wrap(ResultSet rs) throws SQLException {
 		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
 		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
 		if (b!=null && b){
@@ -68,7 +68,7 @@ public class GroupByWrapperController implements WrapperController{
 
 	@Override
 	public void handleContextInitial(CombinedSqlContext ctx) {
-		if (1==2){
+//		if (1==2){
 			SelectBody bd = ctx.getStatement().getSelectBody();
 			PlainSelect inner = SelectSqlKit.getMostInnerSelect(bd, ctx.getOriginalSql());
 			List<Expression> groupbylist = inner.getGroupByColumnReferences();
@@ -97,7 +97,7 @@ public class GroupByWrapperController implements WrapperController{
 				//增加新的orderby
 				inner.setOrderByElements(makeNewOrderBy(groupbylist));
 			}
-		}
+//		}
 
 	}
 	

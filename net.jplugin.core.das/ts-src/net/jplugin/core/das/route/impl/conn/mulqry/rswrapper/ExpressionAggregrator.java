@@ -1,5 +1,7 @@
 package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 
+import java.sql.SQLException;
+
 import net.jplugin.core.das.route.api.AggFunctionEvalueContext;
 import net.jplugin.core.das.route.api.IAggregationFunctionHandler;
 import net.jplugin.core.das.route.function.FunctionHandlerManager;
@@ -38,9 +40,11 @@ public class ExpressionAggregrator {
 			if (exp instanceof Function){
 				//看看是不是aggfunction
 				String functionName = ((Function)exp).getName().toUpperCase();
-				IAggregationFunctionHandler fun = FunctionHandlerManager.INSTANCE.getAggFunctionHandler(functionName);
+				IAggregationFunctionHandler fun = FunctionHandlerManager.INSTANCE.getAggFunctionHandler(functionName.toUpperCase());
 				if (fun!=null){
 					this.aggFunction = fun;
+				}else{
+					new RuntimeException("Unknown support function: "+ functionName);
 				}
 			}
 		}else{
@@ -48,10 +52,10 @@ public class ExpressionAggregrator {
 		}
 	}
 
-	public void aggrateItem(Object v,int rowCntForCurentValue) {
+	public void aggrateItem(Object v,int rowCntForCurentValue, int coltype) throws SQLException {
 		if (this.aggFunction!=null){
 			//计算聚集函数
-			this.aggFunction.aggrate(ctx, v, rowCntForCurentValue);
+			this.aggFunction.aggrate(ctx, v, rowCntForCurentValue,coltype);
 		}else{
 			//只计算一次
 			if (!ctx.containAttribute("FIRST_ROW")){
@@ -60,10 +64,10 @@ public class ExpressionAggregrator {
 		}
 	}
 
-	public Object getResult() {
+	public Object getResult(int sqlType) throws SQLException {
 		if (this.aggFunction!=null){
 			//计算聚集函数
-			return this.aggFunction.getResult(ctx);
+			return this.aggFunction.getResult(ctx,sqlType);
 		}else{
 			//只计算一次
 			if (!ctx.containAttribute("FIRST_ROW")){

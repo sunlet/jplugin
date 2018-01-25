@@ -1,6 +1,7 @@
 package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import net.jplugin.core.das.route.impl.CombinedSqlContext;
 
@@ -22,7 +23,8 @@ public interface WrapperController {
 	 * 产生真正的包装ResultSet
 	 * @param rs
 	 * @return
+	 * @throws SQLException 
 	 */
-	ResultSet wrap(ResultSet rs);
+	ResultSet wrap(ResultSet rs) throws SQLException;
 
 }

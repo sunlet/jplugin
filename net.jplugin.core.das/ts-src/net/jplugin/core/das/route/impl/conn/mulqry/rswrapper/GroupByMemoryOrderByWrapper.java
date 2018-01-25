@@ -27,9 +27,13 @@ import java.util.Map;
 
 import net.jplugin.common.kits.Comparor;
 import net.jplugin.common.kits.SortUtil;
+import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.config.api.RefConfig;
 import net.jplugin.core.das.route.impl.CombinedSqlContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.GroupByMemoryOrderByWrapper.RowComparor;
 import net.jplugin.core.das.route.impl.util.BaseResultSetRow;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
 /**
@@ -38,95 +42,187 @@ import net.sf.jsqlparser.statement.select.OrderByElement;
  *
  */
 public class GroupByMemoryOrderByWrapper extends BaseResultSetRow{
-	public class RowComparor implements Comparor {
-		@Override
-		public boolean isGreaterThen(Object o1, Object o2) {
-			List<Object> list1 = (List<Object>) o1;
-			List<Object> list2 = (List<Object>) o2;
-			//TODO ....
-			return false;
-		}
-	}
+
 	GroupByWrapper inner;
-	List<List<Object>> dataGrid;
-	public GroupByMemoryOrderByWrapper(GroupByWrapper rs, List<OrderByElement> oldOrderBy) {
+	List<List<Object>> dataGrid;//数据列表
+	private List<OrderByInfo> initialOrderBy;//最初的orderby列表
+	RowComparor rowComparor = new RowComparor();
+	
+	int currentRowIndex = -1; //当前数据行号
+	boolean beforeFirst = true;
+	boolean afterLast = false;
+	private ResultSetMetaData resultSetMetaData;
+	private boolean isClosed;//是否关闭
+	
+	public GroupByMemoryOrderByWrapper(GroupByWrapper rs, List<OrderByElement> oldOrderBy) throws SQLException {
 		super(rs.getBaseResultSetRowMeta());
 		this.inner = rs;
+		this.initialOrderBy = parseOrderBy(oldOrderBy);
+		this.resultSetMetaData = rs.getMetaData();
 		initData();
 	}
+	private List<OrderByInfo> parseOrderBy(List<OrderByElement> list) throws SQLException {
+		ArrayList temp = new ArrayList<>(list.size());
+		for (OrderByElement obe:list){
+			Expression exp = obe.getExpression();
+			if (!(exp instanceof Column)){
+				throw new SQLException("the order by must be a column. "+exp.toString() +" sql="+CombinedSqlContext.get().getOriginalSql());
+			}
+			OrderByInfo o = new OrderByInfo();
+			o.fieldName = ((Column)exp).getColumnName();
+			o.isDesc = !obe.isAsc();
+			int idx = super.getMeta().getColumnIndex(o.fieldName);
+			if (idx<=0){
+				throw new SQLException("Can't find the order by column in sql. "+o.fieldName+"  sql="+CombinedSqlContext.get().getOriginalSql());
+			}
+			o.columnIndex = idx;
+			temp.add(o);
+		}
+		return temp;
+	}
+	static int rowLimit;
+	int getRowLimit(){
+		if (rowLimit>0) {
+			return rowLimit;
+		}else{
+			synchronized (this.getClass()) {
+				if (rowLimit<=0)
+					rowLimit = ConfigFactory.getIntConfig("platform.route-sql-memory-order-limit",2000);
+				return rowLimit;
+			}
+		}
+	}
+	
 	private void initData() {
 		try {
 			dataGrid = new ArrayList<List<Object>>();
-			while(inner.next()){
-				List<Object> row = inner.getBaseResultSetRowData();
-				dataGrid.add(row);
+			try{
+				int rowCnt = 0;
+				while(inner.next()){
+					rowCnt++;
+					if (rowCnt>getRowLimit())
+						throw new RuntimeException("platform.route-sql-memory-order-limit overflow."+CombinedSqlContext.get().getFinalSql());
+					
+					List<Object> row = inner.getBaseResultSetRowData();
+					List<Object> temp = new ArrayList(row.size());
+					temp.addAll(row);
+					dataGrid.add(temp);
+				}
+			}finally{
+				try {
+					this.inner.close();
+				}catch(Exception e){}
 			}
 			//排序一下
-			SortUtil.sort(dataGrid, new RowComparor());
+			SortUtil.sort(dataGrid,this.rowComparor );
 		} catch (SQLException e) {
 			throw new RuntimeException(CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
 	
+
 	@Override
 	public boolean next() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		if (this.afterLast) 
+			return false;
+
+		clearRowData();
+		this.beforeFirst = false;
+		this.currentRowIndex ++; //刚开始时从 -1 增加到 0
+		
+		if (this.currentRowIndex >=this.dataGrid.size()){
+			this.afterLast = true;
+			return false;
+		}else{
+			initRowData(this.currentRowIndex);
+			return true;
+		}
+	}
+	private void initRowData(int idx) throws SQLException {
+		super.setData(this.dataGrid.get(idx));
+	}
+	private void clearRowData() {
+		super.clearCurrentRowValue();
 	}
 	@Override
 	public void close() throws SQLException {
-		// TODO Auto-generated method stub
-		
+		this.isClosed= true;
+		if (this.dataGrid!=null) 
+			this.dataGrid.clear();
+		this.dataGrid = null;
 	}
 	@Override
 	public SQLWarning getWarnings() throws SQLException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public void clearWarnings() throws SQLException {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public String getCursorName() throws SQLException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.resultSetMetaData;
 	}
 	@Override
 	public boolean isBeforeFirst() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		return this.isBeforeFirst();
 	}
 	@Override
 	public boolean isAfterLast() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		return this.afterLast;
 	}
 	@Override
 	public Statement getStatement() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new SQLException("not support");
 	}
 	@Override
 	public boolean isClosed() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		return isClosed;
 	}
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
+	static class OrderByInfo{
+		public int columnIndex;
+		String fieldName;
+		boolean isDesc;
+	}
+	
+	class RowComparor implements Comparor {
+		@Override
+		public boolean isGreaterThen(Object o1, Object o2) {
+			List<Object> list1 = (List<Object>) o1;
+			List<Object> list2 = (List<Object>) o2;
+			
+			for (OrderByInfo obi:initialOrderBy){
+				Object v1 = list1.get(obi.columnIndex-1);
+				Object v2 = list2.get(obi.columnIndex-1);
+				
+				//null作为最大值
+				if (v2==null)
+					return false;
+				if (v1==null){ 
+					return true;
+				}
+				
+				//比较结果
+				int result = ((Comparable)v1).compareTo(v2);
+				if (result>0){
+					return obi.isDesc? false:true;
+				}
+				if (result<0)
+					return obi.isDesc? true:false;
+			}
+			return false;
+		}
+	}
 }

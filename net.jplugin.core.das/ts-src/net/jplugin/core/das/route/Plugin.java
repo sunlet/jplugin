@@ -13,6 +13,11 @@ import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.algms.DateAlgm;
 import net.jplugin.core.das.route.impl.algms.HashAlgm;
 import net.jplugin.core.das.route.impl.algms.WightHashAlgm;
+import net.jplugin.core.das.route.impl.conn.mulqry.aggfunc.AvgAggFunction;
+import net.jplugin.core.das.route.impl.conn.mulqry.aggfunc.CountAggFunction;
+import net.jplugin.core.das.route.impl.conn.mulqry.aggfunc.MaxAggFunction;
+import net.jplugin.core.das.route.impl.conn.mulqry.aggfunc.MinAggFunction;
+import net.jplugin.core.das.route.impl.conn.mulqry.aggfunc.SumAggFunction;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.CountStarWrapperController;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.GroupByWrapperController;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.LimitWrapperController;
@@ -42,6 +47,12 @@ public class Plugin extends AbstractPlugin {
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, CountStarWrapperController.class);
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, GroupByWrapperController.class);
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, LimitWrapperController.class);
+		
+		ExtensionDasRouteHelper.addAggSqlFunctionExtension(this, "COUNT", CountAggFunction.class);
+		ExtensionDasRouteHelper.addAggSqlFunctionExtension(this, "SUM", SumAggFunction.class);
+		ExtensionDasRouteHelper.addAggSqlFunctionExtension(this, "MAX", MaxAggFunction.class);
+		ExtensionDasRouteHelper.addAggSqlFunctionExtension(this, "MIN", MinAggFunction.class);
+		ExtensionDasRouteHelper.addAggSqlFunctionExtension(this, "AVG", AvgAggFunction.class);
 
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_FUNCTION, IFunctionHandler.class,true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_AGG_FUNCTION, IAggregationFunctionHandler.class,true));

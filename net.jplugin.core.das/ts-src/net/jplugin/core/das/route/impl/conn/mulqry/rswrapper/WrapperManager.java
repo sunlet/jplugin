@@ -1,6 +1,7 @@
 package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import net.jplugin.core.das.route.impl.CombinedSqlContext;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -18,7 +19,7 @@ public class WrapperManager {
 		}
 	}
 	
-	public ResultSet wrap(ResultSet rs){
+	public ResultSet wrap(ResultSet rs) throws SQLException{
 		ResultSet temp = rs;
 		for (WrapperController c:controllers){
 			if (c.needWrap()){

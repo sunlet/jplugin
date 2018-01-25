@@ -6,6 +6,8 @@ import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import test.net.jplugin.core.das.route.date.DateTest;
 import test.net.jplugin.core.das.route.date.DbCreateDate;
+import test.net.jplugin.core.das.route.groupby.DBGroupByTest;
+import test.net.jplugin.core.das.route.groupby.DbGroupByDDL;
 import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
 import test.net.jplugin.core.das.route.stringint.DeleteTest;
 import test.net.jplugin.core.das.route.stringint.InsertSelectTest;
@@ -31,6 +33,9 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
+		DbGroupByDDL.create();
+		new DBGroupByTest().test();
+		
 		DbCreateStringInt.create();
 		new InsertSelectTest().test();
 		DbCreateStringInt.create();

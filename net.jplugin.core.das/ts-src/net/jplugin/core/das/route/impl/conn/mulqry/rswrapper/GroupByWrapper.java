@@ -45,14 +45,14 @@ public class GroupByWrapper extends BaseResultSetRow{
 	private int columnCount;
 	
 	/**
-	 * 实际字段比可用字段少一个
+	 * 实际字段比可用字段少2个
 	 * @param l
 	 * @throws SQLException
 	 */
 	public GroupByWrapper(ResultSet l,List<SelectItem> initialItems) throws SQLException{
 		super(l.getMetaData(),l.getMetaData().getColumnCount()-2);
+		this.columnCount = l.getMetaData().getColumnCount()-2;//实际记录集的行数
 		this.inner = l;
-		this.columnCount = inner.getMetaData().getColumnCount();
 		initExpressionAggrator(initialItems);
 	}
 
@@ -94,11 +94,11 @@ public class GroupByWrapper extends BaseResultSetRow{
 		this.beforeFirst = false;
 		
 		//必然return true
-		String  currentGroupKey = inner.getString(columnCount);
+		String  currentGroupKey = inner.getString(columnCount+1);
 		fetchValue();
 		
 		while(inner.next()){
-			String temp = inner.getString(columnCount);
+			String temp = inner.getString(columnCount+1);
 			if (equal(temp,currentGroupKey)){
 				fetchValue();
 			}else{
@@ -111,18 +111,24 @@ public class GroupByWrapper extends BaseResultSetRow{
 		}
 		//仍然返回true，但是这已经是最后一条
 		currentIsLastRow = true;
+		//更新改行数据
+		initCurrentRowData();
+		
 		return true;
 	}
 
-	private void initCurrentRowData() {
+	private void initCurrentRowData() throws SQLException {
 		int size = aggregrateList.size();
+		List<Object> coldata = super.getBaseResultSetRowData();
 		for (int i=0;i<size;i++){
-			Object result = aggregrateList.get(i).getResult();
+			Object result = aggregrateList.get(i).getResult(super.getMeta().getColumnType(i+1));
+			coldata.set(i, result);
 		}
 		
 	}
 	private void clearExpressionAggregateStatus() {
-		for (int i=0;i<this.columnCount;i++){
+		int size = aggregrateList.size();
+		for (int i=0;i<size;i++){
 			this.aggregrateList.get(i).resetState();
 		}
 	}
@@ -137,10 +143,11 @@ public class GroupByWrapper extends BaseResultSetRow{
 	}
 
 	private void fetchValue() throws SQLException {
+		int valueCnt = inner.getInt(this.columnCount+2);//最后一个字段为count
+		
 		for (int i=0;i<this.columnCount;i++){
 			Object v = inner.getObject(i+1);
-			int valueCnt = inner.getInt(i+2);
-			this.aggregrateList.get(i).aggrateItem(v,valueCnt);
+			this.aggregrateList.get(i).aggrateItem(v,valueCnt,super.getMeta().getColumnType(i+1));
 		}
 	}
 
@@ -170,7 +177,7 @@ public class GroupByWrapper extends BaseResultSetRow{
 	
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException {
-		return new TruncedMetaDataAdaptor(inner.getMetaData(),1);
+		return new TruncedMetaDataAdaptor(inner.getMetaData(),this.columnCount);
 	}
 
 	@Override
@@ -201,15 +208,15 @@ public class GroupByWrapper extends BaseResultSetRow{
 	static class TruncedMetaDataAdaptor implements ResultSetMetaData{
 		
 		private ResultSetMetaData meta;
-		private int trunkSize;
+		private int colCount;
 
-		public TruncedMetaDataAdaptor(ResultSetMetaData metaData, int aTrunkSize) {
+		public TruncedMetaDataAdaptor(ResultSetMetaData metaData, int acolCount) {
 			this.meta = metaData;
-			this.trunkSize = aTrunkSize;
+			this.colCount = acolCount;
 		}
 
 		public int getColumnCount() throws SQLException {
-			return meta.getColumnCount() - this.trunkSize;
+			return this.colCount;
 		}
 
 		//以下方法都是adaptor方法

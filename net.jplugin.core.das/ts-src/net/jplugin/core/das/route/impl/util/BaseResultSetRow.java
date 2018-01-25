@@ -34,7 +34,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 	List<Object> data;
 	Meta meta;
 	
-	static class Meta{
+	public static class Meta{
 		List<MetaItem> metaList=null;
 		/**
 		 * colCount，支持只获取ResultSet的前几个字段，忽略后面字段。
@@ -52,9 +52,13 @@ public abstract class BaseResultSetRow implements ResultSet{
 		}
 		
 		public Object getColumnTypeName(int columnIndex) throws SQLException {
+			throw new RuntimeException("not impl");
+		}
+		
+		public int getColumnType(int columnIndex) throws SQLException {
 			if (columnIndex<=0 || columnIndex>metaList.size())
 				throw new SQLException("Error columnIndex ."+columnIndex+"  metalen:"+metaList.size());
-			return metaList.get(columnIndex-1).getColumnLabel();
+			return metaList.get(columnIndex-1).getColumnType();
 		}
 		
 		public int getColumnIndex(String columnLabel) throws SQLException {
@@ -89,10 +93,13 @@ public abstract class BaseResultSetRow implements ResultSet{
 	}
 	
 	public void clearCurrentRowValue(){
-		if (data==null)
+		if (data==null){
 			data = new ArrayList(meta.metaList.size());
-		else{
-			for (int i=0;i<data.size();i++){
+			for (int i=0;i<this.meta.size();i++){
+				data.add(null);
+			}
+		}else{
+			for (int i=0;i<this.meta.size();i++){
 				data.set(i, null);
 			}
 		}
@@ -127,9 +134,13 @@ public abstract class BaseResultSetRow implements ResultSet{
 		return data;
 	}
 	
+	public Meta getMeta() {
+		return meta;
+	}
+	
 	@Override
 	public final <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-		return SqlTypeKit.get(data.get(columnIndex), type);
+		return SqlTypeKit.get(getData(columnIndex), type);
 	}
 
 
@@ -140,97 +151,101 @@ public abstract class BaseResultSetRow implements ResultSet{
 
 	@Override
 	public final String getString(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getString(data.get(columnIndex));
+		return SqlTypeKit.service.getString(getData(columnIndex));
+	}
+	
+	private Object getData(int columnIndex){
+		return data.get(columnIndex-1);
 	}
 
 	@Override
 	public final boolean getBoolean(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getBoolean(data.get(columnIndex));
+		return SqlTypeKit.service.getBoolean(getData(columnIndex));
 	}
 
 	@Override
 	public final byte getByte(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getByte(data.get(columnIndex));
+		return SqlTypeKit.service.getByte(getData(columnIndex));
 	}
 
 	@Override
 	public final short getShort(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getShort(data.get(columnIndex));
+		return SqlTypeKit.service.getShort(getData(columnIndex));
 	}
 
 	@Override
 	public final int getInt(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getInt(data.get(columnIndex));
+		return SqlTypeKit.service.getInt(getData(columnIndex));
 	}
 
 	@Override
 	public final long getLong(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getLong(data.get(columnIndex));
+		return SqlTypeKit.service.getLong(getData(columnIndex));
 	}
 
 	@Override
 	public final float getFloat(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getFloat(data.get(columnIndex));
+		return SqlTypeKit.service.getFloat(getData(columnIndex));
 	}
 
 	@Override
 	public final double getDouble(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getDouble(data.get(columnIndex));
+		return SqlTypeKit.service.getDouble(getData(columnIndex));
 	}
 
 	@Override  //此方法在接口已经 不推荐使用
 	public final BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-		return SqlTypeKit.service.getBigDecimal(data.get(columnIndex));
+		return SqlTypeKit.service.getBigDecimal(getData(columnIndex));
 	}
 
 	@Override
 	public final byte[] getBytes(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getBytes(data.get(columnIndex));
+		return SqlTypeKit.service.getBytes(getData(columnIndex));
 	}
 
 	@Override
 	public final Date getDate(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getDate(data.get(columnIndex));
+		return SqlTypeKit.service.getDate(getData(columnIndex));
 	}
 
 	@Override
 	public final Time getTime(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getTime(data.get(columnIndex));
+		return SqlTypeKit.service.getTime(getData(columnIndex));
 	}
 
 	@Override
 	public final Timestamp getTimestamp(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getTimestamp(data.get(columnIndex));
+		return SqlTypeKit.service.getTimestamp(getData(columnIndex));
 	}
 
 	@Override
 	public final InputStream getAsciiStream(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getAsciiStream(data.get(columnIndex));
+		return SqlTypeKit.service.getAsciiStream(getData(columnIndex));
 	}
 
 	@Override
 	public final InputStream getUnicodeStream(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getUnicodeStream(data.get(columnIndex));
+		return SqlTypeKit.service.getUnicodeStream(getData(columnIndex));
 	}
 
 	@Override
 	public final InputStream getBinaryStream(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getBinaryStream(data.get(columnIndex));
+		return SqlTypeKit.service.getBinaryStream(getData(columnIndex));
 	}
 
 	@Override
 	public final Object getObject(int columnIndex) throws SQLException {
-		return data.get(columnIndex);
+		return getData(columnIndex);
 	}
 
 	@Override
 	public final Reader getCharacterStream(int columnIndex) throws SQLException {
-		return new CharArrayReader(getChars(SqlTypeKit.service.getBytes(data.get(columnIndex)),"UTF-8"));
+		return new CharArrayReader(getChars(SqlTypeKit.service.getBytes(getData(columnIndex)),"UTF-8"));
 	}
 	
 	@Override
 	public final BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-		return SqlTypeKit.service.getBigDecimal(data.get(columnIndex));
+		return SqlTypeKit.service.getBigDecimal(getData(columnIndex));
 	}
 
 
@@ -266,7 +281,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 		Class<?> javaClass = map.get(meta.getColumnTypeName(columnIndex));
 		if (javaClass == null)
 			throw new SQLException("can't find the java type mapping for:" + meta.getColumnTypeName(columnIndex));
-		return SqlTypeKit.get(data.get(columnIndex), javaClass);
+		return SqlTypeKit.get(getData(columnIndex), javaClass);
 	}
 
 	@Override
@@ -276,12 +291,12 @@ public abstract class BaseResultSetRow implements ResultSet{
 
 	@Override
 	public final Blob getBlob(int columnIndex) throws SQLException {
-		return new SerialBlob(SqlTypeKit.service.getBytes(data.get(columnIndex)));
+		return new SerialBlob(SqlTypeKit.service.getBytes(getData(columnIndex)));
 	}
 
 	@Override
 	public final Clob getClob(int columnIndex) throws SQLException {
-		return new SerialClob(getChars(SqlTypeKit.service.getBytes(data.get(columnIndex)),"utf-8"));
+		return new SerialClob(getChars(SqlTypeKit.service.getBytes(getData(columnIndex)),"utf-8"));
 	}
 
 	@Override
@@ -290,15 +305,15 @@ public abstract class BaseResultSetRow implements ResultSet{
 	}
 	@Override
 	public final Date getDate(int columnIndex, Calendar cal) throws SQLException {
-		return SqlTypeKit.service.getDate(data.get(columnIndex));
+		return SqlTypeKit.service.getDate(getData(columnIndex));
 	}
 	@Override
 	public final Time getTime(int columnIndex, Calendar cal) throws SQLException {
-		return SqlTypeKit.service.getTime(data.get(columnIndex));
+		return SqlTypeKit.service.getTime(getData(columnIndex));
 	}
 	@Override
 	public final Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-		return SqlTypeKit.service.getTimestamp(data.get(columnIndex));
+		return SqlTypeKit.service.getTimestamp(getData(columnIndex));
 	}
 	@Override
 	public final URL getURL(int columnIndex) throws SQLException {
@@ -522,7 +537,7 @@ public abstract class BaseResultSetRow implements ResultSet{
 	@Override
 	public final Reader getNCharacterStream(int columnIndex) throws SQLException {
 		throw new SQLException("not support");
-//		byte[] v = SqlDataTypeTransformer.commonTransformer.getBytes(data.get(columnIndex));
+//		byte[] v = SqlDataTypeTransformer.commonTransformer.getBytes(getData(columnIndex));
 //		return new CharArrayReader(getChars(v, "UTF-16"));
 	}
 

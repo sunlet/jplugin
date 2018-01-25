@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,49 +41,92 @@ TIMESTAMP 	java.sql.Timestamp
  *
  */
 public class SqlTypeKit {
-	
+
 	public static Transformer<Object> service = new CommonTransformer();
-	
+
 	private static Map<Class, Transformer> transformers = new HashMap<Class, Transformer>();
 
-	public static  <T> T get(Object obj,Class<T> c) throws SQLException{
+	private static NullTransformer nullTransformer = new NullTransformer();
+
+	private static Map<Integer, Class> jdbcTypeToJavaType = new HashMap();
+
+//	static {
+//		jdbcTypeToJavaType.put(Types.VARCHAR, java.lang.String.class);
+//		jdbcTypeToJavaType.put(Types.CHAR, java.lang.String.class);
+//		jdbcTypeToJavaType.put(Types.LONGVARCHAR, java.lang.String.class);
+//		jdbcTypeToJavaType.put(Types.BIT, boolean.class);
+//		jdbcTypeToJavaType.put(Types.NUMERIC, BigDecimal.class);
+//		jdbcTypeToJavaType.put(Types.TINYINT, byte.class);
+//		jdbcTypeToJavaType.put(Types.SMALLINT, short.class);
+//		jdbcTypeToJavaType.put(Types.INTEGER, int.class);
+//		jdbcTypeToJavaType.put(Types.BIGINT, long.class);
+//		jdbcTypeToJavaType.put(Types.REAL, float.class);
+//		jdbcTypeToJavaType.put(Types.FLOAT, float.class);
+//		jdbcTypeToJavaType.put(Types.DOUBLE, double.class);
+//		jdbcTypeToJavaType.put(Types.VARBINARY, byte[].class);
+//		jdbcTypeToJavaType.put(Types.BINARY, byte[].class);
+//		jdbcTypeToJavaType.put(Types.DATE, java.sql.Date.class);
+//		jdbcTypeToJavaType.put(Types.TIME, java.sql.Time.class);
+//		jdbcTypeToJavaType.put(Types.TIMESTAMP, java.sql.Timestamp.class);
+//		jdbcTypeToJavaType.put(Types.CLOB, java.sql.Clob.class);
+//		jdbcTypeToJavaType.put(Types.BLOB, java.sql.Blob.class);
+//		jdbcTypeToJavaType.put(Types.ARRAY, java.sql.Array.class);
+//		jdbcTypeToJavaType.put(Types.REF, java.sql.Ref.class);
+//		jdbcTypeToJavaType.put(Types.STRUCT, java.sql.Struct.class);
+//		jdbcTypeToJavaType.put(Types.DECIMAL, double.class);
+//		
+//	}
+//
+//	public static Object get(Object obj, int sqlType) throws SQLException {
+//		Class javatype = jdbcTypeToJavaType.get(sqlType);
+//		if (javatype == null)
+//			throw new SQLException("unsupport jdbc type:" + sqlType);
+//		return get(obj, javatype);
+//	}
+
+	public static <T> T get(Object obj, Class<T> c) throws SQLException {
+		if (obj == null)
+			return null;
 		Transformer t = transformers.get(obj.getClass());
 		if (t == null)
 			throw new SQLException("can't find transformer for type:" + obj.getClass());
-		if (c==String.class)
+		if (c == String.class)
 			return (T) t.getString(obj);
-		if (c==Boolean.class)
+		if (c == Boolean.class)
 			return (T) t.getBoolean(obj);
-		if (c==Byte.class || c==byte.class)
+		if (c == Byte.class || c == byte.class)
 			return (T) t.getByte(obj);
-		if (c==Short.class || c==short.class)
+		if (c == Short.class || c == short.class)
 			return (T) t.getShort(obj);
-		if (c==Integer.class || c==int.class)
-			return (T)t.getInt(obj);
-		if (c==Long.class || c==long.class)
-			return (T)t.getLong(obj);
-		if (c==Float.class || c==float.class)
-			return (T)t.getFloat(obj);
-		if (c==Double.class || c==double.class)
-			return (T)t.getDouble(obj);
-		if (c==BigDecimal.class)
-			return (T)t.getBigDecimal(obj);
-		if (c==byte[].class)
-			return (T)t.getBytes(obj);
-		if (c==Date.class)
-			return (T)t.getDate(obj);
-		if (c==Time.class)
-			return (T)t.getTime(obj);
-		if (c==Timestamp.class)
-			return (T)t.getTimestamp(obj);
-		if (c==InputStream.class)
-			return (T)t.getAsciiStream(obj);
-		throw new SQLException("not supported class:"+c.getName());
+		if (c == Integer.class || c == int.class)
+			return (T) t.getInt(obj);
+		if (c == Long.class || c == long.class)
+			return (T) t.getLong(obj);
+		if (c == Float.class || c == float.class)
+			return (T) t.getFloat(obj);
+		if (c == Double.class || c == double.class)
+			return (T) t.getDouble(obj);
+		if (c == BigDecimal.class)
+			return (T) t.getBigDecimal(obj);
+		if (c == byte[].class)
+			return (T) t.getBytes(obj);
+		if (c == Date.class)
+			return (T) t.getDate(obj);
+		if (c == Time.class)
+			return (T) t.getTime(obj);
+		if (c == Timestamp.class)
+			return (T) t.getTimestamp(obj);
+		if (c == InputStream.class)
+			return (T) t.getAsciiStream(obj);
+
+		throw new SQLException("not supported class:" + c.getName());
 	}
 
-	private static class CommonTransformer implements Transformer<Object> {
+	public static class CommonTransformer implements Transformer<Object> {
 
 		Transformer get(Object o) throws SQLException {
+			if (o == null)
+				return nullTransformer;
 			Transformer t = transformers.get(o.getClass());
 			if (t == null)
 				throw new SQLException("can't find transformer for type:" + o.getClass());
@@ -170,7 +214,6 @@ public class SqlTypeKit {
 			return get(o).getBinaryStream(o);
 		}
 	}
-	
 
 	static {
 		transformers.put(Timestamp.class, new FromTimestampTransformer());
@@ -713,6 +756,90 @@ public class SqlTypeKit {
 		public final Double getDouble(T o) throws SQLException {
 			return o.doubleValue();
 		}
+	}
+
+	private static class NullTransformer implements Transformer {
+
+		@Override
+		public String getString(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Boolean getBoolean(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Byte getByte(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Short getShort(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Integer getInt(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Long getLong(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Float getFloat(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Double getDouble(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public BigDecimal getBigDecimal(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public byte[] getBytes(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Date getDate(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Time getTime(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public Timestamp getTimestamp(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public InputStream getAsciiStream(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public InputStream getUnicodeStream(Object o) throws SQLException {
+			return null;
+		}
+
+		@Override
+		public InputStream getBinaryStream(Object o) throws SQLException {
+			return null;
+		}
+
 	}
 }
 

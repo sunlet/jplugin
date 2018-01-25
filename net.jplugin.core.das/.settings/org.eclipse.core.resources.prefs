@@ -37,6 +37,7 @@ encoding//src/net/jplugin/core/das/sqlrefactor/StatementWrapperForSqlRefactor.ja
 encoding//test/test/net/jplugin/core/das/route/Plugin.java=UTF-8
 encoding//test/test/net/jplugin/core/das/route/date/DateTest.java=UTF-8
 encoding//test/test/net/jplugin/core/das/route/date/DbCreateDate.java=UTF-8
+encoding//test/test/net/jplugin/core/das/route/groupby/DbGroupByDDL.java=UTF-8
 encoding//test/test/net/jplugin/core/das/route/stringint/DbCreateStringInt.java=UTF-8
 encoding//test/test/net/jplugin/core/das/route/stringint/DeleteTest.java=UTF-8
 encoding//test/test/net/jplugin/core/das/route/stringint/InsertSelectTest.java=UTF-8
