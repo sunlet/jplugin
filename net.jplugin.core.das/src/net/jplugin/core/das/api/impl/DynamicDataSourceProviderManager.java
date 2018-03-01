@@ -25,7 +25,7 @@ public class DynamicDataSourceProviderManager {
 		this.nameMap = m;
 		dataSourceMap=new HashMap<String,DataSource>();
 		for (Entry<String, IDynamicDataSourceProvider> en:nameMap.entrySet()){
-			dataSourceMap.put(en.getKey(), new DynamicDataSource(en.getValue()));
+			dataSourceMap.put(en.getKey(), new DynamicDataSource(en.getValue(),en.getKey()));
 		}
 	}
 
@@ -36,8 +36,10 @@ public class DynamicDataSourceProviderManager {
 	class DynamicDataSource implements DataSource{
 		private IDynamicDataSourceProvider prod;
 		private PrintWriter loggerWriter;
-		public DynamicDataSource(IDynamicDataSourceProvider p) {
+		private String declaredDataSource;
+		public DynamicDataSource(IDynamicDataSourceProvider p,String declaredDs) {
 			this.prod  = p;
+			this.declaredDataSource = declaredDs;
 		}
 		@Override
 		public PrintWriter getLogWriter() throws SQLException {
@@ -69,11 +71,11 @@ public class DynamicDataSourceProviderManager {
 		}
 		@Override
 		public Connection getConnection() throws SQLException {
-			return DataSourceFactory.getDataSource(prod.computeDataSourceName()).getConnection();
+			return DataSourceFactory.getDataSource(prod.computeDataSourceName(this.declaredDataSource)).getConnection();
 		}
 		@Override
 		public Connection getConnection(String username, String password) throws SQLException {
-			return DataSourceFactory.getDataSource(prod.computeDataSourceName()).getConnection(username,password);
+			return DataSourceFactory.getDataSource(prod.computeDataSourceName(this.declaredDataSource)).getConnection(username,password);
 		}
 	}
 }

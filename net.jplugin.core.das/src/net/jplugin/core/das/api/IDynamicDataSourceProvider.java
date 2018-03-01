@@ -6,5 +6,10 @@ package net.jplugin.core.das.api;
  *
  */
 public interface IDynamicDataSourceProvider {
-	String computeDataSourceName();
+	/**
+	 * declaredDataSource 也作为参数传入，实现类可以不用，更灵活一些
+	 * @param declaredDataSource
+	 * @return
+	 */
+	String computeDataSourceName(String declaredDataSource);
 }
