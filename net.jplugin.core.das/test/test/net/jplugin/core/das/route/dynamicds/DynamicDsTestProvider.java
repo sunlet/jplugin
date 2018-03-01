@@ -5,7 +5,7 @@ import net.jplugin.core.das.api.IDynamicDataSourceProvider;
 public class DynamicDsTestProvider implements IDynamicDataSourceProvider {
 
 	@Override
-	public String computeDataSourceName() {
+	public String computeDataSourceName(String s) {
 		return "database";
 	}
 
