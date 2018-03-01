@@ -2,8 +2,10 @@ package net.jplugin.core.das;
 
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.api.IConnectionWrapperService;
+import net.jplugin.core.das.api.IDynamicDataSourceProvider;
 import net.jplugin.core.das.api.impl.ConnectionWrapperManager;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
+import net.jplugin.core.das.api.impl.DynamicDataSourceProviderManager;
 import net.jplugin.core.das.api.monitor.ISqlExecFilter;
 import net.jplugin.core.das.api.monitor.ISqlMonitorListener;
 import net.jplugin.core.das.api.sqlrefactor.ISqlRefactor;
@@ -25,6 +27,7 @@ public class Plugin extends AbstractPlugin {
 	public static final String EP_SQL_LISTENER = "EP_SQL_LISTENER";
 	public static final String EP_SQL_EXEC_FILTER = "EP_SQL_EXEC_FILTER";
 	public static final String EP_SQL_REFACTOR = "EP_SQL_REFACTOR";
+	public static final String EP_DYNAMIC_DS_PROVIDER = "EP_DYNAMIC_DS_PROVIDER";
 	
 
 	public Plugin(){
@@ -34,6 +37,7 @@ public class Plugin extends AbstractPlugin {
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_LISTENER, ISqlMonitorListener.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_EXEC_FILTER, ISqlExecFilter.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_REFACTOR, ISqlRefactor.class));
+		this.addExtensionPoint(ExtensionPoint.create(EP_DYNAMIC_DS_PROVIDER, IDynamicDataSourceProvider.class,true));
 		
 		//用来监控sql的ConnectionWrapper，先注册的在里面一层，所以能看到外面包装造成的影响，应该能监控到Refactor
 		//以后的sql
@@ -50,6 +54,7 @@ public class Plugin extends AbstractPlugin {
 	}
 	
 	public void onCreateServices() {
+		DynamicDataSourceProviderManager.INSTANCE.init();
 		DataSourceFactory.init();
 		ConnectionWrapperManager.init();
 		SqlMonitorListenerManager.instance.init();

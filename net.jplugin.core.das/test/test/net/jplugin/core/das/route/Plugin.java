@@ -6,6 +6,8 @@ import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import test.net.jplugin.core.das.route.date.DateTest;
 import test.net.jplugin.core.das.route.date.DbCreateDate;
+import test.net.jplugin.core.das.route.dynamicds.DynamicDsTest;
+import test.net.jplugin.core.das.route.dynamicds.DynamicDsTestProvider;
 import test.net.jplugin.core.das.route.groupby.DBGroupByTest;
 import test.net.jplugin.core.das.route.groupby.DbGroupByDDL;
 import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
@@ -28,6 +30,8 @@ public class Plugin extends AbstractPluginForTest {
 		ExtensionDasHelper.addSqlListenerExtension(this, SqlMonitorListenerTest.class);
 		
 		ExtensionDasRouteHelper.addSqlFunctionExtension(this,"Mytest",MytestFunctionHandler.class);
+		
+		ExtensionDasHelper.addDynamicDataSourceProviderExtension(this, "testdynamicds",DynamicDsTestProvider.class);
 	}
 	
 	
@@ -47,6 +51,7 @@ public class Plugin extends AbstractPluginForTest {
 		new WhereExpressionVisitorTest().test();
 		new VisitorExpressionManagerTest().test();
 		new InSectUtilTest().test();
+		new DynamicDsTest().test();
 	}
 
 	@Override
