@@ -11,6 +11,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
  *
  */
 public class MtInvocationFilterHandler{
+	public static final String TENANT_ID="TenantId";
 	public static MtInvocationFilterHandler instance ;
 	
 	enum ReqParamAt{BOTH,COOKIE,REQUEST}
@@ -46,16 +47,21 @@ public class MtInvocationFilterHandler{
 			return;
 		
 		String v1;
-		if (paraAt==ReqParamAt.REQUEST){
-			v1 = reqInfo.getContent().getParamContent().get(reqParamName);
-		}else if (paraAt==ReqParamAt.COOKIE){
-			v1 = reqInfo.getCookies().getCookie(reqParamName);
-		}else if (paraAt == ReqParamAt.BOTH){
-			v1 = reqInfo.getContent().getParamContent().get(reqParamName);
-			if (StringKit.isNull(v1))
+		
+		//优先获取header里面的配置
+		v1 = reqInfo.getHeaders().getHeader(TENANT_ID);
+		if (v1==null || "".equals(v1)){
+			if (paraAt==ReqParamAt.REQUEST){
+				v1 = reqInfo.getContent().getParamContent().get(reqParamName);
+			}else if (paraAt==ReqParamAt.COOKIE){
 				v1 = reqInfo.getCookies().getCookie(reqParamName);
-		}else{
-			throw new RuntimeException("Error ReqParamAt value:"+paraAt);
+			}else if (paraAt == ReqParamAt.BOTH){
+				v1 = reqInfo.getContent().getParamContent().get(reqParamName);
+				if (StringKit.isNull(v1))
+					v1 = reqInfo.getCookies().getCookie(reqParamName);
+			}else{
+				throw new RuntimeException("Error ReqParamAt value:"+paraAt);
+			}
 		}
 		
 		//set

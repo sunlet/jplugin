@@ -89,6 +89,7 @@ public class Main {
 		});
 		
 		PluginApp.main(args);
+//		TestCall.test();
 //		PluginEnvirement.getInstance().startup();
 		PluginEnvirement.getInstance().stop();
 		// testlog();

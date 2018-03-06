@@ -70,6 +70,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
 		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
 		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
+		requestInfo.getHeaders().setHeader(MtInvocationFilterHandler.TENANT_ID, req.getHeader(MtInvocationFilterHandler.TENANT_ID));
 	}
 
 	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
