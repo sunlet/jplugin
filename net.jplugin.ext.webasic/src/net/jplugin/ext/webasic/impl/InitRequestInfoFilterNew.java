@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.jplugin.common.kits.RequestIdKit;
 import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
+import net.jplugin.core.kernel.api.ctx.Headers;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
 import net.jplugin.core.kernel.kits.KernelKit;
@@ -31,10 +32,19 @@ import net.jplugin.ext.webasic.kits.StreamContentKit;
  */
 public class InitRequestInfoFilterNew implements WebFilter {
 
+	//放在request中的
 	private static final String _AID = "_aid";
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
+
+	//放在head中的
+	private static final String HAID = "HAID";
+	private static final String HOID = "HOID";
+	private static final String HOTK = "HOTK";
+	private static final String HATK = "HATK";
+	
+	
 	public static final String _REQID = "ReqSerialKey";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
@@ -68,9 +78,15 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	}
 
 	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
-		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
-		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
-		requestInfo.getHeaders().setHeader(MtInvocationFilterHandler.TENANT_ID, req.getHeader(MtInvocationFilterHandler.TENANT_ID));
+		Enumeration<String> headers = req.getHeaderNames();
+		if (headers!=null)
+			while(headers.hasMoreElements()){
+				String h = headers.nextElement();
+				requestInfo.getHeaders().setHeader(h, req.getHeader(h));
+			}
+//		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
+//		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
+//		requestInfo.getHeaders().setHeader(MtInvocationFilterHandler.TENANT_ID, req.getHeader(MtInvocationFilterHandler.TENANT_ID));
 	}
 
 	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
@@ -83,18 +99,11 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			}
 		}
 	}
-
+	
 	public static void fillFromBasicReqInfo(RequesterInfo requestInfo) {
 		Content content = requestInfo.getContent();
 		
-		Map map;
-		//2016-12-08 因为把jsonContent解析放入paramContent，不需要区分了
-//		if (APPLICATION_JSON.equals(content.getContentType())) {
-//			map = content.getMapForJsonContent();
-//		} else {
-//			map = content.getParamContent();
-//		}
-		map = content.getParamContent();
+		Map map = content.getParamContent();
 
 		String clientAppToken = (String) map.get(_ATK);
 		String operatorToken = (String) map.get(_OTK);
@@ -104,11 +113,21 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			requestInfo.setOperatorToken(operatorToken);
 			requestInfo.setOperatorId((String) map.get(_OID));
 			requestInfo.setClientAppCode((String) map.get(_AID));
+		}else{
+			//2018-3-18 增加支持Header中信息
+			Headers headers = requestInfo.getHeaders();
+			clientAppToken = headers.getHeader(HATK);
+			operatorToken = headers.getHeader(HOTK);
+			if (clientAppToken!=null  || operatorToken!=null){
+				requestInfo.setClientAppToken(clientAppToken);
+				requestInfo.setOperatorToken(operatorToken);
+				requestInfo.setOperatorId( headers.getHeader(HOID));
+				requestInfo.setClientAppCode( headers.getHeader(HAID));
+			}	
 		}
 		
 		//设置tenant
 		MtInvocationFilterHandler.instance.handle(requestInfo);
-		
 	}
 
 	private String getClientIp(HttpServletRequest request) {
