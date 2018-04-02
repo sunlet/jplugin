@@ -20,7 +20,10 @@ import net.jplugin.core.kernel.kits.scheduled.ScheduledExecutorServiceWrapper;
  * @see Executors
  */
 public final class ExecutorKit {
-
+	
+	private static int maxQueueSize = 100000;
+	private static int maxCachedThreadNum = 2000;
+	
     /**
      * 创建一个指定大小的普通线程池
      *
@@ -30,7 +33,7 @@ public final class ExecutorKit {
     public static ExecutorService newFixedThreadPool(int nThreads) {
         return new TheadLocalContextExecutorService(nThreads, nThreads,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+                new LinkedBlockingQueue<>(maxQueueSize));
     }
 
     /**
@@ -43,7 +46,7 @@ public final class ExecutorKit {
     public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory) {
         return new TheadLocalContextExecutorService(nThreads, nThreads,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(),
+                new LinkedBlockingQueue<>(maxQueueSize),
                 threadFactory);
     }
 
@@ -55,7 +58,7 @@ public final class ExecutorKit {
     public static ExecutorService newSingleThreadExecutor() {
         return new TheadLocalContextExecutorService(1, 1,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
+                new LinkedBlockingQueue<>(maxQueueSize));
     }
 
     /**
@@ -67,7 +70,7 @@ public final class ExecutorKit {
     public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory) {
         return new TheadLocalContextExecutorService(1, 1,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(),
+                new LinkedBlockingQueue<>(maxQueueSize),
                 threadFactory);
     }
 
@@ -77,7 +80,7 @@ public final class ExecutorKit {
      * @return 线程池
      */
     public static ExecutorService newCachedThreadPool() {
-        return new TheadLocalContextExecutorService(0, Integer.MAX_VALUE,
+        return new TheadLocalContextExecutorService(0, maxCachedThreadNum ,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<>());
     }
@@ -89,7 +92,7 @@ public final class ExecutorKit {
      * @return 线程池
      */
     public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory) {
-        return new TheadLocalContextExecutorService(0, Integer.MAX_VALUE,
+        return new TheadLocalContextExecutorService(0, maxCachedThreadNum,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
                 threadFactory);
