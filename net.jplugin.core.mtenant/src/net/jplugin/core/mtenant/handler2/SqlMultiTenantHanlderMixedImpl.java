@@ -117,7 +117,7 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 		
 		Strategy stragegy=null;
 		if (TenantStoreStrategyManager.instance.isProviderExist()){
-			stragegy = TenantStoreStrategyManager.instance.getStragegy(tid);
+			stragegy = TenantStoreStrategyManager.instance.getStragegy(tid,dataSource);
 			if (stragegy==null)
 				throw new RuntimeException("Can't get tenant store stragegy for tenent:"+tid);
 		}else{

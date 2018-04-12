@@ -24,8 +24,8 @@ public class TenantStoreStrategyManager {
 		return this.providor!=null;
 	}
 	
-	public Strategy getStragegy(String tid){
-		return this.providor.getTenantStrategy(tid);
+	public Strategy getStragegy(String tid,String dataSource){
+		return this.providor.getTenantStrategy(tid,dataSource);
 	}
 	
 }

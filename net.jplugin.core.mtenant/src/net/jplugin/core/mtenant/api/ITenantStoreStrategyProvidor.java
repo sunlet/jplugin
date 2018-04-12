@@ -6,20 +6,20 @@ package net.jplugin.core.mtenant.api;
  * @author LiuHang
  */
 public interface ITenantStoreStrategyProvidor {
-	public Strategy getTenantStrategy(String tid);
+	public Strategy getTenantStrategy(String tid, String dataSource);
 	
 	enum Mode{SHARE,ONESELF}
 	
 	public static class Strategy{
-		String finalDataSource;//暂时不用
+//		String finalDataSource;//暂时不用
 		String schemaPostfix;
 		Mode mode;
-		public String getFinalDataSource() {
-			return finalDataSource;
-		}
-		public void setFinalDataSource(String finalDataSource) {
-			this.finalDataSource = finalDataSource;
-		}
+//		public String getFinalDataSource() {
+//			return finalDataSource;
+//		}
+//		public void setFinalDataSource(String finalDataSource) {
+//			this.finalDataSource = finalDataSource;
+//		}
 		public String getSchemaPostfix() {
 			return schemaPostfix;
 		}

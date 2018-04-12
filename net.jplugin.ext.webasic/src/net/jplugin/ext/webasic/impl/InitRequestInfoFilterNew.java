@@ -78,15 +78,23 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	}
 
 	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
-		Enumeration<String> headers = req.getHeaderNames();
-		if (headers!=null)
-			while(headers.hasMoreElements()){
-				String h = headers.nextElement();
-				requestInfo.getHeaders().setHeader(h, req.getHeader(h));
-			}
-//		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
-//		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
-//		requestInfo.getHeaders().setHeader(MtInvocationFilterHandler.TENANT_ID, req.getHeader(MtInvocationFilterHandler.TENANT_ID));
+		//存在大小写问题，暂时修改方案
+//		Enumeration<String> headers = req.getHeaderNames();
+//		if (headers!=null)
+//			while(headers.hasMoreElements()){
+//				String h = headers.nextElement();
+//				requestInfo.getHeaders().setHeader(h, req.getHeader(h));
+//			}
+
+		
+		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
+		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
+		requestInfo.getHeaders().setHeader(MtInvocationFilterHandler.TENANT_ID, req.getHeader(MtInvocationFilterHandler.TENANT_ID));
+
+		requestInfo.getHeaders().setHeader(HAID, req.getHeader(HAID));
+		requestInfo.getHeaders().setHeader(HOID, req.getHeader(HOID));
+		requestInfo.getHeaders().setHeader(HOTK, req.getHeader(HOTK));
+		requestInfo.getHeaders().setHeader(HATK, req.getHeader(HATK));
 	}
 
 	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
