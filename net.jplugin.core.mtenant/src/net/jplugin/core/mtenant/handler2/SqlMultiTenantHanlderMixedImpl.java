@@ -2,11 +2,16 @@ package net.jplugin.core.mtenant.handler2;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.das.api.sqlrefactor.ISqlRefactor;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
@@ -64,8 +69,11 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 		}catch(Exception e){
 			throw new RuntimeException("Error while call isWrapper",e);
 		}
-		if (isRouter) 
-			throw new RuntimeException("Router connection can't be configed with multinant."+conn.getClass().getName());
+		if (isRouter) {
+			handleRouterConnectionConfigured(dataSourceName);
+//			throw new RuntimeException("Router connection can't be configed with multinant."+conn.getClass().getName());
+			return sql;
+		}
 		
 		String tid = ThreadLocalContextManager.getRequestInfo().getCurrentTenantId();
 		
@@ -84,6 +92,14 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 	}
 
 	
+	boolean firstTimeMatchRouteConnection = true;
+	private void handleRouterConnectionConfigured(String dataSourceName) {
+		if (firstTimeMatchRouteConnection){
+			firstTimeMatchRouteConnection = false;
+			PluginEnvirement.getInstance().getStartLogger().log("$$$ Router connection is configured for mtenant, noticed. "+dataSourceName);
+		}
+	}
+
 	private boolean inDataSourceList(String dataSourceName) {
 		for (String s:this.dataSources){
 			if (s.equals(dataSourceName)) return true;
