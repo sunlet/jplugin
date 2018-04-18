@@ -15,6 +15,36 @@ public class SqlHandlerVisitorTest {
 		testDelete();
 //		testPerform();
 		testReplace();
+//		testReplaceMulValue();
+		testUnionAll();
+	}
+
+	private static void testReplaceMulValue() throws JSQLParserException{
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
+		String from,to;
+		
+//		from = "replace into customer (customer_id,customer_name,city,tfield) "+
+//				"values ('aaa','bbb','ccc','ddd'),('aaa1','bbb1','ccc1','ddd1')";
+		from = "replace into customer (customer_id,customer_name,city,tfield) "+
+				"values ('aaa','bbb','ccc','ddd'),('aaa1','bbb1','ccc1','ddd1');";
+		
+		to = v.handle(from);
+		System.out.println();
+		System.out.println(from);
+		System.out.println(to);
+	}
+	
+	private static void testUnionAll() throws JSQLParserException{
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
+		String from,to;
+
+		from = "select  customer_id,customer_name,city,tfield from tb1  "+
+				"union all "+
+				"select  customer_id,customer_name,city,tfield from tb1 ";
+		
+		to = v.handle(from);
+		System.out.println(from);
+		System.out.println(to);
 	}
 	
 	private static void testReplace() throws JSQLParserException{

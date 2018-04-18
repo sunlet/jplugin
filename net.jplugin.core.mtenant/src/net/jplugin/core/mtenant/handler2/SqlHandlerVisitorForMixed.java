@@ -578,7 +578,13 @@ public class SqlHandlerVisitorForMixed
 	}
 
 	@Override
-	public void visit(SetOperationList arg0) {
+	public void visit(SetOperationList sol) {
+		List<SelectBody> selects = sol.getSelects();
+		if (selects!=null){
+			for (SelectBody s:selects){
+				s.accept(this);
+			}
+		}
 	}
 
 	@Override
