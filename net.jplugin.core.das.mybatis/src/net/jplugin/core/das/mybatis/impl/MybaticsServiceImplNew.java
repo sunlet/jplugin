@@ -98,7 +98,7 @@ public class MybaticsServiceImplNew implements IMybatisService {
 						}
 					}
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					throw new RuntimeException("Error class:"+c,e);
 				}
 			}
 

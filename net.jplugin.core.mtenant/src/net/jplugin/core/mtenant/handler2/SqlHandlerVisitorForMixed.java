@@ -7,6 +7,8 @@ import java.util.List;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.route.impl.parser.SqlStrLexerToolNew;
+import net.jplugin.core.das.route.impl.parser.SqlWordsWalker;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
@@ -136,8 +138,24 @@ public class SqlHandlerVisitorForMixed
 		this.tenantId = tid;
 		this.sqlRefactor = new SqlRefactor();
 	}
-	
 	public String handle(String sql) throws JSQLParserException{
+		//引号里面的分号目前会报错！！
+		if (sql.indexOf(';') <0){
+			return handleOne(sql);
+		}else{
+			String[] arr = StringKit.splitStr(sql, ";");
+			StringBuffer sb = new StringBuffer();
+			for (int i=0;i<arr.length;i++){
+				if (i!=0) {
+					sb.append(";");
+				}
+				sb.append(handleOne(arr[i]));
+			}
+			return sb.toString();
+		}
+	}
+	
+	private String handleOne(String sql) throws JSQLParserException{
 		CCJSqlParserManager pm = new CCJSqlParserManager();
     	net.sf.jsqlparser.statement.Statement statement = pm.parse(new StringReader(sql));
     	if (statement instanceof Select)
