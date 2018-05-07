@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import net.jplugin.core.das.route.impl.CombinedSqlContext;
 import net.jplugin.core.das.route.impl.util.SelectSqlKit;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.statement.select.Limit;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -53,7 +54,9 @@ public class LimitWrapperController implements WrapperController{
 	private Long getIntValue(Expression e) {
 		if (e instanceof LongValue){
 			return ((LongValue) e).getValue();
-		}else 
+		}else if (e instanceof JdbcParameter){
+			throw new RuntimeException("Only const value is allowed for limit query parameter.");
+		}else
 			return null;
 	}
 
