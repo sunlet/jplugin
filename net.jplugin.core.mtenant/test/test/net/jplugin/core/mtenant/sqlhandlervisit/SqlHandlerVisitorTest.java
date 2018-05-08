@@ -45,6 +45,25 @@ public class SqlHandlerVisitorTest {
 		to = v.handle(from);
 		System.out.println(from);
 		System.out.println(to);
+		
+		v = new SqlHandlerVisitorForMixed("sssss");
+//		from = "select  customer_id,customer_name,city,tfield from tb1  "+
+//				"union all "+
+//				"select  customer_id,customer_name,city,tfield from tb1 ";
+//		
+//		to = v.handle(from);
+//		System.out.println(from);
+//		System.out.println(to);
+//		
+		
+		from = "SELECT b.msg_type AS msgType, b.msg_content AS msgContent, b.content_type AS contentType FROM wx_keyword a JOIN wx_msg b ON a.msg_id = b.id "+
+				"WHERE a.name LIKE CONCAT('%', 1, '%') AND a.match_type = 2 AND b.state = 1 AND b.public_number_id = 8 "+
+				"UNION ALL SELECT b.msg_type AS msgType, b.msg_content AS msgContent, b.content_type AS contentType  "+
+				"FROM wx_keyword a JOIN wx_msg b ON a.msg_id = b.id  "+
+				"WHERE a.name = 1 AND a.match_type = 1 AND b.state = 1 AND b.public_number_id = 8 ";
+		to = v.handle(from);
+		System.out.println(from);
+		System.out.println(to);
 	}
 	
 	private static void testReplace() throws JSQLParserException{
