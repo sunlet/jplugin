@@ -127,7 +127,8 @@ public class SqlWordsWalker{
 	public  String toSql(){
 		return appendToBuffer(new StringBuffer(),words);
 	}
-	private  String appendToBuffer(StringBuffer sb,String[] list) {
+
+	public static String appendToBuffer(StringBuffer sb,String[] list) {
 		boolean first = true;
 		for (String s : list) {
 			if (first) {

@@ -30,10 +30,12 @@ public class MybaticsServiceImplNew implements IMybatisService {
 	DataSource dataSource=null;
 	SqlSessionFactory sqlSessionFactory;
 	String theDataSourceName;
+	private List<String> theMappers;
 	
 	public void init(String dataSourceName,List<String> mappers,List<Class> interceptors){
 		theDataSourceName = dataSourceName;
 		
+		this.theMappers=mappers;
 		if (mappers==null || mappers.size()==0) {
 			PluginEnvirement.INSTANCE.getStartLogger().log("  No mappers configed.");
 			return;
@@ -221,5 +223,10 @@ public class MybaticsServiceImplNew implements IMybatisService {
 
 	public SqlSession _openRealSession() {
 		return sqlSessionFactory.openSession();
+	}
+
+	@Override
+	public boolean containsMapper(String clazz) {
+		return theMappers.contains(clazz);
 	}
 }

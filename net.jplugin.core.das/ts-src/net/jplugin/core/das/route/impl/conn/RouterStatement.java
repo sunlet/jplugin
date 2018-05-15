@@ -149,6 +149,8 @@ public class RouterStatement extends EmptyStatement {
 		if (sql==null) throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(conn,sql);
 		
+		LogUtil.instance.log(shr);
+		
 		String targetDataSourceName = shr.getTargetDataSourceName();
 		Statement stmt;
 		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){

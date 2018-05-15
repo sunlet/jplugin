@@ -70,6 +70,8 @@ public class RouterPrearedStatement extends RouterStatement  implements Prepared
 			throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(connection, sql, recorder.getList());
 
+		LogUtil.instance.log(shr);
+		
 		String targetDataSourceName = shr.getTargetDataSourceName();
 		PreparedStatement stmt ;
 		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){

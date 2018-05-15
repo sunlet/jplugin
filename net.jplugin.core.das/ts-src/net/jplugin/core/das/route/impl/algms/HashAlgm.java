@@ -25,6 +25,10 @@ public class HashAlgm  implements ITsAlgorithm{
 			throw new RuntimeException("not support algm for key java type:"+key.getClass().getName()+" algm is: "+this.getClass().getName());
 		}
 		
+		if (hashCode<0){
+			hashCode = -hashCode;
+		}
+		
 		int splits = compondDataSource.getConfig().findTableConfig(tableBaseName).getSplits();
 		if (splits==0){
 			throw new TablesplitException("Splits value error ,must >0 ,for table:"+tableBaseName);
@@ -32,7 +36,7 @@ public class HashAlgm  implements ITsAlgorithm{
 		//可以假定splits为int范围内
 		int mod = (int) (hashCode % splits);
 		
-		int dsIndex = mod / compondDataSource.getConfig().getDataSourceConfig().length;
+		int dsIndex = mod % compondDataSource.getConfig().getDataSourceConfig().length;
 		
 		Result r = Result.create();
 		r.setDataSource(compondDataSource.getConfig().getDataSourceConfig()[dsIndex].getDataSrouceCfgName());
