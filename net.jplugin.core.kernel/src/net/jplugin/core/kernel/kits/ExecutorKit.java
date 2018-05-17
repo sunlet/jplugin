@@ -49,6 +49,20 @@ public final class ExecutorKit {
                 new LinkedBlockingQueue<>(maxQueueSize),
                 threadFactory);
     }
+    
+    /**
+     * 用指定的线程工厂创建一个指定大小的普通线程池
+     *
+     * @param nThreads      线程数
+     * @param threadFactory 线程工厂
+     * @return 线程池
+     */
+    public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory,int queueSize) {
+        return new TheadLocalContextExecutorService(nThreads, nThreads,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(queueSize),
+                threadFactory);
+    }
 
     /**
      * 创建一个只有一个线程的线程池
@@ -60,6 +74,8 @@ public final class ExecutorKit {
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(maxQueueSize));
     }
+    
+
 
     /**
      * 用指定的线程工厂创建一个只有一个线程的线程池
@@ -71,6 +87,19 @@ public final class ExecutorKit {
         return new TheadLocalContextExecutorService(1, 1,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(maxQueueSize),
+                threadFactory);
+    }
+    
+    /**
+     * 用指定的线程工厂创建一个只有一个线程的线程池
+     *
+     * @param threadFactory 线程工厂
+     * @return 线程池
+     */
+    public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory,int queueSize) {
+        return new TheadLocalContextExecutorService(1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(queueSize),
                 threadFactory);
     }
 
@@ -98,6 +127,19 @@ public final class ExecutorKit {
                 threadFactory);
     }
 
+    /**
+     * 用指定的线程工厂创建一个可根据需要创建新线程的普通线程池
+     *
+     * @param threadFactory 线程工厂
+     * @return 线程池
+     */
+    public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory,int maxThreadNum) {
+        return new TheadLocalContextExecutorService(0, maxThreadNum,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                threadFactory);
+    }
+    
     /**
      * 创建一个单线程的线程池，可以执行延时任务以及定期调度的任务
      *
