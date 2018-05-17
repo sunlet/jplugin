@@ -37,6 +37,10 @@ public class ClientProxyFactory {
 		if (ret==null){
 			ClientProxyDefinition def = defMap.get(localName);
 			
+			if (def==null){
+				throw new RuntimeException("Can't find the proxy definition: localName ="+localName);
+			}
+			
 			ClientInfo ci = new ClientInfo();
 			ci.setAppId(def.getAppId());
 			ci.setAppToken(def.getAppToken());
