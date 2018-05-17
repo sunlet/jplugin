@@ -13,6 +13,7 @@ import net.jplugin.core.ctx.api.TransactionManager;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInvocationContext;
 import net.jplugin.core.ctx.impl.RuleServiceAttrAnnoHandler;
+import net.jplugin.core.ctx.impl.ServiceExtensionResolver;
 import net.jplugin.core.ctx.impl.TransactionManagerAdaptor;
 import net.jplugin.core.ctx.impl.TxMgrListenerManager;
 import net.jplugin.core.kernel.api.AbstractPlugin;
@@ -24,6 +25,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
+import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
 
 /**
  *
@@ -85,7 +87,9 @@ public class Plugin extends AbstractPlugin{
 		TxMgrListenerManager.init();
 		
 		DefaultRuleInvocationHandler.init();
-		
+	
+		//注册一下这个扩展的resolver
+		ServiceAttrAnnoHandler.serviceExtensionResolver = new ServiceExtensionResolver();
 	}
 	public void init() {
 		// TODO Auto-generated method stub
