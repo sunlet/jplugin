@@ -70,7 +70,6 @@ public class ObjectCallHelper{
 			synchronized (this) {
 				if (svcObject == null){
 					svcObject = createObject(objeceDefine);	
-					PluginEnvirement.INSTANCE.resolveRefAnnotation(svcObject);
 				}
 			}
 		}
@@ -90,7 +89,9 @@ public class ObjectCallHelper{
 					throw new RuntimeException("the service object class is null");
 				}
 				try {
-					return objClass.newInstance();
+					Object o = objClass.newInstance();
+					PluginEnvirement.INSTANCE.resolveRefAnnotation(o);
+					return o;
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}

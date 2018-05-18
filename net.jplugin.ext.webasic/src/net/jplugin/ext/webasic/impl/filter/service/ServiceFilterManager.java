@@ -16,7 +16,7 @@ public class ServiceFilterManager extends MethodFilterManager {
 		filters = new ArrayList<IInvocationFilter>(arr.length);
 		for (int i=0;i<arr.length;i++){
 			filters.add(arr[i]);
-			PluginEnvirement.getInstance().resolveRefAnnotation(arr[i]);
+//			PluginEnvirement.getInstance().resolveRefAnnotation(arr[i]);
 		}
 	}
 

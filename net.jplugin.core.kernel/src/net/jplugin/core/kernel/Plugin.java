@@ -3,6 +3,7 @@ package net.jplugin.core.kernel;
 import net.jplugin.common.kits.http.filter.IHttpClientFilter;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
 import net.jplugin.core.kernel.api.IExeRunnableInitFilter;
@@ -11,6 +12,8 @@ import net.jplugin.core.kernel.api.IPluginEnvInitFilter;
 import net.jplugin.core.kernel.api.IScheduledExecutionFilter;
 import net.jplugin.core.kernel.api.IStartup;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.impl.AnnoForExtensionMapHandler;
+import net.jplugin.core.kernel.impl.AnnoForExtensionsHandler;
 import net.jplugin.core.kernel.impl.HttpClientFilterManager;
 import net.jplugin.core.kernel.kits.ExecutorKitFilterManager;
 import net.jplugin.core.kernel.kits.RunnableInitFilterManager;
@@ -40,6 +43,9 @@ public class Plugin extends AbstractPlugin{
 		addExtensionPoint(ExtensionPoint.create(EP_HTTP_CLIENT_FILTER,IHttpClientFilter.class));	
 		addExtensionPoint(ExtensionPoint.create(EP_PLUGIN_ENV_INIT_FILTER,IPluginEnvInitFilter.class));	
 		addExtensionPoint(ExtensionPoint.create(EP_EXE_SCHEDULED_FILTER,IScheduledExecutionFilter.class));	
+		
+		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, AnnoForExtensionsHandler.class);
+		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, AnnoForExtensionMapHandler.class);
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.api.AbstractPlugin#getPrivority()

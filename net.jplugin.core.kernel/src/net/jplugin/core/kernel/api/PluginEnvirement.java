@@ -244,16 +244,15 @@ public class PluginEnvirement {
 			registry.makeServices();
 			registry.clearClassCache();
 			this.stateLevel = STAT_LEVEL_INITING;
-			this.annoResolveHelper.resolveHistory();
+
 
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
 					ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
-//					KernelKit.getOrCreateSpanStack(ctx).pushSpan(Span.SYSTEM_INIT);
-//					ctx.getRequesterInfo().setTraceId(RequestIdKit.newTraceId());
 					
+					this.annoResolveHelper.resolveHistory();
 					startFilterManager.filter(Tuple2.with(testAll,testTarget));
-//					registry.start(testAll,testTarget);	
+
 				}finally{
 					ThreadLocalContextManager.instance.releaseContext();
 				}

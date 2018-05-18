@@ -11,6 +11,7 @@ import java.util.Set;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
+import net.jplugin.core.kernel.api.Initializable;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
@@ -104,6 +105,11 @@ public class AnnotationResolveHelper {
 					}
 				}
 			}
+		}
+		
+		//
+		if (obj instanceof Initializable){
+			((Initializable)obj).initialize();
 		}
 	}
 
