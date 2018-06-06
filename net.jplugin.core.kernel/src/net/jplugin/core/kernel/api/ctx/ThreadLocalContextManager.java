@@ -44,6 +44,7 @@ public class ThreadLocalContextManager {
 		}
 		ThreadLocalContext rc = new ThreadLocalContext();
 		ctxLocal.set(rc);
+		
 		return rc;
 	}
 	

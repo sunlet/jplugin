@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.jplugin.common.kits.client.ClientInvocationManager;
+import net.jplugin.common.kits.client.InvocationParam;
+
 /**
  *
  * @author: LiuHang
@@ -69,6 +72,10 @@ public class ThreadLocalContext {
 	 * The threadlocal var not be released!!!
 	 */
 	void release(){
+		//这里的代码比较丑陋，目前由于Kit层次无法依赖Kenel进行反向注册，但是目前只能先这样
+		ClientInvocationManager.INSTANCE.getAndClearParam();
+		//以上
+		
 		if (listeners!=null){
 			for (ThreadLocalContextListener l:this.listeners){
 				l.released(this);
