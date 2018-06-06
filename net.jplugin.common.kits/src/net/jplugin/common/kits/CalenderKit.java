@@ -390,14 +390,14 @@ public class CalenderKit {
 		Date date = formatter.parse(timeString, pos);
 		return date.getTime();
 	}
-	/**
-	 * 这个转换有一点笨，看未来有没有更好的
-	 * @param date
-	 * @return
-	 */
-	public static java.sql.Date convertToSqlDate(LocalDate date) {
-		return new java.sql.Date(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
-	}
+//	/**
+//	 * 这个转换有一点笨，看未来有没有更好的
+//	 * @param date
+//	 * @return
+//	 */
+//	public static java.sql.Date convertToSqlDate(LocalDate date) {
+//		return new java.sql.Date(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+//	}
 	
 	public static void main(String[] args) {
 		Date d = new Date();
