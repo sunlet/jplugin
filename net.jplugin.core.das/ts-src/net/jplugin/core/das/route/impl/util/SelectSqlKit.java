@@ -34,12 +34,13 @@ public class SelectSqlKit {
 		// 检查类型
 		if (!(sb instanceof PlainSelect))
 			throw new RouterException("only support plain select ." + sqlString);
-
-		// 检查join
-		List<Join> joins = ((PlainSelect) sb).getJoins();
-		if (joins != null && !joins.isEmpty()) {
-			throw new RouterException("join is not supported." + sqlString);
-		}
+//
+//		去掉，运气好的时候可以用。
+//		// 检查join
+//		List<Join> joins = ((PlainSelect) sb).getJoins();
+//		if (joins != null && !joins.isEmpty()) {
+//			throw new RouterException("join is not supported." + sqlString);
+//		}
 
 		// 递归判断或者返回结果
 		FromItem fromItem = ((PlainSelect) sb).getFromItem();
