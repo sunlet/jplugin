@@ -67,7 +67,7 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 							throw new RuntimeException("Param annotation can't use same name with Jsonp callback param. "+ o.getClass().getName()+" "+m.getName());
 						}
 						
-						if (Para._FULL_MATCH_.equals(p.name()) && m.getParameterTypes().length!=1){
+						if (Para.FULL_MATCH.equals(p.name()) && m.getParameterTypes().length!=1){
 							//一定只有一个参数
 							throw new RuntimeException("_FULL_MATCH_ can only be used for method with ONE parameter. "+ o.getClass().getName()+" "+m.getName());
 						}
@@ -113,7 +113,7 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 		for (Annotation a:anno){
 			if (a.annotationType()==Para.class){
 				String name = ((Para)a).name().trim();
-				if (Para._FULL_MATCH_.equals(name)){
+				if (Para.FULL_MATCH.equals(name)){
 					String fullJson;
 					if (req.paramMap!=null && !req.paramMap.isEmpty()){
 						//如果参数不为NULL或EMPTY，则肯定无需判断jsonContent.(如果是json方式调用，json内容也已经同步到paramMap里面了）

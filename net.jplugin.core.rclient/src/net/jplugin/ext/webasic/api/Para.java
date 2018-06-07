@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
  **/
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Para {
-	public static final String _FULL_MATCH_="_FULL_MATCH_";
+	public static final String FULL_MATCH ="_FULL_MATCH_";
 	public String name();
 	public boolean required() default false;
 }
