@@ -29,6 +29,13 @@ public abstract class AbstractPlugin implements IPlugin {
 	@Override
 	public void onCreateServices() {
 	}
+	
+	protected void searchAndBindExtensions(){
+		List<IBindExtensionHandler> handlers = AutoBindExtensionManager.INSTANCE.getHandlers();
+		for (IBindExtensionHandler h:handlers){
+			h.handle(this);
+		}
+	}
 
 //	@Override
 //	public void init() {
