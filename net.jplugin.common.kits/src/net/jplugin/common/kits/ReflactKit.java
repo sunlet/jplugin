@@ -264,6 +264,30 @@ public class ReflactKit {
 		}
 	}
 
+//	public static List<Class> getAllTypes(Class clazz) {
+//		List list = new ArrayList<>();
+//		
+//		Class tmp = clazz;
+//		while(tmp!=null){
+//			list.add(tmp);
+//			addAll(list,tmp.getInterfaces());
+//			tmp = tmp.getSuperclass();
+//		}
+//		
+//		return list;
+//	}
+//
+//	private static void addAll(List ret, Class[] interfaces) {
+//		if (interfaces!=null){
+//			for (Class i:interfaces){
+//				//处理一下interface被重复实现的问题
+//				if (!ret.contains(i)){
+//					ret.add(i);
+//				}
+//			}
+//		}
+//	}
+
 
 
 }

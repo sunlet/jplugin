@@ -9,10 +9,13 @@ import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.reso.ResolverKit;
+import net.jplugin.core.ctx.api.BindRuleMethodInterceptor;
+import net.jplugin.core.ctx.api.BindRuleMethodInterceptorSet;
 import net.jplugin.core.ctx.api.BindRuleService;
 import net.jplugin.core.ctx.api.BindRuleService.DefaultInterface;
 import net.jplugin.core.ctx.api.BindRuleServiceSet;
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
+import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineBean;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -39,7 +42,41 @@ public class ExtensionCtxHelper {
 	public static void addRuleServiceFilterExtension(AbstractPlugin plugin,Class impl){
 		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE_FILTER, impl ));
 	}
+	
+	public static void addRuleMethodFilterExtension(AbstractPlugin plugin,Class impl,String applyTo,Integer priority){
+		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class,new String[][]{{"filterClass",impl.getName()},{"applyTo",applyTo},{"priority",priority.toString()}}));
+	}
+	
+	/**
+	 * 自动遍历pkgPath子包下面的所有类，找到BindRuleMethodInterceptor 标注。
+	 * @param p
+	 * @param pkgPath
+	 */
+	public static void autoBindRuleMethodInterceptor(AbstractPlugin p, String pkgPath) {
+		for(Class c:p.filterContainedClasses(pkgPath,BindRuleMethodInterceptor.class)){
+			BindRuleMethodInterceptor anno = (BindRuleMethodInterceptor) c.getAnnotation(BindRuleMethodInterceptor.class);
+			handleOneRuleMethodFilterBind(p, c, anno);
+		}
+		
+		for(Class<?> c:p.filterContainedClasses(pkgPath,BindRuleMethodInterceptorSet.class)){
+			Annotation[] annos = c.getAnnotationsByType(BindRuleMethodInterceptor.class);
+			for (Annotation a:annos){
+				handleOneRuleMethodFilterBind(p, c, a);
+			}
+		}
+	}
 
+	private static void handleOneRuleMethodFilterBind(AbstractPlugin p, Class c, Annotation a) {
+		BindRuleMethodInterceptor anno = (BindRuleMethodInterceptor) a;
+		String applyTo = anno.applyTo();
+		int priority = anno.sequence();
+		addRuleMethodFilterExtension(p, c, applyTo, priority);
+		
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for RuleMethodFilter: filterClass="
+					+ c.getName() + " applyTo=" + applyTo+" priority="+priority);
+		
+	}
+	
 	/**
 	 * 自动遍历pkgPath子包下面的所有类，找到BindRuleService 标注，自动注册为RuleService扩展。
 	 * @param p

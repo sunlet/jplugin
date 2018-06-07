@@ -1,12 +1,10 @@
 package net.jplugin.core.service;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.jplugin.core.kernel.api.AbstractPlugin;
+import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.CoreServicePriority;
-import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -22,6 +20,12 @@ import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
 
 public class Plugin extends AbstractPlugin{
 
+	static{
+		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
+			ExtensionServiceHelper.autoBindServiceExtension(p, "");
+		});
+	}
+	
 	public Plugin(){
 		this.addExtensionPoint(ExtensionPoint.create(Constants.EP_SERVICE,Object.class,true));
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, ServiceAttrAnnoHandler.class);

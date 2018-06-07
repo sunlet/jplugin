@@ -4,6 +4,7 @@ import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.AbstractPlugin;
+import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
@@ -52,6 +53,12 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_ESF_RPC_FILTER = "EP_ESF_RPC_FILTER";
 	public static final String EP_ESF_REST_FILTER = "EP_ESF_REST_FILTER";
 
+	static{
+		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
+			ExtensionWebHelper.autoBindControllerExtension(p, "");
+			ExtensionWebHelper.autoBindServiceExportExtension(p, "");
+		});
+	}
 	public Plugin(){
 		this.addExtensionPoint(ExtensionPoint.create(EP_CONTROLLERSET, IControllerSet.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBFILTER, WebFilter.class));
@@ -77,6 +84,7 @@ public class Plugin extends AbstractPlugin{
 		this.addExtension(Extension.create(EP_CONTROLLERSET,"",RestMethodControllerSet4Invoker.class));
 		this.addExtension(Extension.create(EP_CONTROLLERSET,"",WebExControllerSet.class));
 	}
+
 
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()
