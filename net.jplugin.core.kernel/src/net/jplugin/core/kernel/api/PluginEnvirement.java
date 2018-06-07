@@ -321,11 +321,13 @@ public class PluginEnvirement {
 	private void trigStartListener(Exception e, List<PluginError> errors) {
 		IStartup[] listeners = getExtensionObjects(Plugin.EP_STARTUP,IStartup.class);
 		if (e==null && errors==null ){
-			for (IStartup s:listeners){
+			for (int i=listeners.length-1;i>=0;i--){
+				IStartup s = listeners[i];
 				s.startSuccess();
 			}
 		}else{
-			for (IStartup s:listeners){
+			for (int i=listeners.length-1;i>=0;i--){
+				IStartup s = listeners[i];
 				s.startFailed(e, errors);
 			}
 		}
