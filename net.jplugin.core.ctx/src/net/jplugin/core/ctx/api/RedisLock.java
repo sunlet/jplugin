@@ -11,13 +11,9 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RedisLock {
-	public enum Conflict {
-		WAIT,FAIL
-	}
 	public String type();
 	public int  paramIndex();
-	public Conflict conflict() default Conflict.WAIT;
-	public int waitSecondsWhenConflict() default 180;
+	public int waitSecondsWhenConflict() default 6;
 	public int timeOutSeconds() default 180;
 }
 

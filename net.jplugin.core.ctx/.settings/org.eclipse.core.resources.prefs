@@ -7,6 +7,7 @@ encoding//src/net/jplugin/core/ctx/api/BindRuleServiceSet.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/CtxRuntimeException.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/ITransactionManagerListener.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/JsonResult.java=UTF-8
+encoding//src/net/jplugin/core/ctx/api/RedisLock.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/RefRuleService.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/RollBackException.java=UTF-8
 encoding//src/net/jplugin/core/ctx/api/Rule.java=UTF-8

@@ -223,8 +223,8 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 		return this.containedClasses;
 	}
-			
-	public Set<Class> filterContainedClasses(String pkgPath, Class annoClazz) {
+	
+	public Set<Class> filterContainedClassesByChecker(String pkgPath, IClassChecker checker) {
 		AssertKit.assertTrue(StringKit.isNull(pkgPath) || pkgPath.startsWith("."));
 		
 		//初始化一下
@@ -241,12 +241,17 @@ public abstract class AbstractPlugin implements IPlugin {
 		Set<Class> temp = new HashSet();
 		for (Class c : this.containedClasses) {
 			if (c.getName().startsWith(prefix)) {
-				if (annoClazz == null || c.getAnnotation(annoClazz) != null)
+				if (checker.check(c))
 					temp.add(c);
 			}
 		}
 		return temp;
 	}
+			
+	public Set<Class> filterContainedClasses(String pkgPath, Class annoClazz) {
+		return this.filterContainedClassesByChecker(pkgPath, c->annoClazz == null || c.getAnnotation(annoClazz) != null);
+	}
+	
 	public void _cleanContainedClasses(){
 		if (this.containedClasses==null) 
 			return;
