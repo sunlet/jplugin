@@ -43,8 +43,14 @@ public class ExtensionCtxHelper {
 		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE_FILTER, impl ));
 	}
 	
-	public static void addRuleMethodFilterExtension(AbstractPlugin plugin,Class impl,String applyTo,Integer priority){
-		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class,new String[][]{{"filterClass",impl.getName()},{"applyTo",applyTo},{"priority",priority.toString()}}));
+	/**
+	 * @param plugin
+	 * @param impl   需要继承 AbstractRuleMethodInterceptor
+	 * @param applyTo  格式：com.xxx.zz.Class1,com.dd.zz.Class2:set*,com.zz.yy.*:get*
+	 * @param sequence 优先级
+	 */
+	public static void addRuleMethodFilterExtension(AbstractPlugin plugin,Class impl,String applyTo,Integer sequence){
+		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class,new String[][]{{"filterClass",impl.getName()},{"applyTo",applyTo},{"priority",sequence.toString()}}));
 	}
 	
 	/**

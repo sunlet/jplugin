@@ -5,7 +5,11 @@ import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.AbstractPluginForTest;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.kernel.api.ExtensionKernelHelper;
+import net.jplugin.core.kernel.api.ExtensionPoint;
 import test.net.jplugin.core.ctx.bind.BindTest;
+import test.net.jplugin.core.ctx.bindextension.IService1;
+import test.net.jplugin.core.ctx.bindextension.TestBindExtension;
 import test.net.jplugin.core.ctx.bindrulemethodfilter.TestFroRuleMethodFilter;
 
 public class Plugin extends AbstractPluginForTest {
@@ -18,6 +22,10 @@ public class Plugin extends AbstractPluginForTest {
 		ExtensionCtxHelper.autoBindRuleServiceExtension(this, "");
 		
 		ExtensionCtxHelper.autoBindRuleMethodInterceptor(this, "");
+		
+		ExtensionKernelHelper.autoBindExtension(this, "");
+		
+		this.addExtensionPoint(ExtensionPoint.create("testExtensionPoint", IService1.class));
 	}
 
 	@Override
@@ -42,6 +50,8 @@ public class Plugin extends AbstractPluginForTest {
 		new BindTest().test();
 		
 		new TestFroRuleMethodFilter().test();
+		
+		new TestBindExtension().test();
 	}
 
 }

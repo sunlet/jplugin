@@ -27,4 +27,12 @@ public class ExtensionKernelHelper {
 	public static void addScheduledExecutionFilterExtension(AbstractPlugin p, Class c) {
 		p.addExtension(Extension.create(Plugin.EP_EXE_SCHEDULED_FILTER, c));
 	}
+	
+	public static void autoBindExtension(AbstractPlugin p,String pkgPath){
+		for(Class c:p.filterContainedClasses(pkgPath,BindExtension.class)){
+			BindExtension anno = (BindExtension) c.getAnnotation(BindExtension.class);
+			p.addExtension(Extension.create(anno.pointTo(),anno.name(), c));
+			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for point:"+anno.pointTo()+" class="+c.getName()+" name="+anno.name());
+		}
+	}
 }
