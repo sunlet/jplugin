@@ -20,9 +20,9 @@ public @interface Rule {
 	
 	public boolean log() default false;
 	
-	public String lockDomain() default "";
-	
-	public int lockParaIndex() default -1;
+//	public String lockDomain() default "";
+//	
+//	public int lockParaIndex() default -1;
 	
 	public int[] logIndexes()  default {};
 	
