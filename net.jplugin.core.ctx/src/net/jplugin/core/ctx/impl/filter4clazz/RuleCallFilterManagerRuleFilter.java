@@ -10,6 +10,7 @@ import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.core.ctx.api.AbstractRuleMethodInterceptor;
 import net.jplugin.core.ctx.api.IRuleServiceFilter;
 import net.jplugin.core.ctx.api.RuleServiceFilterContext;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 
 /**
  * <PRE>
@@ -99,6 +100,7 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 			AbstractRuleMethodInterceptor filter;
 			try {
 				filter = f.newInstance();
+				PluginEnvirement.INSTANCE.resolveRefAnnotation(filter);
 			} catch (Exception e) {
 				throw new RuntimeException("can't init object :"+f.getName());
 			}
