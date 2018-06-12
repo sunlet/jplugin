@@ -2,6 +2,7 @@ package net.jplugin.core.kernel;
 
 import net.jplugin.common.kits.http.filter.IHttpClientFilter;
 import net.jplugin.core.kernel.api.AbstractPlugin;
+import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
@@ -35,6 +36,12 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_PLUGIN_ENV_INIT_FILTER = "EP_PLUGIN_ENV_INIT_FILTER";
 	public static final String EP_EXE_SCHEDULED_FILTER = "EP_EXE_SCHEDULED_FILTER";
 
+	static{
+		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
+			ExtensionKernelHelper.autoBindExtension(p, "");
+		});
+	}
+	
 	public Plugin(){
 		addExtensionPoint(ExtensionPoint.create(EP_STARTUP, IStartup.class));
 		addExtensionPoint(ExtensionPoint.create(EP_ANNO_FOR_ATTR, IAnnoForAttrHandler.class));
