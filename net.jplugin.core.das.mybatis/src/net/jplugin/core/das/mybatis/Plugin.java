@@ -3,6 +3,7 @@ package net.jplugin.core.das.mybatis;
 import net.jplugin.core.ctx.ExtensionCtxHelper;
 import net.jplugin.core.das.mybatis.api.ExtensionDefinition4Incept;
 import net.jplugin.core.das.mybatis.api.ExtensionDefinition4Mapping;
+import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
 import net.jplugin.core.das.mybatis.api.MyBatisServiceFactory;
 import net.jplugin.core.das.mybatis.impl.DefaultMybaticsService4JianRong;
 import net.jplugin.core.das.mybatis.impl.IMybatisService;
@@ -10,6 +11,7 @@ import net.jplugin.core.das.mybatis.impl.MybatisMapperAnnoHandler;
 import net.jplugin.core.das.mybatis.impl.MybatisServiceAnnoHandler;
 import net.jplugin.core.das.mybatis.impl.sess.MybatisTransactionManagerListener;
 import net.jplugin.core.kernel.api.AbstractPlugin;
+import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.ExtensionKernelHelper;
 import net.jplugin.core.kernel.api.ExtensionPoint;
@@ -23,6 +25,12 @@ public class Plugin extends AbstractPlugin{
 	
 	public static boolean enabled;
 
+	static{
+		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
+			ExtensionMybatisDasHelper.autoBindMapperExtension(p, "");
+		});
+	}
+	
 	public Plugin(){
 		if (noMybatis()){
 			PluginEnvirement.INSTANCE.getStartLogger().log("Mybatis env not found,skipped!");
