@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 
 import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.api.RuleMetaException;
+import net.jplugin.core.ctx.impl.RuleInterceptor.MethodMetaLocater.MethodParaInfo;
 
 public class RuleInterceptor implements InvocationHandler {
 	Class<?> interfaceClass;
@@ -128,9 +129,9 @@ public class RuleInterceptor implements InvocationHandler {
 	 */
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-		Rule meta = locator.findMeta(method);
-		if (meta!=null)
-			return handler.invoke(proxy,oldService,method,args,meta);
+		MethodParaInfo methodParaInfo = locator.findMethodParaInfo(method);
+		if (methodParaInfo!=null)
+			return handler.invoke(proxy,oldService,methodParaInfo.method,args,methodParaInfo.meta);
 		else {
 			try {
 				return method.invoke(oldService, args);
@@ -145,7 +146,7 @@ public class RuleInterceptor implements InvocationHandler {
 	
 	
 	static class MethodMetaLocater {
-		HashMap<String, Rule> singleMetaMap = new HashMap<String, Rule>();
+		HashMap<String, MethodParaInfo> singleMetaMap = new HashMap<String, MethodParaInfo>();
 
 		HashMap<String, List<MethodParaInfo>> dupMetaMap = new HashMap<String, List<MethodParaInfo>>();
 
@@ -167,23 +168,23 @@ public class RuleInterceptor implements InvocationHandler {
 
 			for (Method m : singleMethod) {
 //				Rule meta = m.getAnnotation(Rule.class);
-				Rule meta = computeAnnotation(m,implClazz);
+				MethodParaInfo meta = computeMethodParaInfo(m,implClazz);
 //				AssertKit.assertNotNull(meta, "meta");
 				singleMetaMap.put(m.getName(), meta);
 			}
 
 			for (Method m : dupMethod) {
 //				Rule meta = m.getAnnotation(Rule.class);
-				Rule meta = computeAnnotation(m,implClazz);
+				MethodParaInfo mpi = computeMethodParaInfo(m,implClazz);
 //				AssertKit.assertNotNull(meta, "meta");
-
-				List<MethodParaInfo> list = dupMetaMap.get(m.getName());
-				if (list == null) {
-					list = new ArrayList<MethodParaInfo>();
-					dupMetaMap.put(m.getName(), list);
+				if (mpi!=null){
+					List<MethodParaInfo> list = dupMetaMap.get(m.getName());
+					if (list == null) {
+						list = new ArrayList<MethodParaInfo>();
+						dupMetaMap.put(m.getName(), list);
+					}
+					list.add(mpi);
 				}
-
-				list.add(new MethodParaInfo(meta, m.getParameterTypes()));
 			}
 		}
 		
@@ -193,31 +194,48 @@ public class RuleInterceptor implements InvocationHandler {
 		 * @param implClazz
 		 * @return
 		 */
-		private Rule computeAnnotation(Method intfMethod,Class implClazz){
-			Method implMethod ;
+		private MethodParaInfo computeMethodParaInfo(Method intfMethod, Class implClazz) {
+			Method implMethod;
 			try {
 				implMethod = implClazz.getMethod(intfMethod.getName(), intfMethod.getParameterTypes());
 			} catch (Exception e) {
-				throw new RuntimeException("The impl class not impl the interface."+intfMethod.getClass().getName()+" "+implClazz.getName());
+				throw new RuntimeException("The impl class not impl the interface." + intfMethod.getClass().getName()
+						+ " " + implClazz.getName());
 			}
-			Rule meta = implMethod.getAnnotation(Rule.class);
+			MethodParaInfo mpi = MethodParaInfo.tryCreate(implMethod);
 			
-			if (meta == null) 
-				meta = intfMethod.getAnnotation(Rule.class);
-			
-			return meta;
+			if (mpi == null){
+				mpi = MethodParaInfo.tryCreate(intfMethod);
+			}
+			return mpi;
 		}
+//		private Rule computeAnnotation(Method intfMethod,Class implClazz){
+//			Method implMethod ;
+//			try {
+//				implMethod = implClazz.getMethod(intfMethod.getName(), intfMethod.getParameterTypes());
+//			} catch (Exception e) {
+//				throw new RuntimeException("The impl class not impl the interface."+intfMethod.getClass().getName()+" "+implClazz.getName());
+//			}
+//			Rule meta = implMethod.getAnnotation(Rule.class);
+//			
+//			if (meta == null) 
+//				meta = intfMethod.getAnnotation(Rule.class);
+//			
+//			return meta;
+//		}
 
-		public Rule findMeta(Method m){
-			Rule ret = singleMetaMap.get(m.getName());
-			if (ret!=null) return ret;
+		public MethodParaInfo findMethodParaInfo(Method m){
+			if (singleMetaMap.containsKey(m.getName())){
+				//值可能为NULL
+				return singleMetaMap.get(m.getName());
+			}
 			
 			List<MethodParaInfo> list = dupMetaMap.get(m.getName());
 			if (list==null) return null;
 			
 			for (MethodParaInfo record:list){
 				if (typeMatch(record.paraTypes,m.getParameterTypes())){
-					return record.meta;
+					return record;
 				}
 			}
 			return null;
@@ -277,9 +295,22 @@ public class RuleInterceptor implements InvocationHandler {
 		}
 
 		static class MethodParaInfo {
-			MethodParaInfo(Rule e, Class[] p) {
-				meta = e;
-				paraTypes = p;
+//			MethodParaInfo(Rule e, Class[] p) {
+//				meta = e;
+//				paraTypes = p;
+//			}
+			
+			static MethodParaInfo tryCreate(Method m) {
+				Rule temp = m.getAnnotation(Rule.class);
+				if (temp == null){ 
+					return null;
+				}else{
+					MethodParaInfo o = new MethodParaInfo();
+					o.meta = temp;
+					o.paraTypes = m.getParameterTypes();
+					o.method = m;
+					return o;
+				}
 			}
 			
 			public String toString(){
@@ -296,6 +327,8 @@ public class RuleInterceptor implements InvocationHandler {
 				return sb.toString();
 			}
 
+			Method method;//这个Method是加了@Rule标记的Method，或者是接口的方法，或者是实现类的方法
+			
 			Rule meta;
 
 			Class[] paraTypes;

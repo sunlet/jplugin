@@ -37,14 +37,15 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 	@Override
 	public Object filter(FilterChain fc, RuleServiceFilterContext ctx) throws Throwable {
 		Class clazz;
-		Object object = ctx.getObject();
-		if (object!=null){
-			//如果不是静态的，则查找实现类对应的class
-			clazz = object.getClass();
-		}else{
-			//如果是静态的，则查找方法所爱的class
-			clazz = ctx.getMethod().getClass();
-		}
+//		Object object = ctx.getObject();
+//		if (object!=null){
+//			//如果不是静态的，则查找实现类对应的class
+//			clazz = object.getClass();
+//		}else{
+//			//如果是静态的，则查找方法所爱的class
+//			clazz = ctx.getMethod().getClass();
+//		}
+		clazz = ctx.getMethod().getDeclaringClass();//直接获取Method所在的class，而这个Method正好又是有Rule的Method，所以一切就一致起来了：）
 		
 		Object fm = findFilterManager(clazz,fc);
 		/**

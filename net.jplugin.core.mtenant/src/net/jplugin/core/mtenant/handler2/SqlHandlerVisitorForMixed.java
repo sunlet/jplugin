@@ -95,6 +95,8 @@ import net.sf.jsqlparser.statement.execute.Execute;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.merge.Merge;
 import net.sf.jsqlparser.statement.replace.Replace;
+import net.sf.jsqlparser.statement.select.AllColumns;
+import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.FromItemVisitor;
 import net.sf.jsqlparser.statement.select.Join;
@@ -103,6 +105,8 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.SelectItemVisitor;
 import net.sf.jsqlparser.statement.select.SelectVisitor;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.SubJoin;
@@ -115,7 +119,7 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
 
 public class SqlHandlerVisitorForMixed
-		implements StatementVisitor, SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
+		implements StatementVisitor, SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor ,SelectItemVisitor{
 
 	static String tenantColumnName;
 	public static void init(){
@@ -253,6 +257,12 @@ public class SqlHandlerVisitorForMixed
 		this.sqlRefactor.handleSelect(plainSelect);
 		
 		//再处理其他语句
+		if (plainSelect.getSelectItems()!=null){
+			for (SelectItem item:plainSelect.getSelectItems()){
+				item.accept(this);
+			}
+		}
+		
 		if (plainSelect.getFromItem()!=null)
 			plainSelect.getFromItem().accept(this);
 		
@@ -379,8 +389,14 @@ public class SqlHandlerVisitorForMixed
 	
 	@Override
 	public void visit(CaseExpression caseExpression) {
-		caseExpression.getSwitchExpression().accept(this);
-		caseExpression.getElseExpression().accept(this);
+		Expression se = caseExpression.getSwitchExpression();
+		Expression ee = caseExpression.getElseExpression();
+		
+		if (se!=null) 
+			se.accept(this);
+		if (ee!=null) 
+			ee.accept(this);
+		
 		List list = caseExpression.getWhenClauses();
 		if (list!=null){
 			for (Object o:list){
@@ -391,8 +407,15 @@ public class SqlHandlerVisitorForMixed
 
 	@Override
 	public void visit(WhenClause whenClause) {
-		whenClause.getWhenExpression().accept(this);
-		whenClause.getThenExpression().accept(this);
+		Expression we = whenClause.getWhenExpression();
+		if (we!=null) {
+			we.accept(this);
+		}
+		
+		Expression te = whenClause.getThenExpression();
+		if (te!=null) {
+			te.accept(this);
+		}
 	}
 
 	@Override
@@ -456,8 +479,22 @@ public class SqlHandlerVisitorForMixed
 		}
 	}
 	
-	//下面方法貌似不需实现
 
+	@Override
+	public void visit(SelectExpressionItem selectExpressionItem) {
+		Expression e = selectExpressionItem.getExpression();
+		if (e!=null){
+			e.accept(this);
+		}
+	}
+	
+	//下面方法貌似不需实现
+	@Override
+	public void visit(AllColumns allColumns) {
+	}
+	@Override
+	public void visit(AllTableColumns allTableColumns) {
+	}
 	@Override
 	public void visit(LongValue longValue) {
 	}
