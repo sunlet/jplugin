@@ -2,7 +2,7 @@ package net.jplugin.common.kits.http;
 
 public class ContentKit {
 	private static final String APPLICATION_JSON = "application/json";
-	public static Boolean jsonCheckCompirable = true;
+	public static Boolean jsonCheckCompirable;
 	
 	public static void init(Boolean b){
 		jsonCheckCompirable = b;
