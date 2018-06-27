@@ -23,4 +23,9 @@ public class RuleService123 implements IRuleService123{
 		
 	}
 
+	@Override
+	public void test() {
+		
+	}
+
 }

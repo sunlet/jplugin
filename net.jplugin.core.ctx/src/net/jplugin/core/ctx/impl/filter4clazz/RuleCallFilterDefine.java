@@ -3,11 +3,12 @@ package net.jplugin.core.ctx.impl.filter4clazz;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.StringKit;
 
 public class RuleCallFilterDefine {
 	private enum MatcherMode {
-		NONE, POSTFIX, PREFIX, EQUAL
+		NONE, POSTFIX, PREFIX, EQUAL ,COMPOSITE
 	}
 	private StringMatcher methodMatcher;
 	private StringMatcher classMatcher;
@@ -16,6 +17,14 @@ public class RuleCallFilterDefine {
 	private int priority;
 	private Class filterClazz;
 
+	public String toString(){
+		StringBuffer sb = new StringBuffer("{");
+		sb.append("classMatcher="+classMatcher).append(" ");
+		sb.append("methodMatcher="+methodMatcher).append(" ");
+		sb.append("}");
+		return sb.toString();
+	}
+	
 	public RuleCallFilterDefine(String classFormat, String methodFormat) {
 		this.classMatcher = new StringMatcher(classFormat);
 		this.methodMatcher = new StringMatcher(methodFormat);
@@ -42,6 +51,9 @@ public class RuleCallFilterDefine {
 			throw new RuntimeException("[applyTo] must not null ,if match all . should use *");
 		}
 		
+		if (strDefine.startsWith(",") || strDefine.endsWith(",")){
+			throw new RuntimeException("format error:"+strDefine);
+		}
 		String[] strlist = StringKit.splitStr(strDefine, ",");
 
 		for (String s : strlist) {
@@ -97,7 +109,22 @@ public class RuleCallFilterDefine {
 
 	private static class StringMatcher{
 		MatcherMode mode;
-		String value;
+		String value;//mode != COMPOSITE 时有效
+		StringMatcher[] childsMatcher;//mode == COMPOSITE 时有效
+		
+		public String toString(){
+			StringBuffer sb = new StringBuffer();
+			sb.append("[ ").append(mode).append(",");
+			if (this.mode!=MatcherMode.COMPOSITE)
+				sb.append(value);
+			else{
+				for (StringMatcher o:childsMatcher){
+					sb.append(o);
+				}
+			}
+			sb.append("]");
+			return sb.toString();
+		}
 		
 		public StringMatcher (String format){
 			if (StringKit.isNull(format) || "*".equals(format)){
@@ -106,26 +133,54 @@ public class RuleCallFilterDefine {
 			}else{
 				MatcherMode mode;
 				String value;
-				if (format.startsWith("*")) {
-					mode = MatcherMode.POSTFIX;
-					value = format.substring(1);
-				} else if (format.endsWith("*")) {
-					mode = MatcherMode.PREFIX;
-					value = format.substring(0, format.length() - 1);
-				} else {
-					mode = MatcherMode.EQUAL;
-					value = format;
+				
+				if (format.indexOf('|')>=0){
+					if (format.startsWith("|") || format.endsWith("|")){
+						throw new RuntimeException("format error:"+format);
+					}
+					this.mode = MatcherMode.COMPOSITE;
+					String[] itemArr = StringKit.splitStr(format, "|");
+					for (String s:itemArr){
+						AssertKit.assertStringNotNull(s," format error:"+format);
+					}
+					childsMatcher = new StringMatcher[itemArr.length];
+					for (int i=0;i<itemArr.length;i++){
+						childsMatcher[i] = new StringMatcher(itemArr[i]);
+					}
+				}else{
+					if (format.startsWith("*")) {
+						mode = MatcherMode.POSTFIX;
+						value = format.substring(1);
+					} else if (format.endsWith("*")) {
+						mode = MatcherMode.PREFIX;
+						value = format.substring(0, format.length() - 1);
+					} else {
+						mode = MatcherMode.EQUAL;
+						value = format;
+					}
+		
+					if (!checkValue(value)) {
+						throw new RuntimeException("Method Filter str is bat format:" + format);
+					}
+					this.mode = mode;
+					this.value = value;
 				}
-	
-				if (!checkValue(value)) {
-					throw new RuntimeException("Method Filter str is bat format:" + format);
-				}
-				this.mode = mode;
-				this.value = value;
 			}
 		}
 		
 		public boolean match(String str) {
+			if (this.mode==MatcherMode.COMPOSITE){
+				//匹配composite类型的Matcher
+				if (this.childsMatcher==null){
+					throw new RuntimeException("Can't go here");
+				}
+				for (StringMatcher m:this.childsMatcher){
+					if (m.match(str)) 
+						return true;
+				}
+				return false;
+			}
+			
 			switch (this.mode) {
 			case NONE:
 				return true;
