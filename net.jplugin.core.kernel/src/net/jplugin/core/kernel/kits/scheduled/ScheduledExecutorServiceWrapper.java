@@ -39,7 +39,7 @@ public class ScheduledExecutorServiceWrapper implements ScheduledExecutorService
 	}
 
 	public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-		return inner.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+		return inner.scheduleWithFixedDelay(new ScheduledRunnableWrapper(command), initialDelay, delay, unit);
 	}
 
 	public boolean isShutdown() {
