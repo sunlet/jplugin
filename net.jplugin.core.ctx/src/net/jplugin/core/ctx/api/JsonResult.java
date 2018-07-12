@@ -11,8 +11,11 @@ import net.jplugin.common.kits.tuple.Tuple2;
 public class JsonResult {
 	public static final int JSON_FORMAT_1=1;
 	public static final int JSON_FORMAT_2=2;
+	public static final int JSON_FORMAT_3=3;
+	
 	public static final String JSON_FORMAT_INDICATOR="$sef";
 	public static final String JSONP_FUNCTION_PARAM="callback";
+	
 	
 	boolean success;
 	String code="0";
