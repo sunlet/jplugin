@@ -5,6 +5,8 @@ import java.util.List;
 
 import net.jplugin.common.kits.SortUtil;
 import net.jplugin.core.ctx.api.AbstractRuleMethodInterceptor;
+import net.jplugin.core.kernel.api.Extension;
+import net.jplugin.core.kernel.api.IPropertyFilter;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 public class RuleCallFilterDefineManager {
@@ -20,7 +22,7 @@ public class RuleCallFilterDefineManager {
 		for (RuleCallFilterDefineBean ds : defSetList) {
 			List<RuleCallFilterDefine> list ;
 			try{
-				list = RuleCallFilterDefine.parse(ds.getApplyTo());
+				list = RuleCallFilterDefine.parse(filterProperty(ds.getApplyTo()));
 			}catch(Exception e){
 				throw new RuntimeException("Binding annotation on "+ds.getClass().getName()+" error.",e);
 			}
@@ -34,6 +36,16 @@ public class RuleCallFilterDefineManager {
 				defList.add(cmfd);
 			}
 		}
+	}
+
+	private String filterProperty(String applyTo) {
+		/**
+		 * 这里代码有点丑，先这样了，暂时用Extension.propertyFilter
+		 */
+		if (Extension.propertyFilter!=null)
+			return Extension.propertyFilter.filte(applyTo);
+		else
+			return applyTo;
 	}
 
 	/**
