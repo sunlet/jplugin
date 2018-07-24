@@ -5,6 +5,7 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.IConfigChangeHandler;
 import net.jplugin.core.config.impl.AnnoForAttrHandler;
 import net.jplugin.core.config.impl.ConfigRepository;
+import net.jplugin.core.config.impl.ConfigureChangeManager;
 import net.jplugin.core.config.impl.PropertyFilter;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -42,7 +43,8 @@ public class Plugin extends AbstractPlugin{
 	@Override
 	public void onCreateServices() {
 		//load config
-		ConfigChangeManager.instance.init();
+//		ConfigChangeManager.instance.init();
+		ConfigureChangeManager.instance.init();
 	}
 
 	@Override
