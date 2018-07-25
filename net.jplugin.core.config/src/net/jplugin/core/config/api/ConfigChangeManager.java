@@ -5,6 +5,7 @@ import java.util.Map;
 import net.jplugin.core.config.Plugin;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
+@Deprecated
 public class ConfigChangeManager {
 	private Map<String,IConfigChangeHandler> map;
 	

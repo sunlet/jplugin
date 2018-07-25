@@ -16,7 +16,7 @@ import net.jplugin.core.das.api.impl.ConfigedDataSource;
 import net.jplugin.core.das.api.impl.DataSourceAutoFindUtil;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
 import net.jplugin.core.das.api.impl.DataSourceWrapper;
-import net.jplugin.core.das.api.impl.DynamicDataSourceProviderManager;
+import net.jplugin.core.das.api.impl.DynamicDataSourceManager;
 import net.jplugin.core.das.api.impl.TxManagedDataSource;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -69,12 +69,12 @@ public class DataSourceFactory {
 				map.put(ds.getKey(), new DataSourceWrapper(ds.getKey(),dataSource));
 			}
 		}
-		//加入动态DataSource
+		//加入动态DataSource,动态数据源不会加DataSourceWrapper
 		addDynamicDataSourceToMap();
 	}
 	
 	private static void addDynamicDataSourceToMap() {
-		Map<String, DataSource> dmap = DynamicDataSourceProviderManager.INSTANCE.getDataSoruceMap();
+		Map<String, DataSource> dmap = DynamicDataSourceManager.INSTANCE.getDataSoruceMap();
 		for (Entry<String, DataSource> en:dmap.entrySet()){
 			if (map.containsKey(en.getKey())){
 				throw new RuntimeException("duplicate dataSource Name for dynamic:"+en.getKey());

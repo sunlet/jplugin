@@ -5,7 +5,7 @@ import net.jplugin.core.das.api.IConnectionWrapperService;
 import net.jplugin.core.das.api.IDynamicDataSourceProvider;
 import net.jplugin.core.das.api.impl.ConnectionWrapperManager;
 import net.jplugin.core.das.api.impl.DataSourceDefinition;
-import net.jplugin.core.das.api.impl.DynamicDataSourceProviderManager;
+import net.jplugin.core.das.api.impl.DynamicDataSourceManager;
 import net.jplugin.core.das.api.monitor.ISqlExecFilter;
 import net.jplugin.core.das.api.monitor.ISqlMonitorListener;
 import net.jplugin.core.das.api.sqlrefactor.ISqlRefactor;
@@ -54,7 +54,8 @@ public class Plugin extends AbstractPlugin {
 	}
 	
 	public void onCreateServices() {
-		DynamicDataSourceProviderManager.INSTANCE.init();
+//		DynamicDataSourceProviderManager.INSTANCE.init();
+		DynamicDataSourceManager.INSTANCE.init();
 		DataSourceFactory.init();
 		ConnectionWrapperManager.init();
 		SqlMonitorListenerManager.instance.init();

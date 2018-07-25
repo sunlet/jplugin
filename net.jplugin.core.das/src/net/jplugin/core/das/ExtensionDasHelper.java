@@ -36,7 +36,7 @@ public class ExtensionDasHelper {
 		plugin.addExtension(Extension.create(Plugin.EP_SQL_REFACTOR, clz));
 	}
 	
-	public static void addDynamicDataSourceProviderExtension(AbstractPlugin plugin,String name,Class clz){
-		plugin.addExtension(Extension.create(Plugin.EP_DYNAMIC_DS_PROVIDER, name,clz));
-	}
+//	public static void addDynamicDataSourceProviderExtension(AbstractPlugin plugin,String name,Class clz){
+//		plugin.addExtension(Extension.create(Plugin.EP_DYNAMIC_DS_PROVIDER, name,clz));
+//	}
 }

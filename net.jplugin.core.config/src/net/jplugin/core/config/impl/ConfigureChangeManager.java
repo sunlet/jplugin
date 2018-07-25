@@ -37,14 +37,14 @@ public class ConfigureChangeManager {
 	public void fireConfigChange(List<String> keyList){
 		for (Entry<String, StringMatcher> en:matcherMap.entrySet()){
 			//找到匹配的keys，加入到temp
-			if (fillKeys(en.getValue(),keyList)){
+			if (match(en.getValue(),keyList)){
 				ConfigChangeContext ctx = ConfigChangeContext.create(en.getValue(), keyList);
 				map.get(en.getKey()).onChange(ctx);
 			}
 		}
 	}
 	
-	private boolean fillKeys(StringMatcher m, List<String> keyList) {
+	private boolean match(StringMatcher m, List<String> keyList) {
 		for (String key:keyList){
 			if (m.match(key)){
 				return true;

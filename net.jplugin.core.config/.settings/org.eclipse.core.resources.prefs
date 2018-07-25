@@ -8,6 +8,7 @@ encoding//src/net/jplugin/core/config/api/IConfigProvidor.java=UTF-8
 encoding//src/net/jplugin/core/config/api/RefConfig.java=UTF-8
 encoding//src/net/jplugin/core/config/impl/AnnoForAttrHandler.java=UTF-8
 encoding//src/net/jplugin/core/config/impl/ConfigRepository.java=UTF-8
+encoding//src/net/jplugin/core/config/impl/ConfigureChangeManager.java=UTF-8
 encoding//src/net/jplugin/core/config/impl/PropertyFilter.java=UTF-8
 encoding//test/test/net/jplugin/core/config/Plugin.java=UTF-8
 encoding/<project>=UTF-8

@@ -31,7 +31,7 @@ public class Plugin extends AbstractPluginForTest {
 		
 		ExtensionDasRouteHelper.addSqlFunctionExtension(this,"Mytest",MytestFunctionHandler.class);
 		
-		ExtensionDasHelper.addDynamicDataSourceProviderExtension(this, "testdynamicds",DynamicDsTestProvider.class);
+//		ExtensionDasHelper.addDynamicDataSourceProviderExtension(this, "testdynamicds",DynamicDsTestProvider.class);
 	}
 	
 	
