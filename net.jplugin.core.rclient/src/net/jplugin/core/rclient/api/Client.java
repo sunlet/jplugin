@@ -24,6 +24,7 @@ public class Client <T> {
 	
 	public static final String PROTOCOL_REST="rest";
 	public static final String PROTOCOL_RPC="niorest";
+	public static final String PROTOCOL_RPC_JSON="rpcjson";
 
 	@Deprecated  
 	public static final String PROTOCOL_REMOJAVA="remotejava";
