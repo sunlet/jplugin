@@ -34,11 +34,13 @@ public class JsonKit {
 	public static Object json2Object4Type(String json, Type type) {
 		Object object = null;
 		try {
-			if (type instanceof Class) {
-				object = JsonKit.json2Object(json, (Class) type);
-			} else {
-				JavaType javaType = mapper.getTypeFactory().constructType(type);
-				object = mapper.readValue(json, javaType);
+			if (json != null && json.length() > 0){
+				if (type instanceof Class) {
+					object = JsonKit.json2Object(json, (Class) type);
+				} else {
+					JavaType javaType = mapper.getTypeFactory().constructType(type);
+					object = mapper.readValue(json, javaType);
+				}
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
