@@ -1,6 +1,7 @@
 package net.jplugin.common.kits;
 
 import java.io.StringWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +29,42 @@ public class JsonKit {
 	   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
+	//<<< 2018年8月28日修改
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Object json2Object4Type(String json, Type type) {
+		Object object = null;
+		try {
+			if (type instanceof Class) {
+				object = JsonKit.json2Object(json, (Class) type);
+			} else {
+				JavaType javaType = mapper.getTypeFactory().constructType(type);
+				object = mapper.readValue(json, javaType);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return object;
+	}
+	
+	public static Object json2Object4TypeEx(String val, Type type) {
+		if (val==null || val.equals("")){
+			return null;
+		}
+		Class clz=null;
+		Transformer trans = null;
+		if (type instanceof Class){
+			clz = (Class) type;
+			trans = PritiveKits.getTransformer(clz);
+		}
+		
+		if (trans!=null ){
+			return trans.fromString(clz, val);
+		}else{
+			return json2Object4Type(val,type);
+		}	
+	}
+	//>>>2018年8月28日修改
+	
 	public static String object2Json(Object object) {
 		StringWriter writer = new StringWriter();
 		try {
