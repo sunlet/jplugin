@@ -22,7 +22,8 @@ public class RuleCallFilterDefineManager {
 		for (RuleCallFilterDefineBean ds : defSetList) {
 			List<RuleCallFilterDefine> list ;
 			try{
-				list = RuleCallFilterDefine.parse(filterProperty(ds.getApplyTo()));
+//				list = RuleCallFilterDefine.parse(filterProperty(ds.getApplyTo()));
+				list = RuleCallFilterDefine.parse(ds.getApplyTo());
 			}catch(Exception e){
 				throw new RuntimeException("Binding annotation on "+ds.getClass().getName()+" error.",e);
 			}
@@ -38,15 +39,15 @@ public class RuleCallFilterDefineManager {
 		}
 	}
 
-	private String filterProperty(String applyTo) {
-		/**
-		 * 这里代码有点丑，先这样了，暂时用Extension.propertyFilter
-		 */
-		if (Extension.propertyFilter!=null)
-			return Extension.propertyFilter.filte(applyTo);
-		else
-			return applyTo;
-	}
+//	private String filterProperty(String applyTo) {
+//		/**
+//		 * 这里代码有点丑，先这样了，暂时用Extension.propertyFilter
+//		 */
+//		if (Extension.propertyFilter!=null)
+//			return Extension.propertyFilter.filte(applyTo);
+//		else
+//			return applyTo;
+//	}
 
 	/**
 	 * 过滤出来，排个序，返回

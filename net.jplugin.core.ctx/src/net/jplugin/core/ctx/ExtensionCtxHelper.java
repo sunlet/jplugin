@@ -16,6 +16,7 @@ import net.jplugin.core.ctx.api.BindRuleService.DefaultInterface;
 import net.jplugin.core.ctx.api.BindRuleServiceSet;
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineBean;
+import net.jplugin.core.ctx.kits.PropertyFilterKits;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -75,12 +76,14 @@ public class ExtensionCtxHelper {
 	private static void handleOneRuleMethodFilterBind(AbstractPlugin p, Class c, Annotation a) {
 		BindRuleMethodInterceptor anno = (BindRuleMethodInterceptor) a;
 		String applyTo = anno.applyTo();
+		
+		//过滤配置项
+		applyTo = PropertyFilterKits.filterProperty(applyTo);
 		int priority = anno.sequence();
 		addRuleMethodFilterExtension(p, c, applyTo, priority);
 		
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for RuleMethodFilter: filterClass="
 					+ c.getName() + " applyTo=" + applyTo+" priority="+priority);
-		
 	}
 	
 	/**

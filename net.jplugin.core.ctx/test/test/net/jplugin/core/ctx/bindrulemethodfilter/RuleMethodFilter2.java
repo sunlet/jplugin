@@ -5,7 +5,10 @@ import net.jplugin.core.ctx.api.AbstractRuleMethodInterceptor;
 import net.jplugin.core.ctx.api.BindRuleMethodInterceptor;
 import net.jplugin.core.ctx.api.RuleServiceFilterContext;
 
-@BindRuleMethodInterceptor(applyTo="test.net.jplugin.core.ctx.bindrulemethodfilter.RuleService123:set*",sequence=2)
+//@BindRuleMethodInterceptor(applyTo="test.net.jplugin.core.ctx.bindrulemethodfilter.RuleService123:set*",sequence=2)
+
+@BindRuleMethodInterceptor(applyTo="${platform.applyTo}",sequence=2)
+
 public class RuleMethodFilter2 extends AbstractRuleMethodInterceptor {
 	public static int cnt = 0;
 	@Override
