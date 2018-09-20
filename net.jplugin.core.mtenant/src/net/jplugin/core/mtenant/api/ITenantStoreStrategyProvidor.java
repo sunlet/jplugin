@@ -6,11 +6,13 @@ package net.jplugin.core.mtenant.api;
  * @author LiuHang
  */
 public interface ITenantStoreStrategyProvidor {
+	
 	public Strategy getTenantStrategy(String tid, String dataSource);
 	
 	enum Mode{SHARE,ONESELF}
 	
 	public static class Strategy{
+		public static final String NO_POST_PREFIX="$NPR$";
 //		String finalDataSource;//暂时不用
 		String schemaPostfix;
 		Mode mode;

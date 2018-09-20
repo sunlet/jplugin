@@ -15,6 +15,7 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
+import net.jplugin.core.mtenant.api.ITenantStoreStrategyProvidor;
 import net.jplugin.core.mtenant.api.ITenantStoreStrategyProvidor.Mode;
 import net.jplugin.core.mtenant.api.ITenantStoreStrategyProvidor.Strategy;
 import net.sf.jsqlparser.JSQLParserException;
@@ -112,7 +113,8 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 		Strategy stg = getStrategy(sql, dataSourceName);
 		
 		SqlHandlerVisitorForMixed v;
-		String finalSchema = schemaPrefix +"_"+stg.getSchemaPostfix();
+//		String finalSchema = schemaPrefix +"_"+stg.getSchemaPostfix();
+		String finalSchema = makeFinalSchema(schemaPrefix ,stg.getSchemaPostfix());
 		if (stg.getMode()==Mode.SHARE){
 			v = new SqlHandlerVisitorForMixed(finalSchema, tid);
 		}else{
@@ -124,6 +126,13 @@ public class SqlMultiTenantHanlderMixedImpl implements ISqlRefactor {
 		} catch (JSQLParserException e) {
 			throw new RuntimeException("SQL gremma error."+e.getMessage() +"  "+sql,e);
 		}
+	}
+
+	private static String makeFinalSchema(String schemaPrefix, String schemaPostfix) {
+		if (Strategy.NO_POST_PREFIX.equals(schemaPostfix))
+			return schemaPrefix;
+		else
+			return schemaPrefix +"_"+schemaPostfix;
 	}
 
 	private static Strategy getStrategy(String sql, String dataSource) {
