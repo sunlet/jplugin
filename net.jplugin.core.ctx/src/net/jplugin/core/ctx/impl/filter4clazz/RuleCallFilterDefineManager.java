@@ -25,7 +25,7 @@ public class RuleCallFilterDefineManager {
 //				list = RuleCallFilterDefine.parse(filterProperty(ds.getApplyTo()));
 				list = RuleCallFilterDefine.parse(ds.getApplyTo());
 			}catch(Exception e){
-				throw new RuntimeException("Binding annotation on "+ds.getClass().getName()+" error.",e);
+				throw new RuntimeException("Binding annotation error, applyto= "+ds.getApplyTo()+" filter="+ds.getFilterClass().getName(),e);
 			}
 			for (RuleCallFilterDefine cmfd : list) {
 				//校验一下
