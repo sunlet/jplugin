@@ -10,6 +10,7 @@ import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,6 +56,7 @@ import org.apache.http.util.EntityUtils;
 
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.client.ClientInvocationManager;
 import net.jplugin.common.kits.client.InvocationParam;
 import net.jplugin.common.kits.filter.FilterChain;
@@ -367,6 +369,75 @@ public final class HttpKit{
 		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.POST, url, params,headers);
 		return (String) filterManager.filter(ctx);
 	}
+
+	/**
+	 * 以Json格式传递参数，Json需预先转换为MapList嵌套结构。
+	 * @param url
+	 * @param params  Json对应的MapList结构。
+	 * @param headers 额外的Header，可以传null。
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJsonWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
+		HashMap headMap = new HashMap();
+		if (headers!=null){
+			headMap.putAll(headers);
+		}
+		
+		String contentTypeValue = (String) headMap.get("Content-Type");
+		if (StringKit.isNull(contentTypeValue)){
+			//没有JsonHeader，增加Json格式对应的Header
+			headMap.put("Content-Type", "application/json");
+		}else{
+			//包含header，则必须为Json格式
+			if (!ContentKit.isApplicationJson(contentTypeValue)){
+				throw new RuntimeException("Content-Type is set,but not json type!");
+			}
+		}
+		
+		return postWithHeader(url, params, headMap);
+	}
+
+	/**
+	 * 以Json格式传递参数，参数为Json字符串
+	 * @param url
+	 * @param json  json结构的字符串。目前必须是{}结构。
+	 * @param headers
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJsonWithHeader(String url, String json,Map<String,String> headers) throws IOException, HttpStatusException {
+		if (!json.startsWith("{")){
+			throw new RuntimeException("json must start with '{'");
+		}
+		return postJsonWithHeader(url, JsonKit.json2Map(json), headers);
+	}
+	/**
+	 * 用Json格式提交，参数为json字符串
+	 * @param url
+	 * @param json
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJson(String url, String json) throws IOException, HttpStatusException {
+		return postJsonWithHeader(url, json, null);
+	}
+	
+	/**
+	 * 用json格式提交，json需要提前转换为MapList嵌套结构
+	 * @param url
+	 * @param json
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJson(String url, Map json) throws IOException, HttpStatusException {
+		return postJsonWithHeader(url, json, null);
+	}
+	
 	
 	public static String putWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
 		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.PUT, url, params,headers);
