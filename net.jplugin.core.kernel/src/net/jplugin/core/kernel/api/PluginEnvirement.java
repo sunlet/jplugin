@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import net.jplugin.common.kits.ExceptionKit;
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.common.kits.tuple.Tuple2;
@@ -273,7 +274,8 @@ public class PluginEnvirement {
 				System.exit(-2);
 			}
 			this.stateLevel = STAT_LEVEL_WORKING;
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			e = ExceptionKit.getRootCause(e);
 			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误",e);
 //			logError(e);
 			if (PluginEnvirement.getInstance().hasExtensionPoint(Plugin.EP_STARTUP)){
@@ -318,7 +320,7 @@ public class PluginEnvirement {
 	 * @param e
 	 * @param object
 	 */
-	private void trigStartListener(Exception e, List<PluginError> errors) {
+	private void trigStartListener(Throwable e, List<PluginError> errors) {
 		IStartup[] listeners = getExtensionObjects(Plugin.EP_STARTUP,IStartup.class);
 		if (e==null && errors==null ){
 			for (int i=listeners.length-1;i>=0;i--){
