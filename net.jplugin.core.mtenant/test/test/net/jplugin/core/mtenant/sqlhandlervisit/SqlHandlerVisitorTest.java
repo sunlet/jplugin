@@ -9,6 +9,8 @@ public class SqlHandlerVisitorTest {
 	static String cloumnName = "";
 	
 	public static void test() throws JSQLParserException {
+//		testComplexSql2();
+		testComplexSql();
 		testSelect();
 		testInsert();
 		testUpdate();
@@ -17,6 +19,83 @@ public class SqlHandlerVisitorTest {
 		testReplace();
 //		testReplaceMulValue();
 		testUnionAll();
+		
+	}
+	
+	private static void testComplexSql2() throws JSQLParserException{
+		String sql="SELECT "+
+            "count(*) allGoodsSkuCount, "+
+			"sum(c.goods_state = 1) onGoodsSkuCount, "+
+			"sum(c.goods_state = 0) offGoodsSkuCount, "+
+			"sum(c.stock_cur_val = 0) saleOutGoodsSkuCount "+
+        "FROM "+
+        "channel_goods_info c "+
+        "LEFT JOIN "+
+        "dept_goods_info dgi "+
+        "ON "+
+        "c.sku_id = dgi.sku_id "+
+        "LEFT JOIN "+
+        "channel_dept_ref d "+
+        "ON "+
+        "c.c_dept_code = d.c_dept_code and d.c_type = c.c_type and dgi.dept_code = d.dept_code "+
+        "where d.dept_code = 91009 "+
+        "and   d.c_type = 2";
+		
+
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
+		
+		String to = v.handle(sql);
+		System.out.println("\n");
+		System.out.println(sql);
+		System.out.println("\n");
+		System.out.println(to);
+		
+	}
+
+	private static void testComplexSql() throws JSQLParserException {
+		String sql = "select s.shop_id shop_id, "+
+	    "IFNULL((select begin_amount from t_invoicing_report a where a.shop_id = s.shop_id "+ 
+	     "and a.card_kind = ?  "+
+	    "and a.report_date = ?),0) begin_amount, "+
+	    "IFNULL((select begin_bonus_amount from t_invoicing_report a1 where a1.shop_id = s.shop_id "+ 
+	     "and a1.card_kind = ?  "+
+	    "and a1.report_date = ?),0) begin_bonus_amount, "+
+	    "sum(sale_amount) sale_amount, "+
+	    "sum(sale_refund_amount) sale_refund_amount, "+
+	    "sum(sale_bonus_amount) sale_bonus_amount, "+
+	    "sum(sale_bonus_refund_amount) sale_bonus_refund_amount, "+
+	    "sum(invalid_amount) invalid_amount, "+
+	    "sum(invalid_bonus_amount) invalid_bonus_amount, "+
+	    "sum(payment_amount) payment_amount, "+
+	    "sum(refund_amount) refund_amount, "+
+	    "sum(bonus_payment_amount) bonus_payment_amount, "+
+	    "sum(bonus_refund_amount) bonus_refund_amount, "+
+	    "sum(restore_payment_amount) restore_payment_amount, "+
+	    "sum(restore_refund_amount) restore_refund_amount, "+
+	    "sum(restore_bonus_payment_amount) restore_bonus_payment_amount, "+
+	    "sum(restore_bonus_refund_amount) restore_bonus_refund_amount, "+
+	    "IFNULL((select end_amount from t_invoicing_report b where b.shop_id = s.shop_id "+ 
+	     "and b.card_kind = ?  "+
+	    "and b.report_date = ?), 0) end_amount, "+
+	    "IFNULL((select end_bonus_amount from t_invoicing_report b1 where b1.shop_id = s.shop_id  "+
+	     "and b1.card_kind = ?  "+
+	    "and b1.report_date = ?), 0) end_bonus_amount "+
+	    "from t_invoicing_report s "+
+	    "where   s.report_date >= ?   "+
+	      "and s.report_date <= ?   "+
+	     "and card_kind = ?  " +
+	    "group by s.shop_id,s.card_kind order by s.shop_id asc "+
+	    "limit ?,? ";
+		
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
+		
+		String to = v.handle(sql);
+		System.out.println("\n");
+		System.out.println(sql);
+		System.out.println("\n");
+		System.out.println(to);
+		
+		
 	}
 
 	private static void testReplaceMulValue() throws JSQLParserException{

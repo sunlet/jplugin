@@ -314,6 +314,10 @@ public class SqlHandlerVisitorForMixed
 
 	@Override
 	public void visit(Function function) {
+		if (function.getKeep()!=null)
+			function.getKeep().accept(this);
+		if (function.getParameters()!=null)
+			function.getParameters().accept(this);
 	}
 
 	@Override
