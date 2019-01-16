@@ -120,15 +120,24 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 						//这里先判断MIX标记，如果MIX标记存在，直接用arg0，否则用整个内容
 						if (RestHandler.MIX_PARA_VALUE.equals(req.paramMap.get(RestHandler.MIX_PARA)))
 							fullJson = req.paramMap.get("arg0");
-						else
-							fullJson = JsonKit.object2JsonEx(req.paramMap);
+						else{
+//							fullJson = JsonKit.object2JsonEx(req.paramMap);
+							String jsonContent = ThreadLocalContextManager.getRequestInfo().getContent().getJsonContent();
+							if (!StringKit.isNull(jsonContent)){
+								fullJson = jsonContent;
+							}else{
+								//这种情况下，如果Map的Value是复杂类型{}或者[]，将不能有效转化！！！！！
+								fullJson = JsonKit.object2JsonEx(req.paramMap);
+							}
+						}
 					}else{
 						//Json方式调用，并且参数表不为map的情况才会执行到这里
 						String jsonContent = ThreadLocalContextManager.getRequestInfo().getContent().getJsonContent();
 						if (!StringKit.isNull(jsonContent)){
 							fullJson = jsonContent;
-						}else
+						}else{
 							fullJson = null;
+						}
 					}
 					
 					//对结果赋值
