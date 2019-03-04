@@ -19,9 +19,42 @@ public class SqlHandlerVisitorTest {
 		testReplace();
 //		testReplaceMulValue();
 		testUnionAll();
+		testCreateTable();
+		testCreateTable2();
 		
 	}
 	
+	private static void testCreateTable() throws JSQLParserException {
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss","1001");
+		String from,to;
+		
+		from = "create table tb(f1 varchar(20) primary key,f2 int)";
+		AssertKit.assertException(()->{
+			try {
+				v.handle(from);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+
+		
+	}
+	
+	private static void testCreateTable2() throws JSQLParserException {
+		SqlHandlerVisitorForMixed v = new SqlHandlerVisitorForMixed("sssss");
+		String from,to;
+		
+		from = "create table tb(f1 varchar(20) primary key,f2 int)";
+		v.handle(from);
+		to = v.handle(from);
+		System.out.println();
+		System.out.println(from);
+		System.out.println(to);
+		
+	}
+
+
 	private static void testComplexSql2() throws JSQLParserException{
 		String sql="SELECT "+
             "count(*) allGoodsSkuCount, "+

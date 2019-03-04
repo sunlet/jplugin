@@ -172,6 +172,8 @@ public class SqlHandlerVisitorForMixed
     		visit((Delete)statement);
     	else if (statement instanceof Replace)
     		visit((Replace)statement);
+    	else if (statement instanceof CreateTable)
+    		visit((CreateTable)statement);
     	return statement.toString();
 	}
 	
@@ -785,8 +787,16 @@ public class SqlHandlerVisitorForMixed
 		}
 
 		public  void handleCreateTable(SqlHandlerVisitorForMixed sqlHandlerVisitor, CreateTable createTable) {
-			// TODO Auto-generated method stub
-			
+			if (StringKit.isNotNull(tenantId)){
+				throw new RuntimeException("Create Table not supported for share table mode now!");
+			}
+			if (StringKit.isNull(schemaName)){
+				throw new RuntimeException("Schema name must not null.");
+			}
+			if (StringKit.isNotNull(createTable.getTable().getSchemaName())){
+				throw new RuntimeException("Original Schema name must null.");
+			}
+			createTable.getTable().setSchemaName(schemaName);
 		}
 
 		public  void handleTruncate(SqlHandlerVisitorForMixed sqlHandlerVisitor, Truncate truncate) {
