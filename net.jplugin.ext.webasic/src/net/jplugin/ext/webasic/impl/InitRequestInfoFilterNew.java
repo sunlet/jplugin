@@ -56,6 +56,7 @@ public class InitRequestInfoFilterNew implements WebFilter {
 		//PUT http servlet reqeust to context
 		ThreadLocalContext tlContext = ThreadLocalContextManager.instance.getContext();
 		tlContext.setAttribute(ThreadLocalContext.ATTR_SERVLET_REQUEST, req);
+		tlContext.setAttribute(ThreadLocalContext.ATTR_SERVLET_RESPONSE, res);
 		
 		RequesterInfo requestInfo = tlContext.getRequesterInfo();
 		
