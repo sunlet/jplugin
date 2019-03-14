@@ -38,7 +38,7 @@ public class Plugin extends AbstractPlugin{
 	 * mtenant.datasource=ALL|ds1,ds2,ds3
 	 * 
 	 * #多租户数据库策略，这个配置目前不开放
-	 * mtenant.db-strategy=schema（默认）|merge
+	 * mtenant.db-strategy=schema（默认）|merge | mixed
 	 *
 	 * #分schema模式下各数据源对应的schemaprefix值，对于多租户的情况必须配置，否则会出错
 	 * mtenant.schema-prefix.ds1=xxx
