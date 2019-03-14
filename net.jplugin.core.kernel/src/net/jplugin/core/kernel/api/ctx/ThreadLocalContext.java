@@ -15,6 +15,7 @@ import net.jplugin.common.kits.client.InvocationParam;
 
 public class ThreadLocalContext {
 	public static final String ATTR_SERVLET_REQUEST="$servlet-request";
+	public static final String ATTR_SERVLET_RESPONSE="$servlet-response";
 	public static final String ATTR_USING_DEF_TENANT="$using-def-tenant";
 
 	
