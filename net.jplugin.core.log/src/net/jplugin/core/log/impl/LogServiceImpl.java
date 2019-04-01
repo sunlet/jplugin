@@ -28,12 +28,12 @@ import org.apache.log4j.RollingFileAppender;
  **/
 
 public class LogServiceImpl implements ILogService {
-
+	private boolean inited=false;
 	public LogServiceImpl() {
-        init();
+//        init();
     }
 	
-	private void init(){
+	public void initFromConfig(){
 		Map<String, String> configs = ConfigFactory.getStringConfigInGroup("log4j");
 		if (configs!=null && !configs.isEmpty()){
 			PluginEnvirement.getInstance().getStartLogger().log("Using global logger config");
@@ -46,6 +46,10 @@ public class LogServiceImpl implements ILogService {
 			PluginEnvirement.getInstance().getStartLogger().log("Using local logger config");
 			initWithLocalConfig();
 		}
+		
+		//set init 
+		inited = true;
+		LoggerListCacher.createLog4jLoggers();
 	}
 
 	private void initWithLocalConfig(){
@@ -75,7 +79,10 @@ public class LogServiceImpl implements ILogService {
 	 * @see net.luis.plugin.log.ILogService#getLogger(java.lang.String)
 	 */
 	public Logger getLogger(String name){
-		return new Logger4Log4j(org.apache.log4j.Logger.getLogger(name));
+		if (!inited)
+			return new Logger4Log4j(name);
+		else
+			return new Logger4Log4j(org.apache.log4j.Logger.getLogger(name));
 	}
 	
 	
@@ -84,6 +91,9 @@ public class LogServiceImpl implements ILogService {
 	 * @see net.luis.plugin.log.ILogService#createSpecicalLogger(java.lang.String)
 	 */
 	public Logger getSpecicalLogger(String filename){
+		if (!inited) 
+			throw new RuntimeException("Can't call getSpecicalLogger before inited!");
+		
 		Logger ret = (Logger) calledNames.get(filename);
 		if (ret==null){
 			synchronized (this) {

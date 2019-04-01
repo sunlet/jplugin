@@ -30,7 +30,7 @@ import javax.servlet.http.Part;
  * @version 创建时间：2015-2-4 上午11:54:34
  **/
 
-public class HttpServletRequestEmpty implements HttpServletRequest{
+public abstract class HttpServletRequestEmpty implements HttpServletRequest{
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServletRequest#getAuthType()
@@ -64,21 +64,7 @@ public class HttpServletRequestEmpty implements HttpServletRequest{
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getHeader(java.lang.String)
-	 */
-	public String getHeader(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServletRequest#getHeaderNames()
-	 */
-	public Enumeration getHeaderNames() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServletRequest#getHeaders(java.lang.String)

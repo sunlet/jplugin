@@ -6,8 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.tuple.Tuple2;
 
 public class JsonResult {
+	public static final int JSON_FORMAT_1=1;
+	public static final int JSON_FORMAT_2=2;
+	public static final int JSON_FORMAT_3=3;
+	
+	public static final String JSON_FORMAT_INDICATOR="$sef";
+	public static final String JSONP_FUNCTION_PARAM="callback";
+	
+	
 	boolean success;
 	String code="0";
 	String msg;
@@ -60,7 +69,14 @@ public class JsonResult {
 	}
 
 	public String toJson() {
-		String ret = JsonKit.object2JsonEx(this);
+		return toJson(JsonResult.JSON_FORMAT_1,null);
+	}
+	
+	public String toJson(Tuple2<Integer, String> format) {
+		return toJson(format.first,format.second);
+	}
+	public String toJson(int jsonFormat,String jsonp) {
+		String ret = JsonResultSerialHelper.object2JsonEx(this,jsonFormat,jsonp);
 		return ret;
 	}
 	
@@ -76,7 +92,7 @@ public class JsonResult {
 	public static void main(String[] args) {
 		JsonResult r = JsonResult.create(false);
 		r.create(false);
-		System.out.println(r.toJson());
+		System.out.println(r.toJson(JSON_FORMAT_1,null));
 
 		r = JsonResult.create();
 		r.setContent("aaaaa");
@@ -86,6 +102,6 @@ public class JsonResult {
 		lll.add("xyz");
 		r.setContent(lll);
 		
-		System.out.println(r.toJson());
+		System.out.println(r.toJson(JSON_FORMAT_1,null));
 	}
 }

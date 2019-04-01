@@ -8,8 +8,6 @@ import java.util.Properties;
 
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Interceptor;
@@ -27,6 +25,8 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 
 import net.jplugin.core.das.api.PageCond;
+import net.jplugin.core.log.api.LogFactory;
+import net.jplugin.core.log.api.Logger;
 
 /**
  * 通过拦截<code>StatementHandler</code>的<code>prepare</code>方法，重写sql语句实现物理分页。
@@ -37,7 +37,7 @@ import net.jplugin.core.das.api.PageCond;
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
 public abstract class PageInterceptor implements Interceptor {
-    private static final Log logger = LogFactory.getLog(PageInterceptor.class);
+    private static final Logger logger = LogFactory.getLogger(PageInterceptor.class);
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
     private static final String defaultDialect = "mysql"; // 数据库类型(默认为mysql)
@@ -107,9 +107,10 @@ public abstract class PageInterceptor implements Interceptor {
      * @param mappedStatement
      * @param boundSql
      * @param page
+     * @throws SQLException 
      */
     private void setPageParameter(String sql, Connection connection, MappedStatement mappedStatement,
-            BoundSql boundSql, PageCond page) {
+            BoundSql boundSql, PageCond page) throws SQLException {
         // 记录总记录数
         String countSql = "select count(0) from (" + sql + ")  total";
         PreparedStatement countStmt = null;
@@ -128,14 +129,17 @@ public abstract class PageInterceptor implements Interceptor {
 
         } catch (SQLException e) {
             logger.error("Ignore this exception", e);
+            throw e;
         } finally {
             try {
-                rs.close();
+               if (rs!=null)
+            	   rs.close();
             } catch (SQLException e) {
                 logger.error("Ignore this exception", e);
             }
             try {
-                countStmt.close();
+                if (countStmt!=null) 
+                	countStmt.close();
             } catch (SQLException e) {
                 logger.error("Ignore this exception", e);
             }

@@ -14,8 +14,9 @@ public class StartUpLoggerImpl implements IStartLogger {
 	private static final long LIMIT_SIZE = 1024*1024*1;
 	@Override
 	public synchronized void log(Object o) {
-		FileKit.appendFile(getFile(),header()+ o.toString()+"\r\n");
-		System.out.println(o);
+		String msg= (o==null)?"null":o.toString();
+		FileKit.appendFile(getFile(),header()+ msg+"\r\n");
+		System.out.println(msg);
 	}
 
 	private String header() {
@@ -24,8 +25,10 @@ public class StartUpLoggerImpl implements IStartLogger {
 
 	@Override
 	public synchronized void log(Object o, Throwable th) {
-		FileKit.appendFile(getFile(), header()+o.toString()+"\r\n");
-		System.out.println(o);
+		String msg= (o==null)?"null":o.toString();
+
+		FileKit.appendFile(getFile(), header()+ msg +"\r\n");
+		System.out.println(msg);
 		
 		FileKit.appendStackTrace(getFile(),th);
 		th.printStackTrace();

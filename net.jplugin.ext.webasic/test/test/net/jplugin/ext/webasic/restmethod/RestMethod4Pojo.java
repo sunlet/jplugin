@@ -23,6 +23,10 @@ public class RestMethod4Pojo {
 		nopara();
 	}
 	
+//	public void aaa(@Para(name="callback") String pp){
+//		
+//	}
+	
 	public void nopara(){
 	}
 	
@@ -30,9 +34,15 @@ public class RestMethod4Pojo {
 		return a+b;
 	}
 	
+//	public String testFullMatchCheck(@Para(name="_FULL_MATCH_") String b){
+//		return b;
+//	}
+	
 	public Integer add(int a,int b){
 		return a+b;
 	}
+	
+
 
 	@Para(name="aa")
 	public Integer addWithAnno(@Para(name="a") int a,@Para(name="b") int b){
@@ -73,6 +83,7 @@ public class RestMethod4Pojo {
 		test1();
 		test2();
 		testConcact();
+		testConcactJsonP();
 		testAdd();
 		testAddWithAnno();
 		testQuery();
@@ -139,6 +150,24 @@ public class RestMethod4Pojo {
 		mock.request.setPara("arg1", "def");
 		mock.invoke();
 		String result = mock.response.getResult();
+		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("result");
+		AssertKit.assertEqual(ret, "abcdef", null);
+		System.out.println(mock.response.getResult());
+	}
+	
+	private static void testConcactJsonP() {
+		HttpMock mock = new HttpMock();
+		mock.request.setServletPath("/testremotepojo/concact.do");
+//		mock.request.setPara("_o", "concact");
+		mock.request.setPara("arg0", "abc");
+		mock.request.setPara("arg1", "def");
+		mock.request.setPara("callback", "function1");
+		mock.invoke();
+		String result = mock.response.getResult();
+		AssertKit.assertTrue(result.startsWith("function1"));
+		
+		result = result.substring(10, result.length()-1);
+		
 		Object ret = ((Map)JsonKit.json2Map(result).get("content")).get("result");
 		AssertKit.assertEqual(ret, "abcdef", null);
 		System.out.println(mock.response.getResult());

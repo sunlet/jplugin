@@ -10,6 +10,7 @@ public class ESFRestContext {
 	String requestUrl;
 	HashMap<String,String> cookieMap;
 	HashMap<String,String> headerMap;
+	long msgReceiveTime;
 
 	public String getCallerIpAddress() {
 		return callerIpAddress;
@@ -41,6 +42,13 @@ public class ESFRestContext {
 	
 	public void setHeaderMap(HashMap<String, String> map) {
 		this.headerMap = map;
+	}
+
+	public long getMsgReceiveTime() {
+		return msgReceiveTime;
+	}
+	public void setMsgReceiveTime(long msgReceiveTime) {
+		this.msgReceiveTime = msgReceiveTime;
 	}
 
 }

@@ -23,5 +23,20 @@ public class ExtensionDasHelper {
 	public static void addConnWrapperExtension(AbstractPlugin plugin,Class clz){
 		plugin.addExtension(Extension.create(Plugin.EP_CONN_WRAPPER, clz));
 	}
+	
+	public static void addSqlListenerExtension(AbstractPlugin plugin,Class clz){
+		plugin.addExtension(Extension.create(Plugin.EP_SQL_LISTENER, clz));
+	}
 
+	public static void addSqlExecFilterExtension(AbstractPlugin plugin,Class clz){
+		plugin.addExtension(Extension.create(Plugin.EP_SQL_EXEC_FILTER, clz));
+	}
+	
+	public static void addSqlRefactorExtension(AbstractPlugin plugin,Class clz){
+		plugin.addExtension(Extension.create(Plugin.EP_SQL_REFACTOR, clz));
+	}
+	
+//	public static void addDynamicDataSourceProviderExtension(AbstractPlugin plugin,String name,Class clz){
+//		plugin.addExtension(Extension.create(Plugin.EP_DYNAMIC_DS_PROVIDER, name,clz));
+//	}
 }

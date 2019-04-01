@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.das.api.sqlrefactor.ISqlRefactor;
+import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.LogFactory;
 import net.jplugin.core.log.api.Logger;
-import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
 import net.jplugin.mtenant.impl.kit.parse.SqlParser;
 import net.jplugin.mtenant.impl.kit.parse.impl.DeleteSqlParser;
 import net.jplugin.mtenant.impl.kit.parse.impl.InsertSqlParser;
@@ -18,7 +19,7 @@ import net.jplugin.mtenant.impl.kit.parse.impl.SelectSqlParser;
 import net.jplugin.mtenant.impl.kit.parse.impl.UpdateSqlParser;
 import net.jplugin.mtenant.impl.kit.util.StringUtils;
 
-public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlder{
+public class SqlMultiTenantHanlderMergeImpl implements ISqlRefactor{
 	/**
 	 * @param dataSourceName
 	 * @param sql
@@ -27,8 +28,10 @@ public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlde
 	private static ConcurrentHashMap<String, List<String>> ignores = null;
 	private static Logger logger = LogFactory.getLogger(SqlMultiTenantHanlderMergeImpl.class);
 
-	public  String handle(String dataSourceName, String sql,Connection conn) {
-		String result = handleInner(dataSourceName, sql);
+	
+	public  String refactSql(String dataSourceName, String sql,Connection conn) {
+
+		String result = handleInner(dataSourceName, sql,conn);
 		if (logger.isDebugEnabled()){
 			if (!sql.equals(result)){
 				logger.debug("BeforeSQL = "+sql);
@@ -37,7 +40,7 @@ public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlde
 		}
 		return result;
 	}
-	public  String handleInner(String dataSourceName, String sql) {
+	public  String handleInner(String dataSourceName, String sql,Connection conn) {
 		if ("false".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable", "FALSE"))) {
 			return sql;
 		}
@@ -48,6 +51,18 @@ public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlde
 		if (!"ALL".equalsIgnoreCase(datasource) && !Arrays.asList(datasources).contains(dataSourceName)) {
 			return sql;
 		}
+		
+		//router connection数据源不能配置为多租户
+		boolean isRouter =false;
+		try{
+			isRouter = conn.isWrapperFor(RouterConnection.class);
+		}catch(Exception e){
+			throw new RuntimeException("Error while call isWrapper",e);
+		}
+		if (isRouter) 
+			throw new RuntimeException("Router connection can't be configed with multinant."+conn.getClass().getName());
+
+		
 
 		if (ignores == null) {
 			ignores = new ConcurrentHashMap<>();
@@ -139,4 +154,5 @@ public class SqlMultiTenantHanlderMergeImpl extends AbstractSqlMultiTenantHanlde
 		}*/
 		return dealSql;
 	}
+
 }

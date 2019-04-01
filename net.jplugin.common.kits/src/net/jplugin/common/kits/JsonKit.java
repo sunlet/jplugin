@@ -1,6 +1,7 @@
 package net.jplugin.common.kits;
 
 import java.io.StringWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +29,44 @@ public class JsonKit {
 	   mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
+	//<<< 2018年8月28日修改
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Object json2Object4Type(String json, Type type) {
+		Object object = null;
+		try {
+			if (json != null && json.length() > 0){
+				if (type instanceof Class) {
+					object = JsonKit.json2Object(json, (Class) type);
+				} else {
+					JavaType javaType = mapper.getTypeFactory().constructType(type);
+					object = mapper.readValue(json, javaType);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return object;
+	}
+	
+	public static Object json2Object4TypeEx(String val, Type type) {
+		if (val==null || val.equals("")){
+			return null;
+		}
+		Class clz=null;
+		Transformer trans = null;
+		if (type instanceof Class){
+			clz = (Class) type;
+			trans = PritiveKits.getTransformer(clz);
+		}
+		
+		if (trans!=null ){
+			return trans.fromString(clz, val);
+		}else{
+			return json2Object4Type(val,type);
+		}	
+	}
+	//>>>2018年8月28日修改
+	
 	public static String object2Json(Object object) {
 		StringWriter writer = new StringWriter();
 		try {
@@ -97,7 +136,7 @@ public class JsonKit {
 		}
 		return m;
 	}
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 		TestBean o = new TestBean();
 		TestBean o2 = new TestBean();
 		TestBean[] arr = new TestBean[]{o,o2};
@@ -112,6 +151,17 @@ public class JsonKit {
 		
 		System.out.println(object2Json(list));
 	}
+	public static void main(String[] args) {
+		TestBean[] arr = new TestBean[2];
+		arr[0]= new TestBean();
+		arr[1] = new TestBean();
+		String json = JsonKit.object2Json(arr);
+		System.out.println(json);
+		
+		Object obj = JsonKit.json2ObjectEx(json,arr.getClass());
+		System.out.println(JsonKit.object2JsonEx(obj));
+	}
+	
 	public static void main2(String[] args) throws Exception {
 		
 		int[] arr = new int[]{1,2,3};
@@ -200,4 +250,5 @@ class TestBean {
 		this.age = age;
 	}
 
+	
 }

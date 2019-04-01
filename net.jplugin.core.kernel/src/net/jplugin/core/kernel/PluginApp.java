@@ -45,6 +45,14 @@ public class PluginApp {
 		
 		//startup 
 		PluginEnvirement.getInstance().startup();
+		
+		//stophook
+		Runtime.getRuntime().addShutdownHook(new Thread(){
+			@Override
+			public void run() {
+				PluginEnvirement.INSTANCE.stop();
+			}
+		});
 	}
 
 //

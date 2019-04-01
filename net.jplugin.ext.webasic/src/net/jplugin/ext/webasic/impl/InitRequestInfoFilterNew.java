@@ -11,15 +11,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.omg.PortableInterceptor.RequestInfo;
-
-import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.RequestIdKit;
+import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.kernel.api.ctx.Cookies;
+import net.jplugin.core.kernel.api.ctx.Headers;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo.Content;
+import net.jplugin.core.kernel.kits.KernelKit;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
-import net.jplugin.ext.webasic.api.RequestIdUtil;
 import net.jplugin.ext.webasic.api.WebFilter;
+import net.jplugin.ext.webasic.kits.StreamContentKit;
 
 /**
  * This filter must not conflict with InitRequestInfoFilter。This is two seperate
@@ -30,12 +32,20 @@ import net.jplugin.ext.webasic.api.WebFilter;
  */
 public class InitRequestInfoFilterNew implements WebFilter {
 
+	//放在request中的
 	private static final String _AID = "_aid";
 	private static final String _OID = "_oid";
 	private static final String _OTK = "_otk";
 	private static final String _ATK = "_atk";
-	public static final String _GREQID = "_greqid_";
-	private static final String APPLICATION_JSON = "application/json";
+
+	//放在head中的
+	private static final String HAID = "HAID";
+	private static final String HOID = "HOID";
+	private static final String HOTK = "HOTK";
+	private static final String HATK = "HATK";
+	
+	
+	public static final String _REQID = "ReqSerialKey";
 
 	public boolean doFilter(HttpServletRequest req, HttpServletResponse res) {
 //		try {
@@ -43,8 +53,12 @@ public class InitRequestInfoFilterNew implements WebFilter {
 //		} catch (UnsupportedEncodingException e) {
 //			throw new RuntimeException(e);
 //		}
+		//PUT http servlet reqeust to context
+		ThreadLocalContext tlContext = ThreadLocalContextManager.instance.getContext();
+		tlContext.setAttribute(ThreadLocalContext.ATTR_SERVLET_REQUEST, req);
+		tlContext.setAttribute(ThreadLocalContext.ATTR_SERVLET_RESPONSE, res);
 		
-		RequesterInfo requestInfo = ThreadLocalContextManager.getRequestInfo();
+		RequesterInfo requestInfo = tlContext.getRequesterInfo();
 		
 		//parse content
 		parseContent(requestInfo, req);
@@ -65,8 +79,23 @@ public class InitRequestInfoFilterNew implements WebFilter {
 	}
 
 	private void parseHeaders(RequesterInfo requestInfo, HttpServletRequest req) {
-		requestInfo.getHeaders().setHeader(_GREQID, req.getHeader(_GREQID));
+		//存在大小写问题，暂时修改方案
+//		Enumeration<String> headers = req.getHeaderNames();
+//		if (headers!=null)
+//			while(headers.hasMoreElements()){
+//				String h = headers.nextElement();
+//				requestInfo.getHeaders().setHeader(h, req.getHeader(h));
+//			}
+
+		
+		requestInfo.getHeaders().setHeader(_REQID, req.getHeader(_REQID));
 		requestInfo.getHeaders().setHeader("Referer", req.getHeader("Referer"));
+		requestInfo.getHeaders().setHeader(MtInvocationFilterHandler.TENANT_ID, req.getHeader(MtInvocationFilterHandler.TENANT_ID));
+
+		requestInfo.getHeaders().setHeader(HAID, req.getHeader(HAID));
+		requestInfo.getHeaders().setHeader(HOID, req.getHeader(HOID));
+		requestInfo.getHeaders().setHeader(HOTK, req.getHeader(HOTK));
+		requestInfo.getHeaders().setHeader(HATK, req.getHeader(HATK));
 	}
 
 	private void parseCookies(RequesterInfo requestInfo, HttpServletRequest req) {
@@ -79,18 +108,11 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			}
 		}
 	}
-
+	
 	public static void fillFromBasicReqInfo(RequesterInfo requestInfo) {
 		Content content = requestInfo.getContent();
 		
-		Map map;
-		//2016-12-08 因为把jsonContent解析放入paramContent，不需要区分了
-//		if (APPLICATION_JSON.equals(content.getContentType())) {
-//			map = content.getMapForJsonContent();
-//		} else {
-//			map = content.getParamContent();
-//		}
-		map = content.getParamContent();
+		Map map = content.getParamContent();
 
 		String clientAppToken = (String) map.get(_ATK);
 		String operatorToken = (String) map.get(_OTK);
@@ -100,17 +122,21 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			requestInfo.setOperatorToken(operatorToken);
 			requestInfo.setOperatorId((String) map.get(_OID));
 			requestInfo.setClientAppCode((String) map.get(_AID));
+		}else{
+			//2018-3-18 增加支持Header中信息
+			Headers headers = requestInfo.getHeaders();
+			clientAppToken = headers.getHeader(HATK);
+			operatorToken = headers.getHeader(HOTK);
+			if (clientAppToken!=null  || operatorToken!=null){
+				requestInfo.setClientAppToken(clientAppToken);
+				requestInfo.setOperatorToken(operatorToken);
+				requestInfo.setOperatorId( headers.getHeader(HOID));
+				requestInfo.setClientAppCode( headers.getHeader(HAID));
+			}	
 		}
-		
-		//设置reqId
-		String reqId = (String) requestInfo.getHeaders().getHeader(_GREQID);
-		if (StringKit.isNull(reqId))
-			reqId = RequestIdUtil.newRequestId();
-		requestInfo.setRequestId(reqId);
 		
 		//设置tenant
 		MtInvocationFilterHandler.instance.handle(requestInfo);
-		
 	}
 
 	private String getClientIp(HttpServletRequest request) {
@@ -134,33 +160,10 @@ public class InitRequestInfoFilterNew implements WebFilter {
 
 	private void parseContent(RequesterInfo reqInfo, HttpServletRequest req) {
 		Content content = reqInfo.getContent();
-		content.setContentType(req.getContentType());
-		if (APPLICATION_JSON.equals(content.getContentType())) {
-			InputStream is = null;
-			String json;
-			try {
-				req.getInputStream();
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] buffer = new byte[512];
-				int len;
-				is = req.getInputStream();
-				if (is == null) {
-					json = "";
-				} else {
-					while ((len = is.read(buffer)) > 0) {
-						os.write(buffer, 0, len);
-					}
-					json = os.toString("utf-8");
-				}
-			} catch (IOException e) {
-				throw new RuntimeException("get json error:" + e.getMessage(), e);
-			} finally {
-				if (is != null)
-					try {
-						is.close();
-					} catch (Exception e) {
-					}
-			}
+		String theContentType = req.getContentType();
+		content.setContentType(theContentType);
+		if (ContentKit.isApplicationJson(theContentType)) {//用ContentKit,startwith判断，支持 application/json;encoding... 的样式
+			String json = StreamContentKit.readReqStream(req);
 			content.setJsonContent(json);
 		} else {
 			Enumeration nms = req.getParameterNames();
@@ -172,6 +175,8 @@ public class InitRequestInfoFilterNew implements WebFilter {
 			content.setParamContent(param);
 		}
 	}
+
+
 
 	public void doAfter(HttpServletRequest req, HttpServletResponse res, Throwable th) {
 	}

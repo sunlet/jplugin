@@ -1,5 +1,6 @@
 package test.net.jplugin.ext.webasic;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import net.jplugin.common.kits.http.HttpStatusException;
 import net.jplugin.core.ctx.ExtensionCtxHelper;
@@ -14,8 +15,11 @@ import test.net.jplugin.ext.webasic.annotation.RuleTestForAnno;
 import test.net.jplugin.ext.webasic.annotation.ServiceExportTest;
 import test.net.jplugin.ext.webasic.annotation.WebControllerTest;
 import test.net.jplugin.ext.webasic.annotation.WebExControllerTest;
+import test.net.jplugin.ext.webasic.bind.TestBind;
 import test.net.jplugin.ext.webasic.dynamicmethod.DynamicMethodTest;
 import test.net.jplugin.ext.webasic.dynamicmethod.TestDynamicMethodClient;
+import test.net.jplugin.ext.webasic.mttest.MtTestClient;
+import test.net.jplugin.ext.webasic.mttest.MtTestForRequest;
 import test.net.jplugin.ext.webasic.restclient.IService;
 import test.net.jplugin.ext.webasic.restclient.ServiceBean;
 import test.net.jplugin.ext.webasic.restclient.ServiceFilterTest;
@@ -54,6 +58,10 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTestForAnno.class,RuleTestForAnno.class);
 		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
 
+		ExtensionWebHelper.addServiceExportExtension(this,"/mttestclient",MtTestForRequest.class);
+
+		ExtensionWebHelper.autoBindControllerExtension(this, ".bind");
+		ExtensionWebHelper.autoBindServiceExportExtension(this, ".bind");
 		
 	}
 
@@ -62,7 +70,8 @@ public class Plugin extends AbstractPluginForTest{
 		return CoreServicePriority.WEBSERVICE +1;
 	}
 
-	public void test() throws IOException, HttpStatusException {
+	public void test() throws IOException, HttpStatusException, InterruptedException, ExecutionException {
+		
 		RestMethod4Pojo.test();
 		new TestRestClient().test();
 		new TestRestClient().testProxyFactory();
@@ -72,6 +81,10 @@ public class Plugin extends AbstractPluginForTest{
 		new TestDynamicMethodClient().test();
 		new TestPathSearch().test();
 		new AnnoTest().test();
+		new MtTestClient().test();
+//		TestReqIdService.calltest();
+		
+		new TestBind().test();
 	}
 	
 	@Override

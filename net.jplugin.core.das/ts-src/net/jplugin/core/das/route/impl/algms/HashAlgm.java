@@ -10,6 +10,7 @@ import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.api.ITsAlgorithm.ValueType;
+import net.jplugin.core.das.route.api.RouterKeyFilter;
 
 public class HashAlgm  implements ITsAlgorithm{
 
@@ -24,6 +25,10 @@ public class HashAlgm  implements ITsAlgorithm{
 			throw new RuntimeException("not support algm for key java type:"+key.getClass().getName()+" algm is: "+this.getClass().getName());
 		}
 		
+		if (hashCode<0){
+			hashCode = -hashCode;
+		}
+		
 		int splits = compondDataSource.getConfig().findTableConfig(tableBaseName).getSplits();
 		if (splits==0){
 			throw new TablesplitException("Splits value error ,must >0 ,for table:"+tableBaseName);
@@ -31,15 +36,19 @@ public class HashAlgm  implements ITsAlgorithm{
 		//可以假定splits为int范围内
 		int mod = (int) (hashCode % splits);
 		
-		int dsIndex = mod / compondDataSource.getConfig().getDataSourceConfig().length;
+		int dsIndex = mod % compondDataSource.getConfig().getDataSourceConfig().length;
 		
 		Result r = Result.create();
 		r.setDataSource(compondDataSource.getConfig().getDataSourceConfig()[dsIndex].getDataSrouceCfgName());
 		r.setTableName(tableBaseName+"_"+(mod+1));
 		return r;		
 	}
+	
+	/**
+	 * 目前都是返回所有的表，其实对于IN类型可以做一些优化的。
+	 */
 	@Override
-	public DataSourceInfo[] getDataSourceInfos(RouterDataSource compondDataSource, String tableBaseName) {
+	public DataSourceInfo[] getMultiResults(RouterDataSource compondDataSource, String tableBaseName,ValueType valueType ,RouterKeyFilter kva) {
 		TableConfig tableCfg = compondDataSource.getConfig().findTableConfig(tableBaseName);
 		int splits = tableCfg.getSplits();
 		DataSourceConfig[] dscfg = compondDataSource.getConfig().getDataSourceConfig();

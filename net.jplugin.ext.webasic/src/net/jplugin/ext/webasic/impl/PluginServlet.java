@@ -2,18 +2,16 @@ package net.jplugin.ext.webasic.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.ExceptionKit;
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
-import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 
 /**
  *
@@ -70,12 +68,15 @@ public class PluginServlet extends HttpServlet{
 			PluginEnvirement.getInstance().startup();
 			PluginEnvirement.getInstance().setWebRootPath(getServletContext().getRealPath("/"));
 		}catch(Throwable t){
+			t = ExceptionKit.getRootCause(t);
 			PluginEnvirement.getInstance().getStartLogger().log(t.getMessage(),t);;
 			if (t instanceof RuntimeException) throw (RuntimeException)t;
 			else throw new RuntimeException(t);
 		}
 	}
 	
+	
+
 	@Override
 	public void destroy() {
 		PluginEnvirement.getInstance().stop();

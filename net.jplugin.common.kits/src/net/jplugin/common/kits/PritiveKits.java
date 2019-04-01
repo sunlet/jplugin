@@ -33,10 +33,14 @@ public class PritiveKits {
 		transformerMap.put(double.class,new DoubleTrans() );
 		transformerMap.put(Float.class,new FloatTrans() );
 		transformerMap.put(float.class,new FloatTrans() );
-		transformerMap.put(Date.class,new DateTrans() );
-		transformerMap.put(String.class,new StringTrans() );
-		transformerMap.put(Enum.class,new EnumTrans() );
+		transformerMap.put(Date.class,new DateTrans());
+		transformerMap.put(String.class,new StringTrans());
+		transformerMap.put(Enum.class,new EnumTrans());
+		transformerMap.put(Boolean.class,new BooleanTrans() );
+		transformerMap.put(boolean.class,new BooleanTrans() );
 	}
+	
+	
 	
 	public static class Transformer{
 		public String convertToString(Object obj){

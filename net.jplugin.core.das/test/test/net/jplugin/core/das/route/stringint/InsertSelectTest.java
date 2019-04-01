@@ -58,8 +58,9 @@ public class InsertSelectTest {
 		
 		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable*/  count(*) from tb_route0"));
 		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable  */  count(0) from tb_route0"));
-		AssertKit.assertEqual(3, getCount(conn,"select  /*spantable  */  count(2) from tb_route0"));
-
+		AssertKit.assertEqual(6, getCount(conn,"select  /*spantable  */  count(2) from tb_route0"));
+		AssertKit.assertEqual(3, getCount(conn,"select  /*spantable  */  count('2') from tb_route0"));
+		
 		list = SQLTemplate.executeSelect(conn, "select /*spantable*/ count(*) from (select  *  from tb_route0) tb1", null);
 		AssertKit.assertEqual("6", list.get(0).get("count(*)"));
 		list = SQLTemplate.executeSelect(conn, "select  count(*)/*spantable*/ from (select  *  from tb_route0) tb1", null);
@@ -149,6 +150,8 @@ public class InsertSelectTest {
 				AssertKit.assertEqual(6, getCount(conn,"select count(*) from tb_route1 where f3='a'"));
 			}
 		});
+		
+		new LimitTest().test();
 	}
 
 	private void print(List<Map<String, String>> list) {

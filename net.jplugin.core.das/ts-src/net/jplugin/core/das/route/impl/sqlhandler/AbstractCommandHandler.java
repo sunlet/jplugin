@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.jplugin.core.das.route.api.ITsAlgorithm.Result;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
+import net.jplugin.core.das.route.api.SqlHandleService;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
@@ -45,7 +46,7 @@ public abstract class AbstractCommandHandler{
 		String tableName = walkTableName(walker);
 		
 		if (spanAll){
-			CombinedSqlParser.Meta meta = new Meta();
+			/*CombinedSqlParser.Meta meta = new Meta();
 			meta.setSourceTb(tableName);
 			meta.setDataSourceInfos(TsAlgmManager.getDataSourceInfos(conn.getDataSource(),tableName));
 			meta.setOrderParam(getOrderParam(walker));
@@ -54,6 +55,9 @@ public abstract class AbstractCommandHandler{
 			SqlHandleResult result = new SqlHandleResult();
 			result.setResultSql(newSql);
 			result.setTargetDataSourceName(CombinedSqlParser.SPANALL_DATASOURCE);
+			return result;
+			*/
+			SqlHandleResult result = SqlHandleService.INSTANCE4SPAN.handle(conn, sql, params);
 			return result;
 		}
 		

@@ -29,26 +29,35 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
+import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedPreparedStatement extends CombinedStatement implements PreparedStatement{
 
-	ParseResult sqlParseResult;
+//	ParseResult sqlParseResult;
+	
+	private CombinedSqlContext sqlExeContext;
+
 	public CombinedPreparedStatement(Connection conn, String sql){
 		super(conn);
 		//解析
-		sqlParseResult = CombinedSqlParser.parse(sql);
+//		sqlParseResult = CombinedSqlParser.parseAndMakeContext(sql);
+		sqlExeContext = CombinedSqlParser.parseAndMakeContext(sql);
 		//产生statement 列表
-		fillStatementList(sqlParseResult);
+		fillStatementList();
 	}
 	
-	private void fillStatementList(ParseResult pr){
+	private void fillStatementList(){
 		try{
-			for (DataSourceInfo dsi:pr.getMeta().getDataSourceInfos()){
+			DataSourceInfo[] dataSourceInfos = this.sqlExeContext.getDataSourceInfos();
+			String sqlToExecute = this.sqlExeContext.getFinalSql();
+			String sourceTableToReplace = this.sqlExeContext.getOriginalTableName();//后面会修改
+			
+			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				//每一个表都获取一个Statement，并不重用
 				for (String destTbName:dsi.getDestTbs()){
-					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(pr.getSql(), pr.getMeta().getSourceTb(), destTbName));
+					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(sqlToExecute,sourceTableToReplace, destTbName));
 					statementList.add(stmt);
 				}
 			}
@@ -59,33 +68,38 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 				}catch(Exception e1){}
 			}
 			statementList.clear();
-			throw new TablesplitException(e.getMessage(),e);
+			throw new TablesplitException(e.getMessage() + "  "+ CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
 
 	@Override
 	public ResultSet executeQuery() throws SQLException {
-		ResultSetList temp = genResultSetListFromStatementList(sqlParseResult);
+		ResultSetList temp = genResultSetListFromStatementList();
 		
 		//根据count(*)模式返回不同的值
-		if (sqlParseResult.getMeta().getCountStar()==1){
-			this.theResultSet = new ResultSetForCount(temp);
-			return this.theResultSet;
-		}else{
-			this.theResultSet = temp;
-			return theResultSet;
-		}
+		this.theResultSet =  WrapperManager.INSTANCE.wrap(temp);
+		return this.theResultSet;
+		
+//		if (sqlParseResult.getMeta().getCountStar()==1){
+//			this.theResultSet = new CountStarWrapper(temp);
+//			return this.theResultSet;
+//		}else{
+//			this.theResultSet = temp;
+//			return theResultSet;
+//		}
 	}
 
-	private ResultSetList genResultSetListFromStatementList(ParseResult pr) {
+	private ResultSetList genResultSetListFromStatementList() {
 		List<ResultSet> tempList = new ArrayList<ResultSet>();
 		try{
 			//逐个执行查询
 			for (Statement st:this.statementList){
 				tempList.add(((PreparedStatement)st).executeQuery());
 			}
+//			makeWrapperForDebug(tempList);
 			//制造结果
-			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
+//			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
+			ResultSetList ret = new ResultSetList(this,tempList,this.sqlExeContext);
 			return ret;
 		}catch(Exception e){
 			//发生异常的情况下，statement 会在本statement关闭的时候关闭，但是resultSet不会，需要处理一下
@@ -95,9 +109,27 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 				}catch(Exception e1){}
 			}
 			if (e instanceof RuntimeException) throw (RuntimeException)e;
-			else throw new TablesplitException(e.getMessage(),e);
+			else throw new TablesplitException(e.getMessage() + "  "+ CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
+	private void makeWrapperForDebug(List<ResultSet> list) {
+		List<ResultSet> tempList= new ArrayList(list.size());
+		tempList.addAll(list);
+		list.clear();
+		
+		for (int i=0;i<tempList.size();i++){
+			list.add(new ResultWrapperForDebug(tempList.get(i)));
+		}
+	}
+
+	private int getSize(ResultSet rs) throws SQLException {
+		int size =0;
+		while(rs.next()){
+			size++;
+		}
+		return size;
+	}
+
 	@Override
 	public int executeUpdate() throws SQLException {
 		throw new TablesplitException("not support");

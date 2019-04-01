@@ -50,6 +50,8 @@ public static final Object MIX_PARA_VALUE = "1";
 				
 				HashMap< String, Object> map = new HashMap<String, Object>();
 				map.put(MIX_PARA,MIX_PARA_VALUE );
+				map.put(JsonResult4Client.JSON_FORMAT_INDICATOR, "1");
+				
 				Annotation[][] paraAnootation = method.getParameterAnnotations();
 				if (args!=null){
 					for (int i=0; i<args.length;i++){
@@ -143,7 +145,9 @@ public static final Object MIX_PARA_VALUE = "1";
 						break;
 					}
 				}
-				if (StringKit.isNull(paramName)){
+				
+				//FULL MATCH的情况，直接用argX来传递；服务端会通过MIXED模式去处理，如果不是MIXED模式，就随他吧。
+				if (StringKit.isNull(paramName) || paramName.equals(Para.FULL_MATCH)){
 					paramName = "arg"+index;
 				}
 				return paramName;

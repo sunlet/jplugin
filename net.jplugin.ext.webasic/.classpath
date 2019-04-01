@@ -23,5 +23,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.das.mybatis"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

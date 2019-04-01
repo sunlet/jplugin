@@ -16,12 +16,14 @@ public interface ITsAlgorithm {
 	 * The method only need be implemented when you want use Span Table Query.
 	 * @param dataSource
 	 * @param tableName
+	 * @param type 
+	 * @param kva 
 	 * @return
 	 */
-	public DataSourceInfo[] getDataSourceInfos(RouterDataSource dataSource, String tableName);
+	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName, ValueType type, RouterKeyFilter kva);
 	
 	public enum ValueType{
-		LONG,STRING,TIMESTAMP,DATE
+		LONG,STRING,DATE, TIMESTAMP
 	}
 	
 	public static class Result{

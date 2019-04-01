@@ -11,20 +11,22 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.CombinedSqlContext;
 import net.jplugin.core.das.route.impl.conn.EmptyStatement;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedStatement extends EmptyStatement{
 	List<Statement> statementList = new ArrayList();
 	ResultSet theResultSet;
 	private boolean closed;
 	private Connection conn;
+	private CombinedSqlContext sqlExeutionContext;
 	
 	public CombinedStatement(Connection c){
 		this.conn = c;
 	}
 	@Override
-	public boolean execute(String sql) throws SQLException {
+	public final boolean execute(String sql) throws SQLException {
 		if (!sql.trim().startsWith("SELECT "))
 			throw new TablesplitException("span table sql only support SELECT ...");
 		this.executeQuery(sql);
@@ -32,36 +34,43 @@ public class CombinedStatement extends EmptyStatement{
 	}
 
 	@Override
-	public ResultSet executeQuery(String sql) throws SQLException {
+	public final ResultSet executeQuery(String sql) throws SQLException {
 		if (this.closed) throw new TablesplitException("can't call in a closed statement");
-		ParseResult pr = CombinedSqlParser.parse(sql);
+		this.sqlExeutionContext = CombinedSqlParser.parseAndMakeContext(sql);
 		
 		//获取resultList
-		ResultSetList resutSet = genResultSetList(pr);
+		ResultSetList resutSet = genResultSetList();
 		
 		//根据count(*)模式返回不同的值
-		if (pr.getMeta().getCountStar()==1){
-			this.theResultSet = new ResultSetForCount(resutSet);
-			return this.theResultSet;
-		}else{
-			this.theResultSet = resutSet;
-			return theResultSet;
-		}
+		this.theResultSet =  WrapperManager.INSTANCE.wrap(resutSet);
+		return this.theResultSet;
+//		
+//		if (pr.getMeta().getCountStar()==1){
+//			this.theResultSet = new CountStarWrapper(resutSet);
+//			return this.theResultSet;
+//		}else{
+//			this.theResultSet = resutSet;
+//			return theResultSet;
+//		}
 	}
 	
-	private ResultSetList genResultSetList(ParseResult pr) throws SQLException {
+	private ResultSetList genResultSetList() throws SQLException {
 		List<ResultSet> tempList = new ArrayList<ResultSet>();
 		try{
-			for (DataSourceInfo dsi:pr.getMeta().getDataSourceInfos()){
+			DataSourceInfo[] dataSourceInfos = this.sqlExeutionContext.getDataSourceInfos();
+			String sqlToExecute = this.sqlExeutionContext.getFinalSql();
+			String sourceTableToReplace = this.sqlExeutionContext.getOriginalTableName();//后面会修改
+			
+			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				for (String destTbName:dsi.getDestTbs()){
 					Statement stmt = conn.createStatement();
 					statementList.add(stmt);
-					ResultSet resultSet = stmt.executeQuery(StringKit.repaceFirst(pr.getSql(), pr.getMeta().getSourceTb(), destTbName));
+					ResultSet resultSet = stmt.executeQuery(StringKit.repaceFirst(sqlToExecute, sourceTableToReplace, destTbName));
 					tempList.add(resultSet);
 				}
 			}
-			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
+			ResultSetList ret = new ResultSetList(this,tempList,this.sqlExeutionContext);
 			return ret;
 		}catch(Exception e){
 			//发生异常的情况下，statement 会在本statement关闭的时候关闭，但是resultSet不会，需要处理一下
@@ -71,7 +80,7 @@ public class CombinedStatement extends EmptyStatement{
 				}catch(Exception e1){}
 			}
 			if (e instanceof RuntimeException) throw (RuntimeException)e;
-			else throw new TablesplitException(e.getMessage(),e);
+			else throw new TablesplitException(e.getMessage()+" sql="+ CombinedSqlContext.get().getFinalSql(),e);
 		}
 	}
 

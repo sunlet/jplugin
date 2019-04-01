@@ -17,5 +17,7 @@ public interface IMybatisService {
 	public <M,R> R returnWithMapper(Class<M> type,IMapperHandlerForReturn<M,R> handler);
 	
 	public Connection getConnection();
+	
+	public boolean containsMapper(String clazz);
 
 }

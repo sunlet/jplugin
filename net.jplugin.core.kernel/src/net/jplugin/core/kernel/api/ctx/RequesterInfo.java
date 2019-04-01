@@ -1,5 +1,7 @@
 package net.jplugin.core.kernel.api.ctx;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +18,8 @@ public class RequesterInfo {
 	public static final String CLIENT_BROWSER="b";
 	public static final String CLIENT_MBROWSER="mb";
 
-	String requestId;
+	String traceId;
+	String parSpanId;
 	String clientType;
 	String operatorToken;
 	String operatorId;
@@ -30,11 +33,24 @@ public class RequesterInfo {
 	Headers headers=new Headers();
 	
 	//following for request content
-
 	
 	public String getOperatorId() {
 		return operatorId;
 	}
+	public String getTraceId() {
+		return traceId;
+	}
+	public void setTraceId(String tId) {
+		this.traceId = tId;
+	}
+
+	public String getParSpanId() {
+		return parSpanId;
+	}
+	public void setParSpanId(String parSpanId) {
+		this.parSpanId = parSpanId;
+	}
+	
 	public void setOperatorId(String operatorId) {
 		this.operatorId = operatorId;
 	}
@@ -50,12 +66,12 @@ public class RequesterInfo {
 	public void setOperatorToken(String token) {
 		this.operatorToken = token;
 	}
-	public String getRequestId() {
-		return requestId;
-	}
-	public void setRequestId(String requestId) {
-		this.requestId = requestId;
-	}
+//	public String getRequestId() {
+//		return requestId;
+//	}
+//	public void setRequestId(String requestId) {
+//		this.requestId = requestId;
+//	}
 	public String getCurrentTenantId() {
 		return currentTenantId;
 	}
@@ -127,16 +143,31 @@ public class RequesterInfo {
 		}
 		public void setJsonContent(String jsonContent) {
 			this.jsonContent = jsonContent;
-			fillItemsToParamContent();
-////2016-12-08注释掉			parseAndCacheJsonContent();
+			
+//			//只有在content是Map的情况下才fillItemsToParamContent
+//			if (!StringKit.isNull(jsonContent) && jsonContent.trim().startsWith("{")){
+			try {
+				fillItemsToParamContent();
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException("Encoding error,jsoncontent:"+jsonContent,e);
+			}
+//			}
 		}
 		
-		private void fillItemsToParamContent() {
+		private void fillItemsToParamContent() throws UnsupportedEncodingException {
 			if (paramContent==null) 
 				paramContent = new HashMap<String,String>();
 			
 			if (StringKit.isNull(this.jsonContent))
 				return;//不做任何转换，认为没参数
+
+			//尝试做一遍decode,为节省开销，判断是%开头才进行
+			jsonContent = jsonContent.trim();
+			if (jsonContent.startsWith("%"))
+				jsonContent = URLDecoder.decode(jsonContent,"utf-8");
+			//应对_FULL_MATCH的情况，参数不是map，忽略
+			if (!jsonContent.trim().startsWith("{"))
+				return;
 			
 			Map map = JsonKit.json2Map(this.jsonContent);
 			for (Object key : map.keySet()){

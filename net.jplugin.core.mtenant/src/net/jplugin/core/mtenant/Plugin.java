@@ -1,13 +1,22 @@
 package net.jplugin.core.mtenant;
 
-import net.jplugin.common.kits.http.filter.HttpFilterManager;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.das.ExtensionDasHelper;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.CoreServicePriority;
+import net.jplugin.core.kernel.api.ExtensionKernelHelper;
+import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.core.mtenant.impl.AbstractSqlMultiTenantHanlder;
-import net.jplugin.core.mtenant.impl.MtDataSourceWrapperService;
+import net.jplugin.core.mtenant.api.ITenantListProvidor;
+import net.jplugin.core.mtenant.api.ITenantStoreStrategyProvidor;
+import net.jplugin.core.mtenant.api.TenantListProvidorManager;
+import net.jplugin.core.mtenant.handler.SqlMultiTenantHanlderSchemaImpl;
+import net.jplugin.core.mtenant.handler2.SqlHandlerVisitorForMixed;
+import net.jplugin.core.mtenant.handler2.SqlMultiTenantHanlderMixedImpl;
+import net.jplugin.core.mtenant.handler2.TenantStoreStrategyManager;
+import net.jplugin.core.mtenant.tidv.TenantIDValidator;
+import net.jplugin.ext.webasic.ExtensionWebHelper;
+import net.jplugin.mtenant.impl.kit.SqlMultiTenantHanlderMergeImpl;
 
 public class Plugin extends AbstractPlugin{
 	
@@ -29,7 +38,7 @@ public class Plugin extends AbstractPlugin{
 	 * mtenant.datasource=ALL|ds1,ds2,ds3
 	 * 
 	 * #多租户数据库策略，这个配置目前不开放
-	 * mtenant.db-strategy=schema（默认）|merge
+	 * mtenant.db-strategy=schema（默认）|merge | mixed
 	 *
 	 * #分schema模式下各数据源对应的schemaprefix值，对于多租户的情况必须配置，否则会出错
 	 * mtenant.schema-prefix.ds1=xxx
@@ -52,22 +61,66 @@ public class Plugin extends AbstractPlugin{
 	 * #如果碰到忽略多租户处理的注释，则忽略该SQL的处理：\/* IGNORE-TANENT *\/
 	 * </pre>
 	 */
+	public static final String EP_TENANTLIST_PROVIDOR = "EP_TENANTLIST_PROVIDOR";
+	public static final String EP_TENANT_STORESTG_PROVIDOR = "EP_TENANT_STORESTG_PROVIDOR";
 	public Plugin(){
-		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
-			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
+		MtenantStatus.init();
+		
+		this.addExtensionPoint(ExtensionPoint.create(EP_TENANTLIST_PROVIDOR, ITenantListProvidor.class));
+		this.addExtensionPoint(ExtensionPoint.create(EP_TENANT_STORESTG_PROVIDOR, ITenantStoreStrategyProvidor.class));
+
+
+		if (MtenantStatus.enabled()){
+			
+//			ExtensionDasHelper.addConnWrapperExtension(this, MtDataSourceWrapperService.class);
+			registeSqlRefectorExtension();
+			
 //			ExtensionWebHelper.addServiceFilterExtension(this, MtInvocationFilter.class);
 //			ExtensionWebHelper.addWebCtrlFilterExtension(this, MtInvocationFilter.class);
-			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfig("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfig("mtenant.field"));
+			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant ENABLED! req-param="+ConfigFactory.getStringConfigWithTrim("mtenant.req-param-name")+" dbfield="+ConfigFactory.getStringConfigWithTrim("mtenant.field"));
+			ExtensionKernelHelper.addHttpClientFilterExtension(this, MTenantChain.class);
+			//检查空值
+			ExtensionWebHelper.addServiceFilterExtension(this, TenantIDValidator.class);
+			ExtensionWebHelper.addWebCtrlFilterExtension(this, TenantIDValidator.class);
 		}else{
 			PluginEnvirement.INSTANCE.getStartLogger().log("@@@ mtenant DISABLED!");
 		}
 	}
 	
+	private void registeSqlRefectorExtension() {
+		String s = ConfigFactory.getStringConfigWithTrim("mtenant.db-strategy");
+		if (s==null){
+			s = "schema";
+//			s = "merge";
+		}
+		Class clazz=null;
+		if ("schema".equals(s)){
+			clazz = SqlMultiTenantHanlderSchemaImpl.class;
+//			instance = new SqlMultiTenantHanlderSchemaImpl();
+		}else if ("merge".equals(s)){
+			clazz= SqlMultiTenantHanlderMergeImpl.class;
+//			instance = new SqlMultiTenantHanlderMergeImpl();
+		}else if ("mixed".equals(s)){
+			clazz= SqlMultiTenantHanlderMixedImpl.class;
+		}else
+			throw new RuntimeException("Error mtenant.db.strategy configed : "+s);
+		
+		ExtensionDasHelper.addSqlRefactorExtension(this, clazz);
+		PluginEnvirement.getInstance().getStartLogger().log("多租户数据库策略:"+s+"  "+clazz.getName());
+
+	}
+
 	@Override
 	public void onCreateServices() {
-		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfig("mtenant.enable"))){
-			HttpFilterManager.addFilter(new MTenantChain());
-			AbstractSqlMultiTenantHanlder.initInstance();
+		if (MtenantStatus.enabled()){
+//			HttpFilterManager.addFilter(new MTenantChain());
+//			AbstractSqlMultiTenantHanlder.initInstance();
+			//初始化配置
+			TenantIDValidator.init();
+			
+			TenantListProvidorManager.instance.init();
+			TenantStoreStrategyManager.instance.init();
+			SqlHandlerVisitorForMixed.init();
 		}
 	}
 

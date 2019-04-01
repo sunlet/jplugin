@@ -85,9 +85,42 @@ public class SelectHandler extends AbstractCommandHandler{
 
 	@Override
 	String getFinalSql(SqlWordsWalker walker, String sourceSql, String finalTableName) {
-		String finalSql = StringKit.repaceFirst(walker.sql,sourceSql,finalTableName);
+//		String finalSql = StringKit.repaceFirst(walker.sql,sourceSql,finalTableName);
+		String finalSql =repaceTableName(cloneArray(walker.getArray()),sourceSql,finalTableName);
 		//处理带字段的表名
 		finalSql = StringKit.replaceStr(finalSql," "+sourceSql+"."," "+finalTableName+".");
 		return finalSql;
+	}
+
+	private String[] cloneArray(String[] array) {
+		String[] ret = new String[array.length];
+		for (int i=0;i<array.length;i++){
+			ret[i] = array[i];
+		}
+		return ret;
+	}
+
+	private String repaceTableName(String[] array, String source, String target) {
+		//from 后面第一个
+		int fromPos = -1;
+		for (int i=0;i<array.length;i++){
+			String current = array[i];
+			//修改状态，如果finding=true，则不会走这里了
+			if (current.equalsIgnoreCase("from")){
+				fromPos = i;
+			}
+		}
+		if (fromPos==-1)
+			throw new RuntimeException("Can't find from key word." );
+		
+		for (int i=fromPos;i<array.length;i++){
+			String current = array[i];
+			if (current.equalsIgnoreCase(source)){
+				array[i] = target;
+				break;//只处理第一个
+			}
+		}
+		//拼接返回
+		return SqlWordsWalker.appendToBuffer(new StringBuffer(), array).toString();
 	}
 }

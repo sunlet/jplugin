@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.net.jplugin.core.das.mybatis.cachetest.ICacheMapper">
+	<insert id="add"
+		parameterType="test.net.jplugin.core.das.mybatis.cachetest.TestCacheBean">
+		INSERT INTO tb_testcache (id,name) values(
+		#{id},#{name})
+	</insert>
+	<select id="queryWithPage"
+		resultType="test.net.jplugin.core.das.mybatis.cachetest.TestCacheBean">
+		SELECT * FROM tb_testcache order by id
+	</select>
+</mapper>

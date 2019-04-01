@@ -27,7 +27,7 @@ public class InitRequestInfoFilter implements WebFilter {
 	private static final String OPERATORID = "_operatorId";
 	private static final String CLIENTVERSION = "_version";
 
-	public static boolean dummyAllowed = false;
+//	public static boolean dummyAllowed = false;
 	private static String dummyToken=null;
 	/* (non-Javadoc)
 	 * 如果传入了token，则不用session
@@ -51,7 +51,7 @@ public class InitRequestInfoFilter implements WebFilter {
 //			info.setClientVersion(tkinfo.get("_ver"));
 			return true;
 		}else{
-			if (dummyAllowed) {
+			if (PluginEnvirement.INSTANCE.isUnitTesting()) {
 				if (dummyToken==null){
 					synchronized (this) {
 						if (dummyToken==null){

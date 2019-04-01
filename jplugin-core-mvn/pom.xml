@@ -4,7 +4,7 @@
 
 	<groupId>net.jplugin.mvn</groupId>
 	<artifactId>jplugin-core</artifactId>
-	<version>1.6.1-SNAPSHOT</version>
+	<version>1.7.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jplugin-core</name>
@@ -96,6 +96,12 @@
 			<version>4.0.9.RELEASE</version>
 		</dependency>
 -->
+		<dependency>
+		    <groupId>com.github.jsqlparser</groupId>
+		    <artifactId>jsqlparser</artifactId>
+		    <version>1.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>

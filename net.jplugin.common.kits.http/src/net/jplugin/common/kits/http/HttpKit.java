@@ -1,14 +1,38 @@
 package net.jplugin.common.kits.http;
 
-import net.jplugin.common.kits.http.filter.HttpFilterContext;
-import net.jplugin.common.kits.http.filter.HttpFilterManager;
-import net.jplugin.common.kits.http.mock.HttpMock;
-import org.apache.http.*;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.ConnectionConfig;
@@ -20,6 +44,7 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -29,33 +54,20 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.swing.text.html.FormSubmitEvent.MethodType;
+import net.jplugin.common.kits.AssertKit;
+import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.client.ClientInvocationManager;
+import net.jplugin.common.kits.client.InvocationParam;
+import net.jplugin.common.kits.filter.FilterChain;
+import net.jplugin.common.kits.filter.FilterManager;
+import net.jplugin.common.kits.filter.IFilter;
+import net.jplugin.common.kits.http.filter.HttpClientFilterContext;
+import net.jplugin.common.kits.http.filter.HttpClientFilterContext.Method;
+import net.jplugin.common.kits.http.mock.HttpMock;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.security.KeyStore;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-/**
- * Http操作工具类
- * @author liyy
- * @date 2014-05-20
- */
 public final class HttpKit{
-	
 	private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024; //8KB
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -70,6 +82,18 @@ public final class HttpKit{
     private static boolean unitTesting=false;
 
 	private static HttpClientBuilder clientBuilder;
+	private static FilterManager<HttpClientFilterContext> filterManager = new FilterManager<HttpClientFilterContext>();
+	
+//	static class FinalFilter implements 
+	
+	static{
+		//注意：在这里设置一个初始值，在Plugin环境下，Kernel中会重新设置filterManager
+		filterManager.addFilter(new IFilter<HttpClientFilterContext>() {
+			public Object filter(FilterChain fc, HttpClientFilterContext ctx) throws Throwable {
+				return HttpExecution.execute(ctx);
+			}
+		});
+	}
 	
 	static{
 		clientBuilder = initHttpClientBuilder();
@@ -171,15 +195,20 @@ public final class HttpKit{
 		return clientBuilder.build();
 	}
 	
+	@Deprecated
 	public static String _post(String url, Map<String,Object> datas,Map<String,String> extHeaders) throws  IOException, HttpStatusException{
+		return _handleWithEntity(Method.POST,url,datas,extHeaders);
+	}
+	
+	public static String _handleWithEntity(Method method,String url, Map<String,Object> datas,Map<String,String> extHeaders) throws  IOException, HttpStatusException{
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
-				return executeDummy(url,datas);
+				return executeDummy(url,datas,extHeaders);
 			}
 		}
 		
 		CloseableHttpClient httpClient = createHttpClient();
-		HttpPost httpPost = new HttpPost(url);
+		HttpEntityEnclosingRequestBase httpPost = (HttpEntityEnclosingRequestBase) createRequest(method,url);
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		
 		Set<Entry<String,Object>> temps = datas.entrySet();
@@ -188,9 +217,17 @@ public final class HttpKit{
 			Object value = temp.getValue();
 			if(value==null)	value = "";
 			if(key!=null)
-				params.add(new BasicNameValuePair(key, value.toString()));
+				params.add(new BasicNameValuePair(key, JsonKit.object2JsonEx(value)));
+//				params.add(new BasicNameValuePair(key, value.toString()));
 		}
-		httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
+		
+		if (datas!=null && extHeaders!=null && isJsonFormat(extHeaders) ){
+//			ByteArrayInputStream bais = new ByteArrayInputStream(JsonKit.object2JsonEx(datas).getBytes(UTF_8));
+//			httpPost.setEntity(new InputStreamEntity(bais));
+			httpPost.setEntity(new StringEntity(JsonKit.object2JsonEx(datas),UTF_8));
+		}else
+			httpPost.setEntity(new UrlEncodedFormEntity(params, UTF_8));
+		
 		//设置headers
 		if (extHeaders!=null){
 			for (Entry<String, String> en:extHeaders.entrySet()){
@@ -198,28 +235,53 @@ public final class HttpKit{
 			}
 		}
 		
+		//下面设置http调用参数
+		useInvokeParam(httpPost);
+		
+		//调用
 		return handleResponse(httpClient, httpPost);
 	}
+	
+	private static boolean isJsonFormat(Map<String, String> extHeaders) {
+		return ContentKit.isApplicationJson(extHeaders.get("Content-Type"));
+	}
+	
+	private static void useInvokeParam(HttpRequestBase httpReqBase) {
+		InvocationParam invokeParam = ClientInvocationManager.INSTANCE.getAndClearParam();
+		if (invokeParam != null) {
+			Builder configBuilder = RequestConfig.custom();
+			if (invokeParam.getServiceTimeOut() != 0) {
+				configBuilder.setSocketTimeout(invokeParam.getServiceTimeOut());
+			}
+			httpReqBase.setConfig(configBuilder.build());
+		}
+	}
 
-	private static String executeDummy(String url, Map<String, Object> datas) {
+	private static String executeDummy(String url, Map<String, Object> datas, Map<String, String> extHeaders) {
 		if (url.indexOf('?')>=0) 
 			throw new RuntimeException("not impl get mode");
 		
 		HttpMock mock = HttpMock.createFromUrl(url);
 		if (datas!=null){
-			mock.request.putAllParameter(datas);
+			mock.request.putAllParameter(datas,extHeaders);
 		}
 		return mock.invoke();
 	}
+	
+	@Deprecated
 	public static String _get(String url,Map<String,String> extHeaders) throws IOException, HttpStatusException {
+		return _handleWithoutEntity(Method.GET,url,extHeaders);
+	}
+	public static String _handleWithoutEntity(Method method,String url,Map<String,String> extHeaders) throws IOException, HttpStatusException {
 		if (isUnitTesting()){
 			if (url.startsWith("http://localhost") || url.startsWith("https://localhost")){
-				return executeDummy(url,null);
+				return executeDummy(url,null,extHeaders);
 			}
 		}
 		
 		CloseableHttpClient httpClient = createHttpClient();
-		HttpGet httpGet = new HttpGet(url);
+		HttpRequestBase httpGet = createRequest(method,url);
+		
 		
 		//设置headers
 		if (extHeaders!=null){
@@ -228,21 +290,59 @@ public final class HttpKit{
 			}
 		}
 		
+		//下面设置http调用参数
+		useInvokeParam(httpGet);
+		
 		return handleResponse(httpClient, httpGet);
 	}
 
+	private static HttpRequestBase createRequest(Method method, String url) {
+		switch(method){
+		case POST:
+			return new HttpPost(url);
+		case GET:
+			return new HttpGet(url);
+		case PUT:
+			return new HttpPut(url);
+		case DELETE:
+			return new HttpGet(url);
+		default:
+			throw new RuntimeException("not support method:"+method);	
+		}
+	}
+	
 	public static String handleResponse(CloseableHttpClient client, HttpRequestBase request) throws IOException, HttpStatusException {
 		String responseText = "";
 		request.setHeader("Connection", "close");
-		HttpResponse response = client.execute(request);
-		if (response != null) {
-			int code = response.getStatusLine().getStatusCode();
-			if (code == 200){
-				responseText = EntityUtils.toString(response.getEntity());
-				EntityUtils.consume(response.getEntity());
-			}else
-				throw new HttpStatusException("Status Error:"+code);
+		
+		try{
+			HttpResponse response = client.execute(request);
+			if (response != null) {
+				int code = response.getStatusLine().getStatusCode();
+	//			if (code == 200){
+				if (code>=200 && code <=206){ //根据http协议，2xx都是成功返回
+					responseText = EntityUtils.toString(response.getEntity());
+					EntityUtils.consume(response.getEntity());
+					//重新设置状态
+					request.reset();
+				}else{
+					request.abort();//异常结束调用about
+					throw new HttpStatusException("Status Error:"+code);
+				}
+			}
+		}catch(Exception ex){
+			//异常，则about
+			if (!request.isAborted()){
+				request.abort();
+			}
+			//继续抛出异常
+			if (ex instanceof IOException)
+				throw (IOException)ex;
+			if (ex instanceof HttpStatusException)
+				throw (HttpStatusException)ex;
+			throw new RuntimeException(ex.getMessage(),ex);
 		}
+		
 		return responseText;
 	}
 
@@ -259,12 +359,140 @@ public final class HttpKit{
 		String s = HttpKit.get("http://192.133.212.11/32234");
 		System.out.println(s);
 	}
+	
 	public static String post(String url, Map<String, Object> params) throws IOException, HttpStatusException {
-		HttpFilterContext ctx = new HttpFilterContext(HttpFilterContext.Method.POST, url, params);
-		return HttpFilterManager.execute(ctx);
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.POST, url, params);
+		return (String) filterManager.filter(ctx);
 	}
+	
+	public static String postWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.POST, url, params,headers);
+		return (String) filterManager.filter(ctx);
+	}
+
+	/**
+	 * 以Json格式传递参数，Json需预先转换为MapList嵌套结构。
+	 * @param url
+	 * @param params  Json对应的MapList结构。
+	 * @param headers 额外的Header，可以传null。
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJsonWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
+		HashMap headMap = new HashMap();
+		if (headers!=null){
+			headMap.putAll(headers);
+		}
+		
+		String contentTypeValue = (String) headMap.get("Content-Type");
+		if (StringKit.isNull(contentTypeValue)){
+			//没有JsonHeader，增加Json格式对应的Header
+			headMap.put("Content-Type", "application/json");
+		}else{
+			//包含header，则必须为Json格式
+			if (!ContentKit.isApplicationJson(contentTypeValue)){
+				throw new RuntimeException("Content-Type is set,but not json type!");
+			}
+		}
+		
+		return postWithHeader(url, params, headMap);
+	}
+
+	/**
+	 * 以Json格式传递参数，参数为Json字符串
+	 * @param url
+	 * @param json  json结构的字符串。目前必须是{}结构。
+	 * @param headers
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJsonWithHeader(String url, String json,Map<String,String> headers) throws IOException, HttpStatusException {
+		if (!json.startsWith("{")){
+			throw new RuntimeException("json must start with '{'");
+		}
+		return postJsonWithHeader(url, JsonKit.json2Map(json), headers);
+	}
+	/**
+	 * 用Json格式提交，参数为json字符串
+	 * @param url
+	 * @param json
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJson(String url, String json) throws IOException, HttpStatusException {
+		return postJsonWithHeader(url, json, null);
+	}
+	
+	/**
+	 * 用json格式提交，json需要提前转换为MapList嵌套结构
+	 * @param url
+	 * @param json
+	 * @return
+	 * @throws IOException
+	 * @throws HttpStatusException
+	 */
+	public static String postJson(String url, Map json) throws IOException, HttpStatusException {
+		return postJsonWithHeader(url, json, null);
+	}
+	
+	
+	public static String putWithHeader(String url, Map<String, Object> params,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.PUT, url, params,headers);
+		return (String) filterManager.filter(ctx);
+	}
+	
 	public static String get(String url) throws IOException, HttpStatusException {
-		HttpFilterContext ctx = new HttpFilterContext(HttpFilterContext.Method.GET, url, null);
-		return HttpFilterManager.execute(ctx);
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null);
+		return (String) filterManager.filter(ctx);
 	}
+	
+	public static String getWithHeader(String url,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.GET, url, null,headers);
+		return (String) filterManager.filter(ctx);
+	}
+	public static String deleteWithHeader(String url,Map<String,String> headers) throws IOException, HttpStatusException {
+		HttpClientFilterContext ctx = new HttpClientFilterContext(HttpClientFilterContext.Method.DELETE, url, null,headers);
+		return (String) filterManager.filter(ctx);
+	}
+	
+	public static void _setHttpFilterManager(FilterManager<HttpClientFilterContext> fm) {
+		filterManager = fm;
+	}
+	
+	public static class HttpExecution {
+		public static Object execute(HttpClientFilterContext ctx) throws Throwable{
+			//在这里验证，因为filter过程可能修改
+			validate(ctx);
+			//call
+			Method method = ctx.getMethod();
+			if (method==HttpClientFilterContext.Method.POST || method==HttpClientFilterContext.Method.PUT){
+				return HttpKit._handleWithEntity(method,ctx.getUrl(), ctx.getParams(),ctx.getHeaders());
+			}else if (method==HttpClientFilterContext.Method.GET || method==HttpClientFilterContext.Method.DELETE){
+				return HttpKit._handleWithoutEntity(method,ctx.getUrl(),ctx.getHeaders());
+			}
+			throw new RuntimeException("not supported http method:"+method);
+		}
+		
+		private static void validate(HttpClientFilterContext ctx) {
+			Method m = ctx.getMethod();
+			Map<String, Object> params = ctx.getParams();
+			//validate
+			AssertKit.assertNotNull(m, "http method");
+			//get, params must empty
+			AssertKit.assertTrue(m==Method.POST || m==Method.PUT || ( (m==Method.GET || m==Method.DELETE) && (params==null || params.isEmpty())));
+		}
+	}
+
+//	//HttpInvoke Param 
+//	private static ClientInvocationManager manager = new ClientInvocationManager();
+//	
+//	public static void setInvokeParam(InvocationParam p){
+//		manager.setParam(p);
+//	}
+//	public static void clearInvokeParam(){
+//		manager.clearParam();
+//	}
 }

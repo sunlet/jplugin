@@ -204,5 +204,12 @@ public class PluginRegistry {
 		}
 	}
 
+	public void clearClassCache() {
+		for (int i=0;i<pluginList.size();i++){
+			AbstractPlugin plugin = (AbstractPlugin) pluginList.get(i);
+			plugin._cleanContainedClasses();
+		}
+	}
+
 
 }

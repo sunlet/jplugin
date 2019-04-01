@@ -18,6 +18,10 @@ public class ServiceBean {
 		return a+b;
 	}
 	
+	public Integer testFullMatch(@Para(name="_FULL_MATCH_") int  a){
+		return a+1;
+	}
+	
 	/* (non-Javadoc)
 	 * @see test.net.jplugin.ext.webasic.restclient.IService#add(java.lang.String, java.lang.String)
 	 */
@@ -54,7 +58,9 @@ public class ServiceBean {
 		throw new RuntimeException("test ex");
 	}
 	public void remoteEx(){
-		throw new RemoteExecuteException("100","test remote ex",new Exception("ccc"));
+		RemoteExecuteException ex = new RemoteExecuteException("100","test remote ex",new Exception("ccc"));
+		ex.setNeedLog(false);
+		throw ex;
 	}
 	
 	public void indirectEx(){

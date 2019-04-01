@@ -59,7 +59,10 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 	}
 	
 	public void call(CallParam cp)  throws Throwable{
-		serviceMap.get(cp.getPath()).call(cp);
+		IServiceInvoker s = serviceMap.get(cp.getPath());
+		if (s==null) 
+			throw new RuntimeException("Can't find the service by path : "+cp.getPath());
+		s.call(cp);
 	}
 	
 	/**

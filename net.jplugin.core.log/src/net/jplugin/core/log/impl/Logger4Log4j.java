@@ -1,9 +1,12 @@
 package net.jplugin.core.log.impl;
 
-import net.jplugin.core.log.api.Logger;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
+
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.log.api.Logger;
+import net.jplugin.core.log.impl.helper.FormattingTuple;
+import net.jplugin.core.log.impl.helper.MessageFormatter;
 
 /**
  *
@@ -12,114 +15,142 @@ import org.apache.log4j.Priority;
  **/
 
 public class Logger4Log4j implements Logger {
-	org.apache.log4j.Logger innerLogger;
+	private static final String FQCN = Logger4Log4j.class.getName();
+	org.apache.log4j.Logger logger;
+	String logName;
 
-	Logger4Log4j (org.apache.log4j.Logger l){
-		this.innerLogger = l;
+	Logger4Log4j(org.apache.log4j.Logger l) {
+		this.logger = l;
 	}
 	
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#debug(java.lang.Object, java.lang.Throwable)
-	 */
-	public void debug(Object message, Throwable t) {
-		innerLogger.debug(message, t);
+	Logger4Log4j(String n) {
+		this.logName = n;
+		LoggerListCacher.add(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#debug(java.lang.Object)
-	 */
-	public void debug(Object message) {
-		innerLogger.debug(message);
+	public void debug(Object msg, Throwable t) {
+		log(Level.DEBUG,msg,t);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#error(java.lang.Object, java.lang.Throwable)
-	 */
+	public void debug(Object msg) {
+		log(Level.DEBUG,msg);
+	}
+
+	public void debug(String format, Object... arguments) {
+		log(Level.DEBUG,format,arguments);
+	}
+
 	public void error(Object message, Throwable t) {
-		innerLogger.error(message, t);
+		log(Level.ERROR, message, t);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#error(java.lang.Object)
-	 */
 	public void error(Object message) {
-		innerLogger.error(message);
+		log(Level.ERROR,message);
+	}
+	
+	public void error(String format, Object... arguments) {
+		 log(Level.ERROR,format,arguments);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#fatal(java.lang.Object, java.lang.Throwable)
-	 */
 	public void fatal(Object message, Throwable t) {
-		innerLogger.fatal(message, t);
+		log(Level.FATAL,message,t);
 	}
-
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#fatal(java.lang.Object)
-	 */
+	public void fatal(String format, Object... arguments) {
+		log(Level.FATAL,arguments);
+	}
 	public void fatal(Object message) {
-		innerLogger.fatal(message);
+		log(Level.FATAL, message);
 	}
-
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#getLevel()
-	 */
+	
 	public final Level getLevel() {
-		return innerLogger.getLevel();
+		return getLogLevel();
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#info(java.lang.Object, java.lang.Throwable)
-	 */
 	public void info(Object message, Throwable t) {
-		innerLogger.info(message, t);
+		log(Level.INFO,message,t);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#info(java.lang.Object)
-	 */
 	public void info(Object message) {
-		innerLogger.info(message);
+		log(Level.INFO,message);
+	}
+	
+	public void info(String format, Object... arguments) {
+		log(Level.INFO, format,arguments);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#isDebugEnabled()
-	 */
 	public boolean isDebugEnabled() {
-		return innerLogger.isDebugEnabled();
+		return isLogEnabled(Level.DEBUG);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#isEnabledFor(org.apache.log4j.Priority)
-	 */
 	public boolean isEnabledFor(Priority level) {
-		return innerLogger.isEnabledFor(level);
+		return isLogEnabled(level);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#isInfoEnabled()
-	 */
 	public boolean isInfoEnabled() {
-		return innerLogger.isInfoEnabled();
+		return isLogEnabled(Level.INFO);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#isTraceEnabled()
-	 */
 	public boolean isTraceEnabled() {
-		return innerLogger.isTraceEnabled();
+		return isLogEnabled(Level.TRACE);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#warn(java.lang.Object, java.lang.Throwable)
-	 */
 	public void warn(Object message, Throwable t) {
-		innerLogger.warn(message, t);
+		log(Level.WARN, message, t);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.luis.plugin.log.ILogger#warn(java.lang.Object)
-	 */
 	public void warn(Object message) {
-		innerLogger.warn(message);
+		log(Level.WARN, message);
+	}
+	
+	public void warn(String format, Object... arguments) {
+		log(Level.WARN,format,arguments);
+	}
+	
+	
+	//基础方法
+	private Level getLogLevel(){
+		if (logger== null) 
+			return Level.DEBUG;
+		
+		return logger.getLevel();
+	}
+	private boolean isLogEnabled(Priority level){
+		if (logger == null) 
+			return true;
+		
+		return logger.isEnabledFor(level);
+	}
+	private void log(Level level,Object message){
+		if (logger == null){ 
+			PluginEnvirement.INSTANCE.getStartLogger().log(message);
+			return;
+		}
+			
+		logger.log(FQCN, level, message, null);
+	}
+	private void log(Level level,Object message,Throwable th){
+		if (logger == null){ 
+			PluginEnvirement.INSTANCE.getStartLogger().log(message,th);
+			return;
+		}
+		
+		logger.log(FQCN, level, message, th);
+	}
+	private void log(Level level,String format,Object... arguments){
+		if (logger == null){
+			FormattingTuple ft = MessageFormatter.arrayFormat(format, arguments);
+			PluginEnvirement.INSTANCE.getStartLogger().log(ft.getMessage(), ft.getThrowable());
+			return;
+		}
+		
+		if (logger.isEnabledFor(level)) {
+			FormattingTuple ft = MessageFormatter.arrayFormat(format, arguments);
+			logger.log(FQCN, level, ft.getMessage(), ft.getThrowable());
+		}
+	}
+
+	//called when log init OK
+	void createLogger() {
+		this.logger = org.apache.log4j.Logger.getLogger(this.logName);
 	}
 }

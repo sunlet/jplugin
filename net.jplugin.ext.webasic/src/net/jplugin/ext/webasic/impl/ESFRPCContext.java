@@ -1,9 +1,10 @@
 package net.jplugin.ext.webasic.impl;
 
-import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.RequestIdKit;
+import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
-import net.jplugin.ext.webasic.api.RequestIdUtil;
+import net.jplugin.core.kernel.kits.KernelKit;
 
 public class ESFRPCContext {
 	String operatorToken;
@@ -14,7 +15,15 @@ public class ESFRPCContext {
 	String requestUrl;
 	String tenantId;
 	String globalReqId;
+	long msgReceiveTime;
 
+	public long getMsgReceiveTime() {
+		return msgReceiveTime;
+	}
+	public void setMsgReceiveTime(long msgReceiveTime) {
+		this.msgReceiveTime = msgReceiveTime;
+	}
+	
 	public String getOperatorToken() {
 		return operatorToken;
 	}
@@ -78,15 +87,15 @@ public class ESFRPCContext {
 		
 		//tenantid
 		String tid = ctx.getTenantId();
-		if ("".equals(tid)) 
-			tid = null;
-		info.setCurrentTenantId(tid);
+//		if ("".equals(tid)) 
+//			tid = null;
+//		info.setCurrentTenantId(tid);
+		MtInvocationFilterHandler.instance.checkAndSet(info, tid);
 		
-		//reqid
-		String gReqId = ctx.getGlobalReqId();
-		if (StringKit.isNull(gReqId))
-			gReqId = RequestIdUtil.newRequestId();
-		info.setRequestId(gReqId);
+		
+//		//reqid
+//		String greqid = ctx.getGlobalReqId();
+//		KernelKit.setTraceAndSpan(info,greqid);
 	}
 	
 

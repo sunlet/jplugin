@@ -6,9 +6,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import net.jplugin.common.kits.ExceptionKit;
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
+import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.kernel.Plugin;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
 import net.jplugin.core.kernel.impl.PluginPrepareHelper;
@@ -36,11 +39,21 @@ public class PluginEnvirement {
 	private int stateLevel=STAT_LEVEL_PREPAREING;
 	
 	private IStartLogger startLogger = new StartUpLoggerImpl();
+	private boolean unitTesting = false;
 
-	
+
+	private PluginFilterManager<Tuple2<Boolean, String>> startFilterManager = new PluginFilterManager<>(
+			net.jplugin.core.kernel.Plugin.EP_PLUGIN_ENV_INIT_FILTER, (fc, ctx) -> {
+				registry.start(ctx.first, ctx.second);
+				return null;
+			});
 	
 	public static PluginEnvirement getInstance() {
 		return INSTANCE;
+	}
+	
+	public  void initStartFilter(){
+		this.startFilterManager.init();
 	}
 	
 	public IStartLogger getStartLogger() {
@@ -51,6 +64,14 @@ public class PluginEnvirement {
 		return this.stateLevel;
 	}
 	
+	public boolean isUnitTesting() {
+		return unitTesting;
+	}
+
+	public void setUnitTesting(boolean unitTesting) {
+		this.unitTesting = unitTesting;
+	}
+
 	public void stop(){
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ now to stop plugin envirment");
 		this.registry.destroy();
@@ -207,14 +228,10 @@ public class PluginEnvirement {
 				
 				//加载测试插件
 				if (testAll){
-					try{
-						addPlugin("test."+obj);
-					}catch(Exception e){}
+					addPluginIfExists("test."+obj);
 				}else{
 					if ( ("test."+obj).equals(testTarget)){
-						try{
-							addPlugin("test."+obj);
-						}catch(Exception e){}
+						addPluginIfExists("test."+obj);
 					}
 				}
 			}
@@ -226,23 +243,30 @@ public class PluginEnvirement {
 			this.stateLevel = STAT_LEVEL_WIRING;
 			registry.wire();
 			registry.makeServices();
+			registry.clearClassCache();
 			this.stateLevel = STAT_LEVEL_INITING;
-			this.annoResolveHelper.resolveHistory();
+
 
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
-					ThreadLocalContextManager.instance.createContext();
-					registry.start(testAll,testTarget);	
+					ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+					
+					this.annoResolveHelper.resolveHistory();
+					startFilterManager.filter(Tuple2.with(testAll,testTarget));
+
 				}finally{
 					ThreadLocalContextManager.instance.releaseContext();
 				}
 			}
 			
-			logStart(registry.getErrors());
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				trigStartListener(null,null);
+			
+				logStart(registry.getErrors());
 			}else{
 				trigStartListener(null,registry.getErrors());
+				
+				logStart(registry.getErrors());
 				
 				try{
 					Thread.sleep(3000);
@@ -250,13 +274,14 @@ public class PluginEnvirement {
 				System.exit(-2);
 			}
 			this.stateLevel = STAT_LEVEL_WORKING;
-		} catch (Exception e) {
-			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误");
-			logError(e);
+		} catch (Throwable e) {
+			e = ExceptionKit.getRootCause(e);
+			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误",e);
+//			logError(e);
 			if (PluginEnvirement.getInstance().hasExtensionPoint(Plugin.EP_STARTUP)){
 				trigStartListener(e, null);
 			}
-			getStartLogger().log(e.getMessage(),e);
+//			getStartLogger().log(e.getMessage(),e);
 			
 			try{
 				Thread.sleep(3000);
@@ -267,7 +292,15 @@ public class PluginEnvirement {
 		}
 	}
 
-
+	private void addPluginIfExists(Object obj) {
+		String cname = (String) obj;
+		try {
+			Class.forName(cname);
+		} catch (ClassNotFoundException e) {
+			return;
+		}
+		addPlugin(obj);
+	}
 
 	/**
 	 * @param obj
@@ -287,14 +320,16 @@ public class PluginEnvirement {
 	 * @param e
 	 * @param object
 	 */
-	private void trigStartListener(Exception e, List<PluginError> errors) {
+	private void trigStartListener(Throwable e, List<PluginError> errors) {
 		IStartup[] listeners = getExtensionObjects(Plugin.EP_STARTUP,IStartup.class);
 		if (e==null && errors==null ){
-			for (IStartup s:listeners){
+			for (int i=listeners.length-1;i>=0;i--){
+				IStartup s = listeners[i];
 				s.startSuccess();
 			}
 		}else{
-			for (IStartup s:listeners){
+			for (int i=listeners.length-1;i>=0;i--){
+				IStartup s = listeners[i];
 				s.startFailed(e, errors);
 			}
 		}
@@ -303,12 +338,12 @@ public class PluginEnvirement {
 	public ConfigHelper getConfigHelper(String pluginname){
 		return new ConfigHelper(registry.getLoadedPlugin(pluginname).getConfigures());
 	}
-	/**
-	 * @param e
-	 */
-	private void logError(Exception e) {
-		e.printStackTrace();
-	}
+//	/**
+//	 * @param e
+//	 */
+//	private void logError(Exception e) {
+//		e.printStackTrace();
+//	}
 
 	/**
 	 * @param errors

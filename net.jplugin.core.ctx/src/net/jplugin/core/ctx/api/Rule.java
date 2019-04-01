@@ -14,14 +14,18 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Rule {
-	public static enum TxType{REQUIRED,ANY};
+	public static enum TxType{REQUIRED,ANY}
 
 	public TxType methodType() default TxType.ANY;
 	
-	public int keyIndex() default -1;
+	public boolean log() default false;
+	
+//	public String lockDomain() default "";
+//	
+//	public int lockParaIndex() default -1;
 	
 	public int[] logIndexes()  default {};
-
+	
 	public String actionDesc() default "";
 }
 

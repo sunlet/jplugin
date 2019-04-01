@@ -3,7 +3,10 @@ package net.jplugin.common.kits;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,6 +22,25 @@ public class CalenderKit {
 
 	public static String time_pattern = "yyyyMMddHHmmss";
 
+	
+	public static LocalDateTime convertDate2LocalDateTime(java.util.Date d){
+		Instant inst = Instant.ofEpochMilli(d.getTime());
+		return LocalDateTime.ofInstant(inst, ZoneId.systemDefault());
+	}
+	public static LocalDate convertDate2LocalDate(java.util.Date d){
+		Instant inst = Instant.ofEpochMilli(d.getTime());
+		return LocalDateTime.ofInstant(inst, ZoneId.systemDefault()).toLocalDate();
+	}
+	
+	public static java.util.Date convertLocalDate2Date(LocalDate d){
+		Instant inst = d.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		return java.util.Date.from(inst);
+	}
+	public static java.util.Date convertLocalDateTime2Date(LocalDateTime d){
+		Instant inst = d.atZone(ZoneId.systemDefault()).toInstant();
+		return java.util.Date.from(inst);
+	}
+
 	//=================以下几个方法用来实现和数据格式转换
 	public static String getTimeString(long timeLong) {
 		return getFormatedTimeString(timeLong, time_pattern);
@@ -26,6 +48,16 @@ public class CalenderKit {
 	public static Date getTimeFromString(String timeString) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		sdf.applyPattern(time_pattern);
+		try {
+			return sdf.parse(timeString);
+		} catch (ParseException e) {
+			throw new RuntimeException("parse error:"+timeString);
+		}
+	}
+	
+	public static Date getTimeFromString(String timeString,String patten) {
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.applyPattern(patten);
 		try {
 			return sdf.parse(timeString);
 		} catch (ParseException e) {
@@ -358,12 +390,23 @@ public class CalenderKit {
 		Date date = formatter.parse(timeString, pos);
 		return date.getTime();
 	}
-	/**
-	 * 这个转换有一点笨，看未来有没有更好的
-	 * @param date
-	 * @return
-	 */
-	public static java.sql.Date convertToSqlDate(LocalDate date) {
-		return new java.sql.Date(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+//	/**
+//	 * 这个转换有一点笨，看未来有没有更好的
+//	 * @param date
+//	 * @return
+//	 */
+//	public static java.sql.Date convertToSqlDate(LocalDate date) {
+//		return new java.sql.Date(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+//	}
+	
+	public static void main(String[] args) {
+		Date d = new Date();
+		System.out.println(d);
+		System.out.println(convertDate2LocalDate(d));
+		System.out.println(convertDate2LocalDateTime(d));
+		
+		System.out.println(convertLocalDate2Date(convertDate2LocalDate(d)));
+		System.out.println(convertLocalDateTime2Date(convertDate2LocalDateTime(d)));
+		
 	}
 }

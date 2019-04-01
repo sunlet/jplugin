@@ -8,6 +8,7 @@ import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.http.HttpKit;
 import net.jplugin.common.kits.http.HttpStatusException;
+import net.jplugin.core.ctx.api.HttpServiceResult;
 import net.jplugin.core.ctx.api.JsonResult;
 
 public class TestDefaultValClient {
@@ -18,14 +19,17 @@ public class TestDefaultValClient {
 		para.put("arg0","a");
 //		para.put("b", "b");
 		String r = HttpKit.post("http://localhost:8080/demo/testrestclient/addStringNoRequired.do",para );
-		Object result = getResult(r);
-		AssertKit.assertEqual("anull", result);
+		HttpServiceResult hsr = HttpServiceResult.create(r);
+		
+//		
+//		Object result = getResult(r);
+		AssertKit.assertEqual("anull", hsr.getResult());
 	}
-
-	private Object getResult(String r) {
-		JsonResult jr = JsonKit.json2Object(r, JsonResult.class);
-		Map<String,Object> content = (Map<String, Object>) jr.getContent();
-		Object result = content.get("result");
-		return result;
-	}
+//
+//	private Object getResult(String r) {
+//		JsonResult jr = JsonKit.json2Object(r, JsonResult.class);
+//		Map<String,Object> content = (Map<String, Object>) jr.getContent();
+//		Object result = content.get("result");
+//		return result;
+//	}
 }

@@ -1,18 +1,16 @@
 package net.jplugin.core.kernel.api;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.management.RuntimeErrorException;
-
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.reso.ResolverKit;
 
 /**
  * @author: LiuHang
@@ -26,9 +24,17 @@ public abstract class AbstractPlugin implements IPlugin {
 	private String pluginName = this.getClass().getName();
 	private int status = IPlugin.STAT_INIT;
 	private Hashtable<String,String> configreus = new Hashtable<String, String>();
+	private Set<Class> containedClasses = null;
 
 	@Override
 	public void onCreateServices() {
+	}
+	
+	protected void searchAndBindExtensions(){
+		List<IBindExtensionHandler> handlers = AutoBindExtensionManager.INSTANCE.getHandlers();
+		for (IBindExtensionHandler h:handlers){
+			h.handle(this);
+		}
 	}
 
 //	@Override
@@ -171,7 +177,7 @@ public abstract class AbstractPlugin implements IPlugin {
 			}
 			
 			if(! ReflactKit.isTypeOf(e.getClazz(),finder.getExtensionClass())){
-				errors.add(new PluginError(this.getName(),"The extension is not sub class of the point required. extClass="+e.getClazz()+" required="+finder.getExtensionClass()));
+				errors.add(new PluginError(this.getName(),"The extension is not sub class of the point required. extClass="+e.getClazz()+" required="+finder.getExtensionClass()+" point="+pname));
 			}
 			
 			if (e.getClass().equals(String.class)){
@@ -196,7 +202,60 @@ public abstract class AbstractPlugin implements IPlugin {
 		return this.configreus;
 	}
 	
+
 	public void onDestroy() {
 	}
+	
+	/**
+	 * 下面两个方法维护类Plugin包含类的缓存，启动过程可以使用
+	 * @param pkgPath 
+	 * @return
+	 */
+	public Set<Class> getContainedClasses(){
+		
+		if (PluginEnvirement.INSTANCE.getStateLevel()>PluginEnvirement.STAT_LEVEL_INITING)
+			throw new RuntimeException("Can't call in working state");
+		
+		if (this.containedClasses==null){
+			ResolverKit kit = new ResolverKit();
+			kit.find(this.getClass().getPackage().getName(), (c)->true);
+			this.containedClasses = kit.getClasses();
+		}
+		return this.containedClasses;
+	}
+	
+	public Set<Class> filterContainedClassesByChecker(String pkgPath, IClassChecker checker) {
+		AssertKit.assertTrue(StringKit.isNull(pkgPath) || pkgPath.startsWith("."));
+		
+		//初始化一下
+		getContainedClasses();
 
+		//计算prefix
+		String prefix = this.getClass().getPackage().getName();
+		if (StringKit.isNull(pkgPath))
+			prefix = prefix + ".";
+		else
+			prefix = prefix + pkgPath + ".";
+		
+		//生成结果
+		Set<Class> temp = new HashSet();
+		for (Class c : this.containedClasses) {
+			if (c.getName().startsWith(prefix)) {
+				if (checker.check(c))
+					temp.add(c);
+			}
+		}
+		return temp;
+	}
+			
+	public Set<Class> filterContainedClasses(String pkgPath, Class annoClazz) {
+		return this.filterContainedClassesByChecker(pkgPath, c->annoClazz == null || c.getAnnotation(annoClazz) != null);
+	}
+	
+	public void _cleanContainedClasses(){
+		if (this.containedClasses==null) 
+			return;
+		this.containedClasses.clear();
+		this.containedClasses = null;
+	}
 }

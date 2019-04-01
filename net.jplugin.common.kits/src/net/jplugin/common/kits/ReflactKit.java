@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -263,6 +264,58 @@ public class ReflactKit {
 			throw new RuntimeException("Set field value error:"+field.getName()+" Obj:"+o.getClass().getName(),e);
 		}
 	}
+	
+	/**
+	 * 获取除了Object类之外的方法的名字
+	 * @param c
+	 * @return
+	 */
+	public static Set<String> getMethodNamesExceptObject(Class c){
+		Set<String> names = new HashSet<>();
+		Class t = c;
+		while(true){
+			//退出条件
+			if (t==Object.class)
+				break;
+			//处理该类
+			Method[] ms = t.getDeclaredMethods();
+			for (Method m:ms){
+//				System.out.println(c.getName()+"  "+m.getName());
+				names.add(m.getName());
+			}
+			//父类
+			t = t.getSuperclass();
+		}
+		return names;
+	}
+	
+	public static void main(String[] arg){
+		System.out.println(ReflactKit.getMethodNamesExceptObject(ReflactKit.class));
+	}
+
+//	public static List<Class> getAllTypes(Class clazz) {
+//		List list = new ArrayList<>();
+//		
+//		Class tmp = clazz;
+//		while(tmp!=null){
+//			list.add(tmp);
+//			addAll(list,tmp.getInterfaces());
+//			tmp = tmp.getSuperclass();
+//		}
+//		
+//		return list;
+//	}
+//
+//	private static void addAll(List ret, Class[] interfaces) {
+//		if (interfaces!=null){
+//			for (Class i:interfaces){
+//				//处理一下interface被重复实现的问题
+//				if (!ret.contains(i)){
+//					ret.add(i);
+//				}
+//			}
+//		}
+//	}
 
 
 

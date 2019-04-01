@@ -48,4 +48,10 @@ public class DefaultMybaticsService4JianRong implements IMybatisService{
 		return realSvc.getMapper(t);
 	}
 
+	@Override
+	public boolean containsMapper(String clazz) {
+		init();
+		return realSvc.containsMapper(clazz);
+	}
+
 }

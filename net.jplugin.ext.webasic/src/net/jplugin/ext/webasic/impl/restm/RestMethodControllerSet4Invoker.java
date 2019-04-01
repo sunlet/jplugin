@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -31,7 +32,6 @@ import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
 
 public class RestMethodControllerSet4Invoker implements IControllerSet{
 
-	private static final String APPLICATION_JSON = "application/json";
 	Set<String> servicePathSet = new HashSet();
 	public void init() {
 		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
@@ -49,7 +49,7 @@ public class RestMethodControllerSet4Invoker implements IControllerSet{
 		CallParam callParam;
 		
 		RequesterInfo requestInfo = ThreadLocalContextManager.getRequestInfo();
-		if (APPLICATION_JSON.equals(requestInfo.getContent().getContentType())){
+		if (ContentKit.isApplicationJson(requestInfo.getContent().getContentType())){
 //			InputStream is = null;
 //			String json;
 //			try {

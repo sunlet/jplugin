@@ -1,5 +1,7 @@
 package net.jplugin.core.ctx.impl;
 
+import net.jplugin.core.kernel.api.ctx.RequesterInfo;
+import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.impl.LogServiceImpl;
@@ -35,9 +37,11 @@ public class RuleLoggerHelper {
 	 * @param throwable
 	 */
 	public static void dolog(String o, Throwable throwable) {
+		RequesterInfo reinfo = ThreadLocalContextManager.getCurrentContext().getRequesterInfo();
 		StringBuffer sb = new StringBuffer();
-		sb.append("-user="+" ");
-		sb.append("thread="+Thread.currentThread().getName());
+		sb.append(" -user="+reinfo.getOperatorId());
+		sb.append(" -thread="+Thread.currentThread().getName());
+		sb.append(" -tenant="+reinfo.getCurrentTenantId());
 		sb.append(" ");
 		sb.append(o);
 		getLogger().info(sb.toString(),throwable);

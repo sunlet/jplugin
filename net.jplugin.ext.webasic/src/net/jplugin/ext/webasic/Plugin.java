@@ -1,19 +1,21 @@
 package net.jplugin.ext.webasic;
 
-import java.util.Collection;
-import java.util.List;
-
-import net.jplugin.common.kits.http.filter.HttpFilterManager;
+import net.jplugin.common.kits.filter.IFilter;
+import net.jplugin.common.kits.http.ContentKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.AbstractPlugin;
+import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.ClassDefine;
 import net.jplugin.core.kernel.api.CoreServicePriority;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionPoint;
-import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.ext.webasic.api.IControllerSet;
+import net.jplugin.ext.webasic.api.IHttpFilter;
 import net.jplugin.ext.webasic.api.IInvocationFilter;
 import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.api.WebFilter;
+import net.jplugin.ext.webasic.api.esf.IESFRestFilter;
+import net.jplugin.ext.webasic.api.esf.IESFRpcFilter;
 import net.jplugin.ext.webasic.impl.ESFHelper;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilter;
 import net.jplugin.ext.webasic.impl.InitRequestInfoFilterNew;
@@ -21,8 +23,8 @@ import net.jplugin.ext.webasic.impl.MtInvocationFilterHandler;
 import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
-import net.jplugin.ext.webasic.impl.reqid.HttpRequestIdChain;
 import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
+import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvoker;
 import net.jplugin.ext.webasic.impl.rests.ServiceControllerSet;
 import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.web.WebControllerSet;
@@ -47,7 +49,16 @@ public class Plugin extends AbstractPlugin{
 	
 	public static final String EP_SERVICEFILTER = "EP_SERVICEFILTER";
 	public static final String EP_WEBCTRLFILTER = "EP_WEBCTRLFILTER";
+	public static final String EP_HTTP_FILTER = "EP_HTTP_FILTER";
+	public static final String EP_ESF_RPC_FILTER = "EP_ESF_RPC_FILTER";
+	public static final String EP_ESF_REST_FILTER = "EP_ESF_REST_FILTER";
 
+	static{
+		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
+			ExtensionWebHelper.autoBindControllerExtension(p, "");
+			ExtensionWebHelper.autoBindServiceExportExtension(p, "");
+		});
+	}
 	public Plugin(){
 		this.addExtensionPoint(ExtensionPoint.create(EP_CONTROLLERSET, IControllerSet.class));
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBFILTER, WebFilter.class));
@@ -58,6 +69,9 @@ public class Plugin extends AbstractPlugin{
 		this.addExtensionPoint(ExtensionPoint.create(EP_RESTMETHOD, ObjectDefine.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEFILTER, IInvocationFilter.class,false));
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCTRLFILTER, IInvocationFilter.class,false));
+		this.addExtensionPoint(ExtensionPoint.create(EP_HTTP_FILTER, IHttpFilter.class,false));
+		this.addExtensionPoint(ExtensionPoint.create(EP_ESF_RPC_FILTER, IESFRpcFilter.class,false));
+		this.addExtensionPoint(ExtensionPoint.create(EP_ESF_REST_FILTER, IESFRestFilter.class,false));
 		
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilter.class));
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilterNew.class));
@@ -70,6 +84,7 @@ public class Plugin extends AbstractPlugin{
 		this.addExtension(Extension.create(EP_CONTROLLERSET,"",RestMethodControllerSet4Invoker.class));
 		this.addExtension(Extension.create(EP_CONTROLLERSET,"",WebExControllerSet.class));
 	}
+
 
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()
@@ -87,10 +102,15 @@ public class Plugin extends AbstractPlugin{
 		ServiceFilterManager.INSTANCE.init();
 		WebCtrlFilterManager.INSTANCE.init();
 		
-		HttpFilterManager.addFilter(new HttpRequestIdChain());
+		ServiceInvoker.initCompatibleReturn();
+//		HttpFilterManager.addFilter(new HttpRequestIdChain());
 		
 		MtInvocationFilterHandler.init();
-
+		ESFHelper.init();
+		
+		//初始化一下兼容设置
+		//1.7.0 默认不再兼容旧的application/json检查。不能在代码当中直接读取流了。
+		ContentKit.init(Boolean.parseBoolean(ConfigFactory.getStringConfig("platform.json-check-compatible","false")));
 	}
 
 	public void init() {

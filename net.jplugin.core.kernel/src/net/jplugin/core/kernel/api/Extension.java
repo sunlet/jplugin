@@ -71,6 +71,7 @@ public class Extension {
 				this.extensionObject = this.propertyList.get(0).getValue();
 			}else{
 				this.extensionObject = clazz.newInstance();
+				PluginEnvirement.getInstance().resolveRefAnnotation(this.extensionObject);
 	
 				//带属性的加载方式
 				if (this.propertyList.size()>0){

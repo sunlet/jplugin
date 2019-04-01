@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.common.kits.http"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.config"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.ctx"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.kernel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.log"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.rclient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.ext.webasic"/>
+	<classpathentry kind="lib" path="/net.jplugin.common.kits.http/lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -26,5 +26,7 @@ public interface IService {
 	public  void remoteEx();
 	
 	public void indirectEx();
+	
+	public Integer testFullMatch(@Para(name="_FULL_MATCH_") int  a);
 
 }

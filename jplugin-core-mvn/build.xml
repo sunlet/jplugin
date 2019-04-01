@@ -30,6 +30,7 @@
 			<path path="${basedir}/../net.jplugin.core.scheduler/bin" />
 			<path path="${basedir}/../net.jplugin.core.service/bin" />
 			<path path="${basedir}/../net.jplugin.core.config/bin" />
+			<path path="${basedir}/../net.jplugin.ext.gtrace/bin" />
 			<!-- following get from the old jplugin-web-->
 			<path path="${basedir}/../net.jplugin.ext.token/bin" />
 			<path path="${basedir}/../net.jplugin.ext.webasic/bin" />
@@ -60,6 +61,7 @@
 			<path path="${basedir}/../net.jplugin.core.das/ts-src" />
 			<path path="${basedir}/../net.jplugin.ext.staticweb/src" />
 			<path path="${basedir}/../net.jplugin.core.mtenant/src" />
+			<path path="${basedir}/../net.jplugin.ext.gtrace/src" />
 
 		</foreach>
 	</target>

@@ -17,11 +17,14 @@ import net.jplugin.core.rclient.handler.RestHandler;
 
 public class Client <T> {
 	
-	public static final String CLIENT_APPID="_aid";
-	public static final String CLIENT_TOKEN="_atk";
+	public static final String CLIENT_APPID = "_aid";
+	public static final String CLIENT_TOKEN = "_atk";
+	public static final String CLIENT_HAID = "HAID";
+	public static final String CLIENT_HATK = "HATK";
 	
 	public static final String PROTOCOL_REST="rest";
 	public static final String PROTOCOL_RPC="niorest";
+	public static final String PROTOCOL_RPC_JSON="rpcjson";
 
 	@Deprecated  
 	public static final String PROTOCOL_REMOJAVA="remotejava";

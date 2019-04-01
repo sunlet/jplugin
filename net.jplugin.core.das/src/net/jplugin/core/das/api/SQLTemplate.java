@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.jplugin.common.kits.JsonKit;
+import net.jplugin.common.kits.ObjectRef;
+import net.jplugin.common.kits.tuple.Tuple2;
+import net.jplugin.common.kits.tuple.Tuple3;
 
 /**
  * 
@@ -134,11 +137,20 @@ public class SQLTemplate {
 		}
 		return executeAndReturnCount(connection,sql,param,"INSERT");
 	}
-	
+
 	public static List<Map<String,String>> executeSelect(Connection conn,String sql,Object[] p){
-		List ret = new ArrayList<>();
+		return executeSelectWithMeta(conn,sql,p,false).first;
+	}
+	
+	public static Tuple3<List<Map<String,String>>,List<String>,List<Integer>> executeSelectWithMeta(Connection conn,String sql,Object[] p,boolean needMeta){
+		List<Map<String,String>> ret = new ArrayList<>();
+
+		final ObjectRef<List<String>> columnsRef = new ObjectRef<>();
+		final ObjectRef<List<Integer>> typesRef =  new ObjectRef<>();
+		
 		executeSelect(conn, sql,new IResultDisposer() {
-			List<String> columns=null;
+			List<String> columns=null; //总是获取，不一定返回
+			List<Integer> types=null;//不一定获取
 			@Override
 			public void readRow(ResultSet rs) throws SQLException {
 //				rs.getMetaData().getColumnCount();
@@ -158,9 +170,21 @@ public class SQLTemplate {
 				for (int i=1;i<=cnt;i++){
 					columns.add(m.getColumnLabel(i));
 				}
+				columnsRef.set(columns);
+				
+				if (needMeta){
+					types = new ArrayList<Integer>();
+					for (int i=1;i<=cnt;i++){
+						types.add(m.getColumnType(i));
+					}
+					typesRef.set(types);
+				}
 			}
 		},p);
-		return ret;
+		if (needMeta)
+			return Tuple3.with(ret, columnsRef.get(), typesRef.get());
+		else
+			return Tuple3.with(ret, null, null);
 	}
 	/**
 	 * @param sql

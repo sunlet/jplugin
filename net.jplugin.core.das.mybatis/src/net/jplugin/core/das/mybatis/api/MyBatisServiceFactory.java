@@ -63,6 +63,18 @@ public class MyBatisServiceFactory {
 	public static IMybatisService getService(String dataSourceName){
 		return map.get(dataSourceName);
 	}
+	
+	public static List<String> findContainerDataSources(Class mapperClazz){
+		List<String> result = new ArrayList(3);
+		String cname = mapperClazz.getName();
+		for (Entry<String, IMybatisService> en:map.entrySet()){
+			boolean b = en.getValue().containsMapper(cname);
+			if (b){
+				result.add(en.getKey());
+			}
+		}
+		return result;
+	}
 
 
 }

@@ -5,6 +5,7 @@ import org.apache.log4j.Priority;
 
 import net.jplugin.core.service.api.ServiceFactory;
 
+@Deprecated
 public class LazyLogger implements Logger{
 	private String logName;
 	private Logger log = null;
@@ -93,6 +94,25 @@ public class LazyLogger implements Logger{
 	public void warn(Object message) {
 		if (log == null) initlog();
 		log.warn(message);
+	}
+	public void debug(String format, Object... args) {
+		throw new RuntimeException("not support");
+		
+	}
+	public void info(String format, Object... args) {
+		throw new RuntimeException("not support");
+		
+	}
+	public void warn(String format, Object... args) {
+		throw new RuntimeException("not support");
+		
+	}
+	public void fatal(String format, Object... args) {
+		throw new RuntimeException("not support");
+		
+	}
+	public void error(String format, Object... args) {
+		throw new RuntimeException("not support");
 	}
 	
 	

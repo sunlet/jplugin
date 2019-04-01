@@ -1,5 +1,6 @@
 package net.jplugin.core.mtenant.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.jplugin.core.das.route.impl.parser.SqlStrLexerToolNew;
@@ -34,26 +35,86 @@ public class MultiDbSqlHelper {
 
 	public static String handle(String sql, String schema) {
 		SqlWordsWalker walker = SqlWordsWalker.createFromSql(sql);
-		String[] list = walker.getArray();
-		String command = list[0].toUpperCase();
+		String[] allList = walker.getArray();
+		
+		String[][] lists = splitLists(allList);
+		
+		StringBuffer buffer = new StringBuffer();
+		for (int i=0;i<lists.length;i++){
+			//循环处理每一个sql
+			String[] list = lists[i];
+			handleOneSql(schema, list);
+			
+			if (i!=0)
+				buffer.append(" ");//不是第一个sql，则先加上一个 空格
+			
+			appendToBuffer(buffer,list);
+		}
+		
+		return buffer.toString();
+//
+//		return toSql(allList);
+	}
+
+	private static String[][] splitLists(String[] allList) {
+		//因为大部分都是只有一个sql，所以，对一个sql特殊判断和处理
+		boolean  justOne = true;
+		for (int i=0;i<allList.length;i++){
+			String s = allList[i];
+			//发现分号，并且不是最后一个，则justOne=false
+			if (s.length()==1 && s.charAt(0)==';'){
+				if (i!=allList.length-1){
+					justOne = false;
+					break;
+				}
+			}
+		}
+		if (justOne){
+			return new String[][]{allList};
+		}
+
+		//处理多个sql的情形
+		List<String[]> ret = new ArrayList<>();
+		int startPos = 0;
+		for (int i=0;i<allList.length;i++){
+			String s = allList[i];
+			//碰到; 或者是最后一个
+			if ( (s.length()==1 && s.charAt(0)==';') || i==(allList.length-1)){
+				String[] temp = new String[i - startPos + 1];
+				System.arraycopy(allList, startPos, temp, 0, temp.length);
+				ret.add(temp);
+				startPos = i+1;
+			}
+		}
+		//转换成数组返回
+		String[][] retarr = new String[ret.size()][];
+		return ret.toArray(retarr);
+	}
+
+	private static void handleOneSql(String schema, String[] list) {
+		
+		String command=null;
+		for (int i=0;i<list.length;i++){
+			if (!list[i].startsWith("/*")){
+				command = list[i].toUpperCase();
+				break;
+			}
+		}
+		if (command == null) 
+			throw new RuntimeException("Error sql:"+toSql(list));
 
 		if (SELECT.equals(command)) {
 			handleSelect(list, schema);
-			return toSql(list);
 		} else if (UPDATE.equals(command)) {
 			handleUpdate(list, schema);
 			handleSelect(list, schema);
-			return toSql(list);
 		} else if (DELETE.equals(command)) {
 			handleSelect(list, schema);
-			return toSql(list);
 		} else if (INSERT.equals(command)) {
 			handleInsert(list, schema);
 			handleSelect(list, schema);
-			return toSql(list);
 		} else
 			throw new RuntimeException("Unsupported sql for MultiDbSqlHelper");
-
 	}
 
 	private static void handleInsert(String[] list, String schema) {
@@ -76,8 +137,11 @@ public class MultiDbSqlHelper {
 		throw new RuntimeException("Can't find UPDATE word in "+toSql(list));
 	}
 
-	private static String toSql(String[] list) {
-		StringBuffer sb = new StringBuffer();
+	private static String toSql(String[] list){
+		return appendToBuffer(new StringBuffer(),list);
+	}
+	private static String appendToBuffer(StringBuffer sb,String[] list) {
+//		StringBuffer sb = new StringBuffer();
 		boolean first = true;
 		for (String s : list) {
 			if (first) {
@@ -158,14 +222,21 @@ public class MultiDbSqlHelper {
 
 	private static void handleTableName(String[] list, int i, String schema) {
 		String word = list[i];
+		
+		//如果是 (，则不处理
+		if ("(".equals(word))
+			return;
+
+		// 如果这个位置是注释，则处理下一个
 		if (word.startsWith("/*")) {
-			// 如果这个位置是注释，则处理下一个
 			handleTableName(list, i + 1, schema);
-		} else {
-			if (word.indexOf(".") >= 0)
-				throw new RuntimeException("The table name to handle must not contain [.] ,but is " + word);
-			list[i] = schema + "." + word;
 		}
+		
+		//处理表名称
+		if (word.indexOf(".") >= 0)
+				throw new RuntimeException("The table name to handle must not contain [.] ,but is " + word);
+		list[i] = schema + "." + word;
+		
 	}
 
 	public static void main(String[] args) {

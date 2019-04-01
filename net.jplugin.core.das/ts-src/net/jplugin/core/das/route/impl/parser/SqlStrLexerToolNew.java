@@ -14,7 +14,7 @@ public class SqlStrLexerToolNew {
 	/**
 	 * <PRE>
 	 * 单词: SELECT  ABC  23.23  AND OR _NOT
-	 * 运算符：'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>  !
+	 * 运算符：'='  '<'  '>'  '&'  '^' '+'  '-'  '*' '/'  >=  <=  <>  ! !=
 	 * 分界符：'('  ')' ','
 	 * 字符串常量：'   ' 带转义符
 	 * 注释： /star.....star/
@@ -34,7 +34,7 @@ public class SqlStrLexerToolNew {
 	public List<String> parse(){
 		while(true){
 			//忽略空格
-			while (idx<buffer.length && buffer[idx]==' '){
+			while (idx<buffer.length && isWhiteSpace(buffer[idx])){
 				idx++;
 			}
 			//识别
@@ -65,6 +65,10 @@ public class SqlStrLexerToolNew {
 		return list;
 	}
 	
+	private boolean isWhiteSpace(char c) {
+		return  c==' '|| c=='\n' || c=='\r' || c=='\t';
+	}
+
 	private void parseFanPie() {
 		int start = idx;
 		while(++idx<buffer.length){
@@ -139,7 +143,8 @@ public class SqlStrLexerToolNew {
 		}else{
 			char c1 = buffer[idx];
 			char c2 = buffer[idx+1];
-			if ( (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>')) {
+//			if ( (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>') ) {
+			if ( (c1=='>'&& c2=='=') || (c1=='<'&& c2=='=') || (c1=='<'&& c2=='>') || (c1=='!'&& c2=='=')) {
 				list.add(new String(buffer,idx,2));
 				idx = idx + 1;
 				return;
