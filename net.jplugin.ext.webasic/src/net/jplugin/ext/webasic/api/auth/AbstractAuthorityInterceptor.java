@@ -55,7 +55,7 @@ public abstract class AbstractAuthorityInterceptor extends AbstractRuleMethodInt
 	
 	@Override
 	public Object filterRuleMethod(FilterChain fc, RuleServiceFilterContext ctx) throws Throwable {
-		Map<String, String[]> clazzMap = this.permissionMap.get(ctx.getObject());
+		Map<String, String[]> clazzMap = this.permissionMap.get(ctx.getObject().getClass());
 		if (clazzMap==null){
 			return fc.next(ctx);
 		}
