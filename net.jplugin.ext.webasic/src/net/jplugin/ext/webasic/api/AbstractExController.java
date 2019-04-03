@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.jplugin.common.kits.MD5Kit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleResult;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -29,16 +31,26 @@ public class AbstractExController {
 //	private HttpServletRequest req;
 //	private HttpServletResponse res;
 
+	private static Boolean autoSetParamToReqAttr=null;//默认值为true，保持兼容
+	static{
+		autoSetParamToReqAttr = !"false".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("platform.abs-exctl-auto-set-param-to-reqattr"));
+		PluginEnvirement.getInstance().getStartLogger().log("autoSetParamToReqAttr="+autoSetParamToReqAttr);
+	}
+	
 	public final void _init(HttpServletRequest req, HttpServletResponse res) {
 		ThreadLocalContextManager.instance.getContext().setAttribute(HTTP_REQ, req);
 		ThreadLocalContextManager.instance.getContext().setAttribute(HTTP_RES, res);
 		
-		Enumeration nms = req.getParameterNames();
-		while (nms.hasMoreElements()) {
-			String name = (String) nms.nextElement();
-			req.setAttribute(name, req.getParameter(name));
+		if (autoSetParamToReqAttr){
+			Enumeration nms = req.getParameterNames();
+			while (nms.hasMoreElements()) {
+				String name = (String) nms.nextElement();
+				req.setAttribute(name, req.getParameter(name));
+			}
 		}
 	}
+
+	
 
 	public HttpServletRequest getReq() {
 		return (HttpServletRequest) ThreadLocalContextManager.instance.getContext().getAttribute(HTTP_REQ);
