@@ -1,5 +1,6 @@
 package net.jplugin.core.ctx.impl.filter4clazz;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -97,15 +98,8 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 		
 		FilterManager fm  = new FilterManager<>();
 		for (RuleCallFilterDefine rcfd:list){
-			Class<AbstractRuleMethodInterceptor> f = rcfd.getFilterClazz();
-			AbstractRuleMethodInterceptor filter;
-			try {
-				filter = f.newInstance();
-				PluginEnvirement.INSTANCE.resolveRefAnnotation(filter);
-			} catch (Exception e) {
-				throw new RuntimeException("can't init object :"+f.getName());
-			}
-			filter.setFilterDefine(rcfd);
+			
+			ClassOwnedFilter filter = createClassOwnedFilter(rcfd);
 			fm.addFilter(filter);
 		}
 		
@@ -117,4 +111,59 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 		return fm;
 	}
 
+	HashMap<Class,AbstractRuleMethodInterceptor> inceptInstanceMap=new HashMap<>();
+	
+	/**
+	 * 只在对应的Rule类第一次调用的时候创建，除了第一次初始化inceptor其他都很快，所以sync没大关系。
+	 * @param filterDefine
+	 * @return
+	 */
+	
+	private synchronized ClassOwnedFilter createClassOwnedFilter(RuleCallFilterDefine filterDefine) {
+//		ClassOwnedFilter filter = 
+		
+		Class<AbstractRuleMethodInterceptor> filterClazz = filterDefine.getFilterClazz();
+		
+		//从缓存获取，获取不到时重新创建一个，保证一个inceptor只有一个实例！
+		AbstractRuleMethodInterceptor inteceptor = inceptInstanceMap.get(filterClazz);
+		if (inteceptor == null){
+			try{
+				inteceptor = filterClazz.newInstance();
+				PluginEnvirement.INSTANCE.resolveRefAnnotation(inteceptor);
+				inceptInstanceMap.put(filterClazz, inteceptor);
+			}catch(Exception e){
+				throw new RuntimeException("can't init object :"+filterClazz.getName());
+			}
+		}
+		return new ClassOwnedFilter(filterDefine,inteceptor);
+		
+//		Class<AbstractRuleMethodInterceptor> f = rcfd.getFilterClazz();
+//		AbstractRuleMethodInterceptor filter;
+//		try {
+//			filter = f.newInstance();
+//			PluginEnvirement.INSTANCE.resolveRefAnnotation(filter);
+//		} catch (Exception e) {
+//			throw new RuntimeException("can't init object :"+f.getName());
+//		}
+//		filter.setFilterDefine(rcfd);
+
+	}
+	
+	
+	static class ClassOwnedFilter implements IFilter<RuleServiceFilterContext>{
+
+		private RuleCallFilterDefine filterDefine;
+		private AbstractRuleMethodInterceptor ruleInterceptor;
+
+		public ClassOwnedFilter(RuleCallFilterDefine fd,AbstractRuleMethodInterceptor inceptor) {
+			this.filterDefine = fd;
+			this.ruleInterceptor = inceptor;
+		}
+
+		@Override
+		public Object filter(FilterChain fc, RuleServiceFilterContext ctx) throws Throwable {
+			//委托给真正的拦截器执行
+			return ruleInterceptor.filter(fc, ctx, filterDefine);
+		}
+	}
 }
