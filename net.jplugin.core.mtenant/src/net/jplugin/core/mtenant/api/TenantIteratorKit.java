@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.mybatis.api.MyBatisServiceFactory;
 import net.jplugin.core.das.mybatis.impl.IMybatisService;
+import net.jplugin.core.das.mybatis.impl.sess.MybatisSessionManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.mtenant.MtenantStatus;
 /**
@@ -35,11 +36,25 @@ public class TenantIteratorKit {
 				String oldTenantId = ThreadLocalContextManager.getRequestInfo().getCurrentTenantId();
 				for (String t:list){
 					//no exception may be throw
+					
+					
 					ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(t);
+					
+					//2019-4-15避免动态数据源情况下，有缓存的Connection，增加下面一句。从云POS发现的问题。
+					//以下<<
+					MybatisSessionManager.releaseSessions();
+					//>>以上
+					
 					results.add(runAndGetResult(t,runnableOrCallable));
 				}
 				//restore tenantid
 				ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(oldTenantId);
+				
+				//2019-4-15避免动态数据源情况下，有缓存的Connection，增加下面一句。从云POS发现的问题。
+				//以下<<
+				MybatisSessionManager.releaseSessions();
+				//>>以上
+				
 				return results;
 			}else{
 				throw new RuntimeException("mtenant enabled and TenantListProvidor not configed, call TenantIteratorTemplate error");
