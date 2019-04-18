@@ -2,12 +2,8 @@ package net.jplugin.core.mtenant.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
-import net.jplugin.core.das.api.DataSourceFactory;
-import net.jplugin.core.das.mybatis.api.MyBatisServiceFactory;
-import net.jplugin.core.das.mybatis.impl.IMybatisService;
 import net.jplugin.core.das.mybatis.impl.sess.MybatisSessionManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.mtenant.MtenantStatus;
@@ -20,20 +16,39 @@ import net.jplugin.core.mtenant.MtenantStatus;
  */
 public class TenantIteratorKit {
 	
-	public static List<TenantResult> execute(Runnable r,List<String> tenantsList){
-		return commonExecute(r,tenantsList);
-	}
-
-	public static List<TenantResult> execute(Callable c,List<String> tenantsList){
-		return commonExecute(c,tenantsList);
-	}
-	
+	/**
+	 * 在所有本系统支持的的租户上迭代Runnable，返回结果列表
+	 * @param r
+	 * @return
+	 */
 	public static List<TenantResult> execute(Runnable r){
 		return commonExecute(r,null);
 	}
-
+	/**
+	 * 在所有本系统支持的的租户上迭代Callable，返回结果列表
+	 * @param c
+	 * @return
+	 */
 	public static List<TenantResult> execute(Callable c){
 		return commonExecute(c,null);
+	}
+	/**
+	 * 在指定的租户列表上迭代Runnable，返回结果列表
+	 * @param r
+	 * @param tenantsList
+	 * @return
+	 */
+	public static List<TenantResult> execute(Runnable r,List<String> tenantsList){
+		return commonExecute(r,tenantsList);
+	}
+	/**
+	 * 在指定的租户列表上迭代Callable，返回结果列表
+	 * @param c
+	 * @param tenantsList
+	 * @return
+	 */
+	public static List<TenantResult> execute(Callable c,List<String> tenantsList){
+		return commonExecute(c,tenantsList);
 	}
 	
 	private static List<TenantResult> commonExecute(Object runnableOrCallable,List<String> tenantsList){
