@@ -19,18 +19,34 @@ import net.jplugin.core.mtenant.MtenantStatus;
  *
  */
 public class TenantIteratorKit {
+	
+	public static List<TenantResult> execute(Runnable r,List<String> tenantsList){
+		return commonExecute(r,tenantsList);
+	}
+
+	public static List<TenantResult> execute(Callable c,List<String> tenantsList){
+		return commonExecute(c,tenantsList);
+	}
+	
 	public static List<TenantResult> execute(Runnable r){
-		return commonExecute(r);
+		return commonExecute(r,null);
 	}
 
 	public static List<TenantResult> execute(Callable c){
-		return commonExecute(c);
+		return commonExecute(c,null);
 	}
 	
-	private static List<TenantResult> commonExecute(Object runnableOrCallable){
+	private static List<TenantResult> commonExecute(Object runnableOrCallable,List<String> tenantsList){
 		if (MtenantStatus.enabled()){
 			if (TenantListProvidorManager.instance.isProviderExist()){
-				List<String> list = TenantListProvidorManager.instance.getList();
+				
+				List<String> list;
+				if (tenantsList!=null){
+					list = tenantsList;
+				}else{
+					list = TenantListProvidorManager.instance.getList();
+				}
+				
 				List<TenantResult> results = new ArrayList(list.size());
 				//save tenant id
 				String oldTenantId = ThreadLocalContextManager.getRequestInfo().getCurrentTenantId();
