@@ -22,6 +22,44 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
  * 2.然后调用CMF的next。
  * 
  * 这里的FilterManager是在对应的类第一次使用的时候初始化的。
+ * 
+ * 
+ * FilterManager的结构如下：
+ * 
+ * FM1--> FC0--->null（HEAD）
+ *       (next)
+ *         |
+ *         |
+ *        FC1--->filter1 
+ *       (next)
+ *         |
+ *         |
+ *        FC2--->filter2(RuleCallFilterManagerRuleFilter实例)
+ *       (next)    |
+ *         |       |------>FM2(结构略）
+ *         |       |
+ *        FC3      |------>FM3--->FC5----->null
+ *       (next)                  (next)
+ *         |                       |
+ *         |                       |
+ *        FC4                     FC6------>ClassOwedFilter1---->ARI1 (AbstractRuleMethodInterceptor1)
+ *       (next)                  (next) 
+ *         |                       |
+ *         |                       |
+ *        null                    FC7------>ClassOwedFilter2---->ARI2
+ *                               (next)
+ *                                 |
+ *                                 |
+ *                                FC8------>ClassOwedFilter2---->ARI1 (注意，这里和前面的是同一个实例，每一个ARI类一个实例！）
+ *                               (next)
+ *                                 |
+ *                                 |
+ *                                FC9------>FC4（注意，这里是从上层Filter引用过来的对象
+ *                               (next)
+ *                                 |
+ *                                 |
+ *                                null   
+ * 
  * </PRE>
  * @author LiuHang
  *
