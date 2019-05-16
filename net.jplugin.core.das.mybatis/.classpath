@@ -12,7 +12,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.log"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.rclient"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.service"/>
-	<classpathentry kind="lib" path="lib/mybatis-3.2.8.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.jplugin.core.config"/>
+	<classpathentry kind="lib" path="lib/mybatis-3.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
