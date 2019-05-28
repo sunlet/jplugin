@@ -55,17 +55,22 @@ public abstract class AbstractAuthorityInterceptor extends AbstractRuleMethodInt
 	
 	@Override
 	public Object filterRuleMethod(FilterChain fc, RuleServiceFilterContext ctx) throws Throwable {
+		
+		//获取方法名
+		String mn = ctx.getMethod().getName();
+		
+		//获取授权列表
+		String[] perms;
 		Map<String, String[]> clazzMap = this.permissionMap.get(ctx.getObject().getClass());
 		if (clazzMap==null){
-			return fc.next(ctx);
-		}
-		
-		String mn = ctx.getMethod().getName();
-		String[] perms = clazzMap.get(mn);
-		
-		if (perms!=null && perms.length==0){
 			perms = null;
+		}else{
+			perms = clazzMap.get(mn);
+			if (perms!=null && perms.length==0){
+				perms = null;
+			}
 		}
+		//验证返回
 		if (validate(ctx,perms))
 			return fc.next(ctx);
 		else
