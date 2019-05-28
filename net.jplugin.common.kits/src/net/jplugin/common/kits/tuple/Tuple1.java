@@ -17,6 +17,7 @@ public final class Tuple1<A> extends Tuple {
     public final A first;
 
     private Tuple1(final A first) {
+        super(first);
         this.first = first;
     }
 
