@@ -207,6 +207,14 @@ public class RuleInterceptor implements InvocationHandler {
 			if (mpi == null){
 				mpi = MethodParaInfo.tryCreate(intfMethod);
 			}
+			
+			//如果为空，查找默认的Rule。 2019-5-28
+			if (mpi == null){
+				Rule defRule = DefaultRuleAnnoConfig.findDefaultRuleAnnotation();
+				if (defRule!=null){
+					mpi = MethodParaInfo.create(intfMethod,defRule);
+				}
+			}
 			return mpi;
 		}
 //		private Rule computeAnnotation(Method intfMethod,Class implClazz){
@@ -299,6 +307,19 @@ public class RuleInterceptor implements InvocationHandler {
 //				meta = e;
 //				paraTypes = p;
 //			}
+			/**
+			 * 直接传入一个Rule来创建
+			 * @param m
+			 * @param r
+			 * @return
+			 */
+			static MethodParaInfo create(Method m,Rule r){
+				MethodParaInfo o = new MethodParaInfo();
+				o.meta = r;
+				o.paraTypes = m.getParameterTypes();
+				o.method = m;
+				return o;
+			}
 			
 			static MethodParaInfo tryCreate(Method m) {
 				Rule temp = m.getAnnotation(Rule.class);
