@@ -258,4 +258,7 @@ public abstract class AbstractPlugin implements IPlugin {
 		this.containedClasses.clear();
 		this.containedClasses = null;
 	}
+
+	public void afterPluginsContruct() {
+	}
 }
