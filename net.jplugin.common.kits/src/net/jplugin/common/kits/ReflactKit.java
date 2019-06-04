@@ -212,6 +212,9 @@ public class ReflactKit {
 			if (m.getName().equals(methodName)){
 				if (ret == null){
 					ret = m;
+					if (Object.class.equals(m.getDeclaringClass())){
+						throw new RuntimeException("Can't locate Object class methods :"+methodName);
+					}
 				}else{
 					throw new RuntimeException("find a second method for name:"+methodName +" in "+c.getName());
 				}
@@ -271,20 +274,26 @@ public class ReflactKit {
 	 * @return
 	 */
 	public static Set<String> getMethodNamesExceptObject(Class c){
-		Set<String> names = new HashSet<>();
-		Class t = c;
-		while(true){
-			//退出条件
-			if (t==Object.class)
-				break;
-			//处理该类
-			Method[] ms = t.getDeclaredMethods();
-			for (Method m:ms){
-//				System.out.println(c.getName()+"  "+m.getName());
+//		Set<String> names = new HashSet<>();
+//		Class t = c;
+//		while(true){
+//			//退出条件
+//			if (t==Object.class)
+//				break;
+//			//处理该类
+//			Method[] ms = t.getDeclaredMethods();
+//			for (Method m:ms){
+////				System.out.println(c.getName()+"  "+m.getName());
+//				names.add(m.getName());
+//			}
+//			//父类
+//			t = t.getSuperclass();
+//		}
+		Method[] methods = c.getMethods();
+		Set<String> names = new HashSet();
+		for (Method m:methods){
+			if (!Object.class.equals(m.getDeclaringClass()))
 				names.add(m.getName());
-			}
-			//父类
-			t = t.getSuperclass();
 		}
 		return names;
 	}
