@@ -80,7 +80,14 @@ public abstract class AbstractAuthorityInterceptor extends AbstractRuleMethodInt
 	@Override
 	public void initialize() {
 		initPermissionSetting();
-		parseConfig();
+		this.permissionMap = parseConfig();
+	}
+	
+	public void reInitialize(){
+		this.configItemList.clear();
+		initPermissionSetting();
+		//假定赋值原子性
+		this.permissionMap = parseConfig();
 	}
 	
 	protected AbstractAuthorityInterceptor addPermissionRule(Class clazz, String methodFilter, String... perms) {
@@ -96,7 +103,9 @@ public abstract class AbstractAuthorityInterceptor extends AbstractRuleMethodInt
 	}
 
 
-	void parseConfig() {
+	Map<Class, Map<String, String[]>> parseConfig() {
+		Map<Class, Map<String, String[]>> tempMap=new HashMap<>();
+		
 		// 找出来涉及到的全部class
 		Set<Class> classSet = new HashSet<>();
 		for (ConfigItem item : configItemList) {
@@ -113,8 +122,9 @@ public abstract class AbstractAuthorityInterceptor extends AbstractRuleMethodInt
 					map.put(mn, targetConfig.perms);
 				}
 			}
-			this.permissionMap .put(c,map);
+			tempMap.put(c,map);
 		}
+		return tempMap;
 	}
 
 	private ConfigItem getMaching(Class c, String mn) {
