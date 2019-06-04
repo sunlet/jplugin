@@ -15,6 +15,8 @@ import net.jplugin.core.kernel.api.Initializable;
 
 /**
  * <pre>
+ * 这个类 转到  BasicAuthorityInterceptorCfgByMethod了。
+ * 
  * 这个类是用以权限校验的基类，可以继承该类实现 SSO，User，Tenant,APP等验证拦截器抽象类。
  * 
  * 用法：
@@ -37,6 +39,7 @@ import net.jplugin.core.kernel.api.Initializable;
  * @author LiuHang
  *
  */
+@Deprecated
 public abstract class AbstractAuthorityInterceptor extends AbstractRuleMethodInterceptor implements Initializable{
 	private ArrayList<ConfigItem> configItemList = new ArrayList<>();
 	protected Map<Class,Map<String,String[]>> permissionMap = new HashMap<Class,Map<String, String[]>>();
