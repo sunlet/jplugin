@@ -170,7 +170,7 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 				PluginEnvirement.INSTANCE.resolveRefAnnotation(inteceptor);
 				inceptInstanceMap.put(filterClazz, inteceptor);
 			}catch(Exception e){
-				throw new RuntimeException("can't init object :"+filterClazz.getName());
+				throw new RuntimeException("can't init object :"+filterClazz.getName(),e);
 			}
 		}
 		return new ClassOwnedFilter(filterDefine,inteceptor);
