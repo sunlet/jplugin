@@ -2,12 +2,9 @@ package net.jplugin.core.mtenant.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
-import net.jplugin.core.das.api.DataSourceFactory;
-import net.jplugin.core.das.mybatis.api.MyBatisServiceFactory;
-import net.jplugin.core.das.mybatis.impl.IMybatisService;
+import net.jplugin.core.das.mybatis.impl.sess.MybatisSessionManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.mtenant.MtenantStatus;
 /**
@@ -18,28 +15,77 @@ import net.jplugin.core.mtenant.MtenantStatus;
  *
  */
 public class TenantIteratorKit {
+	
+	/**
+	 * 在所有本系统支持的的租户上迭代Runnable，返回结果列表
+	 * @param r
+	 * @return
+	 */
 	public static List<TenantResult> execute(Runnable r){
-		return commonExecute(r);
+		return commonExecute(r,null);
 	}
-
+	/**
+	 * 在所有本系统支持的的租户上迭代Callable，返回结果列表
+	 * @param c
+	 * @return
+	 */
 	public static List<TenantResult> execute(Callable c){
-		return commonExecute(c);
+		return commonExecute(c,null);
+	}
+	/**
+	 * 在指定的租户列表上迭代Runnable，返回结果列表
+	 * @param r
+	 * @param tenantsList
+	 * @return
+	 */
+	public static List<TenantResult> execute(Runnable r,List<String> tenantsList){
+		return commonExecute(r,tenantsList);
+	}
+	/**
+	 * 在指定的租户列表上迭代Callable，返回结果列表
+	 * @param c
+	 * @param tenantsList
+	 * @return
+	 */
+	public static List<TenantResult> execute(Callable c,List<String> tenantsList){
+		return commonExecute(c,tenantsList);
 	}
 	
-	private static List<TenantResult> commonExecute(Object runnableOrCallable){
+	private static List<TenantResult> commonExecute(Object runnableOrCallable,List<String> tenantsList){
 		if (MtenantStatus.enabled()){
 			if (TenantListProvidorManager.instance.isProviderExist()){
-				List<String> list = TenantListProvidorManager.instance.getList();
+				
+				List<String> list;
+				if (tenantsList!=null){
+					list = tenantsList;
+				}else{
+					list = TenantListProvidorManager.instance.getList();
+				}
+				
 				List<TenantResult> results = new ArrayList(list.size());
 				//save tenant id
 				String oldTenantId = ThreadLocalContextManager.getRequestInfo().getCurrentTenantId();
 				for (String t:list){
 					//no exception may be throw
+					
+					
 					ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(t);
+					
+					//2019-4-15避免动态数据源情况下，有缓存的Connection，增加下面一句。从云POS发现的问题。
+					//以下<<
+					MybatisSessionManager.releaseSessions();
+					//>>以上
+					
 					results.add(runAndGetResult(t,runnableOrCallable));
 				}
 				//restore tenantid
 				ThreadLocalContextManager.getRequestInfo().setCurrentTenantId(oldTenantId);
+				
+				//2019-4-15避免动态数据源情况下，有缓存的Connection，增加下面一句。从云POS发现的问题。
+				//以下<<
+				MybatisSessionManager.releaseSessions();
+				//>>以上
+				
 				return results;
 			}else{
 				throw new RuntimeException("mtenant enabled and TenantListProvidor not configed, call TenantIteratorTemplate error");

@@ -1,5 +1,6 @@
 package net.jplugin.core.kernel.api;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -27,12 +28,24 @@ public class PluginRegistry {
 		return this.errorList;
 	}
 	
+	public List<AbstractPlugin> getPluginList(){
+		return Collections.unmodifiableList(this.pluginList);
+	}
+	
 	/**
 	 * @param plugin
 	 */
 	public void addPlugin(IPlugin plugin){
 		this.pluginList.add((AbstractPlugin) plugin);
 	}
+	
+	public void afterPluginsContruct() {
+		for (int i=0;i<pluginList.size();i++){
+			AbstractPlugin p = pluginList.get(i);
+			p.afterPluginsContruct();
+		}
+	}
+	
 	/**
 	 * 先剔除重名
 	 * 再按照优先级排序，小数字有线；相同数字的，按照名称排序
@@ -210,6 +223,8 @@ public class PluginRegistry {
 			plugin._cleanContainedClasses();
 		}
 	}
+
+	
 
 
 }

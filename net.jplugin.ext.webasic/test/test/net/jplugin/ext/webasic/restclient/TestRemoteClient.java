@@ -36,6 +36,9 @@ public class TestRemoteClient {
 		}catch(RemoteExecuteException e){
 			AssertKit.assertEqual(e.getCode(), "-1");
 			ret = true;
+		}catch(RuntimeException e){
+			e.printStackTrace();
+			throw e;
 		}
 		if (!ret) throw new RuntimeException("fail");
 		

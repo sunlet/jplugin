@@ -1,5 +1,6 @@
 package net.jplugin.core.ctx.impl.filter4clazz;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +22,44 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
  * 2.然后调用CMF的next。
  * 
  * 这里的FilterManager是在对应的类第一次使用的时候初始化的。
+ * 
+ * 
+ * FilterManager的结构如下：
+ * 
+ * FM1--> FC0--->null（HEAD）
+ *       (next)
+ *         |
+ *         |
+ *        FC1--->filter1 
+ *       (next)
+ *         |
+ *         |
+ *        FC2--->filter2(RuleCallFilterManagerRuleFilter实例)
+ *       (next)    |
+ *         |       |------>FM2(结构略）
+ *         |       |
+ *        FC3      |------>FM3--->FC5----->null
+ *       (next)                  (next)
+ *         |                       |
+ *         |                       |
+ *        FC4                     FC6------>ClassOwedFilter1---->ARI1 (AbstractRuleMethodInterceptor1)
+ *       (next)                  (next) 
+ *         |                       |
+ *         |                       |
+ *        null                    FC7------>ClassOwedFilter2---->ARI2
+ *                               (next)
+ *                                 |
+ *                                 |
+ *                                FC8------>ClassOwedFilter2---->ARI1 (注意，这里和前面的是同一个实例，每一个ARI类一个实例！）
+ *                               (next)
+ *                                 |
+ *                                 |
+ *                                FC9------>FC4（注意，这里是从上层Filter引用过来的对象
+ *                               (next)
+ *                                 |
+ *                                 |
+ *                                null   
+ * 
  * </PRE>
  * @author LiuHang
  *
@@ -97,15 +136,8 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 		
 		FilterManager fm  = new FilterManager<>();
 		for (RuleCallFilterDefine rcfd:list){
-			Class<AbstractRuleMethodInterceptor> f = rcfd.getFilterClazz();
-			AbstractRuleMethodInterceptor filter;
-			try {
-				filter = f.newInstance();
-				PluginEnvirement.INSTANCE.resolveRefAnnotation(filter);
-			} catch (Exception e) {
-				throw new RuntimeException("can't init object :"+f.getName());
-			}
-			filter.setFilterDefine(rcfd);
+			
+			ClassOwnedFilter filter = createClassOwnedFilter(rcfd);
 			fm.addFilter(filter);
 		}
 		
@@ -117,4 +149,59 @@ public class RuleCallFilterManagerRuleFilter implements IRuleServiceFilter{
 		return fm;
 	}
 
+	HashMap<Class,AbstractRuleMethodInterceptor> inceptInstanceMap=new HashMap<>();
+	
+	/**
+	 * 只在对应的Rule类第一次调用的时候创建，除了第一次初始化inceptor其他都很快，所以sync没大关系。
+	 * @param filterDefine
+	 * @return
+	 */
+	
+	private synchronized ClassOwnedFilter createClassOwnedFilter(RuleCallFilterDefine filterDefine) {
+//		ClassOwnedFilter filter = 
+		
+		Class<AbstractRuleMethodInterceptor> filterClazz = filterDefine.getFilterClazz();
+		
+		//从缓存获取，获取不到时重新创建一个，保证一个inceptor只有一个实例！
+		AbstractRuleMethodInterceptor inteceptor = inceptInstanceMap.get(filterClazz);
+		if (inteceptor == null){
+			try{
+				inteceptor = filterClazz.newInstance();
+				PluginEnvirement.INSTANCE.resolveRefAnnotation(inteceptor);
+				inceptInstanceMap.put(filterClazz, inteceptor);
+			}catch(Exception e){
+				throw new RuntimeException("can't init object :"+filterClazz.getName(),e);
+			}
+		}
+		return new ClassOwnedFilter(filterDefine,inteceptor);
+		
+//		Class<AbstractRuleMethodInterceptor> f = rcfd.getFilterClazz();
+//		AbstractRuleMethodInterceptor filter;
+//		try {
+//			filter = f.newInstance();
+//			PluginEnvirement.INSTANCE.resolveRefAnnotation(filter);
+//		} catch (Exception e) {
+//			throw new RuntimeException("can't init object :"+f.getName());
+//		}
+//		filter.setFilterDefine(rcfd);
+
+	}
+	
+	
+	static class ClassOwnedFilter implements IFilter<RuleServiceFilterContext>{
+
+		private RuleCallFilterDefine filterDefine;
+		private AbstractRuleMethodInterceptor ruleInterceptor;
+
+		public ClassOwnedFilter(RuleCallFilterDefine fd,AbstractRuleMethodInterceptor inceptor) {
+			this.filterDefine = fd;
+			this.ruleInterceptor = inceptor;
+		}
+
+		@Override
+		public Object filter(FilterChain fc, RuleServiceFilterContext ctx) throws Throwable {
+			//委托给真正的拦截器执行
+			return ruleInterceptor.filter(fc, ctx, filterDefine);
+		}
+	}
 }

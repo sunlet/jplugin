@@ -428,6 +428,12 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
 			cp.setResult(toResultString(result));
 			log(e);
+		}catch(Exception e){
+			//有Rule标记的情况下，InvocationTargetException会被去掉，所以只能在这里处理了
+			RemoteExceptionInfo exInfo = RemoteExceptionKits.getExceptionInfo(e);
+			Object result = CallParam.REMOTE_EXCEPTION_PREFIX + JsonKit.object2Json(exInfo);
+			cp.setResult(toResultString(result));
+			log(e);
 		}
 	}
 

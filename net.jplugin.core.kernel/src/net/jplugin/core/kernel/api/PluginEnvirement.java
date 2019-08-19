@@ -235,7 +235,7 @@ public class PluginEnvirement {
 					}
 				}
 			}
-
+			registry.afterPluginsContruct();
 			registry.sort();
 			registry.valid();
 			this.stateLevel = STAT_LEVEL_LOADING;

@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ReflactKit;
+import net.jplugin.core.ctx.impl.DefaultRuleAnnoConfig;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.gtrace.kits.GTraceKit;
 import net.jplugin.ext.webasic.impl.ESFHelper;
@@ -44,7 +45,11 @@ public class ESFRPCTest {
 		AssertKit.assertEqual(tid, "aaaa");
 		AssertKit.assertEqual(sid, "bbbb");
 		String sid2 = GTraceKit.getCurrentSpan(ThreadLocalContextManager.getCurrentContext()).getParentId();
-		AssertKit.assertEqual(sid2, "bbbb");
+		if (DefaultRuleAnnoConfig.findDefaultRuleAnnotation()==null){
+			AssertKit.assertEqual(sid2, "bbbb");
+		}else{
+			AssertKit.assertEqual(sid2, "bbbb.1");
+		}
 		return true;
 	}
 
