@@ -1,10 +1,15 @@
 package net.jplugin.core.das.mybatis.impl;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
+
 import javax.sql.DataSource;
 
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -20,6 +25,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.mybatis.api.ExtensionMybatisDasHelper;
 import net.jplugin.core.das.mybatis.api.IMapperHandlerForReturn;
@@ -70,6 +76,8 @@ public class MybaticsServiceImplNew implements IMybatisService {
 			configuration = new Configuration(environment);
 			//关闭本地的session cache
 			configuration.setLocalCacheScope(LocalCacheScope.STATEMENT);
+			//在此处设置mybatis的其他配置项
+			setMybatisPropertys(configuration);
 			for (String c:mappers){
 				try {
 					if (c.endsWith(".xml")||c.endsWith(".XML")){
@@ -122,6 +130,86 @@ public class MybaticsServiceImplNew implements IMybatisService {
 		sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 	}
 	
+	/**
+     * 根据配置中心的配置，设置对应的mybatis的各项参数
+     *
+     * @param configuration mybatis配置对象
+     */
+    private void setMybatisPropertys(Configuration configuration) {
+        List<Method> methods = Arrays.stream(Configuration.class.getMethods())
+                //只需要set开头的方法
+                .filter(method -> method.getName().startsWith("set"))
+                .collect(Collectors.toList());
+        //获取配置中心的配置
+        Map<String, String> configMap = ConfigFactory.getStringConfigInGroup("mybatis_config");
+        if (null != configMap && !configMap.isEmpty()) {
+            for (Map.Entry<String, String> entry : configMap.entrySet()) {
+                String key = entry.getKey();
+                for (Method method : methods) {
+                    //找到对应的set方法
+                    if (method.getName().toLowerCase().equals("set" + key.toLowerCase())) {
+                        Class<?> parameterType = method.getParameterTypes()[0];
+                        //调整参数的类型
+                        Object value = castType(parameterType, entry.getValue());
+                        try {
+                            //设置参数
+                            method.invoke(configuration, value);
+                        } catch (Exception e) {
+                            throw new RuntimeException("set mybatis property failed，name：" + key + "，value：" + value);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * 转换类型
+     *
+     * @param clazz 目前类型
+     * @param value 需要转换的字符串
+     * @return 转换后的类型
+     */
+    private Object castType(Class<?> clazz, String value) {
+    	//支持枚举类型的配置项
+        if (clazz.isEnum()) {
+            try {
+                return clazz.getMethod("valueOf", String.class).invoke(null, value);
+            } catch (Exception e) {
+                throw new RuntimeException("set enum property failed，name：" + clazz.getSimpleName() + "，value：" + value);
+            }
+        } else {//非枚举类型的配置项
+            switch (clazz.getSimpleName()) {
+                case "Integer":
+                case "int":
+                    return Integer.valueOf(value);
+                case "Short":
+                case "short":
+                    return Short.valueOf(value);
+                case "Boolean":
+                case "boolean":
+                    return Boolean.valueOf(value);
+                case "Byte":
+                case "byte":
+                    return Byte.valueOf(value);
+                case "Long":
+                case "long":
+                    return Long.valueOf(value);
+                case "Float":
+                case "float":
+                    return Float.valueOf(value);
+                case "Double":
+                case "double":
+                    return Double.valueOf(value);
+                case "String":
+                    return value;
+                default:
+                    throw new RuntimeException("illegal type: " + clazz.getSimpleName());
+            }
+        }
+    }
+    
 	private Configuration buildGlobalConfiguration(String globalConfigResource) {
 		InputStream inputStream = null;
 		try{
