@@ -1,15 +1,11 @@
 package net.jplugin.core.das.route.impl.conn.mulqry;
 
-import java.io.StringReader;
-import java.util.List;
-
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.CombinedSqlContext;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
-import net.sf.jsqlparser.parser.CCJSqlParser;
+import net.jplugin.core.das.route.impl.util.SqlParserKit;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Select;
 
@@ -59,13 +55,15 @@ public class CombinedSqlParser {
 		ctx.setDataSourceInfos(pr.getMeta().getDataSourceInfos());
 		ctx.setOriginalTableName(pr.getMeta().getSourceTb());
 		
-		Statement statement;
-		try {
-			CCJSqlParser parser = new CCJSqlParser(new StringReader(originalSql));
-			statement =   parser.Statement();
-		} catch (Exception e) {
-			throw new RuntimeException("sql parse error:"+originalSql);
-		}
+		Statement statement = SqlParserKit.parse(originalSql);
+//		try {
+//			CCJSqlParserManager pm = new CCJSqlParserManager();
+////			pm.parse(new StringReader(originalSql));
+////			CCJSqlParser parser = new CCJSqlParser(new StringReader(originalSql));
+//			statement =   pm.parse(new StringReader(originalSql));
+//		} catch (Exception e) {
+//			throw new RuntimeException("sql parse error:"+originalSql);
+//		}
 		
 		ctx.setStatement((Select) statement);
 		WrapperManager.INSTANCE.handleContextInitial(ctx);

@@ -15,6 +15,7 @@ import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.jplugin.core.das.route.impl.util.SqlParserKit;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
@@ -95,12 +96,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		
     	net.sf.jsqlparser.statement.Statement stmt;
     	
-		try {
-			CCJSqlParser parser = new CCJSqlParser(new StringReader(sql));
-			stmt = parser.Statement();
-		} catch (Exception e) {
-			throw new RuntimeException("sql parse error:"+sql);
-		}
+		stmt = SqlParserKit.parse(sql);
     	
     	AbstractCommandHandler2 instance;
     	if (stmt instanceof Select){

@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.39-bin.jar"/>
 	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar"/>
-	<classpathentry kind="lib" path="/net.jplugin.core.mtenant/lib/jsqlparser-1.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/com/github/jsqlparser/jsqlparser/1.1/jsqlparser-1.1-sources.jar"/>
+	<classpathentry kind="lib" path="/net.jplugin.core.mtenant/lib/jsqlparser-2.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/com/github/jsqlparser/jsqlparser/2.1/jsqlparser-2.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

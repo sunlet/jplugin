@@ -17,6 +17,7 @@ import net.sf.jsqlparser.expression.AnyComparisonExpression;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.CaseExpression;
 import net.sf.jsqlparser.expression.CastExpression;
+import net.sf.jsqlparser.expression.CollateExpression;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
@@ -32,6 +33,7 @@ import net.sf.jsqlparser.expression.JsonExpression;
 import net.sf.jsqlparser.expression.KeepExpression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.MySQLGroupConcat;
+import net.sf.jsqlparser.expression.NextValExpression;
 import net.sf.jsqlparser.expression.NotExpression;
 import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.NumericBind;
@@ -45,11 +47,13 @@ import net.sf.jsqlparser.expression.TimeKeyExpression;
 import net.sf.jsqlparser.expression.TimeValue;
 import net.sf.jsqlparser.expression.TimestampValue;
 import net.sf.jsqlparser.expression.UserVariable;
+import net.sf.jsqlparser.expression.ValueListExpression;
 import net.sf.jsqlparser.expression.WhenClause;
-import net.sf.jsqlparser.expression.WithinGroupExpression;
 import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
+import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseLeftShift;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseOr;
+import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseRightShift;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseXor;
 import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
 import net.sf.jsqlparser.expression.operators.arithmetic.Division;
@@ -74,17 +78,26 @@ import net.sf.jsqlparser.expression.operators.relational.Matches;
 import net.sf.jsqlparser.expression.operators.relational.MinorThan;
 import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
 import net.sf.jsqlparser.expression.operators.relational.MultiExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.NamedExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.RegExpMatchOperator;
 import net.sf.jsqlparser.expression.operators.relational.RegExpMySQLOperator;
+import net.sf.jsqlparser.expression.operators.relational.SimilarToExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Block;
 import net.sf.jsqlparser.statement.Commit;
+import net.sf.jsqlparser.statement.DescribeStatement;
+import net.sf.jsqlparser.statement.ExplainStatement;
 import net.sf.jsqlparser.statement.SetStatement;
+import net.sf.jsqlparser.statement.ShowColumnsStatement;
+import net.sf.jsqlparser.statement.ShowStatement;
 import net.sf.jsqlparser.statement.StatementVisitor;
 import net.sf.jsqlparser.statement.Statements;
+import net.sf.jsqlparser.statement.UseStatement;
 import net.sf.jsqlparser.statement.alter.Alter;
+import net.sf.jsqlparser.statement.comment.Comment;
 import net.sf.jsqlparser.statement.create.index.CreateIndex;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.view.AlterView;
@@ -101,6 +114,7 @@ import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.FromItemVisitor;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.LateralSubSelect;
+import net.sf.jsqlparser.statement.select.ParenthesisFromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
@@ -117,6 +131,7 @@ import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
+import net.sf.jsqlparser.statement.values.ValuesStatement;
 
 public class SqlHandlerVisitorForMixed
 		implements StatementVisitor, SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor ,SelectItemVisitor{
@@ -437,7 +452,14 @@ public class SqlHandlerVisitorForMixed
 	@Override
 	public void visit(SubJoin subjoin) {
 		subjoin.getLeft().accept(this);
-		subjoin.getJoin().getRightItem().accept(this);
+		
+		List<Join> joinlist = subjoin.getJoinList();
+		if (joinlist!=null){
+			for (Join join:joinlist){
+				join.getRightItem().accept(this);
+			}
+		}
+//		subjoin.getJoin().getRightItem().accept(this);
 	}
 
 	@Override
@@ -561,9 +583,9 @@ public class SqlHandlerVisitorForMixed
 	public void visit(AnalyticExpression arg0) {
 	}
 
-	@Override
-	public void visit(WithinGroupExpression arg0) {
-	}
+//	@Override
+//	public void visit(WithinGroupExpression arg0) {
+//	}
 
 	@Override
 	public void visit(ExtractExpression ee) {
@@ -637,6 +659,56 @@ public class SqlHandlerVisitorForMixed
 	@Override
 	public void visit(TableFunction arg0) {
 	}
+
+	@Override
+	public void visit(NamedExpressionList namedExpressionList) {
+	}
+	@Override
+	public void visit(BitwiseRightShift aThis) {
+	}
+	@Override
+	public void visit(BitwiseLeftShift aThis) {
+	}
+	@Override
+	public void visit(ValueListExpression valueList) {
+	}
+	@Override
+	public void visit(NextValExpression aThis) {
+	}
+	@Override
+	public void visit(CollateExpression aThis) {
+	}
+	@Override
+	public void visit(SimilarToExpression aThis) {
+	}
+	@Override
+	public void visit(ParenthesisFromItem aThis) {
+	}
+	@Override
+	public void visit(Comment comment) {
+	}
+	@Override
+	public void visit(ShowColumnsStatement set) {
+	}
+	@Override
+	public void visit(UseStatement use) {
+	}
+	@Override
+	public void visit(Block block) {
+	}
+	@Override
+	public void visit(ValuesStatement values) {
+	}
+	@Override
+	public void visit(DescribeStatement describe) {
+	}
+	@Override
+	public void visit(ExplainStatement aThis) {
+	}
+	@Override
+	public void visit(ShowStatement aThis) {
+	}
+
 
 	@Override
 	public void visit(SetOperationList sol) {

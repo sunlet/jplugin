@@ -12,6 +12,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.statement.select.GroupByElement;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectBody;
@@ -71,7 +72,15 @@ public class GroupByWrapperController implements WrapperController{
 //		if (1==2){
 			SelectBody bd = ctx.getStatement().getSelectBody();
 			PlainSelect inner = SelectSqlKit.getMostInnerSelect(bd, ctx.getOriginalSql());
-			List<Expression> groupbylist = inner.getGroupByColumnReferences();
+//			List<Expression> groupbylist = inner.getGroupByColumnReferences();
+			
+			GroupByElement groupBy = inner.getGroupBy();
+			List<Expression> groupbylist=null;
+			if (groupBy!=null) {
+				groupbylist = groupBy.getGroupByExpressions();
+			}
+			
+//			List<Expression> groupbylist = inner.getGroupBy();
 			
 			if (groupbylist!=null && !groupbylist.isEmpty()){
 				//产生ExpressionList, 这里用一个新的List，因为后面这个List会修改，增加一个新的项目
@@ -131,10 +140,6 @@ public class GroupByWrapperController implements WrapperController{
 		item.setAlias(new Alias("_GROUP_BY_AUTOADD_"));
 		return item;
 	}
-
-
-	
-
 
 
 }
