@@ -1,28 +1,5 @@
 package net.jplugin.core.das.mybatis.api;
 
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014-2017 abel533@gmail.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -154,7 +131,7 @@ public class CountSqlParser {
      * @param sql
      * @return
      */
-    public String getSmartCountSql(String sql) {
+    public static String getSmartCountSql(String sql) {
         return getSmartCountSql(sql, "0");
     }
 
@@ -165,7 +142,7 @@ public class CountSqlParser {
      * @param name 列名，默认 0
      * @return
      */
-    public String getSmartCountSql(String sql, String name) {
+    public static String getSmartCountSql(String sql, String name) {
         //解析SQL
         Statement stmt = null;
         //特殊sql不需要去掉order by时，使用注释前缀
@@ -200,7 +177,7 @@ public class CountSqlParser {
      * @param sql 原查询sql
      * @return 返回count查询sql
      */
-    public String getSimpleCountSql(final String sql) {
+    public static String getSimpleCountSql(final String sql) {
         return getSimpleCountSql(sql, "0");
     }
 
@@ -210,7 +187,7 @@ public class CountSqlParser {
      * @param sql 原查询sql
      * @return 返回count查询sql
      */
-    public String getSimpleCountSql(final String sql, String name) {
+    public static String getSimpleCountSql(final String sql, String name) {
         StringBuilder stringBuilder = new StringBuilder(sql.length() + 40);
         stringBuilder.append("select count(");
         stringBuilder.append(name);
@@ -225,7 +202,7 @@ public class CountSqlParser {
      *
      * @param select
      */
-    public void sqlToCount(Select select, String name) {
+    public static void sqlToCount(Select select, String name) {
         SelectBody selectBody = select.getSelectBody();
         // 是否能简化count查询
         List<SelectItem> COUNT_ITEM = new ArrayList<>();
@@ -249,7 +226,7 @@ public class CountSqlParser {
      * @param select
      * @return
      */
-    public boolean isSimpleCount(PlainSelect select) {
+    public static boolean isSimpleCount(PlainSelect select) {
         //包含group by的时候不可以
         if (select.getGroupBy() != null) {
             return false;
@@ -297,7 +274,7 @@ public class CountSqlParser {
      *
      * @param selectBody
      */
-    public void processSelectBody(SelectBody selectBody) {
+    public static void processSelectBody(SelectBody selectBody) {
         if (selectBody instanceof PlainSelect) {
             processPlainSelect((PlainSelect) selectBody);
         } else if (selectBody instanceof WithItem) {
@@ -324,7 +301,7 @@ public class CountSqlParser {
      *
      * @param plainSelect
      */
-    public void processPlainSelect(PlainSelect plainSelect) {
+    public static void processPlainSelect(PlainSelect plainSelect) {
         if (!orderByHashParameters(plainSelect.getOrderByElements())) {
             plainSelect.setOrderByElements(null);
         }
@@ -346,7 +323,7 @@ public class CountSqlParser {
      *
      * @param withItemsList
      */
-    public void processWithItemsList(List<WithItem> withItemsList) {
+    public static void processWithItemsList(List<WithItem> withItemsList) {
         if (withItemsList != null && withItemsList.size() > 0) {
             for (WithItem item : withItemsList) {
                 processSelectBody(item.getSelectBody());
@@ -359,7 +336,7 @@ public class CountSqlParser {
      *
      * @param fromItem
      */
-    public void processFromItem(FromItem fromItem) {
+    public static void processFromItem(FromItem fromItem) {
         if (fromItem instanceof SubJoin) {
             SubJoin subJoin = (SubJoin) fromItem;
             if (subJoin.getJoinList() != null && subJoin.getJoinList().size() > 0) {
@@ -397,7 +374,7 @@ public class CountSqlParser {
      * @param orderByElements
      * @return
      */
-    public boolean orderByHashParameters(List<OrderByElement> orderByElements) {
+    public static boolean orderByHashParameters(List<OrderByElement> orderByElements) {
         if (orderByElements == null) {
             return false;
         }
@@ -413,8 +390,8 @@ public class CountSqlParser {
     public static void main(String[] args) {
         String sql = "select id, name from t_bdqe_user order by age desc";
 
-        CountSqlParser parser = new CountSqlParser();
-        final String smartCountSql = parser.getSmartCountSql(sql);
+//        CountSqlParser parser = new CountSqlParser();
+        final String smartCountSql = CountSqlParser.getSmartCountSql(sql);
         System.out.println(smartCountSql);
     }
 }

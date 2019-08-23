@@ -115,8 +115,7 @@ public abstract class PageInterceptor implements Interceptor {
     private void setPageParameter(String sql, Connection connection, MappedStatement mappedStatement,
             BoundSql boundSql, PageCond page) throws SQLException {
         // 记录总记录数
-    	CountSqlParser parser = new CountSqlParser();
-        String countSql = parser.getSmartCountSql(sql);
+        String countSql = CountSqlParser.getSmartCountSql(sql);
         PreparedStatement countStmt = null;
         ResultSet rs = null;
         try {
