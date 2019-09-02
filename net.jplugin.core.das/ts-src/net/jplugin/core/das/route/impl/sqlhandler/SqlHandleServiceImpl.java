@@ -16,11 +16,14 @@ public class SqlHandleServiceImpl implements SqlHandleService {
 	
 	private  synchronized void init() {
 		if (map!=null) return;
-		map = new HashMap<>();
-		map.put("SELECT", new SelectHandler());
-		map.put("UPDATE", new UpdateHandler());
-		map.put("DELETE", new DeleteHandler());
-		map.put("INSERT", new InsertHandler());
+		
+		HashMap<String, AbstractCommandHandler> aMap = new HashMap<>();
+		aMap.put("SELECT", new SelectHandler());
+		aMap.put("UPDATE", new UpdateHandler());
+		aMap.put("DELETE", new DeleteHandler());
+		aMap.put("INSERT", new InsertHandler());
+		
+		map = aMap;
 	}
 	
 	@Override
