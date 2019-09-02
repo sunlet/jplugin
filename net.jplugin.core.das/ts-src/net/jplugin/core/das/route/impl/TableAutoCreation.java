@@ -33,7 +33,7 @@ public class TableAutoCreation {
 		}
 	}
 	
-	private static void tryCreateTable(String dataSource, String tableName, String sql) {
+	private synchronized static void tryCreateTable(String dataSource, String tableName, String sql) {
 		DataSource ds = DataSourceFactory.getDataSource(dataSource);
 		try{
 			Connection conn = ds.getConnection();
