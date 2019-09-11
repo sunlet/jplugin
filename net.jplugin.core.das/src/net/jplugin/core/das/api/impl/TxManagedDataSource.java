@@ -49,6 +49,7 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 		
 		//在ctx中获取不到，则创建一个并放置在ctx中，并设置ReleaseListener确保释放
 		conn = new TxManagedConnAdaptor(inner.getConnection());
+		ConnStaticsKit.INSTANCE.logGetConn();
 		ctx.setAttribute(DBCONN_IN_CTX, conn);
 		ctx.addContextListener(new ThreadLocalContextListener() {
 			@Override
@@ -56,8 +57,10 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 				TxManagedConnAdaptor temp = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 				if (temp != null) {
 					try {
-						if (!temp.isClosed())
+						if (!temp.isClosed()) {
+							ConnStaticsKit.INSTANCE.logCloseConn();//计数
 							temp.connection().close();
+						}
 					} catch (SQLException e) {
 						net.jplugin.core.log.api.Logger logger = ServiceFactory
 								.getService(ILogService.class).getLogger(
@@ -122,7 +125,10 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 				.getContext();
 		TxManagedConnAdaptor conn = (TxManagedConnAdaptor) ctx.getAttribute(DBCONN_IN_CTX);
 		if (conn!=null){
-			try{conn.connection().close();}catch(Exception e){}
+			try{
+				ConnStaticsKit.INSTANCE.logCloseConn();
+				conn.connection().close();
+			}catch(Exception e){}
 			ctx.setAttribute(DBCONN_IN_CTX,null);
 		}
 	}
@@ -141,7 +147,11 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			} finally{
-				try{conn.connection().close();}catch(Exception e){}
+				try {
+					ConnStaticsKit.INSTANCE.logCloseConn();
+					conn.connection().close();
+				} catch (Exception e) {
+				}
 				ctx.setAttribute(DBCONN_IN_CTX,null);
 			}
 		}
@@ -161,7 +171,11 @@ public class TxManagedDataSource implements DataSource, TransactionHandler {
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			} finally{
-				try{conn.connection().close();}catch(Exception e){}
+				try {
+					ConnStaticsKit.INSTANCE.logCloseConn();
+					conn.connection().close();
+				} catch (Exception e) {
+				}
 				ctx.setAttribute(DBCONN_IN_CTX,null);
 			}
 		}
