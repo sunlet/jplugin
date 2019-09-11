@@ -19,6 +19,7 @@ import net.jplugin.core.config.api.RefConfig;
 import net.jplugin.core.ctx.api.RefRuleService;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.ctx.api.TransactionManager;
+import net.jplugin.core.das.api.impl.ConnStaticsKit;
 import net.jplugin.core.das.mybatis.api.RefMybatisService;
 import net.jplugin.core.kernel.PluginApp;
 import net.jplugin.core.kernel.api.PluginAutoDetect;
@@ -43,7 +44,7 @@ import net.luis.main.testrule.Rule1;
 /**
  * 
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-3-8 ÉÏÎç12:39:43
+ * @version ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º2015-3-8 ï¿½ï¿½ï¿½ï¿½12:39:43
  **/
 
 public class Main {
@@ -92,6 +93,7 @@ public class Main {
 //		TestCall.test();
 //		PluginEnvirement.getInstance().startup();
 		PluginEnvirement.getInstance().stop();
+		System.out.println("Connection count:"+ConnStaticsKit.INSTANCE.getConnectionCount());
 		// testlog();
 //		testrule1();
 		// testSpringDas();
@@ -112,7 +114,7 @@ public class Main {
 private void test(){
 	try{
 		ThreadLocalContextManager.instance.createContext();
-		//..ÒµÎñ´úÂë
+		//..Òµï¿½ï¿½ï¿½ï¿½ï¿½
 	}finally{
 		ThreadLocalContextManager.instance.releaseContext();
 	}
