@@ -8,7 +8,9 @@ import net.jplugin.core.das.route.impl.sqlhandler.SqlHandleServiceImpl;
 import net.jplugin.core.das.route.impl.sqlhandler2.SqlHandleServiceImpl2;
 
 public interface SqlHandleService {
-	public static SqlHandleService INSTANCE = new SqlHandleServiceImpl();
+//	public static SqlHandleService INSTANCE = new SqlHandleServiceImpl();
+	public static SqlHandleService INSTANCE = new SqlHandleServiceImpl2();
+
 	public static SqlHandleService INSTANCE4SPAN = new SqlHandleServiceImpl2();
 
 	SqlHandleResult handle(RouterConnection conn, String sql, List<Object> params);
