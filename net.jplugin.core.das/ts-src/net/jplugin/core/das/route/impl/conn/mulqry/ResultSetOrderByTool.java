@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 
 public class ResultSetOrderByTool {
 	enum OrderColumnType{STRING,BIGINTEGER,BIGDECIMAL,SQLDATE,SQLTIME,SQLTIMESTAMP}
@@ -81,7 +81,7 @@ public class ResultSetOrderByTool {
 		while(pos<orderParam.size()){
 			String first = orderParam.get(pos);
 			if (",".equals(first)){
-				throw new TablesplitException(" [,] is not expected here. order params="+ toString(orderParam)+"  "+CombinedSqlContext.get().getFinalSql());
+				throw new TablesplitException(" [,] is not expected here. order params="+ toString(orderParam)+"  "+CombinedSelectContext.get().getFinalSql());
 			}
 			
 			//第一个为colName
@@ -102,14 +102,14 @@ public class ResultSetOrderByTool {
 			if (colIndex!=-1){
 				cm.setColumnIndex(colIndex);
 			}else{
-				throw new TablesplitException("The order by column ["+cm.getColumnName()+"] can't be found in the resultSet."+  CombinedSqlContext.get().getFinalSql());
+				throw new TablesplitException("The order by column ["+cm.getColumnName()+"] can't be found in the resultSet."+  CombinedSelectContext.get().getFinalSql());
 			}
 			//填充type
 			OrderColumnType  colType = getColunType(rsMeta,colIndex);
 			if (colType!=null){
 				cm.setColumnType(colType);
 			}else{
-				throw new TablesplitException("The order by column ["+cm.getColumnName()+"] type not support! "+ CombinedSqlContext.get().getFinalSql());
+				throw new TablesplitException("The order by column ["+cm.getColumnName()+"] type not support! "+ CombinedSelectContext.get().getFinalSql());
 			}
 			
 			columnMetas[metaIndex++]=cm;

@@ -145,7 +145,7 @@ public class RouterStatement extends EmptyStatement {
 	 * @return
 	 * @throws SQLException
 	 */
-	public  Result genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
+	private  Result genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
 		if (sql==null) throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(conn,sql);
 		

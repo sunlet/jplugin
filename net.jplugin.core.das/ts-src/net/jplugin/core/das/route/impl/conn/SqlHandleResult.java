@@ -7,6 +7,12 @@ public class SqlHandleResult {
 //	String message;
 	
 
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("sql:").append(resultSql).append(" targetDataSourceName:").append(targetDataSourceName);
+		return sb.toString();
+	}
 
 //	public boolean isSuccess() {
 //		return success;

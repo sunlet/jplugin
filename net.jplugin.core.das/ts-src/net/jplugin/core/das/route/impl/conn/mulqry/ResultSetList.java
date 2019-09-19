@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.das.route.impl.conn.mulqry.ResultSetOrderByTool.OrderComparor;
 import net.jplugin.core.das.route.impl.util.SelectSqlKit;
@@ -53,13 +53,13 @@ public class ResultSetList extends EmptyQueryableResultSet implements ResultSet{
 	private ResultSetMetaData metadata;
 	
 	
-	ResultSetList(Statement s, List<ResultSet> rsList, CombinedSqlContext combindSqlContext){
+	ResultSetList(Statement s, List<ResultSet> rsList, CombinedSelectContext combindSqlContext){
 		this.stmt = s;
 		this.list.addAll(rsList);
 		prepareFetch(getOrderParam(combindSqlContext));
 	}
 	
-	private List<String> getOrderParam(CombinedSqlContext ctx) {
+	private List<String> getOrderParam(CombinedSelectContext ctx) {
 		net.sf.jsqlparser.statement.Statement jsqlStatement = ctx.getStatement();
 		//获取外层语句的orderby，而不是内层
 //		PlainSelect inner = SelectSqlKit.getMostInnerSelect((Select) jsqlStatement, ctx.getOriginalSql());

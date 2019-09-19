@@ -29,29 +29,33 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedPreparedStatement extends CombinedStatement implements PreparedStatement{
 
 //	ParseResult sqlParseResult;
 	
-	private CombinedSqlContext sqlExeContext;
+//	private CombinedSelectContext sqlExeutionContext;
 
 	public CombinedPreparedStatement(Connection conn, String sql){
 		super(conn);
 		//解析
 //		sqlParseResult = CombinedSqlParser.parseAndMakeContext(sql);
-		sqlExeContext = CombinedSqlParser.parseAndMakeContext(sql);
+//		ParseResult sqlParseResult = CombinedSqlParser.parse(sql);
+//		selectContext = CombinedSelectContext.makeContext(sqlParseResult);
+		super.parseAndComputeTypeAndMakeSelectContext(sql);
+		
 		//产生statement 列表
 		fillStatementList();
 	}
 	
 	private void fillStatementList(){
 		try{
-			DataSourceInfo[] dataSourceInfos = this.sqlExeContext.getDataSourceInfos();
-			String sqlToExecute = this.sqlExeContext.getFinalSql();
-			String sourceTableToReplace = this.sqlExeContext.getOriginalTableName();//后面会修改
+			DataSourceInfo[] dataSourceInfos = this.selectContext.getDataSourceInfos();
+			String sqlToExecute = this.selectContext.getFinalSql();
+			String sourceTableToReplace = this.selectContext.getOriginalTableName();//后面会修改
 			
 			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
@@ -68,7 +72,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 				}catch(Exception e1){}
 			}
 			statementList.clear();
-			throw new TablesplitException(e.getMessage() + "  "+ CombinedSqlContext.get().getFinalSql(),e);
+			throw new TablesplitException(e.getMessage() + "  "+ CombinedSelectContext.get().getFinalSql(),e);
 		}
 	}
 
@@ -99,7 +103,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 //			makeWrapperForDebug(tempList);
 			//制造结果
 //			ResultSetList ret = new ResultSetList(this,tempList,pr.getMeta().getOrderParam());
-			ResultSetList ret = new ResultSetList(this,tempList,this.sqlExeContext);
+			ResultSetList ret = new ResultSetList(this,tempList,this.selectContext);
 			return ret;
 		}catch(Exception e){
 			//发生异常的情况下，statement 会在本statement关闭的时候关闭，但是resultSet不会，需要处理一下
@@ -109,7 +113,7 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 				}catch(Exception e1){}
 			}
 			if (e instanceof RuntimeException) throw (RuntimeException)e;
-			else throw new TablesplitException(e.getMessage() + "  "+ CombinedSqlContext.get().getFinalSql(),e);
+			else throw new TablesplitException(e.getMessage() + "  "+ CombinedSelectContext.get().getFinalSql(),e);
 		}
 	}
 	private void makeWrapperForDebug(List<ResultSet> list) {

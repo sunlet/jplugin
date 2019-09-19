@@ -3,7 +3,7 @@ package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 import java.sql.ResultSet;
 import java.util.List;
 
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
@@ -21,7 +21,7 @@ public class CountStarWrapperController implements WrapperController{
 
 	@Override
 	public boolean needWrap() {
-		CombinedSqlContext ctx = CombinedSqlContext.get();
+		CombinedSelectContext ctx = CombinedSelectContext.get();
 		Object flag = ctx.getAttribute(COUNT_STAR);
 		return (flag!=null && (boolean)flag);
 	}
@@ -32,7 +32,7 @@ public class CountStarWrapperController implements WrapperController{
 	}
 
 	@Override
-	public void handleContextInitial(CombinedSqlContext ctx) {
+	public void handleContextInitial(CombinedSelectContext ctx) {
 		ctx.setAttribute(COUNT_STAR, isCountStar(ctx.getStatement()));
 	}
 

@@ -7,59 +7,100 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.conn.EmptyStatement;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedStatement extends EmptyStatement{
-	List<Statement> statementList = new ArrayList();
-	ResultSet theResultSet;
+	public enum CommandType{SELECT,UPDATE,INSERT,DELETE}
+	
+	protected List<Statement> statementList = new ArrayList();
+	protected ResultSet theResultSet;
+	protected CommandType commandType;
+	protected ParseResult sqlParseResult;
+	protected CombinedSelectContext selectContext;//只有select语句有这个Context
+	
 	private boolean closed;
 	private Connection conn;
-	private CombinedSqlContext sqlExeutionContext;
+	
 	
 	public CombinedStatement(Connection c){
 		this.conn = c;
 	}
 	@Override
 	public final boolean execute(String sql) throws SQLException {
-		if (!sql.trim().startsWith("SELECT "))
-			throw new TablesplitException("span table sql only support SELECT ...");
-		this.executeQuery(sql);
-		return true;
+		this.parseAndComputeTypeAndMakeSelectContext(sql);
+		if (CommandType.SELECT.equals(this.commandType)){
+			this.executeQueryInner(sql);
+			return true;
+		}else{
+			int cnt = this.executeUpateInner(sql);
+			System.out.println("这里的true和false需要商榷！！！！！");
+			return true;
+		}
 	}
 
 	@Override
 	public final ResultSet executeQuery(String sql) throws SQLException {
-		if (this.closed) throw new TablesplitException("can't call in a closed statement");
-		this.sqlExeutionContext = CombinedSqlParser.parseAndMakeContext(sql);
+		this.parseAndComputeTypeAndMakeSelectContext(sql);
+		AssertKit.assertEqual(this.commandType, CommandType.SELECT);
+		return this.executeQueryInner(sql);
+	}
+	
+	protected void parseAndComputeTypeAndMakeSelectContext(String sql){
+		//PARSE
+		sqlParseResult = CombinedSqlParser.parse(sql);
+		//GET TYPE
+		commandType = computeCommandType(sqlParseResult.getSql());
 		
+		//MAKE CONTEXT
+		if (CommandType.SELECT.equals(this.commandType))
+			this.selectContext = CombinedSelectContext.makeContext(sqlParseResult);	
+	}
+
+	private CommandType computeCommandType(String sql) {
+		CommandType ct;
+		String temp = sql.trim().substring(0,6).toUpperCase();
+		if (temp.startsWith("SELECT")){
+			ct =  CommandType.SELECT;
+		}else if (temp.startsWith("UPDATE")){
+			ct =  CommandType.UPDATE;
+		}else if (temp.startsWith("DELETE")){
+			ct =  CommandType.DELETE;
+		}else if (temp.startsWith("INSERT")){
+			ct =  CommandType.INSERT;
+		}else 
+			throw new TablesplitException("not supported command type:"+sql);
+		return ct;
+	}
+	private int executeUpateInner(String sql) {
+		throw new RuntimeException("not imp");
+	}
+	
+	private final ResultSet executeQueryInner(String sql) throws SQLException {
+		if (this.closed)
+			throw new TablesplitException("can't call in a closed statement");
+
 		//获取resultList
 		ResultSetList resutSet = genResultSetList();
 		
 		//根据count(*)模式返回不同的值
 		this.theResultSet =  WrapperManager.INSTANCE.wrap(resutSet);
 		return this.theResultSet;
-//		
-//		if (pr.getMeta().getCountStar()==1){
-//			this.theResultSet = new CountStarWrapper(resutSet);
-//			return this.theResultSet;
-//		}else{
-//			this.theResultSet = resutSet;
-//			return theResultSet;
-//		}
 	}
 	
 	private ResultSetList genResultSetList() throws SQLException {
 		List<ResultSet> tempList = new ArrayList<ResultSet>();
 		try{
-			DataSourceInfo[] dataSourceInfos = this.sqlExeutionContext.getDataSourceInfos();
-			String sqlToExecute = this.sqlExeutionContext.getFinalSql();
-			String sourceTableToReplace = this.sqlExeutionContext.getOriginalTableName();//后面会修改
+			DataSourceInfo[] dataSourceInfos = this.selectContext.getDataSourceInfos();
+			String sqlToExecute = this.selectContext.getFinalSql();
+			String sourceTableToReplace = this.selectContext.getOriginalTableName();//后面会修改
 			
 			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
@@ -70,7 +111,7 @@ public class CombinedStatement extends EmptyStatement{
 					tempList.add(resultSet);
 				}
 			}
-			ResultSetList ret = new ResultSetList(this,tempList,this.sqlExeutionContext);
+			ResultSetList ret = new ResultSetList(this,tempList,this.selectContext);
 			return ret;
 		}catch(Exception e){
 			//发生异常的情况下，statement 会在本statement关闭的时候关闭，但是resultSet不会，需要处理一下
@@ -80,7 +121,7 @@ public class CombinedStatement extends EmptyStatement{
 				}catch(Exception e1){}
 			}
 			if (e instanceof RuntimeException) throw (RuntimeException)e;
-			else throw new TablesplitException(e.getMessage()+" sql="+ CombinedSqlContext.get().getFinalSql(),e);
+			else throw new TablesplitException(e.getMessage()+" sql="+ CombinedSelectContext.get().getFinalSql(),e);
 		}
 	}
 

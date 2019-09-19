@@ -29,7 +29,7 @@ import net.jplugin.common.kits.Comparor;
 import net.jplugin.common.kits.SortUtil;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.RefConfig;
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.GroupByMemoryOrderByWrapper.RowComparor;
 import net.jplugin.core.das.route.impl.util.BaseResultSetRow;
 import net.sf.jsqlparser.expression.Expression;
@@ -66,14 +66,14 @@ public class GroupByMemoryOrderByWrapper extends BaseResultSetRow{
 		for (OrderByElement obe:list){
 			Expression exp = obe.getExpression();
 			if (!(exp instanceof Column)){
-				throw new SQLException("the order by must be a column. "+exp.toString() +" sql="+CombinedSqlContext.get().getOriginalSql());
+				throw new SQLException("the order by must be a column. "+exp.toString() +" sql="+CombinedSelectContext.get().getOriginalSql());
 			}
 			OrderByInfo o = new OrderByInfo();
 			o.fieldName = ((Column)exp).getColumnName();
 			o.isDesc = !obe.isAsc();
 			int idx = super.getMeta().getColumnIndex(o.fieldName);
 			if (idx<=0){
-				throw new SQLException("Can't find the order by column in sql. "+o.fieldName+"  sql="+CombinedSqlContext.get().getOriginalSql());
+				throw new SQLException("Can't find the order by column in sql. "+o.fieldName+"  sql="+CombinedSelectContext.get().getOriginalSql());
 			}
 			o.columnIndex = idx;
 			temp.add(o);
@@ -101,7 +101,7 @@ public class GroupByMemoryOrderByWrapper extends BaseResultSetRow{
 				while(inner.next()){
 					rowCnt++;
 					if (rowCnt>getRowLimit())
-						throw new RuntimeException("platform.route-sql-memory-order-limit overflow."+CombinedSqlContext.get().getFinalSql());
+						throw new RuntimeException("platform.route-sql-memory-order-limit overflow."+CombinedSelectContext.get().getFinalSql());
 					
 					List<Object> row = inner.getBaseResultSetRowData();
 					List<Object> temp = new ArrayList(row.size());
@@ -116,7 +116,7 @@ public class GroupByMemoryOrderByWrapper extends BaseResultSetRow{
 			//排序一下
 			SortUtil.sort(dataGrid,this.rowComparor );
 		} catch (SQLException e) {
-			throw new RuntimeException(CombinedSqlContext.get().getFinalSql(),e);
+			throw new RuntimeException(CombinedSelectContext.get().getFinalSql(),e);
 		}
 	}
 	

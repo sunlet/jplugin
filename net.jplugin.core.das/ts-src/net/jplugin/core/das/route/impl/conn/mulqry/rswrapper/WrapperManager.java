@@ -3,7 +3,7 @@ package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 public class WrapperManager {
@@ -13,7 +13,7 @@ public class WrapperManager {
 		this.controllers = PluginEnvirement.getInstance().getExtensionObjects(net.jplugin.core.das.route.Plugin.EP_MULQRY_RS_WRAPCTRL, WrapperController.class);
 	}
 	
-	public void handleContextInitial(CombinedSqlContext ctx){
+	public void handleContextInitial(CombinedSelectContext ctx){
 		for (WrapperController c:controllers){
 			c.handleContextInitial(ctx);
 		}
