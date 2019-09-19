@@ -54,7 +54,8 @@ public class SelectHandler2 extends AbstractCommandHandler2 {
 	
 	@Override
 	protected void temporyChangeTableNameTo(String nm) {
-		((Table)this.innerSelect.getFromItem()).setName(nm);
+//		((Table)this.innerSelect.getFromItem()).setName(nm);
+		TableNameReplacerKit.handleSelect(this.innerSelect, nm);
 	}
 	
 //	@Override
