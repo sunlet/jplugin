@@ -10,6 +10,9 @@ import test.net.jplugin.core.das.route.dynamicds.DynamicDsTest;
 import test.net.jplugin.core.das.route.dynamicds.DynamicDsTestProvider;
 import test.net.jplugin.core.das.route.groupby.DBGroupByTest;
 import test.net.jplugin.core.das.route.groupby.DbGroupByDDL;
+import test.net.jplugin.core.das.route.kit.NameReplaceKitTest;
+import test.net.jplugin.core.das.route.span_dml.SpanInsertTest;
+import test.net.jplugin.core.das.route.span_dml.SpanUpdateDeleteTest;
 import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
 import test.net.jplugin.core.das.route.stringint.DeleteTest;
 import test.net.jplugin.core.das.route.stringint.InsertSelectTest;
@@ -37,11 +40,19 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
+		
+		DbCreateStringInt.create();
+		new SpanUpdateDeleteTest().test();
+		
+		DbCreateStringInt.create();
+		new SpanInsertTest().test();
+		
 		DbGroupByDDL.create();
 		new DBGroupByTest().test();
 		
 		DbCreateStringInt.create();
 		new InsertSelectTest().test();
+
 		DbCreateStringInt.create();
 		new UpdateTest().test();
 		DbCreateStringInt.create();
@@ -52,6 +63,7 @@ public class Plugin extends AbstractPluginForTest {
 		new VisitorExpressionManagerTest().test();
 		new InSectUtilTest().test();
 		new DynamicDsTest().test();
+		new NameReplaceKitTest().test();
 	}
 
 	@Override
