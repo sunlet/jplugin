@@ -24,10 +24,12 @@ public class CombinedStatement extends EmptyStatement{
 	protected ResultSet theResultSet;
 	protected CommandType commandType;
 	protected ParseResult sqlParseResult;
+	protected int updateCount = -1;
 	protected CombinedSelectContext selectContext;//只有select语句有这个Context
 	
 	private boolean closed;
 	private Connection conn;
+
 	
 	
 	public CombinedStatement(Connection c){
@@ -40,9 +42,8 @@ public class CombinedStatement extends EmptyStatement{
 			this.executeQueryInner(sql);
 			return true;
 		}else{
-			int cnt = this.executeUpateInner(sql);
-			System.out.println("这里的true和false需要商榷！！！！！");
-			return true;
+			this.executeUpdateInner(sql);
+			return false;
 		}
 	}
 
@@ -51,6 +52,12 @@ public class CombinedStatement extends EmptyStatement{
 		this.parseAndComputeTypeAndMakeSelectContext(sql);
 		AssertKit.assertEqual(this.commandType, CommandType.SELECT);
 		return this.executeQueryInner(sql);
+	}
+	@Override
+	public int executeUpdate(String sql) throws SQLException {
+		this.parseAndComputeTypeAndMakeSelectContext(sql);
+		AssertKit.assertTrue(! (this.commandType==CommandType.SELECT));
+		return this.executeUpdateInner(sql);
 	}
 	
 	protected void parseAndComputeTypeAndMakeSelectContext(String sql){
@@ -79,9 +86,7 @@ public class CombinedStatement extends EmptyStatement{
 			throw new TablesplitException("not supported command type:"+sql);
 		return ct;
 	}
-	private int executeUpateInner(String sql) {
-		throw new RuntimeException("not imp");
-	}
+
 	
 	private final ResultSet executeQueryInner(String sql) throws SQLException {
 		if (this.closed)
@@ -93,6 +98,41 @@ public class CombinedStatement extends EmptyStatement{
 		//根据count(*)模式返回不同的值
 		this.theResultSet =  WrapperManager.INSTANCE.wrap(resutSet);
 		return this.theResultSet;
+	}
+	private int executeUpdateInner(String sql) {
+		if (this.closed)
+			throw new TablesplitException("can't call in a closed statement");
+		
+		//获取resultList
+		List<Integer> updateResultList = genUpdateResultList();
+		int sum=0;
+		for (Integer item:updateResultList){
+			sum+=item;
+		}
+		this.updateCount = sum;
+		return sum;
+	}
+	
+	private List<Integer> genUpdateResultList() {
+		List<Integer> tempList = new ArrayList<Integer>();
+		try{
+			DataSourceInfo[] dataSourceInfos = this.sqlParseResult.getMeta().getDataSourceInfos();
+			String sqlToExecute = this.sqlParseResult.getSql();
+			String sourceTableToReplace = this.sqlParseResult.getMeta().getSourceTb();//后面会修改
+			
+			for (DataSourceInfo dsi:dataSourceInfos){
+				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
+				for (String destTbName:dsi.getDestTbs()){
+					Statement stmt = conn.createStatement();
+					statementList.add(stmt);
+					Integer updateResult = stmt.executeUpdate(StringKit.repaceFirst(sqlToExecute, sourceTableToReplace, destTbName));
+					tempList.add(updateResult);
+				}
+			}
+			return tempList;
+		}catch(Exception e){
+			throw new TablesplitException(e.getMessage()+" sql="+ this.sqlParseResult.getSql(),e);
+		}
 	}
 	
 	private ResultSetList genResultSetList() throws SQLException {
@@ -125,10 +165,8 @@ public class CombinedStatement extends EmptyStatement{
 		}
 	}
 
-	@Override
-	public int executeUpdate(String sql) throws SQLException {
-		throw new RuntimeException("not support");
-	}
+
+
 
 	@Override
 	public void close() throws SQLException {
@@ -157,7 +195,7 @@ public class CombinedStatement extends EmptyStatement{
 
 	@Override
 	public int getUpdateCount() throws SQLException {
-		return -1;
+		return this.updateCount;
 	}
 
 	@Override

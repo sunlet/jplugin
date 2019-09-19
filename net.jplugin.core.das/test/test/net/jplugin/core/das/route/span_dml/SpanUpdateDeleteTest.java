@@ -33,8 +33,38 @@ public class SpanUpdateDeleteTest {
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_2"));
 		
 		//测试UPDATE
-//		int num = SQLTemplate.executeUpdateSql(conn, "update /*spantable*/ tb_route0 set f2=2", null);
-//		AssertKit.assertEqual(6, num);
+		int num = SQLTemplate.executeUpdateSql(conn, "update /*spantable*/ tb_route0 set f2=2 where f1='a' or f1='b'", null);
+		AssertKit.assertEqual(2, num);
+		
+		num = SQLTemplate.executeDeleteSql(conn, "delete /*spantable*/ from tb_route0 where f2=2", null);
+		AssertKit.assertEqual(2, num);
+		
+		AssertKit.assertException(()->SQLTemplate.executeDeleteSql(conn, "delete  from tb_route0", null));
+		
+		num = SQLTemplate.executeDeleteSql(conn, "delete /*spantable*/ from tb_route0", null);
+		AssertKit.assertEqual(4, num);
+		
+		AssertKit.assertEqual(0,getCount(conn, "select /*spantable*/ count(*) from tb_route0"));
+		
+		//重新插入，测试Preparedstatement
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"b",1,null} );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"c",1,"a"} );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('d',1,'d')",null );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('e',?,'e')",new Object[]{1} );
+		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('f',?,'f')",new Object[]{1});
+
+		
+		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_1"));
+		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_2"));
+		
+		//测试UPDATE
+		num = SQLTemplate.executeUpdateSql(conn, "update /*spantable*/ tb_route0 set f2=2 where f1=? or f1='b'", new Object[]{"a"});
+		AssertKit.assertEqual(2, num);
+		
+		num = SQLTemplate.executeDeleteSql(conn, "delete /*spantable*/ from tb_route0 where f2=?", new Object[]{1});
+		AssertKit.assertEqual(4, num);
+
 	}
 
 	private void print(List<Map<String, String>> list) {

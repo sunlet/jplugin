@@ -30,7 +30,6 @@ import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.CombinedSelectContext;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
 
 public class CombinedPreparedStatement extends CombinedStatement implements PreparedStatement{
@@ -48,10 +47,38 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 		super.parseAndComputeTypeAndMakeSelectContext(sql);
 		
 		//产生statement 列表
-		fillStatementList();
+		if (this.commandType == CommandType.SELECT)
+			fillSelectStatementList();
+		else
+			fillDMLStatemetnList();
 	}
 	
-	private void fillStatementList(){
+	private void fillDMLStatemetnList() {
+		try{
+			DataSourceInfo[] dataSourceInfos = this.sqlParseResult.getMeta().getDataSourceInfos();
+			String sqlToExecute = this.sqlParseResult.getSql();
+			String sourceTableToReplace = this.sqlParseResult.getMeta().getSourceTb();//后面会修改
+			
+			for (DataSourceInfo dsi:dataSourceInfos){
+				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
+				//每一个表都获取一个Statement，并不重用
+				for (String destTbName:dsi.getDestTbs()){
+					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(sqlToExecute,sourceTableToReplace, destTbName));
+					statementList.add(stmt);
+				}
+			}
+		}catch(Exception e){
+			for (Statement s:statementList){
+				try{
+					s.close();
+				}catch(Exception e1){}
+			}
+			statementList.clear();
+			throw new TablesplitException(e.getMessage() + "  "+ CombinedSelectContext.get().getFinalSql(),e);
+		}
+	}
+
+	private void fillSelectStatementList(){
 		try{
 			DataSourceInfo[] dataSourceInfos = this.selectContext.getDataSourceInfos();
 			String sqlToExecute = this.selectContext.getFinalSql();
@@ -83,14 +110,6 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 		//根据count(*)模式返回不同的值
 		this.theResultSet =  WrapperManager.INSTANCE.wrap(temp);
 		return this.theResultSet;
-		
-//		if (sqlParseResult.getMeta().getCountStar()==1){
-//			this.theResultSet = new CountStarWrapper(temp);
-//			return this.theResultSet;
-//		}else{
-//			this.theResultSet = temp;
-//			return theResultSet;
-//		}
 	}
 
 	private ResultSetList genResultSetListFromStatementList() {
@@ -116,6 +135,20 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 			else throw new TablesplitException(e.getMessage() + "  "+ CombinedSelectContext.get().getFinalSql(),e);
 		}
 	}
+	
+	private List<Integer> genUpdateResultListFromStatementList() {
+		List<Integer> tempList = new ArrayList<Integer>();
+		try{
+			//逐个执行查询
+			for (Statement st:this.statementList){
+				tempList.add(((PreparedStatement)st).executeUpdate());
+			}
+			return tempList;
+		}catch(Exception e){
+			throw new TablesplitException(e.getMessage() + "  "+ this.sqlParseResult.getSql(),e);
+		}
+	}
+	
 	private void makeWrapperForDebug(List<ResultSet> list) {
 		List<ResultSet> tempList= new ArrayList(list.size());
 		tempList.addAll(list);
@@ -136,14 +169,35 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 
 	@Override
 	public int executeUpdate() throws SQLException {
-		throw new TablesplitException("not support");
+		return executeUpdateInner();
 	}
 	
 	@Override
 	public boolean execute() throws SQLException {
-		this.executeQuery();
-		return true;
+		if (this.commandType == CommandType.SELECT){
+			this.executeQuery();
+			return true;
+		}else{
+			this.executeUpdateInner();
+			return false;
+		}
 	}
+
+	private int executeUpdateInner() throws SQLException {
+		if (this.isClosed())
+			throw new TablesplitException("can't call in a closed statement");
+		
+		List<Integer> updateResultList = genUpdateResultListFromStatementList();
+		int sum=0;
+		for (Integer item:updateResultList){
+			sum+=item;
+		}
+		
+		this.updateCount = sum;
+		return sum;
+	}
+
+
 
 	@Override
 	public void addBatch() throws SQLException {
