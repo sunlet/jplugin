@@ -78,5 +78,4 @@ public class SchemaCheckUtil {
 	        schemaNames.add(name.toUpperCase());
 	    }
 	}
-
 }
