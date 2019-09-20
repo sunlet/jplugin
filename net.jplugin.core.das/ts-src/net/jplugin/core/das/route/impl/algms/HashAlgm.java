@@ -10,6 +10,7 @@ import java.util.Set;
 
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
+import net.jplugin.core.das.route.api.ITsAutoCreation;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
@@ -17,7 +18,7 @@ import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.TablesplitException;
 
-public class HashAlgm  implements ITsAlgorithm{
+public class HashAlgm  implements ITsAlgorithm,ITsAutoCreation{
 
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
@@ -114,6 +115,11 @@ public class HashAlgm  implements ITsAlgorithm{
 			a[i] =tableBaseName + "_"+(from+i+1);
 		}
 		return a;
+	}
+
+	@Override
+	public boolean needCreate(TableConfig tbCfg,String dataSourceName, String tableName) {
+		return true;
 	}
 
 }

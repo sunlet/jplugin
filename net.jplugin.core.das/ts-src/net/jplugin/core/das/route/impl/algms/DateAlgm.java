@@ -6,12 +6,14 @@ import java.time.temporal.ChronoUnit;
 import net.jplugin.common.kits.CalenderKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
+import net.jplugin.core.das.route.api.ITsAutoCreation;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
+import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.TablesplitException;
 
-public class DateAlgm  implements ITsAlgorithm{
+public class DateAlgm  implements ITsAlgorithm,ITsAutoCreation{
 
 	private int trackDays = 14;
 
@@ -46,6 +48,11 @@ public class DateAlgm  implements ITsAlgorithm{
 	public DataSourceInfo[] getMultiResults(RouterDataSource dataSource, String tableName, ValueType valueType,RouterKeyFilter kva) {
 //		LocalDateMaintain timeMaintainer = (ld,units)->ld.minusDays(units);
 		return TimeBasedSpanUtil.getResults(this,dataSource,tableName,valueType,kva,ChronoUnit.DAYS,this.trackDays);
+	}
+
+	@Override
+	public boolean needCreate(TableConfig tbCfg,String dataSourceName, String tableName) {
+		return TimeAutoCreationCheckKit.check(tbCfg,"20"+tableName.substring(tableName.length()-6)+"120000",30,60);
 	}
 
 }

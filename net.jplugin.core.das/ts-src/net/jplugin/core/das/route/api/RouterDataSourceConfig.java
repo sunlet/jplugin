@@ -1,7 +1,8 @@
 package net.jplugin.core.das.route.api;
 
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
@@ -45,6 +46,11 @@ public class RouterDataSourceConfig {
 	private static final String TABLE_SPLITS = "splits";
 	private static final String TABLE_KEY = "key";
 	private static final String CREATION_SQL = "creation-sql";
+	private static final String CREATION_BEFORE_DAYS= "creation-before-days";
+	private static final String CREATION_AFTER_DAYS = "creation-after-days";
+	
+	private static final String PROP_ALLOWED_SCHEMAS =  "allowed-schemas";
+	private static final String PROP_IS_ALLOW_NO_SCHEMA =  "is-allow-no-schema";
 	
 	public static class DataSourceConfig{
 		String dataSourceName;
@@ -63,6 +69,8 @@ public class RouterDataSourceConfig {
 		int splits;
 		String keyField;
 		String creationSql;
+		int creationBeforeDays;//只对时间相关算法有效
+		int creationAfterDays;//只对时间相关算法有效
 		public String getTableName() {
 			return tableName;
 		}
@@ -78,12 +86,17 @@ public class RouterDataSourceConfig {
 		public String getCreationSql() {
 			return creationSql;
 		}
-		
-		
+		public int getCreationBeforeDays() {
+			return creationBeforeDays;
+		}
+		public int getCreationAfterDays() {
+			return creationAfterDays;
+		}
 	}
 	private DataSourceConfig[] dataSourceCfgs;
 	private TableConfig[] tableConfigs;
-	
+	private Set<String> allowedSchemas;//默认是空Set
+	private boolean isAllowNoSchema; //默认是true
 	
 	
 	public DataSourceConfig[] getDataSourceConfig() {
@@ -92,6 +105,14 @@ public class RouterDataSourceConfig {
 
 	public TableConfig[] getTableConfig() {
 		return tableConfigs;
+	}
+	
+	public Set<String> getAllowedSchemas() {
+		return allowedSchemas;
+	}
+	
+	public boolean getIsAllowNoSchema(){
+		return isAllowNoSchema;
 	}
 	
 	public TableConfig findTableConfig(String tableBaseName) {
@@ -130,6 +151,20 @@ public class RouterDataSourceConfig {
 			throw new RuntimeException(PROP_TABLE_NUM +" not configed");
 		int tableNum = Integer.parseInt(temp);
 		
+		//允许的Schema
+		temp = (String) prop.get(PROP_ALLOWED_SCHEMAS);
+		this.allowedSchemas = new HashSet();
+		if (temp!=null) {
+			temp = temp.trim().toUpperCase();
+			String[] schemaNames = StringKit.splitStr(temp, ",");
+			for (String as : schemaNames)
+				this.allowedSchemas.add(as);
+		}
+		//是否允许无schema,默认 true
+		temp = (String) prop.get(PROP_IS_ALLOW_NO_SCHEMA);
+		this.isAllowNoSchema = !("no".equalsIgnoreCase(temp));
+		
+		
 		
 		tableConfigs =  new TableConfig[tableNum];
 		for (int i=0;i<tableNum;i++){
@@ -138,6 +173,8 @@ public class RouterDataSourceConfig {
 			String splits = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_SPLITS));
 			String keyField = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_KEY));
 			String creationSql =  trim(prop.get(TABLE_PREFIX+i+"-"+CREATION_SQL));
+			String creationBeforeDays = trim(prop.getOrDefault(TABLE_PREFIX+i+"-"+CREATION_BEFORE_DAYS,"-1"));
+			String creationAfterDays = trim(prop.getOrDefault(TABLE_PREFIX+i+"-"+CREATION_AFTER_DAYS,"-1"));
 			
 			if (StringKit.isNull(tableName))
 				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_NAME+"  not found.");
@@ -155,6 +192,8 @@ public class RouterDataSourceConfig {
 			tc.splits = Integer.parseInt(splits);
 			tc.keyField = keyField;
 			tc.creationSql = creationSql;
+			tc.creationBeforeDays = Integer.parseInt(creationBeforeDays);
+			tc.creationAfterDays = Integer.parseInt(creationAfterDays);
 			tableConfigs[i] = tc;
 		}
 		

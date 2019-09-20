@@ -28,6 +28,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 
 public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
+	public static final String __THE_TB_SPS_HDR__ = "__THE_TB_SPS_HDR__";
 	protected net.sf.jsqlparser.statement.Statement statement =null;
 	protected String sqlString;
 	protected RouterConnection connetion;
@@ -111,6 +112,9 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
     	}else{
     		throw new RuntimeException("not supported sql for route:"+sql);
     	}
+    	
+    	//验证schema合法性，并去除schema前缀
+    	SchemaCheckUtil.checkAndRemoveSchema(conn,stmt,sql);
     
     	instance.statement = stmt;
     	instance.connetion = conn;
@@ -195,8 +199,8 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 //			RouterConnectionCallContext.setStatement(this.statement);
 //			maintainSqlMeta(meta);//维护OrderBy，count 
 //			RouterConnectionCallContext.setMeta(meta);
-			
-			String newSql = CombinedSqlParser.combine(sqlString, meta);
+			String targetSql = getFinalSql(__THE_TB_SPS_HDR__);
+			String newSql = CombinedSqlParser.combine(targetSql, meta);
 			result.setResultSql(newSql);
 			result.setTargetDataSourceName(CombinedSqlParser.SPANALL_DATASOURCE);
 			return result;

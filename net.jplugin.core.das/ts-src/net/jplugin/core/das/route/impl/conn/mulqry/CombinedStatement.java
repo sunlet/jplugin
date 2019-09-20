@@ -16,6 +16,7 @@ import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.conn.EmptyStatement;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
+import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2;
 
 public class CombinedStatement extends EmptyStatement{
 	public enum CommandType{SELECT,UPDATE,INSERT,DELETE}
@@ -118,14 +119,14 @@ public class CombinedStatement extends EmptyStatement{
 		try{
 			DataSourceInfo[] dataSourceInfos = this.sqlParseResult.getMeta().getDataSourceInfos();
 			String sqlToExecute = this.sqlParseResult.getSql();
-			String sourceTableToReplace = this.sqlParseResult.getMeta().getSourceTb();//后面会修改
+//			String sourceTableToReplace = this.sqlParseResult.getMeta().getSourceTb();//后面会修改
 			
 			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				for (String destTbName:dsi.getDestTbs()){
 					Statement stmt = conn.createStatement();
 					statementList.add(stmt);
-					Integer updateResult = stmt.executeUpdate(StringKit.repaceFirst(sqlToExecute, sourceTableToReplace, destTbName));
+					Integer updateResult = stmt.executeUpdate(StringKit.replaceStr(sqlToExecute, AbstractCommandHandler2.__THE_TB_SPS_HDR__, destTbName));
 					tempList.add(updateResult);
 				}
 			}
@@ -140,14 +141,14 @@ public class CombinedStatement extends EmptyStatement{
 		try{
 			DataSourceInfo[] dataSourceInfos = this.selectContext.getDataSourceInfos();
 			String sqlToExecute = this.selectContext.getFinalSql();
-			String sourceTableToReplace = this.selectContext.getOriginalTableName();//后面会修改
+//			String sourceTableToReplace = this.selectContext.getOriginalTableName();//后面会修改
 			
 			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				for (String destTbName:dsi.getDestTbs()){
 					Statement stmt = conn.createStatement();
 					statementList.add(stmt);
-					ResultSet resultSet = stmt.executeQuery(StringKit.repaceFirst(sqlToExecute, sourceTableToReplace, destTbName));
+					ResultSet resultSet = stmt.executeQuery(StringKit.replaceStr(sqlToExecute, AbstractCommandHandler2.__THE_TB_SPS_HDR__, destTbName));
 					tempList.add(resultSet);
 				}
 			}

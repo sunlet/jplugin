@@ -31,6 +31,7 @@ import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
+import net.jplugin.core.das.route.impl.sqlhandler2.AbstractCommandHandler2;
 
 public class CombinedPreparedStatement extends CombinedStatement implements PreparedStatement{
 
@@ -57,13 +58,13 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 		try{
 			DataSourceInfo[] dataSourceInfos = this.sqlParseResult.getMeta().getDataSourceInfos();
 			String sqlToExecute = this.sqlParseResult.getSql();
-			String sourceTableToReplace = this.sqlParseResult.getMeta().getSourceTb();//后面会修改
+//			String sourceTableToReplace = this.sqlParseResult.getMeta().getSourceTb();//后面会修改
 			
 			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				//每一个表都获取一个Statement，并不重用
 				for (String destTbName:dsi.getDestTbs()){
-					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(sqlToExecute,sourceTableToReplace, destTbName));
+					Statement stmt = conn.prepareStatement(StringKit.replaceStr(sqlToExecute,AbstractCommandHandler2.__THE_TB_SPS_HDR__, destTbName));
 					statementList.add(stmt);
 				}
 			}
@@ -82,13 +83,13 @@ public class CombinedPreparedStatement extends CombinedStatement implements Prep
 		try{
 			DataSourceInfo[] dataSourceInfos = this.selectContext.getDataSourceInfos();
 			String sqlToExecute = this.selectContext.getFinalSql();
-			String sourceTableToReplace = this.selectContext.getOriginalTableName();//后面会修改
+//			String sourceTableToReplace = this.selectContext.getOriginalTableName();//后面会修改
 			
 			for (DataSourceInfo dsi:dataSourceInfos){
 				Connection conn = DataSourceFactory.getDataSource(dsi.getDsName()).getConnection();
 				//每一个表都获取一个Statement，并不重用
 				for (String destTbName:dsi.getDestTbs()){
-					Statement stmt = conn.prepareStatement(StringKit.repaceFirst(sqlToExecute,sourceTableToReplace, destTbName));
+					Statement stmt = conn.prepareStatement(StringKit.replaceStr(sqlToExecute,AbstractCommandHandler2.__THE_TB_SPS_HDR__, destTbName));
 					statementList.add(stmt);
 				}
 			}
