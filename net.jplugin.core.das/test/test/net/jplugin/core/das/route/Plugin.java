@@ -7,10 +7,10 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 import test.net.jplugin.core.das.route.date.DateTest;
 import test.net.jplugin.core.das.route.date.DbCreateDate;
 import test.net.jplugin.core.das.route.dynamicds.DynamicDsTest;
-import test.net.jplugin.core.das.route.dynamicds.DynamicDsTestProvider;
 import test.net.jplugin.core.das.route.groupby.DBGroupByTest;
 import test.net.jplugin.core.das.route.groupby.DbGroupByDDL;
 import test.net.jplugin.core.das.route.kit.NameReplaceKitTest;
+import test.net.jplugin.core.das.route.span_dml.MultiExecuteTest;
 import test.net.jplugin.core.das.route.span_dml.SpanInsertTest;
 import test.net.jplugin.core.das.route.span_dml.SpanUpdateDeleteTest;
 import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
@@ -40,6 +40,8 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
+		DbCreateStringInt.create();
+		new MultiExecuteTest().test();
 		
 		DbCreateStringInt.create();
 		new SpanUpdateDeleteTest().test();
