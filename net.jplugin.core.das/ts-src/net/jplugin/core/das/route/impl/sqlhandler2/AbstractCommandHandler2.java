@@ -192,6 +192,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			result.setTargetDataSourceName(algmResults[0].getDsName());
 			String finalSql = getFinalSql(algmResults[0].getDestTbs()[0]);
 			result.setResultSql(finalSql);
+			result.setTargetTable(tableName);
 			return result;
 		}else{
 			
@@ -217,6 +218,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			String newSql = CombinedSqlParser.combine(targetSql, meta);
 			result.setResultSql(newSql);
 			result.setTargetDataSourceName(CombinedSqlParser.SPAN_DATASOURCE);
+			result.setTargetTable(tableName);
 			return result;
 		}
 	}

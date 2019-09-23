@@ -4,8 +4,12 @@ public class SqlHandleResult {
 //	boolean success;
 	String targetDataSourceName;
 	String resultSql;
+	String targetTable;
 //	String message;
 	
+	public SqlHandleResult(){
+		
+	}
 
 	@Override
 	public String toString() {
@@ -36,6 +40,14 @@ public class SqlHandleResult {
 
 	public void setResultSql(String resultSql) {
 		this.resultSql = resultSql;
+	}
+	
+	public String getTargetTable() {
+		return targetTable;
+	}
+	
+	public void setTargetTable(String targetTable) {
+		this.targetTable = targetTable;
 	}
 
 //	public String getMessage() {
