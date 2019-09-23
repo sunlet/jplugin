@@ -153,7 +153,7 @@ public class RouterStatement extends EmptyStatement {
 		
 		String targetDataSourceName = shr.getTargetDataSourceName();
 		Statement stmt;
-		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){
+		if (CombinedSqlParser.SPAN_DATASOURCE.equals(targetDataSourceName)){
 			stmt = CombineStatementFactory.create(connection);
 		}else{
 			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);

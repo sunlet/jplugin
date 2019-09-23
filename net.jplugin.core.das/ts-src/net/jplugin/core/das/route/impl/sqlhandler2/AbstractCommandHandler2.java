@@ -216,7 +216,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			String targetSql = getFinalSql(__THE_TB_SPS_HDR__);
 			String newSql = CombinedSqlParser.combine(targetSql, meta);
 			result.setResultSql(newSql);
-			result.setTargetDataSourceName(CombinedSqlParser.SPANALL_DATASOURCE);
+			result.setTargetDataSourceName(CombinedSqlParser.SPAN_DATASOURCE);
 			return result;
 		}
 	}

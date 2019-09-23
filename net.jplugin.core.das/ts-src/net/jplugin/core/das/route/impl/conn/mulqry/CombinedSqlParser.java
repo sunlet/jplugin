@@ -10,7 +10,7 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Select;
 
 public class CombinedSqlParser {
-	public static final String SPANALL_DATASOURCE = "##SPANALL##";
+	public static final String SPAN_DATASOURCE = "##SPAN##";
 	/**
 	 * {..jsoninfo...}##SELECT ....
 	 * 
