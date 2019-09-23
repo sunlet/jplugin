@@ -33,7 +33,7 @@ public class SchemaCheckUtil {
 		for (String s:schemas){
 			if (E_M_P_T_Y.equals(s)){
 				//如果是空，则判断是否允许空，不允许则退出
-				if (!dscfg.getIsAllowNoSchema()){
+				if (!dscfg.isAllowNoSchema()){
 					return false;
 				}
 			}else{

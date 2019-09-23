@@ -28,8 +28,8 @@ public class SpanInsertTest {
 //		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('e',?,'e')",new Object[]{1} );
 //		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values('f',?,'f')",new Object[]{1});
 		
-		//测试insert spantable
-		AssertKit.assertException(()->SQLTemplate.executeInsertSql(conn, "insert /*spantable*/ into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"}) );
+//		//测试insert spantable
+//		AssertKit.assertException(()->SQLTemplate.executeInsertSql(conn, "insert /*spantable*/ into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"}) );
 
 		//插入 a b失败
 		AssertKit.assertException(()->SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?),(?,?,?)",new Object[]{"a",1,"a","b",1,null}) );
@@ -37,8 +37,8 @@ public class SpanInsertTest {
 		//顺利插入 a c e三条记录
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?),(?,?,?),('e',?,'e')",new Object[]{"a",1,"a","c",1,"a",1});
 		
-		//带spantable插入 bdf 失败
-		AssertKit.assertException(()->SQLTemplate.executeInsertSql(conn, "insert /* spantable */into tb_route0(f1,f2,f3) values(?,?,?),('d',1,'d'),('f',?,'f')",new Object[]{"b",1,null,1}));
+//		//带spantable插入 bdf 失败
+//		AssertKit.assertException(()->SQLTemplate.executeInsertSql(conn, "insert /* spantable */into tb_route0(f1,f2,f3) values(?,?,?),('d',1,'d'),('f',?,'f')",new Object[]{"b",1,null,1}));
 		
 		//顺利插入b d f 三条记录
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?),('d',1,'d'),('f',?,'f')",new Object[]{"b",1,null,1});

@@ -36,6 +36,7 @@ import net.jplugin.core.das.route.impl.TsAlgmManager;
  */
 public class RouterDataSourceConfig {
 	private static final Object PROP_DATA_SOURCE_NUM = "data-source-num";
+	private static final Object PROP_COMMENT_REQUIRED_FOR_SPAN = "comment-required-for-span";
 	private static final String DSC_PREFIX = "ds-";
 	private static final String DS_NAME = "name";
 	private static final String DS_WEIGHT = "weight";
@@ -50,7 +51,7 @@ public class RouterDataSourceConfig {
 	private static final String CREATION_AFTER_DAYS = "creation-after-days";
 	
 	private static final String PROP_ALLOWED_SCHEMAS =  "allowed-schemas";
-	private static final String PROP_IS_ALLOW_NO_SCHEMA =  "is-allow-no-schema";
+	private static final String PROP_ALLOW_NO_SCHEMA =  "allow-no-schema";
 	
 	public static class DataSourceConfig{
 		String dataSourceName;
@@ -96,7 +97,8 @@ public class RouterDataSourceConfig {
 	private DataSourceConfig[] dataSourceCfgs;
 	private TableConfig[] tableConfigs;
 	private Set<String> allowedSchemas;//默认是空Set
-	private boolean isAllowNoSchema; //默认是true
+	private boolean allowNoSchema = true; //是否可以没有schemaname访问，默认是true
+	private boolean commentRequiredForSpan = false;//是否需要span注释标记才能跨表，默认false
 	
 	
 	public DataSourceConfig[] getDataSourceConfig() {
@@ -111,8 +113,12 @@ public class RouterDataSourceConfig {
 		return allowedSchemas;
 	}
 	
-	public boolean getIsAllowNoSchema(){
-		return isAllowNoSchema;
+	public boolean isAllowNoSchema(){
+		return allowNoSchema;
+	}
+	
+	public boolean isCommentRequiredForSpan() {
+		return commentRequiredForSpan;
 	}
 	
 	public TableConfig findTableConfig(String tableBaseName) {
@@ -142,11 +148,13 @@ public class RouterDataSourceConfig {
 	
 	public void fromProperties(Map<String,String> prop){
 		String temp = trim((String) prop.get(PROP_DATA_SOURCE_NUM));
+		if (temp!=null) temp = temp.trim();
 		if (StringKit.isNull(temp))
 			throw new RuntimeException(PROP_DATA_SOURCE_NUM +" not configed");
 		int dataSourceNum = Integer.parseInt(temp);
 		
 		temp = trim((String) prop.get(PROP_TABLE_NUM));
+		if (temp!=null) temp = temp.trim();
 		if (StringKit.isNull(temp))
 			throw new RuntimeException(PROP_TABLE_NUM +" not configed");
 		int tableNum = Integer.parseInt(temp);
@@ -161,9 +169,18 @@ public class RouterDataSourceConfig {
 				this.allowedSchemas.add(as);
 		}
 		//是否允许无schema,默认 true
-		temp = (String) prop.get(PROP_IS_ALLOW_NO_SCHEMA);
-		this.isAllowNoSchema = !("no".equalsIgnoreCase(temp));
+		temp = (String) prop.get(PROP_ALLOW_NO_SCHEMA);
+		if (temp!=null) temp = temp.trim();
+		if (StringKit.isNotNull(temp)){
+			this.allowNoSchema = Boolean.parseBoolean(temp);
+		}
 		
+		//默认是false
+		temp = (String) prop.get(PROP_COMMENT_REQUIRED_FOR_SPAN);
+		if (temp!=null) temp = temp.trim();
+		if (StringKit.isNotNull(temp)){
+			this.commentRequiredForSpan = Boolean.parseBoolean(temp);
+		}
 		
 		
 		tableConfigs =  new TableConfig[tableNum];

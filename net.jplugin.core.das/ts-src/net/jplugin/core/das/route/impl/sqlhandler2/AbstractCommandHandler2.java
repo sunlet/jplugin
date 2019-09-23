@@ -35,7 +35,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	protected List<Object> parameters;
 	private String tableName;
 	private TableConfig tableConfig;
-	private boolean spanTable;
+	
 	
 	/*
 	 * <pre>
@@ -120,11 +120,16 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
     	instance.connetion = conn;
     	instance.parameters = params;
     	instance.sqlString = sql;
-    	instance.spanTable = SpanCheckKit.isSpanTable(sql);
-    	//insert 不支持spantable
-    	if (instance.spanTable && (stmt instanceof Insert)){
-    		throw new TablesplitException("Insert sql not support spantable.");
-    	}
+    	
+//    	//如果需要注释才能span，才获取span标记
+//    	if (conn.getDataSource().getConfig().isCommentRequiredForSpan()){
+//        	instance.spanTable = SpanCheckKit.isSpanTable(sql);    		
+//    	}
+
+//    	//insert 不支持spantable
+//    	if (instance.spanTable && (stmt instanceof Insert)){
+//    		throw new TablesplitException("Insert sql not support spantable.");
+//    	}
     	return instance;
 	}
 	
@@ -189,8 +194,17 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			result.setResultSql(finalSql);
 			return result;
 		}else{
-			if (!this.spanTable)
-				throw new TablesplitException("table not use spantable,can't span. "+this.sqlString);
+			
+			//如果是insert，直接错误
+			if (this.statement instanceof Insert)
+				throw new TablesplitException("Insert cant' support span table now. "+this.sqlString );
+			
+			//检查span注释是否有
+			if (this.connetion.getDataSource().getConfig().isCommentRequiredForSpan()){
+				if (!SpanCheckKit.isSpanTable(this.sqlString))
+					throw new TablesplitException("table not use spantable,can't span. "+this.sqlString);
+			}
+			
 			
 			CombinedSqlParser.Meta meta = new CombinedSqlParser.Meta();
 			meta.setSourceTb(tableName);
