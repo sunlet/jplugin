@@ -12,7 +12,7 @@ public class LogUtil extends RefAnnotationSupport{
 	public void log(SqlHandleResult shr) {
 		if (logger.isDebugEnabled()){
 			logger.debug("RouteSql:"+shr.getResultSql());
-			logger.debug("RouteDataSource:"+shr.getTargetDataSourceName());
+			logger.debug("RouteDataSource:"+shr.getDataSourceInfos());
 		}
 	}
 

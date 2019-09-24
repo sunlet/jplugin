@@ -72,14 +72,16 @@ public class RouterPrearedStatement extends RouterStatement  implements Prepared
 
 		LogUtil.instance.log(shr);
 		
-		String targetDataSourceName = shr.getTargetDataSourceName();
+//		String targetDataSourceName = shr.getTargetDataSourceName();
 		PreparedStatement stmt ;
-		if (CombinedSqlParser.SPAN_DATASOURCE.equals(targetDataSourceName)){
-			stmt = CombineStatementFactory.createPrepared(this.connection,shr.getResultSql());
+//		if (CombinedSqlParser.SPAN_DATASOURCE.equals(targetDataSourceName)){
+		if (!shr.singleTable()){
+			stmt = CombineStatementFactory.createPrepared(this.connection,shr.getEncodedSql());
 		}else{
-			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);
+			String dsname = shr.getDataSourceInfos()[0].getDsName();
+			DataSource tds = DataSourceFactory.getDataSource(dsname);
 			if (tds == null)
-				throw new TablesplitException("Can't find target datasource." + targetDataSourceName);
+				throw new TablesplitException("Can't find target datasource." + dsname);
 			stmt = tds.getConnection().prepareStatement(shr.getResultSql());
 		}
 		executeResult.set(stmt);

@@ -151,20 +151,29 @@ public class RouterStatement extends EmptyStatement {
 		
 		LogUtil.instance.log(shr);
 		
-		String targetDataSourceName = shr.getTargetDataSourceName();
+//		String targetDataSourceName = shr.getTargetDataSourceName();
 		Statement stmt;
-		if (CombinedSqlParser.SPAN_DATASOURCE.equals(targetDataSourceName)){
+//		if (CombinedSqlParser.SPAN_DATASOURCE.equals(targetDataSourceName)){
+		
+		//根据不同状态获取不同的statement
+		if (!shr.singleTable()){
 			stmt = CombineStatementFactory.create(connection);
 		}else{
-			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);
+			String dsname = shr.getDataSourceInfos()[0].getDsName();
+			DataSource tds = DataSourceFactory.getDataSource(dsname);
 			if (tds==null) 
-				throw new TablesplitException("Can't find target datasource."+shr.getTargetDataSourceName());
+				throw new TablesplitException("Can't find target datasource."+dsname);
 			stmt = tds.getConnection().createStatement();
 		}
 		Result result = new Result();
 		result.statement = stmt;
 		this.executeResult.set(result.statement);
-		result.resultSql = shr.resultSql;
+		
+		//根据不同状态使用不同的sql
+		if (shr.singleTable())
+			result.resultSql = shr.resultSql;
+		else
+			result.resultSql = shr.getEncodedSql();
 		return result;
 	}
 	

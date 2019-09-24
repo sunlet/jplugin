@@ -1,6 +1,5 @@
 package net.jplugin.core.das.route.impl.sqlhandler2;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +13,11 @@ import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
 import net.jplugin.core.das.route.impl.util.SqlParserKit;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -186,16 +183,14 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		
 		SqlHandleResult result = new SqlHandleResult();
 
+
 		if (algmResults==null || algmResults.length==0){
 			throw new RuntimeException("Can't find the dest table.");
 		}else if (algmResults.length==1 && algmResults[0].getDestTbs().length==1){
-			result.setTargetDataSourceName(algmResults[0].getDsName());
+			//设置sql
 			String finalSql = getFinalSql(algmResults[0].getDestTbs()[0]);
 			result.setResultSql(finalSql);
-			result.setTargetTable(tableName);
-			return result;
 		}else{
-			
 			//如果是insert，直接错误
 			if (this.statement instanceof Insert)
 				throw new TablesplitException("Insert cant' support span table now. "+this.sqlString );
@@ -206,21 +201,49 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 					throw new TablesplitException("table not use spantable,can't span. "+this.sqlString);
 			}
 			
-			
-			CombinedSqlParser.Meta meta = new CombinedSqlParser.Meta();
-			meta.setSourceTb(tableName);
-			meta.setDataSourceInfos(algmResults);
-			
-//			RouterConnectionCallContext.setStatement(this.statement);
-//			maintainSqlMeta(meta);//维护OrderBy，count 
-//			RouterConnectionCallContext.setMeta(meta);
+			//设置sql
 			String targetSql = getFinalSql(__THE_TB_SPS_HDR__);
-			String newSql = CombinedSqlParser.combine(targetSql, meta);
-			result.setResultSql(newSql);
-			result.setTargetDataSourceName(CombinedSqlParser.SPAN_DATASOURCE);
-			result.setTargetTable(tableName);
-			return result;
+			result.setResultSql(targetSql);
 		}
+		
+		result.setDataSourceInfos(algmResults);
+		result.setSourceTable(tableName);
+		return result;
+//		if (algmResults==null || algmResults.length==0){
+//			throw new RuntimeException("Can't find the dest table.");
+//		}else if (algmResults.length==1 && algmResults[0].getDestTbs().length==1){
+//			result.setTargetDataSourceName(algmResults[0].getDsName());
+//			String finalSql = getFinalSql(algmResults[0].getDestTbs()[0]);
+//			result.setResultSql(finalSql);
+//			result.setTargetTable(tableName);
+//			return result;
+//		}else{
+//			
+//			//如果是insert，直接错误
+//			if (this.statement instanceof Insert)
+//				throw new TablesplitException("Insert cant' support span table now. "+this.sqlString );
+//			
+//			//检查span注释是否有
+//			if (this.connetion.getDataSource().getConfig().isCommentRequiredForSpan()){
+//				if (!SpanCheckKit.isSpanTable(this.sqlString))
+//					throw new TablesplitException("table not use spantable,can't span. "+this.sqlString);
+//			}
+//			
+//			
+//			CombinedSqlParser.Meta meta = new CombinedSqlParser.Meta();
+//			meta.setSourceTb(tableName);
+//			meta.setDataSourceInfos(algmResults);
+//			
+////			RouterConnectionCallContext.setStatement(this.statement);
+////			maintainSqlMeta(meta);//维护OrderBy，count 
+////			RouterConnectionCallContext.setMeta(meta);
+//			String targetSql = getFinalSql(__THE_TB_SPS_HDR__);
+//			String newSql = CombinedSqlParser.combine(targetSql, meta);
+//			result.setResultSql(newSql);
+//			result.setTargetDataSourceName(CombinedSqlParser.SPAN_DATASOURCE);
+//			result.setTargetTable(tableName);
+//			return result;
+//		}
 	}
 	
 	private DataSourceInfo[] getDataSourceInfosFromKeyValueArr(RouterKeyFilter[] keyValueArr) {
