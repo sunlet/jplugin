@@ -1,16 +1,13 @@
 package net.jplugin.core.das.route.impl.algms;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
-import net.jplugin.core.das.route.api.ITsAutoCreation;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
@@ -18,7 +15,7 @@ import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.TablesplitException;
 
-public class HashAlgm  implements ITsAlgorithm,ITsAutoCreation{
+public class HashAlgm  implements ITsAlgorithm{
 
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
@@ -117,9 +114,6 @@ public class HashAlgm  implements ITsAlgorithm,ITsAutoCreation{
 		return a;
 	}
 
-	@Override
-	public boolean needCreate(TableConfig tbCfg,String dataSourceName, String tableName) {
-		return true;
-	}
+
 
 }

@@ -10,6 +10,7 @@ import test.net.jplugin.core.das.route.dynamicds.DynamicDsTest;
 import test.net.jplugin.core.das.route.groupby.DBGroupByTest;
 import test.net.jplugin.core.das.route.groupby.DbGroupByDDL;
 import test.net.jplugin.core.das.route.kit.NameReplaceKitTest;
+import test.net.jplugin.core.das.route.notExistTable.NotExistsTableTest;
 import test.net.jplugin.core.das.route.span_dml.MultiExecuteTest;
 import test.net.jplugin.core.das.route.span_dml.SpanInsertTest;
 import test.net.jplugin.core.das.route.span_dml.SpanUpdateDeleteTest;
@@ -40,6 +41,9 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
+		DbCreateStringInt.drop();
+		new NotExistsTableTest().test();
+		
 		DbCreateStringInt.create();
 		new MultiExecuteTest().test();
 		

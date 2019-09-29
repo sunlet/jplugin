@@ -8,10 +8,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
 import net.jplugin.core.das.route.impl.util.BaseResultSetRow;
 
 /**
@@ -37,19 +34,19 @@ public class ExplainPlanResultSet extends BaseResultSetRow{
 		this.getMeta().addItem("Extra",Types.VARCHAR);
 		
 		DataMaker dataMaker= new DataMaker();
-		if (CombinedSqlParser.SPAN_DATASOURCE.equals(shr.getTargetDataSourceName())){
-			ParseResult result = CombinedSqlParser.parse(shr.getResultSql());
-			DataSourceInfo[] infos = result.getMeta().getDataSourceInfos();
-			for (DataSourceInfo dsinfo:infos){
-				String[] tables = dsinfo.getDestTbs();
-				String dsname = dsinfo.getDsName();
-				for (String t:tables){
-					dataMaker.addData(dsname, t);
-				}
-			}
-		}else{
-			dataMaker.addData(shr.getTargetDataSourceName(), shr.getTargetTable());
-		}
+//		if (CombinedSqlParser.SPAN_DATASOURCE.equals(shr.getTargetDataSourceName())){
+//			ParseResult result = CombinedSqlParser.parse(shr.getResultSql());
+//			DataSourceInfo[] infos = result.getMeta().getDataSourceInfos();
+//			for (DataSourceInfo dsinfo:infos){
+//				String[] tables = dsinfo.getDestTbs();
+//				String dsname = dsinfo.getDsName();
+//				for (String t:tables){
+//					dataMaker.addData(dsname, t);
+//				}
+//			}
+//		}else{
+//			dataMaker.addData(shr.getTargetDataSourceName(), shr.getTargetTable());
+//		}
 		
 		this.datas = dataMaker.getDatas();
 	}

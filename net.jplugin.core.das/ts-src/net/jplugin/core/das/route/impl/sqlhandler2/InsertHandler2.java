@@ -9,6 +9,7 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.conn.SqlHandleResult.CommandType;
 import net.jplugin.core.das.route.impl.util.FunctionEvalueKit;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
@@ -107,6 +108,11 @@ public class InsertHandler2 extends AbstractCommandHandler2 {
 	protected void temporyChangeTableNameTo(String nm) {
 		Insert insertStmt = (Insert) this.statement;
 		insertStmt.getTable().setName(nm);
+	}
+
+	@Override
+	protected CommandType getCommandType() {
+		return CommandType.INSERT;
 	}
 
 }

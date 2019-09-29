@@ -7,6 +7,7 @@ import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.NClob;
 import java.sql.ParameterMetaData;
@@ -26,8 +27,11 @@ import javax.sql.DataSource;
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.SqlHandleService;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.autocreate.TableExistsMaintainer;
+import net.jplugin.core.das.route.impl.autocreate.TableExistsMaintainer.MaintainReturn;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombineStatementFactory;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.jplugin.core.das.route.impl.conn.nrs.NoneResultStatement;
 import net.jplugin.core.das.route.impl.util.CallableList;
 import net.jplugin.core.das.route.impl.util.MyCallable;
 
@@ -62,15 +66,22 @@ public class RouterPrearedStatement extends RouterStatement  implements Prepared
 		PreparedStatement stmt = genTargetStatement();
 		int cnt = stmt.executeUpdate();
 		return cnt;
-
 	}
 
 	private PreparedStatement genTargetStatement() throws SQLException {
 		if (sql == null)
 			throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(connection, sql, recorder.getList());
-
 		LogUtil.instance.log(shr);
+		
+		//处理无存在的表的特殊情况
+		String  dsForMakeDymmy = shr.getDataSourceInfos()[0].getDsName();
+		MaintainReturn maintainResult = TableExistsMaintainer.maintainAndCheckNoneResult(shr);
+		if (maintainResult.isSpecialCondition()){
+			PreparedStatement temp = SpecialReturnHandler.hanleSpecialConditionForPreparedStmt(maintainResult,this.connection,DataSourceFactory.getDataSource(dsForMakeDymmy).getConnection());
+			this.executeResult.set(temp);
+			return temp;
+		}
 		
 //		String targetDataSourceName = shr.getTargetDataSourceName();
 		PreparedStatement stmt ;
@@ -88,6 +99,7 @@ public class RouterPrearedStatement extends RouterStatement  implements Prepared
 		list.executeWith(stmt);
 		return stmt;
 	}
+
 
 
 	@Override

@@ -40,8 +40,8 @@ public class TsAlgmManager {
 		if (algm==null)
 			throw new TablesplitException("error algm:"+tc.getSplitAlgm()+" for table:"+tableName);
 		DataSourceInfo[] result = algm.getMultiResults(dataSource,tableName,type,kva);
-		//尝试创建
-		TableAutoCreation.tryCreate(tc,result,tableName,algm);
+//		//尝试创建
+//		TableAutoCreation.tryCreate(tc,result,tableName,algm);
 		return result;
 	}
 
@@ -81,7 +81,7 @@ public class TsAlgmManager {
 			throw new TablesplitException("error algm:"+tc.getSplitAlgm()+" for table:"+tbBaseName);
 		KeyTypeValueRespect vr = convertValueRespect(key);
 		Result result = algm.getResult(compondDataSource,tbBaseName,vr.getValueType(),vr.getValue());
-		TableAutoCreation.tryCreate(tc,result.getDataSource(),result.getTableName(),tbBaseName,algm);
+//		TableAutoCreation.tryCreate(tc,result.getDataSource(),result.getTableName(),tbBaseName,algm);
 		return result;
 	}
 	

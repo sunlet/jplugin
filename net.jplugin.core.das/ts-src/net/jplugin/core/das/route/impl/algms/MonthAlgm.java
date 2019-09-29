@@ -6,14 +6,12 @@ import java.time.temporal.ChronoUnit;
 import net.jplugin.common.kits.CalenderKit;
 import net.jplugin.core.das.route.api.DataSourceInfo;
 import net.jplugin.core.das.route.api.ITsAlgorithm;
-import net.jplugin.core.das.route.api.ITsAutoCreation;
 import net.jplugin.core.das.route.api.RouterDataSource;
 import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
-import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.TablesplitException;
 
-public class MonthAlgm  implements ITsAlgorithm ,ITsAutoCreation{
+public class MonthAlgm  implements ITsAlgorithm {
 
 	int trackMonths = 6;
 	protected void setTrackMonths(int m){
@@ -52,12 +50,6 @@ public class MonthAlgm  implements ITsAlgorithm ,ITsAutoCreation{
 //		LocalDateMaintain timeMaintainer = (ld,units)->ld.minusMonths(units);
 		return TimeBasedSpanUtil.getResults(this,dataSource,tableName,valueType,kva,ChronoUnit.MONTHS,this.trackMonths);
 
-	}
-
-	@Override
-	public boolean needCreate(TableConfig tbCfg,String dataSourceName, String tableName) {
-		//时间默认到15号
-		return TimeAutoCreationCheckKit.check(tbCfg,"20"+(tableName.substring(tableName.length()-4)+"15120000"),183,365);
 	}
 
 }

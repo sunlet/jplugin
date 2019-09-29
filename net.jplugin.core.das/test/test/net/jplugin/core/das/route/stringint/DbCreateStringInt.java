@@ -44,5 +44,22 @@ public class DbCreateStringInt {
 		//清理对已存在表的缓存
 		TableAutoCreation.clearCache();
 	}
+	/**
+	 * 只删除，不创建
+	 * @throws SQLException
+	 */
+	public static void drop() throws SQLException{
+		DataSource ds = DataSourceFactory.getDataSource("database");
+		Connection conn = ds.getConnection();
+		for ( String s:drops){
+			try{
+			SQLTemplate.executeDropSql(conn, s);
+			}catch(Exception e){
+				System.out.println("table not exists.");
+			}
+		}
+		//清理对已存在表的缓存
+		TableAutoCreation.clearCache();
+	}
 
 }

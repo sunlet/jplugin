@@ -1,20 +1,27 @@
 package net.jplugin.core.das.route.impl.conn;
 
 import net.jplugin.core.das.route.api.DataSourceInfo;
+import net.jplugin.core.das.route.api.RouterDataSourceConfig.TableConfig;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.sf.jsqlparser.statement.Statement;
 
 public class SqlHandleResult {
+	public enum CommandType{SELECT,UPDATE,INSERT,DELETE}
+	
 	String sourceTable; 
-
 	/**
 	 * 单表情况下：表示目标sql，当中的表名用固定常亮。
 	 * 多表情况下：表示目标sql
 	 */
 	String resultSql;
-
 	
 	DataSourceInfo[] dataSourceInfos;
 
+	CommandType commandType;
+	
+	TableConfig tableConfig;
+	
+	Statement statement;//原始sql的statement
 
 	/**
 	 * 判断是否只有一张表
@@ -51,6 +58,29 @@ public class SqlHandleResult {
 
 	public void setDataSourceInfos(DataSourceInfo[] dataSourceInfos) {
 		this.dataSourceInfos = dataSourceInfos;
+	}
+	
+	public CommandType getCommandType() {
+		return commandType;
+	}
+	
+	public void setCommandType(CommandType commandType) {
+		this.commandType = commandType;
+	}
+	
+	public TableConfig getTableConfig() {
+		return tableConfig;
+	}
+	
+	public void setTableConfig(TableConfig tableConfig) {
+		this.tableConfig = tableConfig;
+	}
+	
+	public void setStatement(Statement statement) {
+		this.statement = statement;
+	}
+	public Statement getStatement() {
+		return statement;
 	}
 
 	public String getEncodedSql() {

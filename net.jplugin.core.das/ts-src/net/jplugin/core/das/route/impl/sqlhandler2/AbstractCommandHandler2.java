@@ -13,6 +13,7 @@ import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
+import net.jplugin.core.das.route.impl.conn.SqlHandleResult.CommandType;
 import net.jplugin.core.das.route.impl.util.SqlParserKit;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.Logger;
@@ -32,6 +33,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 	protected List<Object> parameters;
 	private String tableName;
 	private TableConfig tableConfig;
+	private CommandType commandType;
 	
 	
 	/*
@@ -139,6 +141,8 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 //	}
 	protected abstract void temporyChangeTableNameTo(String nm);
 	
+	protected abstract CommandType getCommandType();
+	
 	
 	public final  SqlHandleResult handle(){
 		//获取表名称和KeyFilter
@@ -206,8 +210,11 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 			result.setResultSql(targetSql);
 		}
 		
+		result.setCommandType(this.getCommandType());
 		result.setDataSourceInfos(algmResults);
 		result.setSourceTable(tableName);
+		result.setTableConfig(tableConfig);
+		result.setStatement(statement);
 		return result;
 //		if (algmResults==null || algmResults.length==0){
 //			throw new RuntimeException("Can't find the dest table.");

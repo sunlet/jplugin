@@ -8,6 +8,7 @@ import net.jplugin.core.das.route.api.RouterException;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.conn.SqlHandleResult.CommandType;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
@@ -46,6 +47,11 @@ public class DeleteHandler2 extends AbstractCommandHandler2 {
 	protected void temporyChangeTableNameTo(String nm) {
 //		((Delete) this.statement).getTable().setName(nm);
 		TableNameReplacerKit.handleDelete((Delete)this.statement, nm);
+	}
+
+	@Override
+	protected CommandType getCommandType() {
+		return CommandType.DELETE;
 	}
 
 }

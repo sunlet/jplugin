@@ -7,11 +7,16 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import com.mysql.jdbc.PreparedStatement;
+
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.SqlHandleService;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.autocreate.TableExistsMaintainer;
+import net.jplugin.core.das.route.impl.autocreate.TableExistsMaintainer.MaintainReturn;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombineStatementFactory;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.jplugin.core.das.route.impl.conn.nrs.NoneResultStatement;
 
 public class RouterStatement extends EmptyStatement {
 	protected RouterConnection connection;
@@ -151,10 +156,16 @@ public class RouterStatement extends EmptyStatement {
 		
 		LogUtil.instance.log(shr);
 		
-//		String targetDataSourceName = shr.getTargetDataSourceName();
-		Statement stmt;
-//		if (CombinedSqlParser.SPAN_DATASOURCE.equals(targetDataSourceName)){
+		//处理无存在的表的特殊情况
+		String  dsForMakeDymmy = shr.getDataSourceInfos()[0].getDsName();
+		MaintainReturn maintainResult = TableExistsMaintainer.maintainAndCheckNoneResult(shr);
+		if (maintainResult.isSpecialCondition()){
+			Result temp = SpecialReturnHandler.hanleSpecialConditionForStatement(maintainResult,this.connection,DataSourceFactory.getDataSource(dsForMakeDymmy).getConnection());
+			this.executeResult.set(temp.statement);
+			return temp;
+		}
 		
+		Statement stmt;
 		//根据不同状态获取不同的statement
 		if (!shr.singleTable()){
 			stmt = CombineStatementFactory.create(connection);
