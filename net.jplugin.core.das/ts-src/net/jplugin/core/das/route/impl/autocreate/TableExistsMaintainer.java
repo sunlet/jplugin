@@ -83,8 +83,6 @@ public class TableExistsMaintainer {
 		if (shr.getCommandType() == CommandType.SELECT){
 			tryRemoveTable(shr);
 			
-			
-			
 			if (shr.getDataSourceInfos().length==0){
 				PlainSelect selectBody = (PlainSelect) ((Select) shr.getStatement()).getSelectBody();
 				
