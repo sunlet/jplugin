@@ -111,7 +111,10 @@ public class RouterConnection implements Connection{
 	}
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
-		throw new RuntimeException("not support");
+		if (RouterConnection.class.equals(iface)) 
+			return (T)this;
+		else 
+			throw new SQLException("can't unwarp for :"+iface.getName());
 	}
 
 	@Override
