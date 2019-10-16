@@ -24,6 +24,56 @@ public class SqlHandleResult {
 	Statement statement;//原始sql的statement
 
 	/**
+	 * 验证是否包含指定数据源和指定表
+	 * @param ds
+	 * @param tb
+	 * @return
+	 */
+	public boolean _containDsTb(String ds,String tb){
+		for (DataSourceInfo dsi:dataSourceInfos){
+			if (dsi.getDsName().equals(ds)){
+				for (String t:dsi.getDestTbs()){
+					if (t.equals(tb)){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * 数据源数量
+	 * @return
+	 */
+	public int _dsCount(){
+		return dataSourceInfos.length;
+	}
+	/**
+	 * tb总数量
+	 * @return
+	 */
+	public int _tbCount(){
+		int cnt = 0;
+		for (DataSourceInfo dsi:dataSourceInfos){
+			cnt+= dsi.getDestTbs().length;
+		}
+		return cnt;
+	}
+	/**
+	 * 获取目标数据源表数量
+	 * @param ds
+	 * @return
+	 */
+	public int _dsTbCount(String ds){
+		for (DataSourceInfo dsi:dataSourceInfos){
+			if (dsi.getDsName().equals(ds)){
+				return dsi.getDestTbs().length;
+			}
+		}
+		return 0;
+	}
+	
+	/**
 	 * 判断是否只有一张表
 	 * @return
 	 */

@@ -23,12 +23,13 @@ public class DateAlgm  implements ITsAlgorithm{
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
 		long time;
-		if (vt == ValueType.DATE){
-			java.sql.Date dt = (Date) key;
-			time = dt.getTime();
-		}else if (vt == ValueType.TIMESTAMP){
-			time = ((java.sql.Timestamp)key).getTime();
-		}else throw new TablesplitException("DateAlgm don't support type:"+vt);
+//		if (vt == ValueType.DATE){
+//			java.sql.Date dt = (Date) key;
+//			time = dt.getTime();
+//		}else if (vt == ValueType.TIMESTAMP){
+//			time = ((java.sql.Timestamp)key).getTime();
+//		}else throw new TablesplitException("DateAlgm don't support type:"+vt);
+		time = TimeConverterKit.convertToTimeLong(vt, key);
 		
 		long dayIndex = time/(24*3600*1000);
 		DataSourceConfig[] dsConfig = compondDataSource.getConfig().getDataSourceConfig();

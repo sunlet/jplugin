@@ -45,7 +45,7 @@ public class TimeBasedSpanUtil {
 			ValueType valueType, Object[] value, ChronoUnit unit) {
 		LocalDateTime[] arr = new LocalDateTime[value.length];
 		for(int i=0;i<arr.length;i++){
-			arr[i] = convetToLoalDate(valueType,value[i]);
+			arr[i] = TimeConverterKit.convetToLoalDate(valueType,value[i]);
 		}
 		
 		return getFromTimeList(algm, dataSource, tableName, arr);
@@ -63,14 +63,14 @@ public class TimeBasedSpanUtil {
 		LocalDateTime left ,right;
 		//赋值，要处理单边为空的条件
 		if (leftValue==null){
-			right = convetToLoalDate(valueType,rightValue);
+			right = TimeConverterKit.convetToLoalDate(valueType,rightValue);
 			left = minusUnits(right,unit,trackDays);//dm.maintain(right, trackDays);
 		}else if (rightValue==null){
-			left = convetToLoalDate(valueType,leftValue);
+			left = TimeConverterKit.convetToLoalDate(valueType,leftValue);
 			right = minusUnits(left,unit, -trackDays);
 		}else{
-			left = convetToLoalDate(valueType,leftValue);
-			right = convetToLoalDate(valueType,rightValue);
+			left = TimeConverterKit.convetToLoalDate(valueType,leftValue);
+			right = TimeConverterKit.convetToLoalDate(valueType,rightValue);
 		}
 		//要trunc一下
 		left = truncate(left,unit);
@@ -106,17 +106,6 @@ public class TimeBasedSpanUtil {
 //		return dm.maintain(right, trackDays);
 	}
 
-	private static LocalDateTime convetToLoalDate(ValueType vt,Object object) {
-		switch(vt){
-		case DATE:
-			return CalenderKit.convertDate2LocalDateTime((Date) object);
-		case TIMESTAMP:
-			return CalenderKit.convertDate2LocalDateTime((Date) object);
-		case LONG:
-			return CalenderKit.convertDate2LocalDateTime(new Date((Long)object));
-		}
-		throw new RouterException("unsupported type:"+object.getClass());
-	}
 
 	private static DataSourceInfo[] get(ITsAlgorithm algm,RouterDataSource dataSource, String tableName,int historyNum,ChronoUnit unit){
 		LocalDateTime[] arr = new LocalDateTime[historyNum];
@@ -146,33 +135,33 @@ public class TimeBasedSpanUtil {
 			list.add(r.getTableName());
 		}
 
-		//check exists  and maintain
-		List<String> toRemove = new ArrayList();
-		List<String> toRemoveInternal = new ArrayList();
-		
-		for (Entry<String, Set<String>> en:mapList.entrySet()){
-			String dsName = en.getKey();
-			Set<String> value = en.getValue();
-			
-			//进行内层维护
-			toRemoveInternal.clear();
-			for (String v:value){
-				if (PluginEnvirement.INSTANCE.isUnitTesting() && !TableExistsCacheManager.exists(dsName, v)){
-//					value.remove(v);
-					toRemoveInternal.add(v);
-				}
-			}
-			value.removeAll(toRemoveInternal);
-			
-			//插入外层待删除队列
-			if (value.size()==0) 
-				toRemove.add(dsName);
-		}
-		
-		//外层删除
-		for (String tb:toRemove){
-			mapList.remove(tb);
-		}
+//		//check exists  and maintain
+//		List<String> toRemove = new ArrayList();
+//		List<String> toRemoveInternal = new ArrayList();
+//		
+//		for (Entry<String, Set<String>> en:mapList.entrySet()){
+//			String dsName = en.getKey();
+//			Set<String> value = en.getValue();
+//			
+//			//进行内层维护
+//			toRemoveInternal.clear();
+//			for (String v:value){
+//				if (PluginEnvirement.INSTANCE.isUnitTesting() && !TableExistsCacheManager.exists(dsName, v)){
+////					value.remove(v);
+//					toRemoveInternal.add(v);
+//				}
+//			}
+//			value.removeAll(toRemoveInternal);
+//			
+//			//插入外层待删除队列
+//			if (value.size()==0) 
+//				toRemove.add(dsName);
+//		}
+//		
+//		//外层删除
+//		for (String tb:toRemove){
+//			mapList.remove(tb);
+//		}
 		
 		//make ret arr
 		DataSourceInfo[] ret = new DataSourceInfo[mapList.size()];

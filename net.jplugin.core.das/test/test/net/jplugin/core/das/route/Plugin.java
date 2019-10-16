@@ -22,6 +22,8 @@ import test.net.jplugin.core.das.route.where.InSectUtilTest;
 import test.net.jplugin.core.das.route.where.VisitorExpressionManagerTest;
 import test.net.jplugin.core.das.route.where.WhereExpressionVisitorTest;
 import test.net.jplugin.core.das.route.where.funcs.MytestFunctionHandler;
+import test.net.jplugin.core.das.sqlhandler.date.DateHandleTest;
+import test.net.jplugin.core.das.sqlhandler.date.HashHandlerTest;
 
 public class Plugin extends AbstractPluginForTest {
 
@@ -41,6 +43,9 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
+		new HashHandlerTest().test();
+		new DateHandleTest().test();
+		
 		DbCreateStringInt.drop();
 		new NotExistsTableTest().test();
 		

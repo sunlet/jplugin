@@ -41,7 +41,7 @@ public class ConfigedDataSource {
 		if (routeFlag!=null) routeFlag.trim();
 		
 		if ("true".equalsIgnoreCase(routeFlag)){
-			RouterDataSource ds = new RouterDataSource();
+			RouterDataSource ds = new RouterDataSource(group);
 			ds.config(map);
 			return ds;
 		}else{
