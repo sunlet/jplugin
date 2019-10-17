@@ -28,8 +28,8 @@ tb-3-algm  =month
 tb-3-key   =f2
 tb-3-creation-sql=create table tb_tisp (f1 varchar(20) primary key,f2 timestamp)
 
-ds-0-name  =router-ds-1	
-ds-1-name  = router-ds-2	
+ds-0-name  =router-ds-2	
+ds-1-name  = router-ds-1	
 	 * @throws SQLException 
 	 * 
 	 */
@@ -37,69 +37,91 @@ ds-1-name  = router-ds-2
 		RouterConnection conn = DataSourceFactory.getDataSource("router-db").getConnection().unwrap(RouterConnection.class);
 		String sql;
 		SqlHandleResult result;
+//		//雨露:
+//		2019-10-16 21:08:30
+//		20191016210830
+//
+//		雨露:
+//		2019-10-16 01:00:10
+		//20191016010010
+
+
+		//java.sql.Timestamp
+		sql = "select * from tb_date where f2=?";
+		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Timestamp(CalenderKit.getTimeFromString("20191016210830").getTime())));
+		AssertKit.assertEqual(result._tbCount(),1);
+//		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
+		
+		//java.sql.Timestamp
+		sql = "select * from tb_date where f2=?";
+		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Timestamp(CalenderKit.getTimeFromString("20191016010010").getTime())));
+		AssertKit.assertEqual(result._tbCount(),1);
+//		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
+		
+		
 		
 		//字符串
 		sql = "select * from tb_date where f2='20190101'";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, null);
 		AssertKit.assertEqual(result._tbCount(),1);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
 
 		
 		//long
 		sql = "select * from tb_date where f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(CalenderKit.getDateFromString("20190101").getTime()));
 		AssertKit.assertEqual(result._tbCount(),1);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
 
 		//java.sql.Date
 		sql = "select * from tb_date where f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Date(CalenderKit.getDateFromString("20190101").getTime())));
 		AssertKit.assertEqual(result._tbCount(),1);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
 
 		//java.sql.Timestamp
 		sql = "select * from tb_date where f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Timestamp(CalenderKit.getDateFromString("20190101").getTime())));
 		AssertKit.assertEqual(result._tbCount(),1);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
 		
 		sql = "select * from tb_date where f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Timestamp(CalenderKit.getTimeFromString("20190101000000").getTime())));
 		AssertKit.assertEqual(result._tbCount(),1);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
 		
 		sql = "select * from tb_date where f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Timestamp(CalenderKit.getTimeFromString("20190101010101").getTime())));
 		AssertKit.assertEqual(result._tbCount(),1);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
 		
 		//字符串,多个
 		sql = "select * /*spantable*/ from tb_date where f2='20190101' or f2='20190102'";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, null);
 		AssertKit.assertEqual(result._tbCount(),2);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
-		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190102" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190102" ));
 		
 		//long,多个
 		sql = "select * /*spantable*/ from tb_date where f2=? or f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(CalenderKit.getDateFromString("20190101").getTime(),CalenderKit.getDateFromString("20190102").getTime()));
 		AssertKit.assertEqual(result._tbCount(),2);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
-		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190102" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190102" ));
 
 		//java.sql.Date,多个
 		sql = "select * /*spantable*/ from tb_date where f2=? or f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Date(CalenderKit.getDateFromString("20190101").getTime()),new java.sql.Date(CalenderKit.getDateFromString("20190102").getTime())));
 		AssertKit.assertEqual(result._tbCount(),2);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
-		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190102" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190102" ));
 
 		//java.sql.Timestamp,多个
 		sql = "select * /*spantable*/ from tb_date where f2=? or f2=?";
 		result = SqlHandleService.INSTANCE.handle( conn, sql, CollectionKit.listWith(new java.sql.Timestamp(CalenderKit.getDateFromString("20190101").getTime()),new java.sql.Timestamp(CalenderKit.getDateFromString("20190102").getTime())));
 		AssertKit.assertEqual(result._tbCount(),2);
-		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190101" ));
-		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190102" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-2","tb_date_190101" ));
+		AssertKit.assertTrue(result._containDsTb("router-ds-1","tb_date_190102" ));
 
 	}
 }
