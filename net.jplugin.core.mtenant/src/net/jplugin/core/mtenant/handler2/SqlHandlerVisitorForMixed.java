@@ -809,7 +809,7 @@ public class SqlHandlerVisitorForMixed
 		private  Expression computeNewExp(Expression exp, String name) {
 			//cteate new eq
 			EqualsTo eq = new EqualsTo();
-			eq.setLeftExpression(new Column(new Table(null,name), tenantColumnName));
+			eq.setLeftExpression(new Column(new Table(name), tenantColumnName));
 			eq.setRightExpression(getTenantIdExpression());
 
 			if (exp==null){
