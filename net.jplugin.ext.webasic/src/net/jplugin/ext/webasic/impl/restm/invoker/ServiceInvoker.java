@@ -17,6 +17,7 @@ import net.jplugin.core.ctx.api.JsonResult;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
+import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.log.api.ILogService;
 import net.jplugin.core.rclient.api.RemoteExecuteException;
@@ -237,18 +238,19 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 			callStringParamForConcreate(cp);
 	}
 	
+
+	//2020-2-19修改为如下，支持过滤器触发，同时支持Rule
+	static Class[] dynamicParamTypes = new Class[]{RequesterInfo.class,String.class};
 	private void callStringParamForDynamic(CallParam cp) throws Throwable{
-		IDynamicService o = (IDynamicService) helper.getObject();
-		InvocationContext mfc = new InvocationContext(cp.getPath(), o, cp.getOperation());
+		ObjectAndMethod oam = helper.get("execute", dynamicParamTypes);
+		
 		try{
 			RestMethodState.reset();
 			
-//			Object result = oam.method.invoke(oam.object, paraValue);
 			Object result = null;
-			
-//			result = helper.invokeWithRuleSupport(oam,paraValue);
-			result = o.execute(mfc.getRequestInfo(),mfc.getDynamicPath());
 
+			result = invokeWithServiceFilter4Dynamic(oam,cp.getPath(),cp.getOperation());
+			
 			State state = RestMethodState.get();
 
 //			RuleResult rr = RuleResult.create(RuleResult.OK);
@@ -401,6 +403,17 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 		});
 	}
 
+
+	private Object invokeWithServiceFilter4Dynamic(final ObjectAndMethod oam,String servicePath,String dyncmicPath) throws Throwable {
+		InvocationContext ctx = new InvocationContext(servicePath,oam.object,dyncmicPath);
+		
+		Object[] paraValue = new Object[]{ctx.getRequestInfo(),ctx.getDynamicPath()};	
+		return ServiceFilterManager.INSTANCE.executeWithFilter(ctx, new IMethodCallback() {
+			public Object run() throws Throwable {
+				return helper.invokeWithRuleSupport(oam,paraValue);
+			}
+		});
+	}
 	public ObjectCallHelper getObjectCallHelper() {
 		return this.helper;
 	}
