@@ -11,8 +11,7 @@ import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 public class InvocationContext {
 	String servicePath;
 	/**
-	 * method 和 dynamicMethodName只有一个有值。
-	 * 当method有值时，args才有值。
+	 * method 和 dynamicMethodName只有一个有值。2020-2月修改：哪些变量有值，规则自己查看构造函数
 	 */
 	Method method;
 	String dynamicPath;
@@ -33,9 +32,16 @@ public class InvocationContext {
 		//在这里预先设置一下，懒加载可能导致用户启动了线程里面获取不到
 		this.requestInfo = ThreadLocalContextManager.getRequestInfo();
 	}
-	public  InvocationContext(String p,Object o,String aDynamicMethodName){
+	/**
+	 * 2020-2月修改 ，动态服务情况下，method继续传入。可以根据dynamicPath是否为空判断是否动态服务。
+	 * @param p
+	 * @param o
+	 * @param m
+	 * @param aDynamicMethodName
+	 */
+	public  InvocationContext(String p,Object o,Method m,String aDynamicMethodName){
 		this.servicePath = p;
-//		this.method = m;
+		this.method = m;
 		this.dynamicPath = aDynamicMethodName;
 		this.object = o;
 //		this.args = a;

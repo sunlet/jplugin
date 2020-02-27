@@ -405,7 +405,7 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 
 
 	private Object invokeWithServiceFilter4Dynamic(final ObjectAndMethod oam,String servicePath,String dyncmicPath) throws Throwable {
-		InvocationContext ctx = new InvocationContext(servicePath,oam.object,dyncmicPath);
+		InvocationContext ctx = new InvocationContext(servicePath,oam.object,oam.method,dyncmicPath);
 		
 		Object[] paraValue = new Object[]{ctx.getRequestInfo(),ctx.getDynamicPath()};	
 		return ServiceFilterManager.INSTANCE.executeWithFilter(ctx, new IMethodCallback() {
