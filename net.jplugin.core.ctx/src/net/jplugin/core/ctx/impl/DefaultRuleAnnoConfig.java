@@ -41,7 +41,8 @@ public class DefaultRuleAnnoConfig {
 	}
 	
 	private static Rule retrive() {
-		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("platform.use-default-rule-anno"))){
+		if (!"false".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("platform.use-default-rule-anno"))){
+//		if ("true".equalsIgnoreCase(ConfigFactory.getStringConfigWithTrim("platform.use-default-rule-anno"))){
 			Method m = ReflactKit.findSingeMethodExactly(DefaultRuleAnnoConfig.class, "aMethod");
 			Rule rule = m.getAnnotation(Rule.class);
 			if (rule==null)
