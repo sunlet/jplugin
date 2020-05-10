@@ -11,7 +11,7 @@ import net.jplugin.core.das.route.api.RouterDataSourceConfig.DataSourceConfig;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.TablesplitException;
 
-public class MonthAlgm  implements ITsAlgorithm{
+public class MonthAlgm  implements ITsAlgorithm {
 
 	int trackMonths = 6;
 	protected void setTrackMonths(int m){
@@ -21,12 +21,7 @@ public class MonthAlgm  implements ITsAlgorithm{
 	@Override
 	public Result getResult(RouterDataSource compondDataSource, String tableBaseName, ValueType vt, Object key) {
 		long time;
-		if (vt == ValueType.DATE){
-			java.sql.Date dt = (Date) key;
-			time = dt.getTime();
-		}else if (vt == ValueType.TIMESTAMP){
-			time = ((java.sql.Timestamp)key).getTime();
-		}else throw new TablesplitException("DateAlgm don't support type:"+vt);
+		time = TimeConverterKit.convertToTimeLong(vt, key);
 		
 		java.util.Date javaDate = new java.util.Date(time);
 		int monIndex = javaDate.getYear()*12+(javaDate.getMonth()-1);
@@ -38,6 +33,8 @@ public class MonthAlgm  implements ITsAlgorithm{
 		r.setTableName(getTableName(tableBaseName,time));
 		return r;		
 	}
+
+
 
 	private String getTableName(String tableBaseName, long time) {
 		return  tableBaseName+"_"+CalenderKit.getShortMonthString(time);

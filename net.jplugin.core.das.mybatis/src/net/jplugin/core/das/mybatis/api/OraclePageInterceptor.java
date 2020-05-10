@@ -11,7 +11,7 @@ import java.sql.Connection;
  * oracle分页插件
  * @author peiyu
  */
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class OraclePageInterceptor extends PageInterceptor {
 
     /**

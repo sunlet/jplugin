@@ -37,6 +37,15 @@ public abstract class BaseResultSetRow implements ResultSet{
 	
 	public static class Meta{
 		List<MetaItem> metaList=null;
+		
+		public Meta(){
+			metaList =new ArrayList();
+		}
+		
+		public void addItem(String colName,int sqlType){
+			this.metaList.add(new MetaItem(colName,sqlType));
+		}
+		
 		/**
 		 * colCount，支持只获取ResultSet的前几个字段，忽略后面字段。
 		 * @param rsMetaData
@@ -107,10 +116,12 @@ public abstract class BaseResultSetRow implements ResultSet{
 		}
 	}
 	
+	public BaseResultSetRow(){
+		this.meta = new Meta();
+	}
 	public BaseResultSetRow(Meta m){
 		this.meta = m;
 	}
-	
 	protected BaseResultSetRow(ResultSetMetaData rsMetaData) throws SQLException{
 		this(rsMetaData,rsMetaData.getColumnCount());
 	}

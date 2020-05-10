@@ -10,4 +10,6 @@ public class MtenantStatus {
 	public static boolean enabled(){
 		return enable;
 	}
+	
+
 }

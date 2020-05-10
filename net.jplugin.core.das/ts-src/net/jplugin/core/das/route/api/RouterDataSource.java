@@ -19,7 +19,16 @@ import net.jplugin.core.das.route.impl.conn.RouterConnection;
 public class RouterDataSource implements DataSource{
 	PrintWriter logWriter;
 	RouterDataSourceConfig config = new RouterDataSourceConfig();
+	private String dataSourceName;
 	
+	public RouterDataSource(String dsname) {
+		this.dataSourceName = dsname;
+	}
+	
+	public String getDataSourceName(){
+		return this.dataSourceName;
+	}
+
 	public void config(Map<String,String> cfg){
 		config.fromProperties(cfg);
 	}

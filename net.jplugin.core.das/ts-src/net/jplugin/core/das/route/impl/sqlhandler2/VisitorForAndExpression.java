@@ -11,6 +11,7 @@ import net.sf.jsqlparser.expression.AnalyticExpression;
 import net.sf.jsqlparser.expression.AnyComparisonExpression;
 import net.sf.jsqlparser.expression.CaseExpression;
 import net.sf.jsqlparser.expression.CastExpression;
+import net.sf.jsqlparser.expression.CollateExpression;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
@@ -26,6 +27,7 @@ import net.sf.jsqlparser.expression.JsonExpression;
 import net.sf.jsqlparser.expression.KeepExpression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.MySQLGroupConcat;
+import net.sf.jsqlparser.expression.NextValExpression;
 import net.sf.jsqlparser.expression.NotExpression;
 import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.NumericBind;
@@ -39,11 +41,13 @@ import net.sf.jsqlparser.expression.TimeKeyExpression;
 import net.sf.jsqlparser.expression.TimeValue;
 import net.sf.jsqlparser.expression.TimestampValue;
 import net.sf.jsqlparser.expression.UserVariable;
+import net.sf.jsqlparser.expression.ValueListExpression;
 import net.sf.jsqlparser.expression.WhenClause;
-import net.sf.jsqlparser.expression.WithinGroupExpression;
 import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
+import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseLeftShift;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseOr;
+import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseRightShift;
 import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseXor;
 import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
 import net.sf.jsqlparser.expression.operators.arithmetic.Division;
@@ -69,6 +73,7 @@ import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
 import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.RegExpMatchOperator;
 import net.sf.jsqlparser.expression.operators.relational.RegExpMySQLOperator;
+import net.sf.jsqlparser.expression.operators.relational.SimilarToExpression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
@@ -144,9 +149,9 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 
 	@Override
 	public void visit(Parenthesis parenthesis) {
-		if (parenthesis.isNot()){
-			//ignore
-		}
+//		if (parenthesis.isNot()){
+//			//ignore
+//		}
 		parenthesis.getExpression().accept(this);
 	}
 	
@@ -423,9 +428,9 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 	public void visit(AnalyticExpression aexpr) {
 	}
 
-	@Override
-	public void visit(WithinGroupExpression wgexpr) {
-	}
+//	@Override
+//	public void visit(WithinGroupExpression wgexpr) {
+//	}
 
 	@Override
 	public void visit(ExtractExpression eexpr) {
@@ -489,6 +494,31 @@ public class VisitorForAndExpression implements ExpressionVisitor {
 
 	@Override
 	public void visit(NotExpression aThis) {
+		aThis.getExpression().accept(this);
+	}
+
+	@Override
+	public void visit(BitwiseRightShift aThis) {
+	}
+
+	@Override
+	public void visit(BitwiseLeftShift aThis) {
+	}
+
+	@Override
+	public void visit(ValueListExpression valueList) {
+	}
+
+	@Override
+	public void visit(NextValExpression aThis) {
+	}
+
+	@Override
+	public void visit(CollateExpression aThis) {
+	}
+
+	@Override
+	public void visit(SimilarToExpression aThis) {
 	}
 
 

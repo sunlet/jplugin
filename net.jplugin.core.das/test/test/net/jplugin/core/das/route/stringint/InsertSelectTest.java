@@ -20,6 +20,10 @@ public class InsertSelectTest {
 		DataSource dataSource = DataSourceFactory.getDataSource("router-db");
 		Connection conn = dataSource.getConnection();
 		Connection connReal = DataSourceFactory.getDataSource("database").getConnection();
+		
+		//验证Hash自动建表功能
+		AssertKit.assertEqual(0, getCount(conn,"select/*spantable*/ count(*) from tb_route0",null));
+		
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"a",1,"a"} );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"b",1,null} );
 		SQLTemplate.executeInsertSql(conn, "insert into tb_route0(f1,f2,f3) values(?,?,?)",new Object[]{"c",1,"a"} );
@@ -30,7 +34,7 @@ public class InsertSelectTest {
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_1"));
 		AssertKit.assertEqual(3, getCount(connReal,"select count(*) from tb_route0_2"));
 		
-		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1='a'"));
+		AssertKit.assertEqual(1, getCount(conn,"select count(*) from helloSchema.tb_route0 where f1='a'"));
 		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1=?",new Object[]{"a"}));
 		AssertKit.assertEqual(1, getCount(conn,"select count(*) from tb_route0 where f1='b'"));
 		AssertKit.assertEqual(0, getCount(conn,"select count(*) from tb_route0 where f1='ab'"));

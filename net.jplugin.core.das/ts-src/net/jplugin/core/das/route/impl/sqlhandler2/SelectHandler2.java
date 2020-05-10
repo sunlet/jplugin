@@ -7,6 +7,7 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.route.api.RouterKeyFilter;
 import net.jplugin.core.das.route.api.RouterKeyFilter.Operator;
 import net.jplugin.core.das.route.api.RouterException;
+import net.jplugin.core.das.route.impl.conn.SqlHandleResult.CommandType;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.Meta;
 import net.jplugin.core.das.route.impl.util.SelectSqlKit;
 import net.sf.jsqlparser.expression.Expression;
@@ -54,7 +55,13 @@ public class SelectHandler2 extends AbstractCommandHandler2 {
 	
 	@Override
 	protected void temporyChangeTableNameTo(String nm) {
-		((Table)this.innerSelect.getFromItem()).setName(nm);
+//		((Table)this.innerSelect.getFromItem()).setName(nm);
+		TableNameReplacerKit.handleSelect(this.innerSelect, nm);
+	}
+
+	@Override
+	protected CommandType getCommandType() {
+		return CommandType.SELECT;
 	}
 	
 //	@Override

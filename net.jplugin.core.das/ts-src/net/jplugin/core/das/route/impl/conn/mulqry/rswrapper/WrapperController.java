@@ -3,7 +3,7 @@ package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 
 public interface WrapperController {
 	
@@ -11,7 +11,7 @@ public interface WrapperController {
 	 * 用来初始化context。比如把Limit部分拿出来供Wrapper使用，并修改一下Statement。
 	 * @param ctx
 	 */
-	void handleContextInitial(CombinedSqlContext ctx);
+	void handleContextInitial(CombinedSelectContext ctx);
 	
 	/**
 	 * 判断是否需要包装ResultSet

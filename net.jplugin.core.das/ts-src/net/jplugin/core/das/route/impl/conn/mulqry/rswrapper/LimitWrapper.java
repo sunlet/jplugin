@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.LimitWrapperController.LimitInfo;
 
 public class LimitWrapper implements ResultSet{
@@ -45,7 +45,7 @@ public class LimitWrapper implements ResultSet{
 					break;
 				}
 			} catch (SQLException e) {
-				throw new RuntimeException("Sql feth for limit error."+CombinedSqlContext.get().getOriginalSql());
+				throw new RuntimeException("Sql feth for limit error."+CombinedSelectContext.get().getOriginalSql());
 			}
 		}
 	}

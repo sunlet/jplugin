@@ -7,9 +7,13 @@ import net.jplugin.core.kernel.api.CoreServicePriority;
 import test.net.jplugin.core.das.route.date.DateTest;
 import test.net.jplugin.core.das.route.date.DbCreateDate;
 import test.net.jplugin.core.das.route.dynamicds.DynamicDsTest;
-import test.net.jplugin.core.das.route.dynamicds.DynamicDsTestProvider;
 import test.net.jplugin.core.das.route.groupby.DBGroupByTest;
 import test.net.jplugin.core.das.route.groupby.DbGroupByDDL;
+import test.net.jplugin.core.das.route.kit.NameReplaceKitTest;
+import test.net.jplugin.core.das.route.notExistTable.NotExistsTableTest;
+import test.net.jplugin.core.das.route.span_dml.MultiExecuteTest;
+import test.net.jplugin.core.das.route.span_dml.SpanInsertTest;
+import test.net.jplugin.core.das.route.span_dml.SpanUpdateDeleteTest;
 import test.net.jplugin.core.das.route.stringint.DbCreateStringInt;
 import test.net.jplugin.core.das.route.stringint.DeleteTest;
 import test.net.jplugin.core.das.route.stringint.InsertSelectTest;
@@ -18,6 +22,8 @@ import test.net.jplugin.core.das.route.where.InSectUtilTest;
 import test.net.jplugin.core.das.route.where.VisitorExpressionManagerTest;
 import test.net.jplugin.core.das.route.where.WhereExpressionVisitorTest;
 import test.net.jplugin.core.das.route.where.funcs.MytestFunctionHandler;
+import test.net.jplugin.core.das.sqlhandler.date.DateHandleTest;
+import test.net.jplugin.core.das.sqlhandler.date.HashHandlerTest;
 
 public class Plugin extends AbstractPluginForTest {
 
@@ -37,11 +43,27 @@ public class Plugin extends AbstractPluginForTest {
 	
 	@Override
 	public void test() throws Throwable {
+		new HashHandlerTest().test();
+		new DateHandleTest().test();
+		
+		DbCreateStringInt.drop();
+		new NotExistsTableTest().test();
+		
+		DbCreateStringInt.create();
+		new MultiExecuteTest().test();
+		
+		DbCreateStringInt.create();
+		new SpanUpdateDeleteTest().test();
+		
+		DbCreateStringInt.create();
+		new SpanInsertTest().test();
+		
 		DbGroupByDDL.create();
 		new DBGroupByTest().test();
 		
 		DbCreateStringInt.create();
 		new InsertSelectTest().test();
+
 		DbCreateStringInt.create();
 		new UpdateTest().test();
 		DbCreateStringInt.create();
@@ -52,6 +74,7 @@ public class Plugin extends AbstractPluginForTest {
 		new VisitorExpressionManagerTest().test();
 		new InSectUtilTest().test();
 		new DynamicDsTest().test();
+		new NameReplaceKitTest().test();
 	}
 
 	@Override

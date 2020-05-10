@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
@@ -148,6 +149,21 @@ public class SqlSessionAdaptor implements SqlSession {
 
 	public int update(String arg0) {
 		return inner.update(arg0);
+	}
+
+	@Override
+	public <T> Cursor<T> selectCursor(String arg0) {
+		return inner.selectCursor(arg0);
+	}
+
+	@Override
+	public <T> Cursor<T> selectCursor(String arg0, Object arg1) {
+		return inner.selectCursor(arg0, arg1);
+	}
+
+	@Override
+	public <T> Cursor<T> selectCursor(String arg0, Object arg1, RowBounds arg2) {
+		return inner.selectCursor(arg0, arg1, arg2);
 	}
 	
 

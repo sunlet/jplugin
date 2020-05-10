@@ -5,13 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.util.SelectSqlKit;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.statement.select.GroupByElement;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectBody;
@@ -28,7 +29,7 @@ public class GroupByWrapperController implements WrapperController{
 	
 	@Override
 	public boolean needWrap() {
-		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
+		CombinedSelectContext combinedSqlContext = CombinedSelectContext.get();
 		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
 		if (b!=null && b){
 			return true;
@@ -48,14 +49,14 @@ public class GroupByWrapperController implements WrapperController{
 
 	@Override
 	public ResultSet wrap(ResultSet rs) throws SQLException {
-		CombinedSqlContext combinedSqlContext = CombinedSqlContext.get();
+		CombinedSelectContext combinedSqlContext = CombinedSelectContext.get();
 		Boolean b = (Boolean) combinedSqlContext.getAttribute(USING_GROUPBY);
 		if (b!=null && b){
 			try {
 				List<SelectItem> initialItems = (List<SelectItem>) combinedSqlContext.getAttribute(GROUPBY_SQL_SELECTLIST);
 				rs = new GroupByWrapper(rs,initialItems);
 			} catch (SQLException e) {
-				throw new RuntimeException(e.getMessage()+" "+CombinedSqlContext.get().getOriginalSql(),e);
+				throw new RuntimeException(e.getMessage()+" "+CombinedSelectContext.get().getOriginalSql(),e);
 			}
 			
 			List<OrderByElement> oldOrderBy = (List<OrderByElement>) combinedSqlContext.getAttribute(OLD_ORDERBY);
@@ -67,11 +68,19 @@ public class GroupByWrapperController implements WrapperController{
 	}
 
 	@Override
-	public void handleContextInitial(CombinedSqlContext ctx) {
+	public void handleContextInitial(CombinedSelectContext ctx) {
 //		if (1==2){
 			SelectBody bd = ctx.getStatement().getSelectBody();
 			PlainSelect inner = SelectSqlKit.getMostInnerSelect(bd, ctx.getOriginalSql());
-			List<Expression> groupbylist = inner.getGroupByColumnReferences();
+//			List<Expression> groupbylist = inner.getGroupByColumnReferences();
+			
+			GroupByElement groupBy = inner.getGroupBy();
+			List<Expression> groupbylist=null;
+			if (groupBy!=null) {
+				groupbylist = groupBy.getGroupByExpressions();
+			}
+			
+//			List<Expression> groupbylist = inner.getGroupBy();
 			
 			if (groupbylist!=null && !groupbylist.isEmpty()){
 				//产生ExpressionList, 这里用一个新的List，因为后面这个List会修改，增加一个新的项目
@@ -131,10 +140,6 @@ public class GroupByWrapperController implements WrapperController{
 		item.setAlias(new Alias("_GROUP_BY_AUTOADD_"));
 		return item;
 	}
-
-
-	
-
 
 
 }

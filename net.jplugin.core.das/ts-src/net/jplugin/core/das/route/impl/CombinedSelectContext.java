@@ -2,14 +2,17 @@ package net.jplugin.core.das.route.impl;
 
 import net.jplugin.common.kits.AttributedObject;
 import net.jplugin.core.das.route.api.DataSourceInfo;
+import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser.ParseResult;
+import net.jplugin.core.das.route.impl.conn.mulqry.rswrapper.WrapperManager;
+import net.jplugin.core.das.route.impl.util.SqlParserKit;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Limit;
 import net.sf.jsqlparser.statement.select.Select;
 
-public class CombinedSqlContext extends AttributedObject {
-	private static final String COMBINED_SQL_CONTEXT = "COMBINED_SQL_CONTEXT";
+public class CombinedSelectContext extends AttributedObject {
+	private static final String COMBINED_SELECT_CONTEXT = "COMBINED_SELECT_CONTEXT";
 
 	private String originalTableName;
 	/**
@@ -29,13 +32,40 @@ public class CombinedSqlContext extends AttributedObject {
 	 */
 	private String finalSql;
 
-	public static CombinedSqlContext get(){
-			ThreadLocalContext ctx = ThreadLocalContextManager.instance.getContext();
-			return (CombinedSqlContext) ctx.getAttribute(COMBINED_SQL_CONTEXT);
+	
+	public static CombinedSelectContext makeContext(ParseResult pr) {
+		CombinedSelectContext ctx = new CombinedSelectContext();
+		String originalSql = pr.getSql();
+		ctx.setOriginalSql(originalSql);
+		ctx.setDataSourceInfos(pr.getMeta().getDataSourceInfos());
+		ctx.setOriginalTableName(pr.getMeta().getSourceTb());
+		
+		Statement statement = SqlParserKit.parse(originalSql);
+//		try {
+//			CCJSqlParserManager pm = new CCJSqlParserManager();
+////			pm.parse(new StringReader(originalSql));
+////			CCJSqlParser parser = new CCJSqlParser(new StringReader(originalSql));
+//			statement =   pm.parse(new StringReader(originalSql));
+//		} catch (Exception e) {
+//			throw new RuntimeException("sql parse error:"+originalSql);
+//		}
+		
+		ctx.setStatement((Select) statement);
+		WrapperManager.INSTANCE.handleContextInitial(ctx);
+		ctx.setFinalSql(ctx.getStatement().toString());//设置最终sql
+		
+		//设置
+		CombinedSelectContext.set(ctx);
+		return ctx;
 	}
-	public static void set(CombinedSqlContext o) {
+	
+	public static CombinedSelectContext get(){
+			ThreadLocalContext ctx = ThreadLocalContextManager.instance.getContext();
+			return (CombinedSelectContext) ctx.getAttribute(COMBINED_SELECT_CONTEXT);
+	}
+	public static void set(CombinedSelectContext o) {
 		ThreadLocalContext ctx = ThreadLocalContextManager.instance.getContext();
-		ctx.setAttribute(COMBINED_SQL_CONTEXT,o);
+		ctx.setAttribute(COMBINED_SELECT_CONTEXT,o);
 	}
 
 	public String getOriginalSql() {

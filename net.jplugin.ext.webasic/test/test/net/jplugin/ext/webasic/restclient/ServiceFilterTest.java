@@ -6,7 +6,7 @@ import net.jplugin.ext.webasic.api.InvocationContext;
 public class ServiceFilterTest implements IInvocationFilter {
 
 	public boolean before(InvocationContext ctx) {
-		System.out.println("###2Before Call service:"+ctx.getServicePath()+"-"+ctx.getMethod().getName());
+		System.out.println("###2Before Call service:"+ctx.getServicePath()+"-"+ctx.getMethod());
 		return true;
 	}
 

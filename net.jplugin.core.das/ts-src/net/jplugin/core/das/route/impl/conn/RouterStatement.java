@@ -7,11 +7,16 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import com.mysql.jdbc.PreparedStatement;
+
 import net.jplugin.core.das.api.DataSourceFactory;
 import net.jplugin.core.das.route.api.SqlHandleService;
 import net.jplugin.core.das.route.api.TablesplitException;
+import net.jplugin.core.das.route.impl.autocreate.TableExistsMaintainer;
+import net.jplugin.core.das.route.impl.autocreate.TableExistsMaintainer.MaintainReturn;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombineStatementFactory;
 import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.jplugin.core.das.route.impl.conn.nrs.NoneResultStatement;
 
 public class RouterStatement extends EmptyStatement {
 	protected RouterConnection connection;
@@ -145,26 +150,41 @@ public class RouterStatement extends EmptyStatement {
 	 * @return
 	 * @throws SQLException
 	 */
-	public  Result genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
+	private  Result genTargetNotPreparedStatement(RouterConnection conn,String sql) throws SQLException {
 		if (sql==null) throw new TablesplitException("No sql found");
 		SqlHandleResult shr = SqlHandleService.INSTANCE.handle(conn,sql);
 		
 		LogUtil.instance.log(shr);
 		
-		String targetDataSourceName = shr.getTargetDataSourceName();
+		//处理无存在的表的特殊情况
+		String  dsForMakeDymmy = shr.getDataSourceInfos()[0].getDsName();
+		MaintainReturn maintainResult = TableExistsMaintainer.maintainAndCheckNoneResult(shr);
+		if (maintainResult.isSpecialCondition()){
+			Result temp = SpecialReturnHandler.hanleSpecialConditionForStatement(maintainResult,this.connection,DataSourceFactory.getDataSource(dsForMakeDymmy).getConnection());
+			this.executeResult.set(temp.statement);
+			return temp;
+		}
+		
 		Statement stmt;
-		if (CombinedSqlParser.SPANALL_DATASOURCE.equals(targetDataSourceName)){
+		//根据不同状态获取不同的statement
+		if (!shr.singleTable()){
 			stmt = CombineStatementFactory.create(connection);
 		}else{
-			DataSource tds = DataSourceFactory.getDataSource(targetDataSourceName);
+			String dsname = shr.getDataSourceInfos()[0].getDsName();
+			DataSource tds = DataSourceFactory.getDataSource(dsname);
 			if (tds==null) 
-				throw new TablesplitException("Can't find target datasource."+shr.getTargetDataSourceName());
+				throw new TablesplitException("Can't find target datasource."+dsname);
 			stmt = tds.getConnection().createStatement();
 		}
 		Result result = new Result();
 		result.statement = stmt;
 		this.executeResult.set(result.statement);
-		result.resultSql = shr.resultSql;
+		
+		//根据不同状态使用不同的sql
+		if (shr.singleTable())
+			result.resultSql = shr.resultSql;
+		else
+			result.resultSql = shr.getEncodedSql();
 		return result;
 	}
 	

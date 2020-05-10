@@ -15,7 +15,9 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
@@ -35,11 +37,12 @@ import net.jplugin.core.log.api.Logger;
  * @author 湖畔微风
  * 
  */
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class})})
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public abstract class PageInterceptor implements Interceptor {
     private static final Logger logger = LogFactory.getLogger(PageInterceptor.class);
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
+    private static final ReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
     private static final String defaultDialect = "mysql"; // 数据库类型(默认为mysql)
     private static final String defaultPageSqlId = ".*Page$"; // 需要拦截的ID(正则匹配)
 //    private static String dialect = ""; // 数据库类型(默认为mysql)
@@ -49,16 +52,16 @@ public abstract class PageInterceptor implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
         MetaObject metaStatementHandler = MetaObject.forObject(statementHandler, DEFAULT_OBJECT_FACTORY,
-                DEFAULT_OBJECT_WRAPPER_FACTORY);
+                DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
         // 分离代理对象链(由于目标类可能被多个拦截器拦截，从而形成多次代理，通过下面的两次循环可以分离出最原始的的目标类)
         while (metaStatementHandler.hasGetter("h")) {
             Object object = metaStatementHandler.getValue("h");
-            metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
+            metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
         }
         // 分离最后一个代理对象的目标类
         while (metaStatementHandler.hasGetter("target")) {
             Object object = metaStatementHandler.getValue("target");
-            metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY);
+            metaStatementHandler = MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
         }
         Configuration configuration = (Configuration) metaStatementHandler.getValue("delegate.configuration");
         String dialect = configuration.getVariables().getProperty("dialect");
@@ -112,7 +115,10 @@ public abstract class PageInterceptor implements Interceptor {
     private void setPageParameter(String sql, Connection connection, MappedStatement mappedStatement,
             BoundSql boundSql, PageCond page) throws SQLException {
         // 记录总记录数
-        String countSql = "select count(0) from (" + sql + ")  total";
+    	
+    	//旧实现  String countSql = "select count(0) from (" + sql + ")  total";
+        String countSql = CountSqlParser.getSmartCountSql(sql);
+        
         PreparedStatement countStmt = null;
         ResultSet rs = null;
         try {

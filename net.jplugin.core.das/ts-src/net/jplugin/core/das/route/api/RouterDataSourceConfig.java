@@ -1,7 +1,8 @@
 package net.jplugin.core.das.route.api;
 
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.das.api.DataSourceFactory;
@@ -35,6 +36,7 @@ import net.jplugin.core.das.route.impl.TsAlgmManager;
  */
 public class RouterDataSourceConfig {
 	private static final Object PROP_DATA_SOURCE_NUM = "data-source-num";
+	private static final Object PROP_COMMENT_REQUIRED_FOR_SPAN = "comment-required-for-span";
 	private static final String DSC_PREFIX = "ds-";
 	private static final String DS_NAME = "name";
 	private static final String DS_WEIGHT = "weight";
@@ -45,6 +47,11 @@ public class RouterDataSourceConfig {
 	private static final String TABLE_SPLITS = "splits";
 	private static final String TABLE_KEY = "key";
 	private static final String CREATION_SQL = "creation-sql";
+	private static final String CREATION_BEFORE_DAYS= "creation-before-days";
+	private static final String CREATION_AFTER_DAYS = "creation-after-days";
+	
+	private static final String PROP_ALLOWED_SCHEMAS =  "allowed-schemas";
+	private static final String PROP_ALLOW_NO_SCHEMA =  "allow-no-schema";
 	
 	public static class DataSourceConfig{
 		String dataSourceName;
@@ -63,6 +70,8 @@ public class RouterDataSourceConfig {
 		int splits;
 		String keyField;
 		String creationSql;
+		int creationBeforeDays;//只对时间相关算法有效
+		int creationAfterDays;//只对时间相关算法有效
 		public String getTableName() {
 			return tableName;
 		}
@@ -78,12 +87,18 @@ public class RouterDataSourceConfig {
 		public String getCreationSql() {
 			return creationSql;
 		}
-		
-		
+		public int getCreationBeforeDays() {
+			return creationBeforeDays;
+		}
+		public int getCreationAfterDays() {
+			return creationAfterDays;
+		}
 	}
 	private DataSourceConfig[] dataSourceCfgs;
 	private TableConfig[] tableConfigs;
-	
+	private Set<String> allowedSchemas;//默认是空Set
+	private boolean allowNoSchema = true; //是否可以没有schemaname访问，默认是true
+	private boolean commentRequiredForSpan = false;//是否需要span注释标记才能跨表，默认false
 	
 	
 	public DataSourceConfig[] getDataSourceConfig() {
@@ -92,6 +107,18 @@ public class RouterDataSourceConfig {
 
 	public TableConfig[] getTableConfig() {
 		return tableConfigs;
+	}
+	
+	public Set<String> getAllowedSchemas() {
+		return allowedSchemas;
+	}
+	
+	public boolean isAllowNoSchema(){
+		return allowNoSchema;
+	}
+	
+	public boolean isCommentRequiredForSpan() {
+		return commentRequiredForSpan;
 	}
 	
 	public TableConfig findTableConfig(String tableBaseName) {
@@ -121,14 +148,39 @@ public class RouterDataSourceConfig {
 	
 	public void fromProperties(Map<String,String> prop){
 		String temp = trim((String) prop.get(PROP_DATA_SOURCE_NUM));
+		if (temp!=null) temp = temp.trim();
 		if (StringKit.isNull(temp))
 			throw new RuntimeException(PROP_DATA_SOURCE_NUM +" not configed");
 		int dataSourceNum = Integer.parseInt(temp);
 		
 		temp = trim((String) prop.get(PROP_TABLE_NUM));
+		if (temp!=null) temp = temp.trim();
 		if (StringKit.isNull(temp))
 			throw new RuntimeException(PROP_TABLE_NUM +" not configed");
 		int tableNum = Integer.parseInt(temp);
+		
+		//允许的Schema
+		temp = (String) prop.get(PROP_ALLOWED_SCHEMAS);
+		this.allowedSchemas = new HashSet();
+		if (temp!=null) {
+			temp = temp.trim().toUpperCase();
+			String[] schemaNames = StringKit.splitStr(temp, ",");
+			for (String as : schemaNames)
+				this.allowedSchemas.add(as);
+		}
+		//是否允许无schema,默认 true
+		temp = (String) prop.get(PROP_ALLOW_NO_SCHEMA);
+		if (temp!=null) temp = temp.trim();
+		if (StringKit.isNotNull(temp)){
+			this.allowNoSchema = Boolean.parseBoolean(temp);
+		}
+		
+		//默认是false
+		temp = (String) prop.get(PROP_COMMENT_REQUIRED_FOR_SPAN);
+		if (temp!=null) temp = temp.trim();
+		if (StringKit.isNotNull(temp)){
+			this.commentRequiredForSpan = Boolean.parseBoolean(temp);
+		}
 		
 		
 		tableConfigs =  new TableConfig[tableNum];
@@ -138,6 +190,8 @@ public class RouterDataSourceConfig {
 			String splits = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_SPLITS));
 			String keyField = trim(prop.get(TABLE_PREFIX+i+"-"+TABLE_KEY));
 			String creationSql =  trim(prop.get(TABLE_PREFIX+i+"-"+CREATION_SQL));
+			String creationBeforeDays = trim(prop.getOrDefault(TABLE_PREFIX+i+"-"+CREATION_BEFORE_DAYS,"-1"));
+			String creationAfterDays = trim(prop.getOrDefault(TABLE_PREFIX+i+"-"+CREATION_AFTER_DAYS,"-1"));
 			
 			if (StringKit.isNull(tableName))
 				throw new RuntimeException("router datasource error,"+TABLE_PREFIX+i+"-"+TABLE_NAME+"  not found.");
@@ -155,6 +209,8 @@ public class RouterDataSourceConfig {
 			tc.splits = Integer.parseInt(splits);
 			tc.keyField = keyField;
 			tc.creationSql = creationSql;
+			tc.creationBeforeDays = Integer.parseInt(creationBeforeDays);
+			tc.creationAfterDays = Integer.parseInt(creationAfterDays);
 			tableConfigs[i] = tc;
 		}
 		

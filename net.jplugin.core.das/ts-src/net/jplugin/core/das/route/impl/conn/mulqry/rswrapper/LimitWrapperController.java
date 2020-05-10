@@ -2,7 +2,7 @@ package net.jplugin.core.das.route.impl.conn.mulqry.rswrapper;
 
 import java.sql.ResultSet;
 
-import net.jplugin.core.das.route.impl.CombinedSqlContext;
+import net.jplugin.core.das.route.impl.CombinedSelectContext;
 import net.jplugin.core.das.route.impl.util.SelectSqlKit;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.JdbcParameter;
@@ -17,7 +17,7 @@ public class LimitWrapperController implements WrapperController{
 
 	@Override
 	public boolean needWrap() {
-		Object limitinfo = CombinedSqlContext.get().getAttribute(LIMIT_INFO);
+		Object limitinfo = CombinedSelectContext.get().getAttribute(LIMIT_INFO);
 		if (limitinfo !=null)
 			return true;
 		return false;
@@ -25,12 +25,12 @@ public class LimitWrapperController implements WrapperController{
 
 	@Override
 	public ResultSet wrap(ResultSet rs) {
-		LimitInfo info = (LimitInfo) CombinedSqlContext.get().getAttribute(LIMIT_INFO);
+		LimitInfo info = (LimitInfo) CombinedSelectContext.get().getAttribute(LIMIT_INFO);
 		return new LimitWrapper(rs,info);
 	}
 
 	@Override
-	public void handleContextInitial(CombinedSqlContext ctx) {
+	public void handleContextInitial(CombinedSelectContext ctx) {
 		SelectBody bd = ctx.getStatement().getSelectBody();
 		PlainSelect inner = SelectSqlKit.getMostInnerSelect(bd, ctx.getOriginalSql());
 		Limit limit = inner.getLimit();

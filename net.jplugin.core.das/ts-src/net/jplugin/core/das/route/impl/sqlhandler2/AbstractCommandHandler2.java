@@ -1,6 +1,5 @@
 package net.jplugin.core.das.route.impl.sqlhandler2;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +13,12 @@ import net.jplugin.core.das.route.api.TablesplitException;
 import net.jplugin.core.das.route.impl.TsAlgmManager;
 import net.jplugin.core.das.route.impl.conn.RouterConnection;
 import net.jplugin.core.das.route.impl.conn.SqlHandleResult;
-import net.jplugin.core.das.route.impl.conn.mulqry.CombinedSqlParser;
+import net.jplugin.core.das.route.impl.conn.SqlHandleResult.CommandType;
+import net.jplugin.core.das.route.impl.util.SqlParserKit;
 import net.jplugin.core.kernel.api.RefAnnotationSupport;
 import net.jplugin.core.log.api.Logger;
 import net.jplugin.core.log.api.RefLogger;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.parser.CCJSqlParser;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -27,12 +26,15 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 
 public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
+	public static final String __THE_TB_SPS_HDR__ = "__THE_TB_SPS_HDR__";
 	protected net.sf.jsqlparser.statement.Statement statement =null;
 	protected String sqlString;
 	protected RouterConnection connetion;
 	protected List<Object> parameters;
 	private String tableName;
 	private TableConfig tableConfig;
+	private CommandType commandType;
+	
 	
 	/*
 	 * <pre>
@@ -95,12 +97,7 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		
     	net.sf.jsqlparser.statement.Statement stmt;
     	
-		try {
-			CCJSqlParser parser = new CCJSqlParser(new StringReader(sql));
-			stmt = parser.Statement();
-		} catch (Exception e) {
-			throw new RuntimeException("sql parse error:"+sql);
-		}
+		stmt = SqlParserKit.parse(sql);
     	
     	AbstractCommandHandler2 instance;
     	if (stmt instanceof Select){
@@ -114,11 +111,24 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
     	}else{
     		throw new RuntimeException("not supported sql for route:"+sql);
     	}
+    	
+    	//验证schema合法性，并去除schema前缀
+    	SchemaCheckUtil.checkAndRemoveSchema(conn,stmt,sql);
     
     	instance.statement = stmt;
     	instance.connetion = conn;
     	instance.parameters = params;
     	instance.sqlString = sql;
+    	
+//    	//如果需要注释才能span，才获取span标记
+//    	if (conn.getDataSource().getConfig().isCommentRequiredForSpan()){
+//        	instance.spanTable = SpanCheckKit.isSpanTable(sql);    		
+//    	}
+
+//    	//insert 不支持spantable
+//    	if (instance.spanTable && (stmt instanceof Insert)){
+//    		throw new TablesplitException("Insert sql not support spantable.");
+//    	}
     	return instance;
 	}
 	
@@ -130,6 +140,8 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 //	protected void maintainSqlMeta(Meta meta) {
 //	}
 	protected abstract void temporyChangeTableNameTo(String nm);
+	
+	protected abstract CommandType getCommandType();
 	
 	
 	public final  SqlHandleResult handle(){
@@ -175,27 +187,70 @@ public abstract class AbstractCommandHandler2 extends RefAnnotationSupport{
 		
 		SqlHandleResult result = new SqlHandleResult();
 
+
 		if (algmResults==null || algmResults.length==0){
 			throw new RuntimeException("Can't find the dest table.");
 		}else if (algmResults.length==1 && algmResults[0].getDestTbs().length==1){
-			result.setTargetDataSourceName(algmResults[0].getDsName());
+			//设置sql
 			String finalSql = getFinalSql(algmResults[0].getDestTbs()[0]);
 			result.setResultSql(finalSql);
-			return result;
 		}else{
-			CombinedSqlParser.Meta meta = new CombinedSqlParser.Meta();
-			meta.setSourceTb(tableName);
-			meta.setDataSourceInfos(algmResults);
+			//如果是insert，直接错误
+			if (this.statement instanceof Insert)
+				throw new TablesplitException("Insert cant' support span table now. "+this.sqlString );
 			
-//			RouterConnectionCallContext.setStatement(this.statement);
-//			maintainSqlMeta(meta);//维护OrderBy，count 
-//			RouterConnectionCallContext.setMeta(meta);
+			//检查span注释是否有
+			if (this.connetion.getDataSource().getConfig().isCommentRequiredForSpan()){
+				if (!SpanCheckKit.isSpanTable(this.sqlString))
+					throw new TablesplitException("table not use spantable,can't span. "+this.sqlString);
+			}
 			
-			String newSql = CombinedSqlParser.combine(sqlString, meta);
-			result.setResultSql(newSql);
-			result.setTargetDataSourceName(CombinedSqlParser.SPANALL_DATASOURCE);
-			return result;
+			//设置sql
+			String targetSql = getFinalSql(__THE_TB_SPS_HDR__);
+			result.setResultSql(targetSql);
 		}
+		
+		result.setCommandType(this.getCommandType());
+		result.setDataSourceInfos(algmResults);
+		result.setSourceTable(tableName);
+		result.setTableConfig(tableConfig);
+		result.setStatement(statement);
+		return result;
+//		if (algmResults==null || algmResults.length==0){
+//			throw new RuntimeException("Can't find the dest table.");
+//		}else if (algmResults.length==1 && algmResults[0].getDestTbs().length==1){
+//			result.setTargetDataSourceName(algmResults[0].getDsName());
+//			String finalSql = getFinalSql(algmResults[0].getDestTbs()[0]);
+//			result.setResultSql(finalSql);
+//			result.setTargetTable(tableName);
+//			return result;
+//		}else{
+//			
+//			//如果是insert，直接错误
+//			if (this.statement instanceof Insert)
+//				throw new TablesplitException("Insert cant' support span table now. "+this.sqlString );
+//			
+//			//检查span注释是否有
+//			if (this.connetion.getDataSource().getConfig().isCommentRequiredForSpan()){
+//				if (!SpanCheckKit.isSpanTable(this.sqlString))
+//					throw new TablesplitException("table not use spantable,can't span. "+this.sqlString);
+//			}
+//			
+//			
+//			CombinedSqlParser.Meta meta = new CombinedSqlParser.Meta();
+//			meta.setSourceTb(tableName);
+//			meta.setDataSourceInfos(algmResults);
+//			
+////			RouterConnectionCallContext.setStatement(this.statement);
+////			maintainSqlMeta(meta);//维护OrderBy，count 
+////			RouterConnectionCallContext.setMeta(meta);
+//			String targetSql = getFinalSql(__THE_TB_SPS_HDR__);
+//			String newSql = CombinedSqlParser.combine(targetSql, meta);
+//			result.setResultSql(newSql);
+//			result.setTargetDataSourceName(CombinedSqlParser.SPAN_DATASOURCE);
+//			result.setTargetTable(tableName);
+//			return result;
+//		}
 	}
 	
 	private DataSourceInfo[] getDataSourceInfosFromKeyValueArr(RouterKeyFilter[] keyValueArr) {
