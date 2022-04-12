@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="default">
+	<!--注意：当用jplugin2.0.2-SNAPSHOT以后的版本，项目是war，并且想使用 嵌入式tomcat编译出来zip包时，用这个部署文件。相对于旧版本的zip包此编译方式支持jsp。此版本为以后的推荐使用方式！-->
+	<!--下面注释的内容加入pom.xml的build节点当中
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>cp-config</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<ant antfile="build-plugin-emb-tomcat-boot.xml">
+									<property name="artifactId" value="${artifactId}" />
+									<property name="project.version"
+										value="${project.version}" />
+									<property name="project.build.directory"
+										value="${project.build.directory}" />
+									<property name="basedir" value="${basedir}" />
+								</ant>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	-->
+	
+	<target name="copy">
+		
+		<!-- copy jars -->
+		<copy todir="${project.build.directory}/boot-${artifactId}/application/lib">
+			<fileset dir="${project.build.directory}/${artifactId}-${project.version}/WEB-INF/lib" includes="*.jar">
+			</fileset>
+		</copy>
+		<!-- make jar from classes-->
+		<jar destfile="${project.build.directory}/boot-${artifactId}/application/lib/${artifactId}-${project.version}.jar">
+			<fileset dir="${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes" includes="**/*.*">
+			</fileset>
+		</jar>
+		<!-- make shells-->
+		<mkdir dir="${project.build.directory}/boot-${artifactId}/bin" />
+		<taskdef name="createBins" classname="net.jplugin.common.kits.ant.CreateBinsTask">
+			<classpath>
+				<fileset dir="${project.build.directory}/boot-${artifactId}/application/lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+		<createBins dir="${project.build.directory}/boot-${artifactId}/bin">
+		</createBins>
+
+		<!-- copy config files -->
+		<mkdir dir="${project.build.directory}/boot-${artifactId}/application/config" />
+		<copy todir="${project.build.directory}/boot-${artifactId}/application/config">
+			<fileset dir="${basedir}/src/main/resources/config" includes="**/*.*" />
+		</copy>
+
+		<available file="${basedir}/src/main/webapp" property="webappProj">
+		</available>
+		<echo>@@@webappProj=${webappProj}</echo>
+	</target>
+	<target name="mkweb" if="webappProj">
+		<!-- copy web files -->
+		<mkdir dir="${project.build.directory}/boot-${artifactId}/application/web" />
+		<copy todir="${project.build.directory}/boot-${artifactId}/application/web">
+			<fileset dir="${basedir}/src/main/webapp" includes="**/*.*" erroronmissingdir="false" />
+		</copy>
+		<!-- zip-->
+	</target>
+	<target name="default" depends="copy,mkweb">
+		<zip destfile="${project.build.directory}/boot-${artifactId}.zip" basedir="${project.build.directory}/boot-${artifactId}" includes="**/*.*" />
+	</target>	
+
+
+</project>

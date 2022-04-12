@@ -1,0 +1,291 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.jplugin</groupId>
+	<artifactId>jplugin-core</artifactId>
+	<!-- >version>2.0.0-SNAPSHOT</version-->
+	<version>1.9.0</version>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-ext-event</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-ext-das-ts</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-common-kits</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-common-kits-http</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-config</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-ctx</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-das</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-kernel</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-log</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-rclient</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-core-service</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>net.jplugin.core</groupId> <artifactId>jplugin-ext-das-hib</artifactId> 
+			<version>0.0.2-SNAPSHOT</version> </dependency> -->
+
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-ext-das-mybatis</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-ext-gtrace</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-ext-mtenant</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<!-- <dependency> <groupId>net.jplugin.core</groupId> <artifactId>jplugin-ext-token</artifactId> 
+			<version>0.0.2-SNAPSHOT</version> </dependency> -->
+		<dependency>
+			<groupId>net.jplugin.core</groupId>
+			<artifactId>jplugin-ext-webasic</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<configuration>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createSourcesJar>true</createSourcesJar>
+							<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+							<!-- 包含要合并的模块 -->
+							<artifactSet>
+								<includes>
+									<include>net.jplugin.core:jplugin-ext-das-ts</include>
+									<include>net.jplugin.core:jplugin-common-kits</include>
+									<include>net.jplugin.core:jplugin-common-kits-http</include>
+									<include>net.jplugin.core:jplugin-core-config</include>
+									<include>net.jplugin.core:jplugin-core-ctx</include>
+									<include>net.jplugin.core:jplugin-core-das</include>
+									<include>net.jplugin.core:jplugin-core-kernel</include>
+									<include>net.jplugin.core:jplugin-core-log</include>
+									<include>net.jplugin.core:jplugin-core-rclient</include>
+									<include>net.jplugin.core:jplugin-core-service</include>
+									<!-- <include>net.jplugin.core:jplugin-ext-das-hib</include> -->
+									<include>net.jplugin.core:jplugin-ext-das-mybatis</include>
+									<include>net.jplugin.core:jplugin-ext-gtrace</include>
+									<include>net.jplugin.core:jplugin-ext-mtenant</include>
+									<!-- <include>net.jplugin.core:jplugin-ext-token</include> -->
+									<include>net.jplugin.core:jplugin-ext-webasic</include>
+									<include>net.jplugin.core:jplugin-ext-event</include>
+								</includes>
+							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>*</artifact>
+									<includes>
+										<include>net/**</include>
+									</includes>
+								</filter>
+							</filters>
+							<!-- 包含号合并的资源文件 -->
+							<!-- >transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer"> 
+								<resource>META-INF/xxxxx </resource> </transformer> </transformers -->
+
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	
+	<distributionManagement>
+        <repository>
+            <id>repository</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+    <profiles>
+        <profile>
+            <id>disable-javadoc-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+          <!-- java8版本导致javadoc打包编译失败时候，添加-->
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.3</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.0</version>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                              <!-- java8版本导致javadoc打包编译失败时候，添加-->
+                                <configuration>
+                                    <additionalparam>${javadoc.opts}</additionalparam>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/sunlet/jplugin-v2</url>
+        <connection>https://github.com/sunlet/jplugin-v2.git</connection>
+        <developerConnection>email:liuhang.163@163.com</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Luis Liu</name>
+            <email>liuhang.163@163.com</email>
+            <url>www</url>
+        </developer>
+    </developers>
+	
+	
+</project>

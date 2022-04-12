@@ -1,9 +1,0 @@
-eclipse.preferences.version=1
-encoding//src/net/jplugin/ext/token/Plugin.java=UTF-8
-encoding//src/net/jplugin/ext/token/api/ITokenService.java=UTF-8
-encoding//src/net/jplugin/ext/token/api/TokenMockSession.java=UTF-8
-encoding//src/net/jplugin/ext/token/impl/DBToken.java=UTF-8
-encoding//src/net/jplugin/ext/token/impl/TokenServiceImpl.java=UTF-8
-encoding//test/test/net/jplugin/ext/token/Plugin.java=UTF-8
-encoding//test/test/net/jplugin/ext/token/TokenTest.java=UTF-8
-encoding/<project>=UTF-8
