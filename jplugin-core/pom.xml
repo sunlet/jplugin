@@ -153,7 +153,7 @@
 
 		<module>jplugin-ext-das-hib</module>
 		<module>jplugin-ext-token</module>
-		<module>jplugin-test-main</module>
+<!--		<module>jplugin-test-main</module>-->
 
 
 	</modules>

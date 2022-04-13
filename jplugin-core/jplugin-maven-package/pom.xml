@@ -257,12 +257,12 @@
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://maven.haiziwang.com/nexus/content/repositories/snapshots/</url>
+			<url>http://maven-server:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>releases</id>
 			<name>Nexus Release Repository</name>
-			<url>http://maven.haiziwang.com/nexus/content/repositories/releases/</url>
+			<url>http://maven-server:8081/nexus/content/repositories/releases/</url>
 		</repository>
 	</distributionManagement>
 	 <!-- -->
