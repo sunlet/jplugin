@@ -20,7 +20,10 @@ public class ExtendsionClientHelper {
 		addClientProxyExtension(plugin,clazz,url,protocol,null);
 	}
 	public static void addClientProxyExtension(AbstractPlugin plugin,Class clazz,String url,String protocol,String appId){
+//		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_CLIENT_PROXY,clazz.getName(), ClientProxyDefinition.class,new String[][]{{"protocol",protocol},{"interf",clazz.getName()},{"appId",appId},{"url",url}}));
+		ClientProxyDefinition
 		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_CLIENT_PROXY,clazz.getName(), ClientProxyDefinition.class,new String[][]{{"protocol",protocol},{"interf",clazz.getName()},{"appId",appId},{"url",url}}));
+
 	}
 	public static void addClientHandlerExtension(AbstractPlugin plugin, String protocol, Class clazz) {
 		plugin.addExtension(Extension.create(net.jplugin.core.rclient.Plugin.EP_CLIENT_HANDLER, protocol,clazz));

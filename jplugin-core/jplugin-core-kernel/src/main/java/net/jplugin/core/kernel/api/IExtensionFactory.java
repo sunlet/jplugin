@@ -1,9 +1,13 @@
 package net.jplugin.core.kernel.api;
 
-public  interface IExtensionFactory<T> {
+public  interface IExtensionFactory {
 	/**
 	 *   创建一个扩展对象
 	 * @return
 	 */
-	public T create();
+	public Object create();
+
+	public Class getTargetClass();
+
+	public boolean contentEqual(IExtensionFactory f);
 }

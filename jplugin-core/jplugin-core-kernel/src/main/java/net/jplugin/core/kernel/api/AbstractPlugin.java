@@ -237,11 +237,11 @@ public abstract class AbstractPlugin implements IPlugin {
 					errors.add(new PluginError(this.getName(),"The extension is not sub class of the point required. extClass="+e.getClazz()+" required="+finder.getExtensionClass()+" point="+pname));
 				}
 				
-				if (e.getClass().equals(String.class)){
-					if (e.getProperties().size()!=1){
-						errors.add(new PluginError(this.getName(),"String type extension must has one property with the val."+e.getName() +" pointname="+pname));
-					}
-				}
+//				if (e.getClass().equals(String.class)){
+//					if (e.getProperties().size()!=1){
+//						errors.add(new PluginError(this.getName(),"String type extension must has one property with the val."+e.getName() +" pointname="+pname));
+//					}
+//				}
 			}
 		}
 		//由于目前不采用配置文件，所以不用检查extension和point中的类的存在性了。
@@ -249,7 +249,7 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	/**
-	 * @param statError
+	 * @param st
 	 */
 	public void setStatus(int st) {
 		this.status = st;
