@@ -20,9 +20,10 @@ public class Extension {
 	public static IPropertyFilter propertyFilter=null;
 	String refExtensionPoint;
 	String name;
-	Class clazz;
+	Class clazz; //目前必须有值
+	IExtensionFactory factory;//目前必须有值
 	short priority;
-	Vector<Property> propertyList=new Vector<Property>(1);
+//	Vector<Property> propertyList=new Vector<Property>(1);
 	
 	Object extensionObject;
 	
@@ -30,12 +31,13 @@ public class Extension {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer("refPoint:"+refExtensionPoint+" clazz:"+clazz.getName()+" name:"+name);
-		sb.append(" property:[");
-		for (int i=0;i<propertyList.size();i++) {
-			sb.append(propertyList.get(i).key+"-"+propertyList.get(i).value);
-			sb.append("  ");
-		}
-		sb.append("]");
+//		sb.append(" property:[");
+//		for (int i=0;i<propertyList.size();i++) {
+//			sb.append(propertyList.get(i).key+"-"+propertyList.get(i).value);
+//			sb.append("  ");
+//		}
+//		sb.append("]");
+		sb.append(" factory:[").append(this.factory).append("]");
 		return sb.toString();
 	}
 	/**
@@ -64,7 +66,8 @@ public class Extension {
 					&&
 					 StringKit.eqOrNull(name, e.name)
 					&&
-					 checkPropertyDup(propertyList,e.propertyList)
+//					 checkPropertyDup(propertyList,e.propertyList)
+					 factory.equals(e.factory)
 					&& 
 					 StringKit.eqOrNull(this.id,e.id);
 		}
@@ -106,9 +109,9 @@ public class Extension {
 		return this.clazz;
 	}
 	
-	public List<Property> getProperties(){
-		return this.propertyList;
-	}
+//	public List<Property> getProperties(){
+//		return this.propertyList;
+//	}
 	
 	public Object getObject(){
 		return extensionObject;
