@@ -34,7 +34,8 @@ public class RestMethodControllerSet4Invoker implements IControllerSet{
 
 	Set<String> servicePathSet = new HashSet();
 	public void init() {
-		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
+		Map<String, Object> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,Object.class);
+//		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
 		servicePathSet.addAll(defs.keySet());
 		ServiceInvokerSet.instance.addServices(defs);
 	}

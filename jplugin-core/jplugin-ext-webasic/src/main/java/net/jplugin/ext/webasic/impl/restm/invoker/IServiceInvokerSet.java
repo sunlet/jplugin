@@ -29,5 +29,5 @@ public interface IServiceInvokerSet {
 	public Set<String> getAcceptPaths();
 	//为了支持ESF添加
 	public IServiceInvoker getServiceInvoker(String path);
-	public void addServices(Map<String, ObjectDefine> defs);
+	public void addServices(Map<String, Object> defs);
 }

@@ -45,7 +45,7 @@ public class Plugin extends AbstractPluginForTest{
 //		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class,"nopara");
 		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class);
 
-		ExtensionWebHelper.addRemoteCallExtension(this, "/testremoteclient", ServiceBean.class);
+//		ExtensionWebHelper.addRemoteCallExtension(this, "/testremoteclient", ServiceBean.class);
 		ExtensionWebHelper.addRestMethodExtension(this, "/testrestclient", ServiceBean.class);
 		
 		ExtendsionClientHelper.addClientProxyExtension(this, IService.class,"http://localhost:8080/demo/testrestclient" ,Client.PROTOCOL_REST);
@@ -83,7 +83,7 @@ public class Plugin extends AbstractPluginForTest{
 		new TestRestClient().testProxyFactory();
 		new TestDefaultValClient().test();
 		
-		new TestRemoteClient().test();
+//		new TestRemoteClient().test();
 		new TestDynamicMethodClient().test();
 		new TestPathSearch().test();
 		new AnnoTest().test();

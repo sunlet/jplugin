@@ -217,7 +217,7 @@ public class Extension {
 	public static Extension create(String aPointName,String aName,Class cls,String[][] property){
 		return create(aPointName,aName,ObjectFactory.createFactory(cls,property));
 	}
-	private static Extension create(String aPointName,String aName,IExtensionFactory fac){
+	public static Extension create(String aPointName,String aName,IExtensionFactory fac){
 		Extension ext = new Extension();
 		ext.name = aName;
 //		ext.clazz = cls;

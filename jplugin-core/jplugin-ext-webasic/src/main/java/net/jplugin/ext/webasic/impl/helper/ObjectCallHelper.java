@@ -43,6 +43,10 @@ public class ObjectCallHelper{
 		this.objeceDefine = d;
 		initObject();
 	}
+
+	public ObjectCallHelper(Object o) {
+		svcObject = o;
+	}
 	
 	
 	public ObjectDefine getObjeceDefine() {
@@ -191,12 +195,12 @@ public class ObjectCallHelper{
 	}
 	
 	public Object invokeWithRuleSupport(ObjectAndMethod oam,Object[] paraValue) throws Throwable{
-		if (ObjectDefine.OBJ_BIZLOGIC.equals(getObjeceDefine().getObjType())){
-			//如果是业务逻辑，则不会再判断Rule 
-			return oam.method.invoke(oam.object, paraValue);
-		}else{
-			//普通方法，并且有Rule标记，则需要判断Rule Annotation
+//		if (ObjectDefine.OBJ_BIZLOGIC.equals(getObjeceDefine().getObjType())){
+//			//如果是业务逻辑，则不会再判断Rule
+//			return oam.method.invoke(oam.object, paraValue);
+//		}else{
+//			//普通方法，并且有Rule标记，则需要判断Rule Annotation
 			return RuleProxyHelper.invokeWithRule(oam.object, oam.method, paraValue);
-		}
+//		}
 	}
 }

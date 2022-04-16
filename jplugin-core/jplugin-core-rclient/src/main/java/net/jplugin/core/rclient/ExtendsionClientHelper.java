@@ -3,7 +3,7 @@ package net.jplugin.core.rclient;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.rclient.api.IClientHandler;
-import net.jplugin.core.rclient.handler.JavaRemotHandler;
+//import net.jplugin.core.rclient.handler.JavaRemotHandler;
 import net.jplugin.core.rclient.proxyfac.ClientProxyDefinition;
 import net.jplugin.core.rclient.proxyfac.ClientProxyFactory;
 

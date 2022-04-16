@@ -14,7 +14,7 @@ import net.jplugin.core.rclient.api.ITokenFetcher;
 import net.jplugin.core.rclient.handler.ClientFailHandlerManager;
 import net.jplugin.core.rclient.handler.ClientFilterRegistry;
 import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
-import net.jplugin.core.rclient.handler.JavaRemotHandler;
+//import net.jplugin.core.rclient.handler.JavaRemotHandler;
 import net.jplugin.core.rclient.handler.RestHandler;
 import net.jplugin.core.rclient.handler.ServiceUrlResolverManager;
 import net.jplugin.core.rclient.proxyfac.ClientProxyDefinition;
@@ -46,7 +46,7 @@ public class Plugin extends AbstractPlugin{
 
 		this.addExtensionPoint(ExtensionPoint.create(EP_TOKEN_FETCHER,ITokenFetcher.class,true ));
 
-		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REMOJAVA,JavaRemotHandler.class);
+//		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REMOJAVA,JavaRemotHandler.class);
 		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REST,RestHandler.class);
 	}
 	

@@ -49,8 +49,8 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 	/**
 	 * @param value
 	 */
-	public ServiceInvoker(ObjectDefine d) {
-		this.helper = new ObjectCallHelper(d);
+	public ServiceInvoker(Object o) {
+		this.helper = new ObjectCallHelper(o);
 		validate(this.helper);
 	}
 
@@ -280,14 +280,14 @@ public class ServiceInvoker extends RefAnnotationSupport implements IServiceInvo
 		
 		//得到参数annotation
 		Annotation[][] paraAnootation;
-		if (ObjectDefine.OBJ_BIZLOGIC.equals(helper.getObjeceDefine().getObjType())){
-			//从接口获取meta
-			Class intf = RuleServiceFactory.getRuleInterface(helper.getObjeceDefine().getBlName());
-			paraAnootation = ReflactKit.findSingeMethodExactly(intf,oam.method.getName()).getParameterAnnotations();
-		}else{
+//		if (ObjectDefine.OBJ_BIZLOGIC.equals(helper.getObjeceDefine().getObjType())){
+//			//从接口获取meta
+//			Class intf = RuleServiceFactory.getRuleInterface(helper.getObjeceDefine().getBlName());
+//			paraAnootation = ReflactKit.findSingeMethodExactly(intf,oam.method.getName()).getParameterAnnotations();
+//		}else{
 			//从类获取meta
-			paraAnootation = oam.method.getParameterAnnotations();
-		}
+		paraAnootation = oam.method.getParameterAnnotations();
+//		}
 		
 		//获取参数的值
 		Object[] paraValue = getParaValueFromRequest(cp,paraAnootation,oam.method.getParameterTypes());

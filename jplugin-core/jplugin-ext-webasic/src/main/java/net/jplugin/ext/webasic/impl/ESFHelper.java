@@ -1,10 +1,8 @@
 package net.jplugin.ext.webasic.impl;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,9 +27,6 @@ import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
 import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
-import net.jplugin.ext.webasic.impl.rmethod.RmethodControllerSet4Invoker;
-import net.jplugin.ext.webasic.impl.web.WebController;
-import net.jplugin.ext.webasic.impl.web.WebControllerSet;
 
 public class ESFHelper {
 	public static void init(){
@@ -159,7 +154,8 @@ public class ESFHelper {
 		ControllerMeta cm = WebDriver.INSTANCE.parseControllerMeta(uri);
 		
 		IControllerSet cs = cm.getControllerSet();
-		if (cs instanceof RestMethodControllerSet4Invoker || cs instanceof RmethodControllerSet4Invoker) {
+//		if (cs instanceof RestMethodControllerSet4Invoker || cs instanceof RmethodControllerSet4Invoker) {
+		if (cs instanceof RestMethodControllerSet4Invoker) {
 			IServiceInvoker si = ServiceInvokerSet.instance.getServiceInvoker(cm.getServicePath());
 			return si.getObjectCallHelper().getObject();
 		} else

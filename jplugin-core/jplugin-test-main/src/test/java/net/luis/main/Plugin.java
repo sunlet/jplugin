@@ -50,10 +50,10 @@ public class Plugin extends AbstractPlugin{
 		addExtension(Extension.create(net.jplugin.core.event.Plugin.EP_EVENT_TYPE_ALIAS, "",EventAliasDefine.class,new String[][]{{"eventType",TestEvent.TEST_EVENT},{"typeAlias",TestEvent.TEST_EVENT_ALIAS},{"filterClass",EventFilter.class.getName()}} ));
 		addExtension(Extension.create(net.jplugin.core.event.Plugin.EP_EVENT_CONSUMER, "",TestEventConsumerForFilter.class,new String[][]{{"targetType",TestEvent.TEST_EVENT_ALIAS},{"channelType",ChannelType.POST_MEMORY.toString()}}));
 		
-		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, "/testremote", ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass","net.luis.main.remote.ServerObject"}}));
+//		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, "/testremote", ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass","net.luis.main.remote.ServerObject"}}));
 
 		addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, "serverobject",RuleServiceDefinition.class,new String[][]{{"interf",IServerObject.class.getName()},{"impl",ServerObject.class.getName()}} ));
-		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, "/testremote2", ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName","serverobject"}}));
+//		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, "/testremote2", ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName","serverobject"}}));
 
 		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, "/userreq", ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",net.luis.main.webreq.UserRequest.class.getName()}}));
 

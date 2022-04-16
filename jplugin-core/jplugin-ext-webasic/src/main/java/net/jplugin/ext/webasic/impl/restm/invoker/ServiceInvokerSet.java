@@ -43,11 +43,27 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 		return serviceMap.keySet();
 	}
 
-	public void addServices(Map<String, ObjectDefine> defs) {
+//	public void addServices(Map<String, ObjectDefine> defs) {
+//		if (serviceMap==null)
+//			serviceMap = new HashMap<String, IServiceInvoker>();
+//
+//		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+//			if (serviceMap.get(en.getKey())!=null)
+//				throw new RuntimeException("duplicate service path:"+en.getKey());
+//
+//			IServiceInvoker invoker = new ServiceInvoker(en.getValue());
+//			serviceMap.put(en.getKey(), invoker);
+//
+//			//重新设置value值
+//			Beans.resetValue(en.getValue(), invoker.getObjectCallHelper().getObject());
+//		}
+//	}
+
+	public void addServices(Map<String, Object> defs) {
 		if (serviceMap==null)
 			serviceMap = new HashMap<String, IServiceInvoker>();
 		
-		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+		for (Entry<String, Object> en:defs.entrySet()){
 			if (serviceMap.get(en.getKey())!=null)
 				throw new RuntimeException("duplicate service path:"+en.getKey());
 			
