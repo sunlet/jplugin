@@ -8,6 +8,7 @@ import java.util.Vector;
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.core.kernel.api.extfactory.StringExtensionFactory;
 import net.jplugin.core.kernel.impl.PropertyUtil;
 
@@ -127,20 +128,20 @@ public class Extension {
 		this.priority = priority;
 	}
 	
-	public static class Property{
-		String key;
-		String value;
-		public String getKey() {
-			return key;
-		}
-		public String getValue() {
-			return value;
-		}
-		public void setValue(String v){
-			value = v;
-		}
-		
-	}
+//	public static class Property{
+//		String key;
+//		String value;
+//		public String getKey() {
+//			return key;
+//		}
+//		public String getValue() {
+//			return value;
+//		}
+//		public void setValue(String v){
+//			value = v;
+//		}
+//
+//	}
 	
 	public synchronized void load() throws Exception{
 		this.extensionObject = factory.create();
@@ -177,28 +178,28 @@ public class Extension {
 //		}
 //	}
 	
-	private void filterProperty(Vector<Property> list) {
-		for (Property p:list){
-			p.setValue(propertyFilter.filte(p.getValue()));
-		}
-	}
+//	private void filterProperty(Vector<Property> list) {
+//		for (Property p:list){
+//			p.setValue(propertyFilter.filte(p.getValue()));
+//		}
+//	}
 
 
-	private static void setProperty(Object o,
-			Vector<Property> p) {
-		//看能否找到method
-		Method method = null;
-		try {
-			method = o.getClass().getMethod("setExtensionProperty", new Class[]{java.util.List.class});
-		} catch (Exception e){
-		}
-		
-		if (method != null){
-			ReflactKit.invoke(o,"setExtensionProperty",new Object[]{p});
-		}else{
-			PropertyUtil.setProperties(o,p);
-		}
-	}
+//	private static void setProperty(Object o,
+//			Vector<Property> p) {
+//		//看能否找到method
+//		Method method = null;
+//		try {
+//			method = o.getClass().getMethod("setExtensionProperty", new Class[]{java.util.List.class});
+//		} catch (Exception e){
+//		}
+//
+//		if (method != null){
+//			ReflactKit.invoke(o,"setExtensionProperty",new Object[]{p});
+//		}else{
+//			PropertyUtil.setProperties(o,p);
+//		}
+//	}
 
 	public static Extension createStringExtension(String aPointName,String value){
 		return create(aPointName,"", StringExtensionFactory.createFactory(value));
@@ -210,7 +211,7 @@ public class Extension {
 	
 	public static Extension create(String aPointName,String aName,Class cls){
 //		return create(aPointName,aName,cls,null);
-		return create(aPointName,aName,cls,null);
+		return create(aPointName,aName, ObjectFactory.createFactory(cls));
 	}
 
 //	public static Extension create(String aPointName,Class cls,String[][] property){

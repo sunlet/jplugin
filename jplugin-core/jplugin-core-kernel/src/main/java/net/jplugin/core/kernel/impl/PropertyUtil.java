@@ -9,7 +9,8 @@ import java.util.Map.Entry;
 import javax.management.RuntimeErrorException;
 
 import net.jplugin.common.kits.ReflactKit;
-import net.jplugin.core.kernel.api.Extension.Property;
+import net.jplugin.core.kernel.api.extfactory.ObjectFactory.Property;
+
 
 /**
  *

@@ -1,25 +1,90 @@
 package net.jplugin.core.kernel.api.extfactory;
 
+import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.IExtensionFactory;
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.impl.PropertyUtil;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class ObjectFactory implements IExtensionFactory {
     private Class clazz;
-    private String[][] properties;
+    private List<Property> propertyList;
 
     public static ObjectFactory createFactory(Class c){
+        return createFactory(c,null);
+    }
+
+    public static ObjectFactory createFactory(Class c,String[][] property){
         ObjectFactory o = new ObjectFactory();
         o.clazz = c;
+
+        if (property!=null){
+            o.propertyList = new ArrayList();
+            for (int i=0;i<property.length;i++){
+                Property p = new Property();
+                p.key = property[i][0];
+                p.value = property[i][1];
+                o.propertyList.add(p);
+            }
+        }
         return o;
     }
 
     @Override
     public Object create() {
-        return null;
+		if (Extension.propertyFilter!=null){
+			filterProperty(this.propertyList);
+		}
+
+        Object extensionObject = null;
+        try {
+            extensionObject = clazz.newInstance();
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+
+//		//处理extension工厂机制
+//		this.extensionObject = resolveFactory(this.extensionObject);
+
+        PluginEnvirement.getInstance().resolveRefAnnotation(extensionObject);
+
+				//带属性的加载方式
+        if (this.propertyList!=null && this.propertyList.size()>0){
+            setProperty(extensionObject,this.propertyList);
+		}
+        return extensionObject;
     }
+
+
+
+    private static void setProperty(Object o,
+                                    List<Property> p) {
+        //看能否找到method
+        Method method = null;
+        try {
+            method = o.getClass().getMethod("setExtensionProperty", new Class[]{java.util.List.class});
+        } catch (Exception e){
+        }
+
+        if (method != null){
+            ReflactKit.invoke(o,"setExtensionProperty",new Object[]{p});
+        }else{
+            PropertyUtil.setProperties(o,p);
+        }
+    }
+
+    private void filterProperty(List<Property> list) {
+        for (Property p:list){
+            p.setValue(Extension.propertyFilter.filte(p.getValue()));
+        }
+    }
+
 
     @Override
     public Class getTargetClass() {
@@ -30,23 +95,49 @@ public class ObjectFactory implements IExtensionFactory {
     public boolean contentEqual(IExtensionFactory f) {
         return (f instanceof  ObjectFactory) &&
                 ((ObjectFactory)f).clazz==clazz &&
-                propertyEquals(((ObjectFactory)f).properties,properties);
+                propertyEquals(((ObjectFactory)f).propertyList,propertyList);
     }
 
-    private boolean propertyEquals(String[][] properties, String[][] properties1) {
+    private boolean propertyEquals(List<Property> p1, List<Property> p2) {
+        if (p1==null && p2==null)
+            return true;
+
+        if (p1==null || p2!=null)
+            return false;
+
+        //長度不同
+		if (p1.size()!=p2.size())
+			return false;
+
+		//長度相同，對每一個屬性看能否找到
+		for (Property item:p1) {
+
+			boolean found=false;
+			for (Property o:p2) {
+				if (StringKit.eqOrNull(item.key,o.key) && StringKit.eqOrNull(item.value, o.value)) {
+					found = true;
+					break;
+				}
+			}
+			//如果上面的循環執行完畢，仍然沒有找到
+			if (!found)
+				return false;
+		}
+		//相同
+		return true;
     }
 
 
-    private boolean checkPropertyDup(Vector<Extension.Property> p1, Vector<Extension.Property> p2) {
+    private boolean checkPropertyDup(Vector<Property> p1, Vector<Property> p2) {
         //長度不同
         if (p1.size()!=p2.size())
             return false;
 
         //長度相同，對每一個屬性看能否找到
-        for (Extension.Property item:p1) {
+        for (Property item:p1) {
 
             boolean found=false;
-            for (Extension.Property o:p2) {
+            for (Property o:p2) {
                 if (StringKit.eqOrNull(item.key,o.key) && StringKit.eqOrNull(item.value, o.value)) {
                     found = true;
                     break;
@@ -58,5 +149,20 @@ public class ObjectFactory implements IExtensionFactory {
         }
         //相同
         return true;
+    }
+
+    public static class Property{
+        String key;
+        String value;
+        public String getKey() {
+            return key;
+        }
+        public String getValue() {
+            return value;
+        }
+        public void setValue(String v){
+            value = v;
+        }
+
     }
 }
