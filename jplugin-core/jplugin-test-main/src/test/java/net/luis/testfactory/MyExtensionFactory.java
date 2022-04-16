@@ -11,7 +11,17 @@ public class MyExtensionFactory implements IExtensionFactory {
 	public Object create() {
 		return new AAA();
 	}
-	
+
+	@Override
+	public Class getAccessClass() {
+		return AAA.class;
+	}
+
+	@Override
+	public boolean contentEqual(IExtensionFactory f) {
+		return true;
+	}
+
 	public static class AAA implements IMyInterface{
 
 		@Override

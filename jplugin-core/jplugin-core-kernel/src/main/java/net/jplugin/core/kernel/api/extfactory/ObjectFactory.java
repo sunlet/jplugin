@@ -13,24 +13,41 @@ import java.util.List;
 import java.util.Vector;
 
 public class ObjectFactory implements IExtensionFactory {
-    private Class clazz;
+
+    private Class implClazz;
+    private Class accessClazz;
     private List<Property> propertyList;
 
+    public ObjectFactory property(String name,String value){
+        if (this.propertyList==null)
+            this.propertyList= new ArrayList<>();
+        Property p = new Property();
+        p.key = name;
+        p.value = value;
+        this.propertyList.add(p);
+        return this;
+    }
+
     public static ObjectFactory createFactory(Class c){
-        return createFactory(c,null);
+        return createFactory(c,c,null);
+    }
+
+    public static ObjectFactory createFactory(Class access,Class impl){
+        return createFactory(access,impl,null);
     }
 
     public static ObjectFactory createFactory(Class c,String[][] property){
+        return createFactory(c,c,property);
+    }
+
+    public static ObjectFactory createFactory(Class access,Class impl,String[][] property){
         ObjectFactory o = new ObjectFactory();
-        o.clazz = c;
+        o.implClazz = impl;
+        o.accessClazz = access;
 
         if (property!=null){
-            o.propertyList = new ArrayList();
             for (int i=0;i<property.length;i++){
-                Property p = new Property();
-                p.key = property[i][0];
-                p.value = property[i][1];
-                o.propertyList.add(p);
+                o.property(property[i][0],property[i][1]);
             }
         }
         return o;
@@ -38,19 +55,19 @@ public class ObjectFactory implements IExtensionFactory {
 
     @Override
     public Object create() {
-		if (Extension.propertyFilter!=null){
+		if (Extension.propertyFilter!=null && this.propertyList!=null){
 			filterProperty(this.propertyList);
 		}
 
         Object extensionObject = null;
         try {
-            extensionObject = clazz.newInstance();
+            extensionObject = implClazz.newInstance();
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
 
-//		//处理extension工厂机制
-//		this.extensionObject = resolveFactory(this.extensionObject);
+		//处理extension工厂机制
+		extensionObject = resolveFactory(extensionObject);
 
         PluginEnvirement.getInstance().resolveRefAnnotation(extensionObject);
 
@@ -62,6 +79,13 @@ public class ObjectFactory implements IExtensionFactory {
     }
 
 
+    private Object resolveFactory(Object o) {
+		if (o instanceof IExtensionFactory) {
+			return ((IExtensionFactory)o).create();
+		}else {
+			return o;
+		}
+	}
 
     private static void setProperty(Object o,
                                     List<Property> p) {
@@ -87,14 +111,15 @@ public class ObjectFactory implements IExtensionFactory {
 
 
     @Override
-    public Class getTargetClass() {
-        return clazz;
+    public Class getAccessClass() {
+        return accessClazz;
     }
 
     @Override
     public boolean contentEqual(IExtensionFactory f) {
         return (f instanceof  ObjectFactory) &&
-                ((ObjectFactory)f).clazz==clazz &&
+                ((ObjectFactory)f).accessClazz==accessClazz &&
+                ((ObjectFactory)f).implClazz==implClazz &&
                 propertyEquals(((ObjectFactory)f).propertyList,propertyList);
     }
 
@@ -102,7 +127,7 @@ public class ObjectFactory implements IExtensionFactory {
         if (p1==null && p2==null)
             return true;
 
-        if (p1==null || p2!=null)
+        if (p1==null || p2==null)
             return false;
 
         //長度不同

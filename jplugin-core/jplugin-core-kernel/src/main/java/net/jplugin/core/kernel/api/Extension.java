@@ -1,16 +1,9 @@
 package net.jplugin.core.kernel.api;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Vector;
-
 import net.jplugin.common.kits.AssertKit;
-import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.core.kernel.api.extfactory.StringExtensionFactory;
-import net.jplugin.core.kernel.impl.PropertyUtil;
 
 /**
  *
@@ -32,7 +25,7 @@ public class Extension {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer("refPoint:"+refExtensionPoint+" clazz:"+factory.getTargetClass().getName()+" name:"+name);
+		StringBuffer sb = new StringBuffer("refPoint:"+refExtensionPoint+" clazz:"+factory.getAccessClass().getName()+" name:"+name);
 //		sb.append(" property:[");
 //		for (int i=0;i<propertyList.size();i++) {
 //			sb.append(propertyList.get(i).key+"-"+propertyList.get(i).value);
@@ -110,7 +103,7 @@ public class Extension {
 	
 	public Class getClazz(){
 //		return this.clazz;
-		return this.factory.getTargetClass();
+		return this.factory.getAccessClass();
 	}
 	
 //	public List<Property> getProperties(){
@@ -214,12 +207,17 @@ public class Extension {
 		return create(aPointName,aName, ObjectFactory.createFactory(cls));
 	}
 
-//	public static Extension create(String aPointName,Class cls,String[][] property){
+	public static Extension create(String aPointName,Class cls,String[][] property){
+		return create(aPointName,ObjectFactory.createFactory(cls,property));
+	}
 	public static Extension create(String aPointName,IExtensionFactory fac){
 		return create(aPointName,"",fac);
 	}
-//	public static Extension create(String aPointName,String aName,Class cls,String[][] property){
-	public static Extension create(String aPointName,String aName,IExtensionFactory fac){
+
+	public static Extension create(String aPointName,String aName,Class cls,String[][] property){
+		return create(aPointName,aName,ObjectFactory.createFactory(cls,property));
+	}
+	private static Extension create(String aPointName,String aName,IExtensionFactory fac){
 		Extension ext = new Extension();
 		ext.name = aName;
 //		ext.clazz = cls;
@@ -256,29 +254,29 @@ public class Extension {
 
 	
 	public static void main(String[] args) {
-//		Extension e1 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		Extension e2 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		AssertKit.assertTrue(e1.equals(e2));
-//
-//		e1 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		e2 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v3"}});
-//		AssertKit.assertFalse(e1.equals(e2));
-//
-//		e1 = Extension.create("a", null,Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		e2 = Extension.create("a", null,Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		AssertKit.assertTrue(e1.equals(e2));
-//
-//		e1 = Extension.create("a", null,Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		e2 = Extension.create("a", "b",Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
-//		AssertKit.assertFalse(e1.equals(e2));
-//
-//		e1 = Extension.create("a", Extension.class);
-//		e2 = Extension.create("a", Extension.class);
-//		AssertKit.assertTrue(e1.equals(e2));
-//
-//		e1 = Extension.create("a",Extension.class);
-//		e2 = Extension.create("a", Extension.class);
-//		AssertKit.assertTrue(e1.equals(e2));
+		Extension e1 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		Extension e2 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		AssertKit.assertTrue(e1.equals(e2));
+
+		e1 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		e2 = Extension.create("a", Extension.class,new String[][] {{"a1","b1"},{"a2","v3"}});
+		AssertKit.assertFalse(e1.equals(e2));
+
+		e1 = Extension.create("a", null,Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		e2 = Extension.create("a", null,Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		AssertKit.assertTrue(e1.equals(e2));
+
+		e1 = Extension.create("a", null,Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		e2 = Extension.create("a", "b",Extension.class,new String[][] {{"a1","b1"},{"a2","v2"}});
+		AssertKit.assertFalse(e1.equals(e2));
+
+		e1 = Extension.create("a", Extension.class);
+		e2 = Extension.create("a", Extension.class);
+		AssertKit.assertTrue(e1.equals(e2));
+
+		e1 = Extension.create("a",Extension.class);
+		e2 = Extension.create("a", Extension.class);
+		AssertKit.assertTrue(e1.equals(e2));
 		
 	}
 }

@@ -18,7 +18,7 @@ public class StringExtensionFactory implements IExtensionFactory {
     }
 
     @Override
-    public Class getTargetClass() {
+    public Class getAccessClass() {
         return String.class;
     }
 

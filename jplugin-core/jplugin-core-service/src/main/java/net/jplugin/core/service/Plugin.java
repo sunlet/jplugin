@@ -28,7 +28,7 @@ public class Plugin extends AbstractPlugin{
 	}
 	
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.create(Constants.EP_SERVICE,Object.class,true));
+		this.addExtensionPoint(ExtensionPoint.createNamed(Constants.EP_SERVICE,Object.class));
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, ServiceAttrAnnoHandler.class);
 	}
 	/* (non-Javadoc)
@@ -43,10 +43,7 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
 	public void onCreateServices() {
-		ExtensionPoint servicesPoint = PluginEnvirement.getInstance().getExtensionPoint(Constants.EP_SERVICE);
-		
-		Map<String, Object> map  = servicesPoint.getExtensionMap();
-		ServiceFactory.init(map);
+		ServiceFactory.init(PluginEnvirement.getInstance().getExtensionMap(Constants.EP_SERVICE));
 	}
 	public void init() {
 		// TODO Auto-generated method stub

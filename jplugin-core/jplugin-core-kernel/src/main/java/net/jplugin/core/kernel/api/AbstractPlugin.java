@@ -148,10 +148,11 @@ public abstract class AbstractPlugin implements IPlugin {
 			try {
 				this.extensions.get(i).load();
 			} catch (Exception e) {
-				if (errList==null){
-					errList = new ArrayList<PluginError>();
-				}
-				errList.add(new PluginError(this.getName(), "extension load error."+this.extensions.get(i).getClazz(),e));
+//				if (errList==null){
+//					errList = new ArrayList<PluginError>();
+//				}
+				throw new RuntimeException("extension locad error."+this.extensions.get(i).getClazz()+" "+e.getMessage(),e);
+//				errList.add(new PluginError(this.getName(), "extension load error."+this.extensions.get(i).getClazz(),e));
 			}
 		}
 		return errList;

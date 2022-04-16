@@ -5,7 +5,7 @@ import java.util.List;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.ctx.api.RuleServiceFactory;
 import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.core.kernel.api.Extension.Property;
+
 
 /**
  *
