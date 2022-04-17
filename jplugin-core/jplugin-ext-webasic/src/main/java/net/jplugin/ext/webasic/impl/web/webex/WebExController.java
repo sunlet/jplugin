@@ -1,34 +1,19 @@
 package net.jplugin.ext.webasic.impl.web.webex;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
-import net.jplugin.core.ctx.api.RuleParameter;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
-import net.jplugin.core.ctx.api.RuleResult;
-import net.jplugin.core.kernel.api.ClassDefine;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.core.log.api.ILogService;
-import net.jplugin.core.log.api.Logger;
-import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.AbstractExController;
 import net.jplugin.ext.webasic.api.IController;
 import net.jplugin.ext.webasic.api.InvocationContext;
-import net.jplugin.ext.webasic.api.ObjectDefine;
-import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
 import net.jplugin.ext.webasic.impl.filter.MethodIllegleAccessException;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
-import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
-import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  *
@@ -37,31 +22,36 @@ import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
  **/
 
 public class WebExController implements IController{
-	private ClassDefine define;
+//	private ClassDefine define;
 	private static Class[] para=new Class[]{};
 	private AbstractExController object;
 	
 	public Object getObject() {
 		return this.object;
 	}
-	/**
-	 * @param value
-	 */
-	public WebExController(ClassDefine classDefine) {
-		this.define = classDefine;
-		if (!ReflactKit.isTypeOf(classDefine.getClazz(), AbstractExController.class)){
+//	/**
+//	 * @param value
+//	 */
+//	public WebExController(ClassDefine classDefine) {
+//		this.define = classDefine;
+//		if (!ReflactKit.isTypeOf(classDefine.getClazz(), AbstractExController.class)){
+//			throw new RuntimeException("The Object must extend the AbstractExController class");
+//		}
+//		try {
+//			this.object = (AbstractExController) this.define.getClazz().newInstance();
+//			PluginEnvirement.INSTANCE.resolveRefAnnotation(object);
+//		} catch (InstantiationException e) {
+//			throw new RuntimeException(e);
+//		} catch (IllegalAccessException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
+	public WebExController(Object obj) {
+		if (!ReflactKit.isTypeOf(obj.getClass(), AbstractExController.class)){
 			throw new RuntimeException("The Object must extend the AbstractExController class");
 		}
-		try {
-			this.object = (AbstractExController) this.define.getClazz().newInstance();
-			PluginEnvirement.INSTANCE.resolveRefAnnotation(object);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		this.object = (AbstractExController) obj;
 	}
-	
 
 	public void dohttp(String path,HttpServletRequest req, HttpServletResponse res,String innerPath) throws Throwable{
 		
@@ -72,7 +62,8 @@ public class WebExController implements IController{
 		if (StringKit.isNull(mname))
 			mname = "index";
 		
-		final Method method = this.define.getClazz().getMethod(mname, para);
+//		final Method method = this.define.getClazz().getMethod(mname, para);
+		final Method method = this.object.getClass().getMethod(mname, para);
 		
 		if (!method.getReturnType().equals(void.class)){
 			throw new RuntimeException("Rule must return void");

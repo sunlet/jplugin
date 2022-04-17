@@ -31,6 +31,10 @@ import test.net.jplugin.ext.webasic.restclient.TestRemoteClient;
 import test.net.jplugin.ext.webasic.restclient.TestRestClient;
 import test.net.jplugin.ext.webasic.restclient.WebCtrlFilterTest;
 import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
+import test.net.jplugin.ext.webasic.webctrl.DemoWebCtrl;
+import test.net.jplugin.ext.webasic.webctrl.DemoWebExCtrl;
+import test.net.jplugin.ext.webasic.webctrl.WebCtrlTestClient;
+import test.net.jplugin.ext.webasic.webctrl.WebExCtrlTestClient;
 
 /**
  *
@@ -41,6 +45,10 @@ import test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo;
 public class Plugin extends AbstractPluginForTest{
 
 	public Plugin(){
+		ExtensionWebHelper.addWebControllerExtension(this,"/demowebctrl", DemoWebCtrl.class);
+		ExtensionWebHelper.addWebExControllerExtension(this,"/demowebexctrl", DemoWebExCtrl.class);
+
+
 		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class);
 //		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class,"nopara");
 		ExtensionWebHelper.addRestMethodExtension(this, "/testremotepojo.nopara", test.net.jplugin.ext.webasic.restmethod.RestMethod4Pojo.class);
@@ -75,7 +83,9 @@ public class Plugin extends AbstractPluginForTest{
 	}
 
 	public void test() throws IOException, HttpStatusException, InterruptedException, ExecutionException {
-		
+		new WebCtrlTestClient().test();
+		new WebExCtrlTestClient().test();
+
 		new ExportForMapBeanTest().test();
 		
 		RestMethod4Pojo.test();

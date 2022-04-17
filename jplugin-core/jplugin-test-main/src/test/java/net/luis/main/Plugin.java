@@ -1,5 +1,6 @@
 package net.luis.main;
 
+import net.jplugin.common.kits.http.HttpStatusException;
 import net.jplugin.core.ctx.api.RuleServiceDefinition;
 import net.jplugin.core.event.api.EventAliasDefine;
 import net.jplugin.core.event.api.Channel.ChannelType;
@@ -10,7 +11,8 @@ import net.jplugin.core.kernel.api.PluginAnnotation;
 import net.jplugin.core.rclient.ExtendsionClientHelper;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.IServiceUrlResolver;
-import net.jplugin.ext.webasic.api.ObjectDefine;
+//import net.jplugin.ext.webasic.api.ObjectDefine;
+import net.jplugin.ext.webasic.impl.ESFHelper;
 import net.luis.main.event.EventFilter;
 import net.luis.main.event.ITestEventService;
 import net.luis.main.event.TestEvent;
@@ -25,6 +27,12 @@ import net.luis.main.remote.IServerObject;
 import net.luis.main.remote.ServerObject;
 import net.luis.main.testrule.Rule1;
 import net.luis.main.testrule.Rule1Impl;
+import net.luis.main.webreq.UserRequest;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static net.jplugin.ext.webasic.impl.ESFHelper.*;
 
 /**
  *
@@ -55,7 +63,8 @@ public class Plugin extends AbstractPlugin{
 		addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, "serverobject",RuleServiceDefinition.class,new String[][]{{"interf",IServerObject.class.getName()},{"impl",ServerObject.class.getName()}} ));
 //		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, "/testremote2", ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName","serverobject"}}));
 
-		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, "/userreq", ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",net.luis.main.webreq.UserRequest.class.getName()}}));
+//		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, "/userreq", ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",net.luis.main.webreq.UserRequest.class.getName()}}));
+		addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, "/userreq", UserRequest.class));
 
 		addExtension(Extension.create(net.jplugin.core.kernel.Plugin.EP_STARTUP,"",StartupListener.class));
 		
@@ -81,7 +90,17 @@ public class Plugin extends AbstractPlugin{
 
 	public void init() {
 		// TODO Auto-generated method stub
-		
+		try {
+			UserRequest.test();
+
+			Map<String, Class> webCtrlClasses = getWebControllerClasses();
+			System.out.println("size = "+webCtrlClasses.size());
+			for (Map.Entry<String,Class> en:webCtrlClasses.entrySet()){
+				System.out.println(en.getKey() + "  " +en.getValue().getName());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

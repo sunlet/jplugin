@@ -3,15 +3,13 @@ package net.jplugin.ext.webasic;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.reso.ResolverKit;
 import net.jplugin.core.kernel.api.AbstractPlugin;
-import net.jplugin.core.kernel.api.ClassDefine;
-import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.Beans;
+import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.ext.webasic.api.AbstractExController;
 import net.jplugin.ext.webasic.api.BindController;
 import net.jplugin.ext.webasic.api.BindServiceExport;
-import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
  *
@@ -55,12 +53,12 @@ public class ExtensionWebHelper {
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, factory));
 	}
 	
-	/**
-	 * Export a service
-	 * @param plugin
-	 * @param path
-	 * @param svcName
-	 */
+//	/**
+//	 * Export a service
+//	 * @param plugin
+//	 * @param path
+//	 * @param svcName
+//	 */
 //	public static void addServiceExportExtension(AbstractPlugin plugin,String path,String svcName){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
 //	}
@@ -91,16 +89,20 @@ public class ExtensionWebHelper {
 	
 	//add webex controller  扩展的webcontroller
 	public static void addWebExControllerExtension(AbstractPlugin plugin,String path,Class beanClz){
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER, path, ClassDefine.class,new String[][]{{"clazz",beanClz.getName()}} ));
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER, path, ClassDefine.class,new String[][]{{"clazz",beanClz.getName()}} ));
+		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
+		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER, path,factory));
 	}
 	
 	//add web controller  Web控制
 	public static void addWebControllerExtension(AbstractPlugin plugin,String path,Class beanClz){
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
+		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
+		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path,factory));
 	}
-	public static void addWebControllerExtension(AbstractPlugin plugin,String path,String svcName){
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
-	}
+//	public static void addWebControllerExtension(AbstractPlugin plugin,String path,String svcName){
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
+//	}
 //	public static void addWebControllerExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
 //	}

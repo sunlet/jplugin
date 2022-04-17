@@ -1,30 +1,16 @@
 package net.jplugin.ext.webasic.impl.web;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.jplugin.common.kits.ReflactKit;
-import net.jplugin.common.kits.StringKit;
-import net.jplugin.core.ctx.api.RuleParameter;
-import net.jplugin.core.ctx.api.RuleResult;
-import net.jplugin.core.log.api.ILogService;
-import net.jplugin.core.log.api.Logger;
-import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.ext.webasic.api.IController;
 import net.jplugin.ext.webasic.api.InvocationContext;
-import net.jplugin.ext.webasic.api.ObjectDefine;
-import net.jplugin.ext.webasic.impl.WebDriver;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
 import net.jplugin.ext.webasic.impl.filter.MethodIllegleAccessException;
 import net.jplugin.ext.webasic.impl.filter.webctrl.WebCtrlFilterManager;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
 import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper.ObjectAndMethod;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  *
@@ -36,13 +22,18 @@ public class WebController implements IController{
 	ObjectCallHelper helper;
 	private static Class[] para=new Class[]{HttpServletRequest.class,HttpServletResponse.class};
 	
+//	/**
+//	 * @param value
+//	 */
+//	public WebController(ObjectDefine d) {
+//		this.helper = new ObjectCallHelper(d);
+//	}
 	/**
 	 * @param value
 	 */
-	public WebController(ObjectDefine d) {
-		this.helper = new ObjectCallHelper(d);
+	public WebController(Object o) {
+		this.helper = new ObjectCallHelper(o);
 	}
-	
 	public Object getObject(){
 		return this.helper.getObject();
 	}

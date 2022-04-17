@@ -1,16 +1,10 @@
 package net.jplugin.ext.webasic.impl;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.ctx.api.RuleProxyHelper;
 import net.jplugin.core.kernel.api.ClassDefine;
+import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.PluginFilterManager;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
@@ -19,7 +13,7 @@ import net.jplugin.ext.webasic.Plugin;
 import net.jplugin.ext.webasic.api.IControllerSet;
 import net.jplugin.ext.webasic.api.IDynamicService;
 import net.jplugin.ext.webasic.api.InvocationContext;
-import net.jplugin.ext.webasic.api.ObjectDefine;
+//import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.WebDriver.ControllerMeta;
 import net.jplugin.ext.webasic.impl.filter.IMethodCallback;
 import net.jplugin.ext.webasic.impl.filter.service.ServiceFilterManager;
@@ -27,6 +21,10 @@ import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
 import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
+
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ESFHelper {
 	public static void init(){
@@ -144,12 +142,12 @@ public class ESFHelper {
 //			ThreadLocalContextManager.instance.releaseContext();
 //		}
 //	}
-	/**
-	 * 根据URI获取到对应的JavaBean
-	 * @param cm
-	 * @param arg
-	 * @return
-	 */
+//	/**
+//	 * 根据URI获取到对应的JavaBean
+//	 * @param cm
+//	 * @param arg
+//	 * @return
+//	 */
 	public static Object getObject(String uri) {
 		ControllerMeta cm = WebDriver.INSTANCE.parseControllerMeta(uri);
 		
@@ -186,34 +184,54 @@ public class ESFHelper {
 //		}
 //		return ret;
 	}
-	
+
 	/**
 	 * 返回 Web控制器的注册列表
 	 */
 	public static Map<String,Class> getWebControllerClasses(){
-		Map<String, ObjectDefine> objects = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,ObjectDefine.class);
-		Map<String, ClassDefine> clazzes = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER,ClassDefine.class);
-		
-		Map<String,Class> ret = new HashMap<>();
-		
-		for (Entry<String, ObjectDefine> en:objects.entrySet()){
-			ret.put(en.getKey(), en.getValue().getObjClass());
+		Map<String,Class> ret = new HashMap();
+		List<Extension> list = PluginEnvirement.getInstance().getExtensionPoint(Plugin.EP_WEBCONTROLLER).__debugGetExtensions();
+		for (Extension e:list){
+			ret.put(e.getName(),e.getClazz());
 		}
-		for (Entry<String, ClassDefine> en:clazzes.entrySet()){
-			ret.put(en.getKey(), en.getValue().getClazz());
+
+		list = PluginEnvirement.getInstance().getExtensionPoint(Plugin.EP_WEBEXCONTROLLER).__debugGetExtensions();
+		for (Extension e:list){
+			ret.put(e.getName(),e.getClazz());
 		}
 		return ret;
-		
-//		IControllerSet[] css = WebDriver.INSTANCE.getControllerSet();
-//		List<Object> result = new ArrayList();
-//		for (IControllerSet cs:css){
-//			if (cs instanceof WebControllerSet){
-//				WebControllerSet wcs = (WebControllerSet) cs;
-//				for (WebController o:wcs.getControllerMap().values()){
-//					result.add(o.getObject());
-//				}
-//			}
+//
+//
+//		Map<String, ObjectDefine> objects = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,ObjectDefine.class);
+//		Map<String, ClassDefine> clazzes = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER,ClassDefine.class);
+//
+//		Map<String,Class> ret = new HashMap<>();
+//
+//		for (Entry<String, ObjectDefine> en:objects.entrySet()){
+//			ret.put(en.getKey(), en.getValue().getObjClass());
 //		}
-//		return result;
+//		for (Entry<String, ClassDefine> en:clazzes.entrySet()){
+//			ret.put(en.getKey(), en.getValue().getClazz());
+//		}
+//		return ret;
 	}
+
+
+//	/**
+//	 * 返回 Web控制器的注册列表
+//	 */
+//	public static Map<String,Class> getWebControllerClasses(){
+//		Map<String, ObjectDefine> objects = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,ObjectDefine.class);
+//		Map<String, ClassDefine> clazzes = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER,ClassDefine.class);
+//
+//		Map<String,Class> ret = new HashMap<>();
+//
+//		for (Entry<String, ObjectDefine> en:objects.entrySet()){
+//			ret.put(en.getKey(), en.getValue().getObjClass());
+//		}
+//		for (Entry<String, ClassDefine> en:clazzes.entrySet()){
+//			ret.put(en.getKey(), en.getValue().getClazz());
+//		}
+//		return ret;
+//	}
 }

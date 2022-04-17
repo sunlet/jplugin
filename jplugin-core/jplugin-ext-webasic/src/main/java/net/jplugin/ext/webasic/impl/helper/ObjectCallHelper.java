@@ -1,19 +1,13 @@
 package net.jplugin.ext.webasic.impl.helper;
 
+import net.jplugin.common.kits.ReflactKit;
+import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.ctx.api.RuleProxyHelper;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Hashtable;
 import java.util.Map;
-
-import net.jplugin.common.kits.ReflactKit;
-import net.jplugin.common.kits.StringKit;
-import net.jplugin.core.ctx.api.Rule;
-import net.jplugin.core.ctx.api.RuleProxyHelper;
-import net.jplugin.core.ctx.api.RuleServiceFactory;
-import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.ext.webasic.Plugin;
-import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
  *
@@ -29,89 +23,88 @@ public class ObjectCallHelper{
 
 	Object svcObject = null;
 	Map<String,Method> methodMap = new Hashtable<String, Method>();
-	ObjectDefine objeceDefine;
+//	ObjectDefine objeceDefine;
 	
 	
 	public Object getObject(){
-		initObject();
+//		initObject();
 		return this.svcObject;
 	}
-	/**
-	 * @param value
-	 */
-	public ObjectCallHelper(ObjectDefine d) {
-		this.objeceDefine = d;
-		initObject();
-	}
+//	/**
+//	 * @param value
+//	 */
+//	public ObjectCallHelper(ObjectDefine d) {
+//		this.objeceDefine = d;
+//		initObject();
+//	}
 
 	public ObjectCallHelper(Object o) {
 		svcObject = o;
 	}
 	
 	
-	public ObjectDefine getObjeceDefine() {
-		return objeceDefine;
-	}
+//	public ObjectDefine getObjeceDefine() {
+//		return objeceDefine;
+//	}
 
 
 	/**
 	 * 如果arg为空，表示只能通过对应的方法名（不考虑参数）获取到一个方法，否则抛出异常！
-	 * @param req
 	 * @param arg
 	 * @return
 	 */
 	public ObjectAndMethod get(String requestMethodName,Class[] arg){
-		initObject();
+//		initObject();
 		ObjectAndMethod ret = new ObjectAndMethod();
 		ret.object = this.svcObject;
 		ret.method = getMethod(requestMethodName,arg);
 		return ret;
 	}
 
-	public void initObject(){
-		//初始化svcObject
-		if (svcObject==null){
-			synchronized (this) {
-				if (svcObject == null){
-					svcObject = createObject(objeceDefine);	
-				}
-			}
-		}
-	}
+//	public void initObject(){
+//		//初始化svcObject
+//		if (svcObject==null){
+//			synchronized (this) {
+//				if (svcObject == null){
+//					svcObject = createObject(objeceDefine);
+//				}
+//			}
+//		}
+//	}
 
-	/**
-	 * @param objeceDefine2
-	 * @return
-	 */
-	private static Object createObject(ObjectDefine od) {
-			Object objType = od.getObjType();
-			Class objClass = od.getObjClass();
-			String blName =od.getBlName();
-			
-			if (ObjectDefine.OBJ_JAVAOBJECT.equals(objType)){
-				if (objClass == null){
-					throw new RuntimeException("the service object class is null");
-				}
-				try {
-					Object o = objClass.newInstance();
-					PluginEnvirement.INSTANCE.resolveRefAnnotation(o);
-					return o;
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}else if (ObjectDefine.OBJ_BIZLOGIC.equals(objType)){
-				if (StringKit.isNull(blName)){
-					throw new RuntimeException("the bizlogic name is null");
-				}
-				Object obj = RuleServiceFactory.getRuleService(blName);
-				if (obj == null){
-					throw new RuntimeException("can't find object:"+blName);
-				}
-				return obj;
-			}else{
-				throw new RuntimeException("Error obj type :"+objType);
-			}
-	}
+//	/**
+//	 * @param objeceDefine2
+//	 * @return
+//	 */
+//	private static Object createObject(ObjectDefine od) {
+//			Object objType = od.getObjType();
+//			Class objClass = od.getObjClass();
+//			String blName =od.getBlName();
+//
+//			if (ObjectDefine.OBJ_JAVAOBJECT.equals(objType)){
+//				if (objClass == null){
+//					throw new RuntimeException("the service object class is null");
+//				}
+//				try {
+//					Object o = objClass.newInstance();
+//					PluginEnvirement.INSTANCE.resolveRefAnnotation(o);
+//					return o;
+//				} catch (Exception e) {
+//					throw new RuntimeException(e);
+//				}
+//			}else if (ObjectDefine.OBJ_BIZLOGIC.equals(objType)){
+//				if (StringKit.isNull(blName)){
+//					throw new RuntimeException("the bizlogic name is null");
+//				}
+//				Object obj = RuleServiceFactory.getRuleService(blName);
+//				if (obj == null){
+//					throw new RuntimeException("can't find object:"+blName);
+//				}
+//				return obj;
+//			}else{
+//				throw new RuntimeException("Error obj type :"+objType);
+//			}
+//	}
 
 	private Method getMethod(String reqMethodName,Class[] arg) {
 		//获取MethodName
