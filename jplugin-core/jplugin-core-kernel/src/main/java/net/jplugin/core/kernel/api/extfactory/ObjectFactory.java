@@ -1,22 +1,26 @@
 package net.jplugin.core.kernel.api.extfactory;
 
+import javassist.util.proxy.ProxyFactory;
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
-import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.core.kernel.api.IExtensionFactory;
-import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.api.*;
 import net.jplugin.core.kernel.impl.PropertyUtil;
+import net.jplugin.core.kernel.impl_incept.TheInvocationHandler;
+import net.jplugin.core.kernel.impl_incept.TheMethodHandler;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class ObjectFactory implements IExtensionFactory {
+public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterceptAble {
 
     private Class implClazz;
     private Class accessClazz;
     private List<Property> propertyList;
+
 
     public ObjectFactory property(String name,String value){
         if (this.propertyList==null)
@@ -53,15 +57,70 @@ public class ObjectFactory implements IExtensionFactory {
         return o;
     }
 
+    public List<Property> __debugGetPropertys(){
+        return this.propertyList;
+    }
     @Override
-    public Object create() {
+    public Object create(Extension extension){
+        if (!needIntercept) {
+            return createInternal(this.implClazz);
+        }else {
+            //如果是接口，则返回接口拦截器代理；如果是类，则创建子类
+            if (this.accessClazz.isInterface()) {
+                createInvocationHandler(extension);
+                return Proxy.newProxyInstance(accessClazz.getClassLoader(),new Class[]{accessClazz},this.theInvocationHandlerForInterface);
+            } else {
+//                return createInternal(this.implClazz);
+                return creteMethodHandlerAndObject(extension);
+            }
+        }
+    }
+
+    private TheMethodHandler theMethodHandlerForNoInterface;
+    private Object creteMethodHandlerAndObject(Extension extension) {
+        Object object = this.createInternal(this.implClazz);
+        PluginEnvirement.getInstance().resolveRefAnnotation(object);
+        return object;
+    }
+    private Object creteMethodHandlerAndObject2(Extension extension) {
+        ProxyFactory factory = new ProxyFactory();
+        factory.setSuperclass(this.implClazz);
+        this.theMethodHandlerForNoInterface = new TheMethodHandler(extension);
+        factory.setHandler(this.theMethodHandlerForNoInterface);
+
+        Class<?> theProxyClass = factory.createClass();
+        Object result = this.createInternal(theProxyClass);
+
+        this.theMethodHandlerForNoInterface.setObjectInstance(result);
+
+//        try{
+//            int code = result.hashCode();
+//            System.out.println("=========================================================="+code);
+//
+//        }catch(Exception e){
+//            e.printStackTrace();
+//            result = this.createInternal(this.implClazz);
+//        }
+
+        PluginEnvirement.getInstance().resolveRefAnnotation(result);
+        return result;
+    }
+
+    private TheInvocationHandler theInvocationHandlerForInterface;
+    private void createInvocationHandler(Extension extension) {
+        Object realImpl = createInternal(this.implClazz);
+//        PluginEnvirement.getInstance().resolveRefAnnotation(realImpl);
+        this.theInvocationHandlerForInterface = new TheInvocationHandler(extension,realImpl);
+    }
+
+    private Object createInternal(Class clazz) {
 		if (Extension.propertyFilter!=null && this.propertyList!=null){
 			filterProperty(this.propertyList);
 		}
 
         Object extensionObject = null;
         try {
-            extensionObject = implClazz.newInstance();
+            extensionObject = clazz.newInstance();
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
@@ -81,7 +140,8 @@ public class ObjectFactory implements IExtensionFactory {
 
     private Object resolveFactory(Object o) {
 		if (o instanceof IExtensionFactory) {
-			return ((IExtensionFactory)o).create();
+            //这里的extension 就传null吧，应该没啥影响
+			return ((IExtensionFactory)o).create(null);
 		}else {
 			return o;
 		}
@@ -174,6 +234,27 @@ public class ObjectFactory implements IExtensionFactory {
         }
         //相同
         return true;
+    }
+
+    boolean needIntercept=false;
+    @Override
+    public void setNeedIntercept() {
+        this.needIntercept = true;
+    }
+
+    @Override
+    public void setInterceptors(List<IExtensionInterceptor> interceptorList) {
+//        AssertKit.assertTrue(this.theMethodHandlerForNoInterface!=null || this.theInvocationHandlerForInterface!=null);
+//        AssertKit.assertFalse(this.theMethodHandlerForNoInterface!=null && this.theInvocationHandlerForInterface!=null);
+
+        if (this.theInvocationHandlerForInterface!=null) {
+            this.theInvocationHandlerForInterface.initFilters(interceptorList);
+        }else if (this.theMethodHandlerForNoInterface!=null) {
+            this.theMethodHandlerForNoInterface.initFilters(interceptorList);
+        }else{
+
+        }
+
     }
 
     public static class Property{

@@ -13,7 +13,7 @@ public class StringExtensionFactory implements IExtensionFactory {
     }
 
     @Override
-    public String create() {
+    public String create(Extension extension) {
         return value;
     }
 

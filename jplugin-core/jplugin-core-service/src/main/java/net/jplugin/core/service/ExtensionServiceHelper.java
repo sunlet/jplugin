@@ -7,6 +7,7 @@ import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.Beans;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.core.service.api.BindService;
 import net.jplugin.core.service.api.BindServiceSet;
 import net.jplugin.core.service.api.Constants;
@@ -20,6 +21,10 @@ import net.jplugin.core.service.api.Constants;
 public class ExtensionServiceHelper {
 	public static void addServiceExtension(AbstractPlugin plugin,String name,Class impl){
 		plugin.addExtension(Extension.create(Constants.EP_SERVICE, name,impl));
+	}
+	public static void addServiceExtension(AbstractPlugin plugin,Class intf,Class impl){
+		ObjectFactory f = ObjectFactory.createFactory(intf, impl);
+		plugin.addExtension(Extension.create(Constants.EP_SERVICE, intf.getName(),f));
 	}
 	
 	/**
@@ -57,7 +62,8 @@ public class ExtensionServiceHelper {
 					+ interfaceClazz.getName() + " impl=" + c.getName());
 		}
 		if (StringKit.isNotNull(anno.id())) {
-			Beans.setLastId(anno.id());
+//			Beans.setLastId(anno.id());
+			Extension.setLastExtensionId(anno.id());
 		}
 	}
 	

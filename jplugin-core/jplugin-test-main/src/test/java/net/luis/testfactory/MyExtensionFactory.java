@@ -1,6 +1,7 @@
 package net.luis.testfactory;
 
 import net.jplugin.core.kernel.api.BindExtension;
+import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.IExtensionFactory;
 import net.jplugin.core.kernel.api.IStartup;
 
@@ -8,7 +9,7 @@ import net.jplugin.core.kernel.api.IStartup;
 public class MyExtensionFactory implements IExtensionFactory {
 
 	@Override
-	public Object create() {
+	public Object create(Extension e) {
 		return new AAA();
 	}
 

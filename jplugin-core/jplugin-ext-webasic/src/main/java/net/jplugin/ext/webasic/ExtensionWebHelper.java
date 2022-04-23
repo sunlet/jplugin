@@ -155,7 +155,8 @@ public class ExtensionWebHelper {
 			.log("$$$ Auto add extension for service export : servicePath=" + anno.path() + " class="
 					+ c.getName());
 			if (StringKit.isNotNull(anno.id())) {
-				Beans.setLastId(anno.id());
+//				Beans.setLastId(anno.id());
+				Extension.setLastExtensionId(anno.id());
 			}
 		}
 	}
@@ -177,7 +178,8 @@ public class ExtensionWebHelper {
 								+ c.getName());
 				
 				if (StringKit.isNotNull(anno.id())) {
-					Beans.setLastId(anno.id());
+//					Beans.setLastId(anno.id());
+					Extension.setLastExtensionId(anno.id());
 				}
 			} else {
 				ExtensionWebHelper.addWebControllerExtension(p, anno.path(), c);
@@ -186,7 +188,8 @@ public class ExtensionWebHelper {
 								+ c.getName());
 				
 				if (StringKit.isNotNull(anno.id())) {
-					Beans.setLastId(anno.id());
+//					Beans.setLastId(anno.id());
+					Extension.setLastExtensionId(anno.id());
 				}
 			}
 		}

@@ -5,6 +5,9 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.core.kernel.api.extfactory.StringExtensionFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author: LiuHang
@@ -13,6 +16,7 @@ import net.jplugin.core.kernel.api.extfactory.StringExtensionFactory;
 
 public class Extension {
 	public static IPropertyFilter propertyFilter=null;
+	static Extension lastAdded=null;
 	String refExtensionPoint;
 	String name;
 //	Class clazz; //目前必须有值
@@ -21,7 +25,22 @@ public class Extension {
 //	Vector<Property> propertyList=new Vector<Property>(1);
 	
 	Object extensionObject;
-	
+
+
+	public static void setLastExtensionId(String id){
+		if (lastAdded!=null) {
+			lastAdded.setId(id);
+		}else {
+			throw new RuntimeException("Last extension is null.");
+		}
+	}
+	public static void setLastExtensionPriority(short priority){
+		if (lastAdded!=null) {
+			lastAdded.setPriority(priority);
+		}else {
+			throw new RuntimeException("Last extension is null.");
+		}
+	}
 	
 	@Override
 	public String toString() {
@@ -44,7 +63,10 @@ public class Extension {
 //		return (refExtensionPoint+clazz.getName()+name).hashCode();
 		return (refExtensionPoint+name).hashCode();
 	}
-	
+
+	public IExtensionFactory getFactory() {
+		return factory;
+	}
 
 	/**
 	 * 重复 Extension的标准：重复的refExtensionPoint、clazz、name、propertyList
@@ -105,9 +127,24 @@ public class Extension {
 //		return this.clazz;
 		return this.factory.getAccessClass();
 	}
-	
+
+//	/**
+//	 * to bo removed!!!!
+//	 * @return
+//	 */
 //	public List<Property> getProperties(){
-//		return this.propertyList;u
+//			List<ObjectFactory.Property> props = ((ObjectFactory) this.factory).__debugGetPropertys();
+//			if (props == null){
+//				return new ArrayList<>();
+//			}
+//			List<Property> rets = new ArrayList<>();
+//			for (ObjectFactory.Property p:props){
+//				Property o = new Property();
+//				o.key = p.getKey();
+//				o.value = p.getValue();
+//				rets.add(o);
+//			}
+//			return rets;
 //	}
 	
 	public Object getObject(){
@@ -135,9 +172,9 @@ public class Extension {
 //		}
 //
 //	}
-	
+//
 	public synchronized void load() throws Exception{
-		this.extensionObject = factory.create();
+		this.extensionObject = factory.create(this);
 //		if (propertyFilter!=null){
 //			filterProperty(this.propertyList);
 //		}

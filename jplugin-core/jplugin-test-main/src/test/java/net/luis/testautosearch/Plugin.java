@@ -23,7 +23,8 @@ public class Plugin extends AbstractPlugin {
 	public Plugin() {
 		System.out.println("constructing.....");
 		ExtensionWebHelper.addServiceExportExtension(this,"/path1",ExportTest1.class);
-		Beans.setLastId("theidabcde");
+		Extension.setLastExtensionId("theidabcde");
+
 		
 		this.addExtensionPoint(ExtensionPoint.create("EL_ExtensionForIdTest",IExtensionForIdTest.class));
 	}

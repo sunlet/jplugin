@@ -25,8 +25,11 @@ import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
 
 public class PluginEnvirement {
 	public static final int STAT_LEVEL_PREPAREING=0;
+	public static final int STAT_LEVEL_CONSTRUCTED=15;
 	public static final int STAT_LEVEL_LOADING=10;
+	public static final int STAT_LEVEL_LOADED=15;
 	public static final int STAT_LEVEL_WIRING=20;
+	public static final int STAT_LEVEL_WIRED=22;
 	public static final int STAT_LEVEL_MAKINGSVC=25;
 	public static final int STAT_LEVEL_INITING=30;
 	public static final int STAT_LEVEL_WORKING=40;
@@ -278,16 +281,24 @@ public class PluginEnvirement {
 					}
 				}
 			}
+			this.stateLevel = STAT_LEVEL_CONSTRUCTED;
 			registry.afterPluginsContruct();
+
 			registry.sort();
 			registry.handleDuplicateExtension();
 			registry.valid();
 			this.stateLevel = STAT_LEVEL_LOADING;
 			registry.load();
+
+			this.stateLevel = STAT_LEVEL_LOADED;
+			registry.afterPluginLoad();
 			Beans.initFromPluginList();//所有Extension加入ExtensionFactory
 			
 			this.stateLevel = STAT_LEVEL_WIRING;
 			registry.wire();
+
+			this.stateLevel = STAT_LEVEL_WIRED;
+			registry.afterWire();
 			
 			this.stateLevel = STAT_LEVEL_MAKINGSVC;
 			registry.makeServices();

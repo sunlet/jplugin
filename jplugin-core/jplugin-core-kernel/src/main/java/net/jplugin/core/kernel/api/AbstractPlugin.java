@@ -88,7 +88,8 @@ public abstract class AbstractPlugin implements IPlugin {
 
 	public void addExtension(Extension e) {
 		this.extensions.add(e);
-		Beans.setLastExtension(e);
+//		Beans.setLastExtension(e);
+		Extension.lastAdded = e;
 	}
 
 	public void addConfigure(String name,String val){
@@ -348,5 +349,11 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	public void afterPluginsContruct() {
+	}
+
+    public void afterPluginsLoad() {
+    }
+
+	public void afterWire() {
 	}
 }

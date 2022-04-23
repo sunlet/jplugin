@@ -102,23 +102,23 @@ public class Beans {
 	
 	//以下为 extension id相关的维护方法
 	
-	static Extension lastAddedExtension;
-	static void setLastExtension(Extension e) {
-		lastAddedExtension = e;
-	}
-	public static void setLastId(String id) {
-		//设置上一次调用addExtension的extension的ID
-		if (lastAddedExtension!=null) {
-			lastAddedExtension.setId(id);
-		}else {
-			throw new RuntimeException("Last extension is null.");
-		}
-	}
-	public static String getLastId() {
-		if (lastAddedExtension!=null) {
-			return lastAddedExtension.getId();
-		}else {
-			throw new RuntimeException("Last extension is null.");
-		}
-	}
+//	static Extension lastAddedExtension;
+//	static void setLastExtension(Extension e) {
+//		lastAddedExtension = e;
+//	}
+//	public static void setLastId(String id) {
+//		//设置上一次调用addExtension的extension的ID
+//		if (lastAddedExtension!=null) {
+//			lastAddedExtension.setId(id);
+//		}else {
+//			throw new RuntimeException("Last extension is null.");
+//		}
+//	}
+//	public static String getLastId() {
+//		if (lastAddedExtension!=null) {
+//			return lastAddedExtension.getId();
+//		}else {
+//			throw new RuntimeException("Last extension is null.");
+//		}
+//	}
 }

@@ -89,7 +89,8 @@ public class ExtensionCtxHelper {
 		
 
 		if (StringKit.isNotNull(anno.id())) {
-			Beans.setLastId(anno.id());
+//			Beans.setLastId(anno.id());
+			Extension.setLastExtensionId(anno.id());
 		}
 	}
 	
@@ -129,7 +130,8 @@ public class ExtensionCtxHelper {
 		}
 		
 		if (StringKit.isNotNull(anno.id())) {
-			Beans.setLastId(anno.id());
+//			Beans.setLastId(anno.id());
+			Extension.setLastExtensionId(anno.id());
 		}
 	}
 

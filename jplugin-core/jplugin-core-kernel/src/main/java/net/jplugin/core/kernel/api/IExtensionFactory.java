@@ -5,7 +5,7 @@ public  interface IExtensionFactory {
 	 *   创建一个扩展对象
 	 * @return
 	 */
-	public Object create();
+	public Object create(Extension ext);
 
 	public Class getAccessClass();
 

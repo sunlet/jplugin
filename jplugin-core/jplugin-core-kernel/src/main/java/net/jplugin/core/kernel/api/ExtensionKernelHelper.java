@@ -2,11 +2,12 @@ package net.jplugin.core.kernel.api;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.Plugin;
+import net.jplugin.core.kernel.impl_incept.ExtensionInterceptorFactory;
 
 public class ExtensionKernelHelper {
 	public static void addBeanExtension(AbstractPlugin p,String id,Class beanClazz){
 		p.addExtension(Extension.create(net.jplugin.core.kernel.Plugin.EP_BEAN,id,beanClazz));
-		Beans.setLastId(id);
+		Extension.setLastExtensionId(id);
 	}
 	public static void addStartUpExtension(AbstractPlugin p,Class startupClazz){
 		p.addExtension(Extension.create(net.jplugin.core.kernel.Plugin.EP_STARTUP,"",startupClazz));
@@ -32,6 +33,12 @@ public class ExtensionKernelHelper {
 	public static void addScheduledExecutionFilterExtension(AbstractPlugin p, Class c) {
 		p.addExtension(Extension.create(Plugin.EP_EXE_SCHEDULED_FILTER, c));
 	}
+
+	public static void addExtensionInterceptorExtension(AbstractPlugin p, Class c,String forExt,String forP,String methodFilter) {
+		IExtensionFactory f = ExtensionInterceptorFactory.create(c,forExt,forP,methodFilter);
+		p.addExtension(Extension.create(Plugin.EP_EXTENSION_INTERCEPTOR, f));
+	}
+
 	
 	public static void autoBindExtension(AbstractPlugin p,String pkgPath){
 		for(Class c:p.filterContainedClasses(pkgPath,BindExtension.class)){
@@ -42,7 +49,8 @@ public class ExtensionKernelHelper {
 			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for point:"+anno.pointTo()+" class="+c.getName()+" name="+anno.name());
 			
 			if (StringKit.isNotNull(anno.id())) {
-				Beans.setLastId(anno.id());
+//				Beans.setLastId(anno.id());
+				Extension.setLastExtensionId(anno.id());
 			}
 		}
 	}
