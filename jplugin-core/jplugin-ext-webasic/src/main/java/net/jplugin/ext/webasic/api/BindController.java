@@ -14,5 +14,5 @@ public @interface BindController {
 	 * id 可以通过ExtensionFactory.get(id)找到对应的对象
 	 * @return
 	 */
-	public String id() default "";
+//	public String id() default "";
 }

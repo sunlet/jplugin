@@ -21,6 +21,7 @@ import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.Beans;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
 
 /**
  *
@@ -88,10 +89,12 @@ public class ExtensionCtxHelper {
 					+ c.getName() + " applyTo=" + applyTo+" priority="+priority);
 		
 
-		if (StringKit.isNotNull(anno.id())) {
-//			Beans.setLastId(anno.id());
-			Extension.setLastExtensionId(anno.id());
-		}
+//		if (StringKit.isNotNull(anno.id())) {
+////			Beans.setLastId(anno.id());
+//			Extension.setLastExtensionId(anno.id());
+//		}
+		ExtensionBindKit.handleIdAndPriority(p,c);
+
 	}
 	
 	/**
@@ -129,10 +132,11 @@ public class ExtensionCtxHelper {
 					+ interfaceClazz.getName() + " impl=" + c.getName());
 		}
 		
-		if (StringKit.isNotNull(anno.id())) {
-//			Beans.setLastId(anno.id());
-			Extension.setLastExtensionId(anno.id());
-		}
+//		if (StringKit.isNotNull(anno.id())) {
+////			Beans.setLastId(anno.id());
+//			Extension.setLastExtensionId(anno.id());
+//		}
+		ExtensionBindKit.handleIdAndPriority(p,c);
 	}
 
 	private static Class computeInterfaceCls(Class impClazz) {

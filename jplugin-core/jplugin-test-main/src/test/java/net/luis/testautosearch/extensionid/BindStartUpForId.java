@@ -5,8 +5,10 @@ import java.util.List;
 import net.jplugin.core.kernel.api.BindStartup;
 import net.jplugin.core.kernel.api.IStartup;
 import net.jplugin.core.kernel.api.PluginError;
+import net.jplugin.core.kernel.api.SetExtensionId;
 
-@BindStartup(id="BindStartUpForId")
+@SetExtensionId("BindStartUpForId")
+@BindStartup()
 public class BindStartUpForId implements IStartup{
 
 	@Override

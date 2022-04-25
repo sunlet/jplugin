@@ -1,7 +1,6 @@
 package net.jplugin.core.kernel.api.extfactory;
 
 import javassist.util.proxy.ProxyFactory;
-import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.*;
@@ -12,6 +11,7 @@ import net.jplugin.core.kernel.impl_incept.TheMethodHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -77,30 +77,34 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
     }
 
     private TheMethodHandler theMethodHandlerForNoInterface;
+//    private Object creteMethodHandlerAndObject(Extension extension) {
+//        Object object = this.createInternal(this.implClazz);
+//        PluginEnvirement.getInstance().resolveRefAnnotation(object);
+//        return object;
+//    }
     private Object creteMethodHandlerAndObject(Extension extension) {
-        Object object = this.createInternal(this.implClazz);
-        PluginEnvirement.getInstance().resolveRefAnnotation(object);
-        return object;
-    }
-    private Object creteMethodHandlerAndObject2(Extension extension) {
         ProxyFactory factory = new ProxyFactory();
         factory.setSuperclass(this.implClazz);
         this.theMethodHandlerForNoInterface = new TheMethodHandler(extension);
         factory.setHandler(this.theMethodHandlerForNoInterface);
+
 
         Class<?> theProxyClass = factory.createClass();
         Object result = this.createInternal(theProxyClass);
 
         this.theMethodHandlerForNoInterface.setObjectInstance(result);
 
-//        try{
-//            int code = result.hashCode();
-//            System.out.println("=========================================================="+code);
-//
-//        }catch(Exception e){
-//            e.printStackTrace();
-//            result = this.createInternal(this.implClazz);
-//        }
+        try{
+            int code = result.hashCode();
+            HashMap hm = new HashMap();
+            hm.put(result,"");
+            hm.put(result,"1");
+            System.out.println("=========================================================="+code);
+
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
         PluginEnvirement.getInstance().resolveRefAnnotation(result);
         return result;

@@ -3,11 +3,7 @@ package net.jplugin.core.kernel.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
@@ -34,8 +30,17 @@ public class AnnotationResolveHelper {
 	private List<Object> toResolveList = new LinkedList();
 	private PluginEnvirement pluginEnvirement;
 
+	private List<Object> toInitingList = new LinkedList<>();
+
 	public AnnotationResolveHelper(PluginEnvirement pe) {
 		this.pluginEnvirement = pe;
+	}
+
+	public void initHistory(){
+		for (Object o:toInitingList){
+			((Initializable)o).initialize();
+		}
+		toInitingList.clear();
 	}
 
 	public void resolveHistory() {
@@ -82,7 +87,7 @@ public class AnnotationResolveHelper {
 
 	public final void resolveOne(Object obj) {
 		// 初始化以前先保留
-		if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_INITING) {
+		if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_RESOLVING_HIST) {
 			this.toResolveList.add(obj);
 			return;
 		}
@@ -109,7 +114,12 @@ public class AnnotationResolveHelper {
 		
 		//
 		if (obj instanceof Initializable){
-			((Initializable)obj).initialize();
+			if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_INITING){
+				//暂缓初始化
+				toInitingList.add(obj);
+			}else {
+				((Initializable) obj).initialize();
+			}
 		}
 	}
 

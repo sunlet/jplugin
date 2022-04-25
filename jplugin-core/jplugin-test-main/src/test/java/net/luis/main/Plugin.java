@@ -50,8 +50,8 @@ public class Plugin extends AbstractPlugin{
 		addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, IDataTest.class.getName(),RuleServiceDefinition.class,new String[][]{{"interf",IDataTest.class.getName()},{"impl",DataTestImpl.class.getName()}} ));
 		addExtension(Extension.create(net.jplugin.core.das.hib.Plugin.EP_DATAMAPPING, "",POProvider.class));
 
-
 		addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, ITestEventService.class.getName(),RuleServiceDefinition.class,new String[][]{{"interf",ITestEventService.class.getName()},{"impl",TestEventService.class.getName()}} ));
+
 		addExtension(Extension.createStringExtension(net.jplugin.core.event.Plugin.EP_EVENT_TYPES, TestEvent.TEST_EVENT));
 		addExtension(Extension.create(net.jplugin.core.event.Plugin.EP_EVENT_CONSUMER, "",TestEventConsumer.class,new String[][]{{"targetType",TestEvent.TEST_EVENT},{"channelType",ChannelType.POST_MEMORY.toString()}} ));
 

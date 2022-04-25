@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import javax.servlet.ServletException;
 
+import jplugincoretest.service.Plugin;
 import net.jplugin.common.kits.http.HttpKit;
 import net.jplugin.common.kits.http.mock.HttpMock;
 import net.jplugin.common.kits.http.mock.HttpServletRequestMock;
@@ -48,6 +49,7 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException,
 			SQLException, ClassNotFoundException {
 		PluginAutoDetect.addAutoDetectPackage("net.luis");
+		PluginAutoDetect.addAutoDetectPackage("jplugincoretest");
 		System.out.println("testAll="+System.getProperty("testAll")+" testTarget="+System.getProperty("testTarget"));
 		PluginEnvirement.INSTANCE.setUnitTesting(true);
 		HttpKit.setUnitTesting(true);

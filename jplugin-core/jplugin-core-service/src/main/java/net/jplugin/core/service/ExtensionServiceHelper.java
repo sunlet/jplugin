@@ -8,6 +8,7 @@ import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.Beans;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
 import net.jplugin.core.service.api.BindService;
 import net.jplugin.core.service.api.BindServiceSet;
 import net.jplugin.core.service.api.Constants;
@@ -61,10 +62,13 @@ public class ExtensionServiceHelper {
 			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
 					+ interfaceClazz.getName() + " impl=" + c.getName());
 		}
-		if (StringKit.isNotNull(anno.id())) {
-//			Beans.setLastId(anno.id());
-			Extension.setLastExtensionId(anno.id());
-		}
+//		if (StringKit.isNotNull(anno.id())) {
+////			Beans.setLastId(anno.id());
+//			Extension.setLastExtensionId(anno.id());
+//		}
+
+		ExtensionBindKit.handleIdAndPriority(p,c);
+
 	}
 	
 	private static Class computeInterfaceCls(Class impClazz) {

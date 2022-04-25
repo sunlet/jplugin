@@ -17,15 +17,20 @@ import java.util.List;
 public class Extension {
 	public static IPropertyFilter propertyFilter=null;
 	static Extension lastAdded=null;
-	String refExtensionPoint;
-	String name;
+	private String refExtensionPoint;
+	private String name;
 //	Class clazz; //目前必须有值
-	IExtensionFactory factory;//目前必须有值
-	short priority;
+	private IExtensionFactory factory;//目前必须有值
+	private int priority;
 //	Vector<Property> propertyList=new Vector<Property>(1);
 	
 	Object extensionObject;
 
+	void setRefExtensionPoint(String nm){
+		if (StringKit.isNotNull(refExtensionPoint))
+			throw new RuntimeException("can't set");
+		refExtensionPoint = nm;
+	}
 
 	public static void setLastExtensionId(String id){
 		if (lastAdded!=null) {
@@ -34,7 +39,7 @@ public class Extension {
 			throw new RuntimeException("Last extension is null.");
 		}
 	}
-	public static void setLastExtensionPriority(short priority){
+	public static void setLastExtensionPriority(int priority){
 		if (lastAdded!=null) {
 			lastAdded.setPriority(priority);
 		}else {
@@ -77,7 +82,7 @@ public class Extension {
 			return false;
 		else {
 			Extension e = (Extension) obj;
-			return  
+			return
 //					clazz.equals(e.getClazz())
 //					&&
 					(refExtensionPoint.equals(e.refExtensionPoint))
@@ -86,7 +91,7 @@ public class Extension {
 					&&
 //					 checkPropertyDup(propertyList,e.propertyList)
 					 factory.contentEqual(e.factory)
-					&& 
+					&&
 					 StringKit.eqOrNull(this.id,e.id);
 		}
 	}
@@ -151,10 +156,10 @@ public class Extension {
 		return extensionObject;
 	}
 	
-	public short getPriority() {
+	public int getPriority() {
 		return priority;
 	}
-	public void setPriority(short priority) {
+	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 	

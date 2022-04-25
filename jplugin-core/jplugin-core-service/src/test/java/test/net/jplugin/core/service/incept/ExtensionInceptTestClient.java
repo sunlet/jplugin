@@ -1,4 +1,4 @@
-package test.net.jplugin.core.kernel.incept;
+package test.net.jplugin.core.service.incept;
 
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.service.api.ServiceFactory;

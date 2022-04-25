@@ -1,18 +1,13 @@
 package net.jplugin.core.kernel.api;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
+import com.fasterxml.jackson.databind.introspect.POJOPropertyBuilder;
 import net.jplugin.common.kits.Comparor;
 import net.jplugin.common.kits.SortUtil;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.plugin_event.PluginEventListenerManager;
+import net.jplugin.core.kernel.impl.PluginPrepareHelper;
 
 /**
  *
@@ -25,6 +20,7 @@ public class PluginRegistry {
 	private List<PluginError> errorList = new Vector<PluginError>();
 	private Hashtable<String, ExtensionPoint> extensionPointMap = new Hashtable<String, ExtensionPoint>();
 	private Map<String, AbstractPlugin> loadedPluginMap = new Hashtable<String, AbstractPlugin>();
+	private List<Class> pluginClasses=new ArrayList<>();
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -44,12 +40,22 @@ public class PluginRegistry {
 		return Collections.unmodifiableList(this.pluginList);
 	}
 
-	/**
-	 * @param plugin
-	 */
-	public void addPlugin(IPlugin plugin) {
-		this.pluginList.add((AbstractPlugin) plugin);
+
+	public void addPluginClasses(Set<Object> pluginToLoad) {
+		for (Object name:pluginToLoad){
+			try {
+				this.pluginClasses.add(Class.forName((String)name));
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException("The plugin class not found:"+name);
+			}
+		}
 	}
+//	/**
+//	 * @param plugin
+//	 */
+//	public void addPlugin(IPlugin plugin) {
+//		this.pluginList.add((AbstractPlugin) plugin);
+//	}
 
 	public void afterPluginsContruct() {
 		for (int i = 0; i < pluginList.size(); i++) {
@@ -105,6 +111,68 @@ public class PluginRegistry {
 		PluginRegistryHelper.reorderSamePriorityPlugins(this.pluginList);
 	}
 
+	//推断空的point引用
+	public void inferencePointToOfExtension(){
+		Set<String> currentPointNameSet = new HashSet();
+		for (int i = 0; i < pluginList.size(); i++) {
+			AbstractPlugin p = pluginList.get(i);
+			for (ExtensionPoint point:p.getExtensionPoints()){
+				currentPointNameSet.add(point.getName());
+			}
+			for (Extension extension:p.getExtensions()){
+				if (StringKit.isNull(extension.getExtensionPointName())){
+					String result = inference(extension,currentPointNameSet);
+					if (result==null){
+						errorList.add(new PluginError(p.getName(),"Can't inference extension's pointTo attribute. extension class is:"+extension.getClazz().getName() +"。 " +
+								" In order to inference a extension's pointTo , the clazz must has a direct interface or subclass who's name is an extension point."  ) );
+					}else{
+						extension.setRefExtensionPoint( result);
+					}
+				}
+			}
+		}
+		currentPointNameSet.clear();
+
+		if (errorList.size()>0)
+			throw new RuntimeException(errorList.toString());
+	}
+
+	private String inference(Extension extension, Set<String> pointNameSet) {
+		List<String> nameList = new ArrayList<>();
+		Class superclass = extension.getClazz().getSuperclass();
+		if (!superclass.equals(Object.class)){
+			nameList.add(superclass.getName());
+		}
+		for (Class c:extension.getClazz().getInterfaces()){
+			nameList.add(c.getName());
+		}
+
+		String matched = null;
+		for (String name:nameList){
+			if (pointNameSet.contains(name)){
+				if (matched==null){
+					matched = name;
+				}else{
+					PluginEnvirement.getInstance().getStartLogger().log("ERROR: Dulicate matched when inference pointTo , names:["+matched+" , "+name+" ]");
+					return null;
+				}
+			}
+		}
+		if (matched==null)
+			PluginEnvirement.getInstance().getStartLogger().log("ERROR: All of the  names are not extension point when inference pointTo :"+getString(nameList));
+		return matched;
+	}
+
+	private String getString(List<String> names) {
+		StringBuffer sb= new StringBuffer("[");
+		for (String s:names){
+			sb.append(s).append(" , ");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+
 	/**
 	 * 各个plugin自己验证自己,如果错误，设置error状态
 	 */
@@ -117,8 +185,29 @@ public class PluginRegistry {
 				errorList.addAll(ret);
 			}
 		}
+		if (errorList.size()>0)
+			throw new RuntimeException(errorList.toString());
 	}
 
+	void printPluginSequence(String title){
+		StringBuffer sb = new StringBuffer(title).append("\n");
+
+		for (int i=0;i<this.pluginList.size();i++){
+			AbstractPlugin p = this.pluginList.get(i);
+			sb.append("[").append(i).append("] ").append(p.getName()).append(" ").append(p.getPrivority()).append("  ").append("\n");
+			for (ExtensionPoint ep:p.getExtensionPoints()){
+				sb.append("  "+ep.getName()).append("\n");
+			}
+			if (p.getExtensions().size()>0){
+				sb.append("  {");
+				for (Extension e:p.getExtensions()){
+					sb.append(e.getExtensionPointName()).append("  ");
+				}
+				sb.append("}\n");
+			}
+		}
+		PluginEnvirement.getInstance().getStartLogger().log(sb.toString());
+	}
 	/**
 	 * 各个Plugin自己加载自己，碰到异常则抛出
 	 */
@@ -277,8 +366,9 @@ public class PluginRegistry {
 			for (int i = extList.size() - 1; i >= 0; i--) {
 				Extension ext = extList.get(i);
 				if (tempSet.contains(ext)) {
-					PluginEnvirement.getInstance().getStartLogger().log("Warnning: Found dup extension in plugin:" + p.getName() + " ext=" + ext);
-					extList.remove(i);
+					throw new RuntimeException("Warnning: Found dup extension in plugin:" + p.getName() + " ext=" + ext);
+//					PluginEnvirement.getInstance().getStartLogger().log("Warnning: Found dup extension in plugin:" + p.getName() + " ext=" + ext);
+//					extList.remove(i);
 				} else {
 					tempSet.add(ext);
 				}
@@ -288,6 +378,25 @@ public class PluginRegistry {
 	}
 
 
+	public void prepare() {
+		PluginPrepareHelper.preparePlugins(this.pluginClasses);
+	}
+
+	public void construct() {
+		for (Class c:this.pluginClasses){
+			try {
+				this.pluginList.add((AbstractPlugin) c.newInstance());
+			} catch (InstantiationException e) {
+				throw new RuntimeException("plugin contruct error:" + c.getName(),e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException("plugin contruct error:"+c.getName(),e);
+			}
+		}
+	}
+
+	public List<Class> getPluginClasses() {
+		return this.pluginClasses;
+	}
 }
 
 

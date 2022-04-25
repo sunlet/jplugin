@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface BindExtension {
-	public String pointTo();
+	public String pointTo() default "";
 	public String name() default "";
-	public String id() default "";
-	public short priority() default 0;
+//	public String id() default "";
+//	public short priority() default 0;
 }

@@ -29,7 +29,7 @@ public class ExtensionInterceptorFactory implements IExtensionFactory {
     public boolean contentEqual(IExtensionFactory f) {
         if (f instanceof ExtensionInterceptorFactory){
             ExtensionInterceptorFactory ff = (ExtensionInterceptorFactory) f;
-            return eqOrAllNull(forExtensions,ff.forExtensions) 
+            return eqOrAllNull(forExtensions,ff.forExtensions)
                     && eqOrAllNull(forPoints,ff.forPoints)
                     && eqOrAllNull(methodFilter,ff.methodFilter)
                     && this.implClazz.equals( ((ExtensionInterceptorFactory)f).implClazz);
@@ -52,8 +52,8 @@ public class ExtensionInterceptorFactory implements IExtensionFactory {
         f.methodFilter = m;
         f.implClazz = implClazz;
 
-        f.forExtensionsArr = f.forExtensions==null? EMPTYARR:StringKit.splitStr(f.forExtensions,",");
-        f.forPointsArr = f.forPoints==null? EMPTYARR:StringKit.splitStr(f.forPoints,",");
+        f.forExtensionsArr = StringKit.isNull(f.forExtensions)? EMPTYARR:StringKit.splitStr(f.forExtensions,",");
+        f.forPointsArr = StringKit.isNull(f.forPoints)? EMPTYARR:StringKit.splitStr(f.forPoints,",");
         return f;
     }
 
@@ -73,6 +73,7 @@ public class ExtensionInterceptorFactory implements IExtensionFactory {
     private String[] forPointsArr;
 
     public boolean matchExtension(Extension e){
+//        System.out.println(this.getAccessClass().getName());
         for (String s:forExtensionsArr){
             if (s.equals(e.getId())) return true;
         }

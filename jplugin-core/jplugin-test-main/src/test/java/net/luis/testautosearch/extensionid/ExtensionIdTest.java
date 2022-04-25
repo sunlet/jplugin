@@ -51,8 +51,8 @@ public class ExtensionIdTest {
 		AssertKit.assertNotNull(rmift, "rmift");
 		rmift.aaa();
 		
-		RuleMethodInterceptorForIdTest rmift2 = Beans.get("RuleMethodInterceptorForIdTest2",RuleMethodInterceptorForIdTest.class);
-		AssertKit.assertTrue(rmift==rmift2);
+//		RuleMethodInterceptorForIdTest rmift2 = Beans.get("RuleMethodInterceptorForIdTest2",RuleMethodInterceptorForIdTest.class);
+//		AssertKit.assertTrue(rmift==rmift2);
 		
 	}
 

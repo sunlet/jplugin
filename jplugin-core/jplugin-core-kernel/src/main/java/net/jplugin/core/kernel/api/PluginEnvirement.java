@@ -31,7 +31,9 @@ public class PluginEnvirement {
 	public static final int STAT_LEVEL_WIRING=20;
 	public static final int STAT_LEVEL_WIRED=22;
 	public static final int STAT_LEVEL_MAKINGSVC=25;
+	public static final int STAT_LEVEL_RESOLVING_HIST=27;
 	public static final int STAT_LEVEL_INITING=30;
+
 	public static final int STAT_LEVEL_WORKING=40;
 	
 	public static final String WORK_DIR = "work-dir";
@@ -265,30 +267,62 @@ public class PluginEnvirement {
 			if ("true".equals(System.getProperty("testAll"))){
 				testAll = true;
 			}
-			
-			PluginPrepareHelper.preparePlugins(pluginToLoad);
-			
-			
+
+			//查找需要加载的测试Plugin
+			Set<String> testPluginClasses = new HashSet<>();
 			for (Object obj : pluginToLoad) {
-				addPlugin(obj);
-				
 				//加载测试插件
 				if (testAll){
-					addPluginIfExists("test."+obj);
+					String c = getPluginClazzIfExists("test."+obj);
+					if (c!=null){
+						testPluginClasses.add(c);
+					}
 				}else{
 					if ( ("test."+obj).equals(testTarget)){
-						addPluginIfExists("test."+obj);
+//						addPluginIfExists("test."+obj);
+						String c = getPluginClazzIfExists("test."+obj);
+						if (c!=null){
+							testPluginClasses.add(c);
+						}
 					}
 				}
 			}
+			pluginToLoad.addAll(testPluginClasses);
+
+			//add plugin classes
+			registry.addPluginClasses(pluginToLoad);
+
+			//Prepare
+			registry.prepare();
+
+			//Construct
+			registry.construct();
+//			for (Object obj : pluginToLoad) {
+//				addPlugin(obj);
+////
+////				//加载测试插件
+////				if (testAll){
+////					addPluginIfExists("test."+obj);
+////				}else{
+////					if ( ("test."+obj).equals(testTarget)){
+////						addPluginIfExists("test."+obj);
+////					}
+////				}
+//			}
 			this.stateLevel = STAT_LEVEL_CONSTRUCTED;
 			registry.afterPluginsContruct();
 
+//			registry.printPluginSequence("=========After Contruct==========");
+
 			registry.sort();
+			registry.inferencePointToOfExtension();
+//			registry.printPluginSequence("=========After Sort==========");
+
 			registry.handleDuplicateExtension();
 			registry.valid();
 			this.stateLevel = STAT_LEVEL_LOADING;
 			registry.load();
+//			registry.printPluginSequence("=========After Load==========");
 
 			this.stateLevel = STAT_LEVEL_LOADED;
 			registry.afterPluginLoad();
@@ -304,13 +338,17 @@ public class PluginEnvirement {
 			registry.makeServices();
 			registry.clearClassCache();
 			
-			this.stateLevel = STAT_LEVEL_INITING;
+			this.stateLevel = STAT_LEVEL_RESOLVING_HIST;
 
 			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
 				try{
 					ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
 
 					this.annoResolveHelper.resolveHistory();
+
+					this.stateLevel = STAT_LEVEL_INITING;
+
+					this.annoResolveHelper.initHistory();
 					startFilterManager.filter(Tuple2.with(testAll,testTarget));
 
 				}finally{
@@ -351,29 +389,38 @@ public class PluginEnvirement {
 		}
 	}
 
-	private void addPluginIfExists(Object obj) {
-		String cname = (String) obj;
+	private String getPluginClazzIfExists(String cname) {
 		try {
 			Class.forName(cname);
+			return cname;
 		} catch (ClassNotFoundException e) {
-			return;
+			return null;
 		}
-		addPlugin(obj);
 	}
 
-	/**
-	 * @param obj
-	 */
-	private void addPlugin(Object obj) {
-		String cname = (String) obj;
-		Object plugin;
-		try {
-			plugin = Class.forName(cname).newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException("plugin instance create error,"+e.getMessage()+obj, e);
-		}
-		registry.addPlugin((IPlugin) plugin);
-	}
+//	private void addPluginIfExists(Object obj) {
+//		String cname = (String) obj;
+//		try {
+//			Class.forName(cname);
+//		} catch (ClassNotFoundException e) {
+//			return;
+//		}
+//		addPlugin(obj);
+//	}
+
+//	/**
+//	 * @param obj
+//	 */
+//	private void addPlugin(Object obj) {
+//		String cname = (String) obj;
+//		Object plugin;
+//		try {
+//			plugin = Class.forName(cname).newInstance();
+//		} catch (Exception e) {
+//			throw new RuntimeException("plugin instance create error,"+e.getMessage()+obj, e);
+//		}
+//		registry.addPlugin((IPlugin) plugin);
+//	}
 
 	/**
 	 * @param e

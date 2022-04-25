@@ -7,6 +7,7 @@ import net.jplugin.core.kernel.api.Beans;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
 import net.jplugin.ext.webasic.api.AbstractExController;
 import net.jplugin.ext.webasic.api.BindController;
 import net.jplugin.ext.webasic.api.BindServiceExport;
@@ -154,10 +155,11 @@ public class ExtensionWebHelper {
 			PluginEnvirement.INSTANCE.getStartLogger()
 			.log("$$$ Auto add extension for service export : servicePath=" + anno.path() + " class="
 					+ c.getName());
-			if (StringKit.isNotNull(anno.id())) {
-//				Beans.setLastId(anno.id());
-				Extension.setLastExtensionId(anno.id());
-			}
+//			if (StringKit.isNotNull(anno.id())) {
+////				Beans.setLastId(anno.id());
+//				Extension.setLastExtensionId(anno.id());
+//			}
+			ExtensionBindKit.handleIdAndPriority(p,c);
 		}
 	}
 	
@@ -177,20 +179,22 @@ public class ExtensionWebHelper {
 						.log("$$$ Auto add extension for web ex controller : servicePath=" + anno.path() + " class="
 								+ c.getName());
 				
-				if (StringKit.isNotNull(anno.id())) {
-//					Beans.setLastId(anno.id());
-					Extension.setLastExtensionId(anno.id());
-				}
+//				if (StringKit.isNotNull(anno.id())) {
+////					Beans.setLastId(anno.id());
+//					Extension.setLastExtensionId(anno.id());
+//				}
+				ExtensionBindKit.handleIdAndPriority(p,c);
 			} else {
 				ExtensionWebHelper.addWebControllerExtension(p, anno.path(), c);
 				PluginEnvirement.INSTANCE.getStartLogger()
 						.log("$$$ Auto add extension for web controller : servicePath=" + anno.path() + " class="
 								+ c.getName());
 				
-				if (StringKit.isNotNull(anno.id())) {
-//					Beans.setLastId(anno.id());
-					Extension.setLastExtensionId(anno.id());
-				}
+//				if (StringKit.isNotNull(anno.id())) {
+////					Beans.setLastId(anno.id());
+//					Extension.setLastExtensionId(anno.id());
+//				}
+				ExtensionBindKit.handleIdAndPriority(p,c);
 			}
 		}
 	}

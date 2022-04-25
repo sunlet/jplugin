@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 public @interface BindRuleService {
 	public String name() default "";
 	public Class interfaceClass() default DefaultInterface.class;
-	public String id() default "";
+//	public String id() default "";
 	public static class DefaultInterface{
 	}
 }

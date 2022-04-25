@@ -6,8 +6,11 @@ import net.jplugin.core.kernel.api.*;
 import net.jplugin.core.kernel.impl.*;
 import net.jplugin.core.kernel.impl_incept.ExtensionInterceptorManager;
 import net.jplugin.core.kernel.kits.ExecutorKitFilterManager;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
 import net.jplugin.core.kernel.kits.RunnableInitFilterManager;
 import net.jplugin.core.kernel.kits.scheduled.ScheduledFilterManager;
+
+import java.lang.reflect.Modifier;
 
 /**
  *
@@ -28,6 +31,45 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_EXTENSION_INTERCEPTOR = "EP_EXTENSION_INTERCEPTOR";
 
 	static{
+		//ExtensionPoint 也借用這個了！
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(MakeExtensionPoint.class, (plugin,clazz,anno)->{
+			if (clazz.isInterface() || Modifier.isAbstract( clazz.getModifiers() )){
+				//OK
+			}else{
+				throw new RuntimeException("MakeExtensionPoint must use for Interface or Abstract class");
+			}
+
+			MakeExtensionPoint a = (MakeExtensionPoint) anno;
+			String name = a.name();
+			if (StringKit.isNull(a.name())){
+				name = clazz.getName();
+			}
+			switch (a.type()){
+				case LIST:
+					plugin.addExtensionPoint(ExtensionPoint.createList(name,clazz));
+					break;
+				case NAMED:
+					plugin.addExtensionPoint(ExtensionPoint.createNamed(name,clazz));
+					break;
+				case UNIQUE:
+					plugin.addExtensionPoint(ExtensionPoint.createUnique(name,clazz));
+					break;
+				default:
+					throw new RuntimeException("not support");
+
+			}
+		});
+
+
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindExtensionInterceptor.class, (plugin,clazz,anno)->{
+			BindExtensionInterceptor bsAnno = (BindExtensionInterceptor) anno;
+			ExtensionKernelHelper.addExtensionInterceptorExtension(plugin,clazz,((BindExtensionInterceptor) anno).forExtensions(),((BindExtensionInterceptor) anno).forExtensionPoints(),((BindExtensionInterceptor) anno).methodFilter());
+
+			if (StringKit.isNotNull(bsAnno.id())) {
+				Extension.setLastExtensionId(bsAnno.id());
+			}
+		});
+
 		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
 			ExtensionKernelHelper.autoBindExtension(p, "");
 		});
@@ -36,10 +78,11 @@ public class Plugin extends AbstractPlugin{
 			BindStartup bsAnno = (BindStartup) anno;
 			plugin.addExtension(Extension.create(EP_STARTUP, clazz));
 			
-			if (StringKit.isNotNull(bsAnno.id())) {
-				Extension.setLastExtensionId(bsAnno.id());
-//				Beans.setLastId(bsAnno.id());
-			}
+//			if (StringKit.isNotNull(bsAnno.id())) {
+//				Extension.setLastExtensionId(bsAnno.id());
+////				Beans.setLastId(bsAnno.id());
+//			}
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
 		});
 		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindBean.class, (plugin,clazz,anno)->{
 			BindBean bsAnno = (BindBean) anno;
@@ -48,6 +91,8 @@ public class Plugin extends AbstractPlugin{
 				throw new RuntimeException("[id] attribute for BindBean must not null");
 			}
 			ExtensionKernelHelper.addBeanExtension(plugin, id, clazz);
+
+			ExtensionBindKit.checkBindBeanNoSetExtensionIdAnno(plugin,clazz);
 		});
 	}
 	

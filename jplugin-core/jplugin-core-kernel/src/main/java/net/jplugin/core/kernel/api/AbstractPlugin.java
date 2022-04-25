@@ -297,13 +297,15 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 		return this.containedClasses;
 	}
-	
+
 	private List<String> getExcludePackages() {
 		List<String> result = new ArrayList(2);
 		String myPkg = this.getClass().getPackage().getName();
-		List<AbstractPlugin> list = PluginEnvirement.getInstance().getPluginRegistry().getPluginList();
-		for (AbstractPlugin p:list) {
-			String pkgname = p.getClass().getPackage().getName();
+		List<Class> list = PluginEnvirement.getInstance().getPluginRegistry().getPluginClasses();
+		for (Class p:list) {
+			if (this.getClass().equals(p))
+				continue;
+			String pkgname = p.getPackage().getName();
 			if (pkgname.equals(myPkg)) {
 				throw new RuntimeException("Duplicate plugin found  in one single package. "+this.getClass().getName()+" | "+ p.getClass().getName());
 			}else if (pkgname.startsWith(myPkg)){
@@ -312,6 +314,20 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 		return result;
 	}
+//	private List<String> getExcludePackages() {
+//		List<String> result = new ArrayList(2);
+//		String myPkg = this.getClass().getPackage().getName();
+//		List<AbstractPlugin> list = PluginEnvirement.getInstance().getPluginRegistry().getPluginList();
+//		for (AbstractPlugin p:list) {
+//			String pkgname = p.getClass().getPackage().getName();
+//			if (pkgname.equals(myPkg)) {
+//				throw new RuntimeException("Duplicate plugin found  in one single package. "+this.getClass().getName()+" | "+ p.getClass().getName());
+//			}else if (pkgname.startsWith(myPkg)){
+//				result.add(StringKit.replaceStr(pkgname , ".","/"));
+//			}
+//		}
+//		return result;
+//	}
 
 	public Set<Class> filterContainedClassesByChecker(String pkgPath, IClassChecker checker) {
 		AssertKit.assertTrue(StringKit.isNull(pkgPath) || pkgPath.startsWith("."));

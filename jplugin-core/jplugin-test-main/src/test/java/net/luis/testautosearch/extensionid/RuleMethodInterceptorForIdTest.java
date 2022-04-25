@@ -4,9 +4,12 @@ import net.jplugin.common.kits.filter.FilterChain;
 import net.jplugin.core.ctx.api.AbstractRuleMethodInterceptor;
 import net.jplugin.core.ctx.api.BindRuleMethodInterceptor;
 import net.jplugin.core.ctx.api.RuleServiceFilterContext;
+import net.jplugin.core.kernel.api.SetExtensionId;
 
-@BindRuleMethodInterceptor(applyTo = "*" ,id="RuleMethodInterceptorForIdTest1")
-@BindRuleMethodInterceptor(applyTo = "*" ,id="RuleMethodInterceptorForIdTest2")
+@SetExtensionId("RuleMethodInterceptorForIdTest1")
+@BindRuleMethodInterceptor(applyTo = "*" )
+//@BindRuleMethodInterceptor(applyTo = "*" ,id="RuleMethodInterceptorForIdTest1")
+//@BindRuleMethodInterceptor(applyTo = "*" ,id="RuleMethodInterceptorForIdTest2")
 public class RuleMethodInterceptorForIdTest  extends AbstractRuleMethodInterceptor{
 
 	public RuleMethodInterceptorForIdTest() {

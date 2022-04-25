@@ -22,8 +22,8 @@ public class Beans {
 		else throw new RuntimeException("Extension not found by id:"+id);
 	}
 	public static Object find(String id) {
-		if (PluginEnvirement.INSTANCE.getStateLevel()<PluginEnvirement.STAT_LEVEL_INITING)
-			throw new RuntimeException("Can't call when state is before STAT_LEVEL_INITING");
+		if (PluginEnvirement.INSTANCE.getStateLevel()<PluginEnvirement.STAT_LEVEL_RESOLVING_HIST)
+			throw new RuntimeException("Can't call when state is before STAT_LEVEL_RESOLVING_HIST");
 		
 		Object val = initiateMap.get(id);
 		if (val==null) {

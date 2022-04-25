@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface RefExtension{
-	String pointTo() ;
+	String pointTo() default "";
+
 }

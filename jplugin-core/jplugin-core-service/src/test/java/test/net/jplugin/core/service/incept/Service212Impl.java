@@ -1,4 +1,4 @@
-package test.net.jplugin.core.kernel.incept;
+package test.net.jplugin.core.service.incept;
 
 public class Service212Impl implements  IService212{
     @Override

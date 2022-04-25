@@ -1,4 +1,4 @@
-package test.net.jplugin.core.kernel.incept;
+package test.net.jplugin.core.service.incept;
 
 import net.jplugin.common.kits.filter.FilterChain;
 import net.jplugin.core.kernel.api.ExtensionInterceptorContext;

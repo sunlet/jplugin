@@ -1,8 +1,8 @@
 package net.jplugin.core.kernel.api;
 
-import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.impl_incept.ExtensionInterceptorFactory;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
 
 public class ExtensionKernelHelper {
 	public static void addBeanExtension(AbstractPlugin p,String id,Class beanClazz){
@@ -44,14 +44,15 @@ public class ExtensionKernelHelper {
 		for(Class c:p.filterContainedClasses(pkgPath,BindExtension.class)){
 			BindExtension anno = (BindExtension) c.getAnnotation(BindExtension.class);
 			Extension ext = Extension.create(anno.pointTo(),anno.name(), c);
-			ext.setPriority(anno.priority());
+//			ext.setPriority(anno.priority());
 			p.addExtension(ext);
 			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for point:"+anno.pointTo()+" class="+c.getName()+" name="+anno.name());
-			
-			if (StringKit.isNotNull(anno.id())) {
-//				Beans.setLastId(anno.id());
-				Extension.setLastExtensionId(anno.id());
-			}
+
+			ExtensionBindKit.handleIdAndPriority(p,c);
+//			if (StringKit.isNotNull(anno.id())) {
+////				Beans.setLastId(anno.id());
+//				Extension.setLastExtensionId(anno.id());
+//			}
 		}
 	}
 }

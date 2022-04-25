@@ -2,15 +2,15 @@ package jplugincoretest.service.test_extenxion_incept;
 
 import jplugincoretest.service.Plugin;
 import net.jplugin.core.kernel.api.BindExtension;
-import net.jplugin.core.service.api.BindService;
+import net.jplugin.core.kernel.api.MakeExtensionPoint;
+import net.jplugin.core.kernel.api.RefBean;
 
-@BindExtension(pointTo = Plugin.EP_SERVICE_FOR_INCEPT)
-public class ServiceForInceptTest {
+@MakeExtensionPoint(type = MakeExtensionPoint.Type.LIST ,name = Plugin.EP_SERVICE_FOR_INCEPT)
+public abstract class AbstractServiceForInceptTest {
     public static String staticVar;
 
     public String instanceVar;
 
-    public String hello(String name){
-        return name;
-    }
+
+    public abstract String hello(String name);
 }

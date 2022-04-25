@@ -1,10 +1,9 @@
-package test.net.jplugin.core.kernel;
+package test.net.jplugin.core.service;
 
 import net.jplugin.core.kernel.api.*;
 import net.jplugin.core.service.ExtensionServiceHelper;
 import net.jplugin.core.service.api.Constants;
-import sun.plugin.dom.core.CoreConstants;
-import test.net.jplugin.core.kernel.incept.*;
+import test.net.jplugin.core.service.incept.*;
 
 public class Plugin extends AbstractPluginForTest {
     public Plugin(){
@@ -15,13 +14,14 @@ public class Plugin extends AbstractPluginForTest {
         Extension.setLastExtensionPriority((short) 10);
         ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInceptTest2.class , "iservice212",null,null);
         Extension.setLastExtensionPriority((short) 30);
-        ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInceptTest3.class , null, Constants.EP_SERVICE,null);
+        ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInceptTest3.class , "iservice212",null,null);
+//        ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInceptTest3.class , null, Constants.EP_SERVICE,null);
         Extension.setLastExtensionPriority((short) 20);
 
     }
     @Override
     public int getPrivority() {
-        return CoreServicePriority.SERVICE+1;
+        return CoreServicePriority.SERVICE+2;
     }
 
     @Override

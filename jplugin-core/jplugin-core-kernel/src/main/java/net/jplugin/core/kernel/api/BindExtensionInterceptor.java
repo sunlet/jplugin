@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface BindExtensionInterceptor {
+
 	/**
 	 * 需要拦截的Extension的id，如果有多个，请用逗号分割
 	 * @return
@@ -27,4 +28,6 @@ public @interface BindExtensionInterceptor {
 	 * @return
 	 */
 	public String methodFilter() default "";
+
+	public String id() default "";
 }
