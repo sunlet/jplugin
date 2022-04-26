@@ -18,7 +18,7 @@ import java.util.Vector;
 public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterceptAble {
 
     private Class implClazz;
-    private Class accessClazz;
+//    private Class accessClazz;
     private List<Property> propertyList;
 
 
@@ -33,21 +33,19 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
     }
 
     public static ObjectFactory createFactory(Class c){
-        return createFactory(c,c,null);
+        return createFactory(c,null);
     }
 
-    public static ObjectFactory createFactory(Class access,Class impl){
-        return createFactory(access,impl,null);
-    }
+//    public static ObjectFactory createFactory(Class access,Class impl){
+//        return createFactory(access,impl,null);
+//    }
 
-    public static ObjectFactory createFactory(Class c,String[][] property){
-        return createFactory(c,c,property);
-    }
-
-    public static ObjectFactory createFactory(Class access,Class impl,String[][] property){
+//    public static ObjectFactory createFactory(Class c,String[][] property){
+//        return createFactory(c,c,property);
+//    }
+    public static ObjectFactory createFactory(Class impl,String[][] property){
         ObjectFactory o = new ObjectFactory();
         o.implClazz = impl;
-        o.accessClazz = access;
 
         if (property!=null){
             for (int i=0;i<property.length;i++){
@@ -57,6 +55,19 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
         return o;
     }
 
+//    public static ObjectFactory createFactory(Class access,Class impl,String[][] property){
+//        ObjectFactory o = new ObjectFactory();
+//        o.implClazz = impl;
+//        o.accessClazz = access;
+//
+//        if (property!=null){
+//            for (int i=0;i<property.length;i++){
+//                o.property(property[i][0],property[i][1]);
+//            }
+//        }
+//        return o;
+//    }
+
     public List<Property> __debugGetPropertys(){
         return this.propertyList;
     }
@@ -65,8 +76,11 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
         if (!needIntercept) {
             return createInternal(this.implClazz);
         }else {
+            //获取访问接口类，这一句不会有异常
+            Class accessClazz = PluginEnvirement.getInstance().getExtensionPoint(extension.getExtensionPointName()).getExtensionClass();
+
             //如果是接口，则返回接口拦截器代理；如果是类，则创建子类
-            if (this.accessClazz.isInterface()) {
+            if (accessClazz.isInterface()) {
                 createInvocationHandler(extension);
                 return Proxy.newProxyInstance(accessClazz.getClassLoader(),new Class[]{accessClazz},this.theInvocationHandlerForInterface);
             } else {
@@ -75,6 +89,7 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
             }
         }
     }
+
 
     private TheMethodHandler theMethodHandlerForNoInterface;
 //    private Object creteMethodHandlerAndObject(Extension extension) {
@@ -175,14 +190,16 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
 
 
     @Override
-    public Class getAccessClass() {
-        return accessClazz;
+    public Class getImplClass() {
+//        return accessClazz;
+        return this.implClazz;
     }
+
 
     @Override
     public boolean contentEqual(IExtensionFactory f) {
         return (f instanceof  ObjectFactory) &&
-                ((ObjectFactory)f).accessClazz==accessClazz &&
+//                ((ObjectFactory)f).accessClazz==accessClazz &&
                 ((ObjectFactory)f).implClazz==implClazz &&
                 propertyEquals(((ObjectFactory)f).propertyList,propertyList);
     }

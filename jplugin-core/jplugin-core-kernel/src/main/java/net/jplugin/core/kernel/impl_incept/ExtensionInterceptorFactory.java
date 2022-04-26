@@ -21,7 +21,7 @@ public class ExtensionInterceptorFactory implements IExtensionFactory {
     }
 
     @Override
-    public Class getAccessClass() {
+    public Class getImplClass() {
         return this.implClazz;
     }
 

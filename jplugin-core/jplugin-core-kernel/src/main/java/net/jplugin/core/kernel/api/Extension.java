@@ -5,9 +5,6 @@ import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.core.kernel.api.extfactory.StringExtensionFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author: LiuHang
@@ -49,7 +46,7 @@ public class Extension {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer("refPoint:"+refExtensionPoint+" clazz:"+factory.getAccessClass().getName()+" name:"+name);
+		StringBuffer sb = new StringBuffer("refPoint:"+refExtensionPoint+" clazz:"+factory.getImplClass().getName()+" name:"+name);
 //		sb.append(" property:[");
 //		for (int i=0;i<propertyList.size();i++) {
 //			sb.append(propertyList.get(i).key+"-"+propertyList.get(i).value);
@@ -130,7 +127,7 @@ public class Extension {
 	
 	public Class getClazz(){
 //		return this.clazz;
-		return this.factory.getAccessClass();
+		return this.factory.getImplClass();
 	}
 
 //	/**

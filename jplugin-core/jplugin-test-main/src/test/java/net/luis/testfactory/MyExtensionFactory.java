@@ -14,7 +14,7 @@ public class MyExtensionFactory implements IExtensionFactory {
 	}
 
 	@Override
-	public Class getAccessClass() {
+	public Class getImplClass() {
 		return AAA.class;
 	}
 

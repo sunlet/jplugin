@@ -7,7 +7,7 @@ public  interface IExtensionFactory {
 	 */
 	public Object create(Extension ext);
 
-	public Class getAccessClass();
+	public Class getImplClass();
 
 	public boolean contentEqual(IExtensionFactory f);
 }

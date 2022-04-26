@@ -14,7 +14,6 @@ import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
-import net.jplugin.core.kernel.impl.PluginPrepareHelper;
 import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
 
 /**
@@ -310,7 +309,7 @@ public class PluginEnvirement {
 ////				}
 //			}
 			this.stateLevel = STAT_LEVEL_CONSTRUCTED;
-			registry.afterPluginsContruct();
+
 
 //			registry.printPluginSequence("=========After Contruct==========");
 
@@ -319,7 +318,9 @@ public class PluginEnvirement {
 //			registry.printPluginSequence("=========After Sort==========");
 
 			registry.handleDuplicateExtension();
-			registry.valid();
+			registry.validAndFillExtensionPointMap();
+			registry.afterPluginsContruct();
+
 			this.stateLevel = STAT_LEVEL_LOADING;
 			registry.load();
 //			registry.printPluginSequence("=========After Load==========");

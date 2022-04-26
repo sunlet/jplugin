@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Repeatable(BindServiceSet.class)
 @Target(ElementType.TYPE)
 public @interface BindService {
-	public String name() default "";
+//	public String name() default "";
 	public Class interfaceClass() default DefaultInterface.class;
 //	public String id() default "";
 	

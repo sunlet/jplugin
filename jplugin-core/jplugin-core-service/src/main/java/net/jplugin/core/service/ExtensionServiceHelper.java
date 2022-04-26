@@ -24,7 +24,8 @@ public class ExtensionServiceHelper {
 		plugin.addExtension(Extension.create(Constants.EP_SERVICE, name,impl));
 	}
 	public static void addServiceExtension(AbstractPlugin plugin,Class intf,Class impl){
-		ObjectFactory f = ObjectFactory.createFactory(intf, impl);
+//		ObjectFactory f = ObjectFactory.createFactory(intf, impl);
+		ObjectFactory f = ObjectFactory.createFactory(impl);
 		plugin.addExtension(Extension.create(Constants.EP_SERVICE, intf.getName(),f));
 	}
 	
@@ -53,15 +54,20 @@ public class ExtensionServiceHelper {
 		if (interfaceClazz.getName().equals(net.jplugin.core.service.api.BindService.DefaultInterface.class.getName())){
 			interfaceClazz = computeInterfaceCls(c);
 		}
-		if (StringKit.isNull(anno.name())){
-			addServiceExtension(p, interfaceClazz.getName(),c);
-			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
-					+ interfaceClazz.getName() + " impl=" + c.getName());
-		}else{
-			addServiceExtension(p, anno.name(),c);
-			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
-					+ interfaceClazz.getName() + " impl=" + c.getName());
-		}
+
+		addServiceExtension(p, interfaceClazz.getName(),c);
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
+				+ interfaceClazz.getName() + " impl=" + c.getName());
+
+//		if (StringKit.isNull(anno.name())){
+//			addServiceExtension(p, interfaceClazz.getName(),c);
+//			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
+//					+ interfaceClazz.getName() + " impl=" + c.getName());
+//		}else{
+//			addServiceExtension(p, anno.name(),c);
+//			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
+//					+ interfaceClazz.getName() + " impl=" + c.getName());
+//		}
 //		if (StringKit.isNotNull(anno.id())) {
 ////			Beans.setLastId(anno.id());
 //			Extension.setLastExtensionId(anno.id());
@@ -74,7 +80,8 @@ public class ExtensionServiceHelper {
 	private static Class computeInterfaceCls(Class impClazz) {
 		Class[] clazzs = impClazz.getInterfaces();
 		if (clazzs.length==0){
-			throw new RuntimeException("Class must implement a interface, so as to be defined as a Service impl. "+impClazz.getName());
+			return impClazz;
+//			throw new RuntimeException("Class must implement a interface, so as to be defined as a Service impl. "+impClazz.getName());
 		}
 		if (clazzs.length>1){
 			throw new RuntimeException("Class with multiple interfaces, must specify one interface in annotation. "+impClazz.getName());

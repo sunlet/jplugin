@@ -2,7 +2,6 @@ package net.jplugin.core.kernel.api;
 
 import java.util.*;
 
-import com.fasterxml.jackson.databind.introspect.POJOPropertyBuilder;
 import net.jplugin.common.kits.Comparor;
 import net.jplugin.common.kits.SortUtil;
 import net.jplugin.common.kits.StringKit;
@@ -176,7 +175,8 @@ public class PluginRegistry {
 	/**
 	 * 各个plugin自己验证自己,如果错误，设置error状态
 	 */
-	public void valid() {
+	public void validAndFillExtensionPointMap() {
+		this.extensionPointMap.clear();
 		for (int i = 0; i < pluginList.size(); i++) {
 			AbstractPlugin p = pluginList.get(i);
 			List<PluginError> ret = p.valid(this);
