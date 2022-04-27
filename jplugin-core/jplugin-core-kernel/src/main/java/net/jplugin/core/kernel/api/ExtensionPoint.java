@@ -217,7 +217,7 @@ public class ExtensionPoint {
 	
 	public Map<String,Object> getExtensionMap(){
 		if (! (this.type==Type.NAMED)){
-			throw new RuntimeException("can't call getExtensionMap when extensionNameReqiredAndUnique is false");
+			throw new RuntimeException("can't call getExtensionMap when the extension point is not a NAMED one");
 		}
 		
 		if (this.extensionMap==null){
