@@ -1,6 +1,6 @@
 package net.jplugin.ext.webasic.impl.restm.invoker;
 
-import net.jplugin.core.kernel.api.Beans;
+import net.jplugin.core.kernel.api.ExtensionObjects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 			serviceMap.put(en.getKey(), invoker);
 			
 			//重新设置value值
-			Beans.resetValue(en.getValue(), invoker.getObjectCallHelper().getObject());
+			ExtensionObjects.resetValue(en.getValue(), invoker.getObjectCallHelper().getObject());
 		}
 	}
 	

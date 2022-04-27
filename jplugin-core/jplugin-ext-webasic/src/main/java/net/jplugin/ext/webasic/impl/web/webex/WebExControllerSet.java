@@ -1,6 +1,6 @@
 package net.jplugin.ext.webasic.impl.web.webex;
 
-import net.jplugin.core.kernel.api.Beans;
+import net.jplugin.core.kernel.api.ExtensionObjects;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.ext.webasic.api.IController;
 import net.jplugin.ext.webasic.api.IControllerSet;
@@ -44,7 +44,7 @@ public class WebExControllerSet implements IControllerSet{
 			controllerMap.put(en.getKey(), exController);
 
 			//重新设置value值
-			Beans.resetValue(en.getValue(), exController.getObject());
+			ExtensionObjects.resetValue(en.getValue(), exController.getObject());
 		}
 	}
 	public Set<String> getAcceptPaths() {

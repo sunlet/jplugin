@@ -56,6 +56,13 @@ public class PluginEnvirement {
 	public static PluginEnvirement getInstance() {
 		return INSTANCE;
 	}
+
+	public <T> T getExtensionById(String id,Class<T> t){
+		return ExtensionObjects.get(id,t);
+	}
+	public Object getExtensionById(String id){
+		return ExtensionObjects.get(id);
+	}
 	
 	public  void initStartFilter(){
 		this.startFilterManager.init();
@@ -327,7 +334,7 @@ public class PluginEnvirement {
 
 			this.stateLevel = STAT_LEVEL_LOADED;
 			registry.afterPluginLoad();
-			Beans.initFromPluginList();//所有Extension加入ExtensionFactory
+			ExtensionObjects.initFromPluginList();//所有Extension加入ExtensionFactory
 			
 			this.stateLevel = STAT_LEVEL_WIRING;
 			registry.wire();

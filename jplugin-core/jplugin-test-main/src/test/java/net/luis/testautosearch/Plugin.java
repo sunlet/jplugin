@@ -2,10 +2,8 @@ package net.luis.testautosearch;
 
 import java.util.List;
 
-import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
-import net.jplugin.core.kernel.api.Beans;
 import net.jplugin.core.kernel.api.ExtensionPoint;
 import net.jplugin.core.kernel.api.PluginAnnotation;
 import net.jplugin.core.kernel.api.PluginError;
@@ -13,7 +11,6 @@ import net.jplugin.core.kernel.api.PluginRegistry;
 import net.jplugin.ext.webasic.ExtensionWebHelper;
 import net.luis.testautosearch.extensionid.BeanTestTest;
 import net.luis.testautosearch.extensionid.ExportTest1;
-import net.luis.testautosearch.extensionid.ExportTest2;
 import net.luis.testautosearch.extensionid.ExtensionIdTest;
 import net.luis.testautosearch.extensionid.IExtensionForIdTest;
 

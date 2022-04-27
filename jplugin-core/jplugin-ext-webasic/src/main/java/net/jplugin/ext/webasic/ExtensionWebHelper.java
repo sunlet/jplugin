@@ -1,9 +1,7 @@
 package net.jplugin.ext.webasic;
 
-import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.reso.ResolverKit;
 import net.jplugin.core.kernel.api.AbstractPlugin;
-import net.jplugin.core.kernel.api.Beans;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
