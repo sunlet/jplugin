@@ -1,6 +1,5 @@
 package net.jplugin.core.kernel.api;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +36,7 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 	}
 	
-	public String toString() {
+	public String printContent() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n").append(this.getName()).append("   Privority="+this.getPrivority());
 		sb.append("\n  ExtensionPoints:");
@@ -183,7 +182,7 @@ public abstract class AbstractPlugin implements IPlugin {
 			}else{
 				String msg = point.validAndAddExtension(e);
 				if (msg!=null) {
-					errorList.add(new PluginError(this.getName(),msg +"  EP="+point.getName()+" Extension="+e.getClass()+","+e.getName()));
+					errorList.add(new PluginError(this.getName(),msg +"  ExtensionPoint="+point.getName()+" ImplClazz="+e.getClazz()+", ExtensionName="+e.getName()));
 				}
 				
 //				if (point.validToAddExtensionByName(e.getName())){

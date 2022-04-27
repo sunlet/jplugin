@@ -1,8 +1,9 @@
 package jplugincoretest.inferenceRefPointName.impl;
 
-import net.jplugin.core.kernel.api.MakeExtensionPoint;
+import net.jplugin.core.kernel.api.DefineExtensionPoint;
+import net.jplugin.core.kernel.api.PointType;
 
-@MakeExtensionPoint(type = MakeExtensionPoint.Type.LIST)
+@DefineExtensionPoint(type = PointType.LIST)
 public interface IListInterface {
     public String greet();
 }

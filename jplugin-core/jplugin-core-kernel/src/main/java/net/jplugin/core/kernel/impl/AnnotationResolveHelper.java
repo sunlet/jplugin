@@ -105,8 +105,8 @@ public class AnnotationResolveHelper {
 					try {
 						handleAnnoted(obj, field, handlers[i]);
 					} catch (Exception e) {
-						throw new RuntimeException("Error to handle annotation ref: class =" + obj.getClass().getName()
-								+ "  field=" + field.getName(), e);
+						throw new RuntimeException("Error when resolve annotation ref: class =" + obj.getClass().getName()
+								+ "  field=" + field.getName()+"   Caused by:"+e.getMessage(), e);
 					}
 				}
 			}

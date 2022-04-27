@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface MakeExtensionPoint {
-    public enum Type{ LIST,UNIQUE,NAMED}
+public @interface DefineExtensionPoint {
 
     public String  name() default "";
-    public Type type();
+    public PointType type();
+    public boolean supportPriority() default false;
 }

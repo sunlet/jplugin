@@ -21,11 +21,11 @@ public class PluginRegistry {
 	private Map<String, AbstractPlugin> loadedPluginMap = new Hashtable<String, AbstractPlugin>();
 	private List<Class> pluginClasses=new ArrayList<>();
 
-	public String toString() {
+	public String printContent() {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < pluginList.size(); i++) {
 			sb.append("\n");
-			sb.append(pluginList.get(i));
+			sb.append(pluginList.get(i).printContent());
 		}
 		return sb.toString();
 	}
@@ -158,11 +158,11 @@ public class PluginRegistry {
 			}
 		}
 		if (matched==null)
-			PluginEnvirement.getInstance().getStartLogger().log("ERROR: All of the  names are not extension point when inference pointTo :"+getString(nameList));
+			PluginEnvirement.getInstance().getStartLogger().log("ERROR: All of the  names are not extension point when inference pointTo :"+ printContent(nameList));
 		return matched;
 	}
 
-	private String getString(List<String> names) {
+	private String printContent(List<String> names) {
 		StringBuffer sb= new StringBuffer("[");
 		for (String s:names){
 			sb.append(s).append(" , ");

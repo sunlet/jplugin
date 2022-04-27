@@ -1,8 +1,9 @@
 package jplugincoretest.inferenceRefPointName.impl;
 
-import net.jplugin.core.kernel.api.MakeExtensionPoint;
+import net.jplugin.core.kernel.api.DefineExtensionPoint;
+import net.jplugin.core.kernel.api.PointType;
 
-@MakeExtensionPoint(type= MakeExtensionPoint.Type.UNIQUE)
+@DefineExtensionPoint(type= PointType.UNIQUE)
 public interface IUniqueInterface {
     void hi();
 }

@@ -32,32 +32,43 @@ public class Plugin extends AbstractPlugin{
 
 	static{
 		//ExtensionPoint 也借用這個了！
-		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(MakeExtensionPoint.class, (plugin,clazz,anno)->{
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(DefineExtensionPoint.class, (plugin, clazz, anno)->{
 			if (clazz.isInterface() || Modifier.isAbstract( clazz.getModifiers() )){
 				//OK
 			}else{
 				throw new RuntimeException("MakeExtensionPoint must use for Interface or Abstract class");
 			}
 
-			MakeExtensionPoint a = (MakeExtensionPoint) anno;
+			DefineExtensionPoint a = (DefineExtensionPoint) anno;
 			String name = a.name();
 			if (StringKit.isNull(a.name())){
 				name = clazz.getName();
 			}
+
 			switch (a.type()){
 				case LIST:
-					plugin.addExtensionPoint(ExtensionPoint.createList(name,clazz));
+					if (((DefineExtensionPoint) anno).supportPriority())
+						plugin.addExtensionPoint(ExtensionPoint.createListWithPriority(name, clazz));
+					else
+						plugin.addExtensionPoint(ExtensionPoint.createList(name, clazz));
 					break;
 				case NAMED:
-					plugin.addExtensionPoint(ExtensionPoint.createNamed(name,clazz));
+					if (((DefineExtensionPoint) anno).supportPriority())
+						plugin.addExtensionPoint(ExtensionPoint.createNamedWithPriority(name,clazz));
+					else
+						plugin.addExtensionPoint(ExtensionPoint.createNamed(name,clazz));
 					break;
 				case UNIQUE:
-					plugin.addExtensionPoint(ExtensionPoint.createUnique(name,clazz));
+					if (((DefineExtensionPoint) anno).supportPriority())
+						plugin.addExtensionPoint(ExtensionPoint.createUniqueWithPriority(name,clazz));
+					else
+						plugin.addExtensionPoint(ExtensionPoint.createUnique(name,clazz));
 					break;
 				default:
 					throw new RuntimeException("not support");
 
 			}
+
 		});
 
 

@@ -48,10 +48,10 @@ public class ExtensionServiceHelper {
 
 	private static void handleOneBind(AbstractPlugin p, Class c, Annotation a) {
 		BindService anno = (BindService) a;
-		Class interfaceClazz = anno.interfaceClass();
-		if (interfaceClazz.getName().equals(net.jplugin.core.service.api.BindService.DefaultInterface.class.getName())){
-			interfaceClazz = computeInterfaceCls(c);
-		}
+		Class interfaceClazz = anno.accessClass();
+//		if (interfaceClazz.getName().equals(net.jplugin.core.service.api.BindService.DefaultInterface.class.getName())){
+//			interfaceClazz = computeInterfaceCls(c);
+//		}
 
 		addServiceExtension(p, interfaceClazz.getName(),c);
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="

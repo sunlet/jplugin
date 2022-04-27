@@ -11,9 +11,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface BindService {
 //	public String name() default "";
-	public Class interfaceClass() default DefaultInterface.class;
+	public Class accessClass() ;
 //	public String id() default "";
-	
-	public static class DefaultInterface{
-	}
+//
+//	public static class DefaultInterface{
+//	}
 }
+
