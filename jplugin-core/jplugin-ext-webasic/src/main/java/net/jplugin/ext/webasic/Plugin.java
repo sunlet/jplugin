@@ -3,10 +3,9 @@ package net.jplugin.ext.webasic;
 import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.*;
-import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.IHttpFilter;
-import net.jplugin.ext.webasic.api.IInvocationFilter;
-import net.jplugin.ext.webasic.api.WebFilter;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
+import net.jplugin.core.service.ExtensionServiceHelper;
+import net.jplugin.ext.webasic.api.*;
 import net.jplugin.ext.webasic.api.esf.IESFRestFilter;
 import net.jplugin.ext.webasic.api.esf.IESFRpcFilter;
 import net.jplugin.ext.webasic.impl.*;
@@ -41,9 +40,30 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_ESF_REST_FILTER = "EP_ESF_REST_FILTER";
 
 	static{
-		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
-			ExtensionWebHelper.autoBindControllerExtension(p, "");
-			ExtensionWebHelper.autoBindServiceExportExtension(p, "");
+//		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
+////			ExtensionWebHelper.autoBindControllerExtension(p, "");
+////			ExtensionWebHelper.autoBindServiceExportExtension(p, "");
+//		});
+
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindController.class, (plugin, clazz, a)->{
+			BindController anno = (BindController) a;
+			if (AbstractExController.class.isAssignableFrom(clazz)) {
+				ExtensionWebHelper.addWebExControllerExtension(plugin, anno.path(), clazz);
+				ExtensionBindKit.handleIdAndPriority(plugin,clazz);
+			} else {
+				ExtensionWebHelper.addWebControllerExtension(plugin, anno.path(), clazz);
+				ExtensionBindKit.handleIdAndPriority(plugin,clazz);
+			}
+
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
+		});
+
+
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindServiceExport.class, (plugin, clazz, a)->{
+			BindServiceExport anno = (BindServiceExport) a;
+			ExtensionServiceHelper.addServiceExportExtension(plugin, anno.path(), clazz);
+
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
 		});
 	}
 	public Plugin(){
@@ -55,7 +75,7 @@ public class Plugin extends AbstractPlugin{
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCONTROLLER, Object.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBEXCONTROLLER, Object.class, true));
 //		this.addExtensionPoint(ExtensionPoint.create(EP_REMOTECALL, Object.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_RESTMETHOD, Object.class, true));
+//		this.addExtensionPoint(ExtensionPoint.create(EP_RESTMETHOD, Object.class, true));
 		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEFILTER, IInvocationFilter.class,false));
 		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCTRLFILTER, IInvocationFilter.class,false));
 		this.addExtensionPoint(ExtensionPoint.create(EP_HTTP_FILTER, IHttpFilter.class,false));

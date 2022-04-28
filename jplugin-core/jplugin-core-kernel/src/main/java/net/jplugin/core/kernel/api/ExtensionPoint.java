@@ -43,7 +43,11 @@ public class ExtensionPoint {
 	public static ExtensionPoint createList(String aName,Class<?> clazz){
 		return new ExtensionPoint(aName,clazz,Type.LIST);
 	}
-	
+
+	public Type getType() {
+		return type;
+	}
+
 	/**
 	 * 创建一个扩展点， 扩展为多个不限定名称的实例，支持优先级顺序。
 	 * @param aName

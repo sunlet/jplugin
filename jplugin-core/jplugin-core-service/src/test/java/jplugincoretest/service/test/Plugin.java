@@ -6,6 +6,9 @@ import net.jplugin.core.kernel.api.PluginAnnotation;
 @PluginAnnotation
 public class Plugin extends AbstractPlugin {
 
+    public Plugin(){
+
+    }
     @Override
     public int getPrivority() {
         return 0;

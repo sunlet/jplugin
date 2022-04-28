@@ -43,15 +43,15 @@ public abstract class AbstractPlugin implements IPlugin {
 		for (int i=0;i<this.extensionPoints.size();i++) {
 			ExtensionPoint p = extensionPoints.get(i);
 			sb.append("\n    ");
-			sb.append(p.getName());
+			sb.append(p.getName() +"  { type="+p.getType()+" , baseCalss="+p.getExtensionClass().getName()+" }");
 		}
 		
 		sb.append("\n  Extensions:");
 		for (int i=0;i<this.extensions.size();i++) {
 			Extension e = extensions.get(i);
-			sb.append("\n    ").append("[");
-			sb.append(e.getExtensionPointName()).append(" ");
-			sb.append(e.getClazz().getName());
+			sb.append("\n    ").append("[ pointTo=");
+			sb.append(e.getExtensionPointName()).append(" , ");
+			sb.append("implClass=").append(e.getClazz().getName()).append(" , name=").append(e.getName());
 			sb.append("]");
 		}
 		

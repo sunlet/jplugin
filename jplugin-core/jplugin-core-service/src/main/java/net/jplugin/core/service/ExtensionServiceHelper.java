@@ -26,7 +26,18 @@ public class ExtensionServiceHelper {
 		ObjectFactory f = ObjectFactory.createFactory(impl);
 		plugin.addExtension(Extension.create(Constants.EP_SERVICE, intf.getName(),f));
 	}
-	
+
+	/**
+	 * Export a service
+	 * @param plugin
+	 * @param path
+	 * @param beanClz
+	 */
+	public static void addServiceExportExtension(AbstractPlugin plugin,String path,Class beanClz){
+		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
+		plugin.addExtension(Extension.create(Plugin.EP_SERVICE_EXPORT, path, factory));
+	}
+
 	/**
 	 * 自动遍历pkgPath子包下面的所有类，找到BindService 标注，自动注册为Service扩展。
 	 * @param p

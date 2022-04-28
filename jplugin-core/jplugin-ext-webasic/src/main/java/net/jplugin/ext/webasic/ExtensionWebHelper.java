@@ -6,6 +6,7 @@ import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.extfactory.ObjectFactory;
 import net.jplugin.core.kernel.kits.ExtensionBindKit;
+import net.jplugin.core.service.ExtensionServiceHelper;
 import net.jplugin.ext.webasic.api.AbstractExController;
 import net.jplugin.ext.webasic.api.BindController;
 import net.jplugin.ext.webasic.api.BindServiceExport;
@@ -41,6 +42,7 @@ public class ExtensionWebHelper {
 //	}
 	
 	/**
+	 * 2.5.0开始把这个扩展点移到Service插件当中
 	 * Export a service
 	 * @param plugin 
 	 * @param path
@@ -48,8 +50,9 @@ public class ExtensionWebHelper {
 	 */
 	public static void addServiceExportExtension(AbstractPlugin plugin,String path,Class beanClz){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
-		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
-		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, factory));
+//		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
+//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, factory));
+		ExtensionServiceHelper.addServiceExportExtension(plugin,path,beanClz);
 	}
 	
 //	/**
@@ -146,20 +149,20 @@ public class ExtensionWebHelper {
 	 * @param p   对应的Plugin类
 	 * @param pkgPath  相对于Plugin类的相对包路径，比如“.svc" ,可以为null
 	 */
-	public static void autoBindServiceExportExtension(AbstractPlugin p,String pkgPath) {
-		for(Class c:p.filterContainedClasses(pkgPath,BindServiceExport.class)){
-			BindServiceExport anno = (BindServiceExport) c.getAnnotation(BindServiceExport.class);
-			addServiceExportExtension(p, anno.path(), c);
-			PluginEnvirement.INSTANCE.getStartLogger()
-			.log("$$$ Auto add extension for service export : servicePath=" + anno.path() + " class="
-					+ c.getName());
-//			if (StringKit.isNotNull(anno.id())) {
-////				Beans.setLastId(anno.id());
-//				Extension.setLastExtensionId(anno.id());
-//			}
-			ExtensionBindKit.handleIdAndPriority(p,c);
-		}
-	}
+//	public static void autoBindServiceExportExtension(AbstractPlugin p,String pkgPath) {
+//		for(Class c:p.filterContainedClasses(pkgPath,BindServiceExport.class)){
+//			BindServiceExport anno = (BindServiceExport) c.getAnnotation(BindServiceExport.class);
+//			addServiceExportExtension(p, anno.path(), c);
+//			PluginEnvirement.INSTANCE.getStartLogger()
+//			.log("$$$ Auto add extension for service export : servicePath=" + anno.path() + " class="
+//					+ c.getName());
+////			if (StringKit.isNotNull(anno.id())) {
+//////				Beans.setLastId(anno.id());
+////				Extension.setLastExtensionId(anno.id());
+////			}
+//			ExtensionBindKit.handleIdAndPriority(p,c);
+//		}
+//	}
 	
 	/**
 	 * <PRE>
@@ -168,34 +171,34 @@ public class ExtensionWebHelper {
 	 * @param p   对应的Plugin类
 	 * @param pkgPath  相对于Plugin类的相对包路径。
 	 */
-	public static void autoBindControllerExtension(AbstractPlugin p, String pkgPath) {
-		for (Class c : p.filterContainedClasses(pkgPath, BindController.class)) {
-			BindController anno = (BindController) c.getAnnotation(BindController.class);
-			if (AbstractExController.class.isAssignableFrom(c)) {
-				ExtensionWebHelper.addWebExControllerExtension(p, anno.path(), c);
-				PluginEnvirement.INSTANCE.getStartLogger()
-						.log("$$$ Auto add extension for web ex controller : servicePath=" + anno.path() + " class="
-								+ c.getName());
-				
-//				if (StringKit.isNotNull(anno.id())) {
-////					Beans.setLastId(anno.id());
-//					Extension.setLastExtensionId(anno.id());
-//				}
-				ExtensionBindKit.handleIdAndPriority(p,c);
-			} else {
-				ExtensionWebHelper.addWebControllerExtension(p, anno.path(), c);
-				PluginEnvirement.INSTANCE.getStartLogger()
-						.log("$$$ Auto add extension for web controller : servicePath=" + anno.path() + " class="
-								+ c.getName());
-				
-//				if (StringKit.isNotNull(anno.id())) {
-////					Beans.setLastId(anno.id());
-//					Extension.setLastExtensionId(anno.id());
-//				}
-				ExtensionBindKit.handleIdAndPriority(p,c);
-			}
-		}
-	}
+//	public static void autoBindControllerExtension(AbstractPlugin p, String pkgPath) {
+//		for (Class c : p.filterContainedClasses(pkgPath, BindController.class)) {
+//			BindController anno = (BindController) c.getAnnotation(BindController.class);
+//			if (AbstractExController.class.isAssignableFrom(c)) {
+//				ExtensionWebHelper.addWebExControllerExtension(p, anno.path(), c);
+//				PluginEnvirement.INSTANCE.getStartLogger()
+//						.log("$$$ Auto add extension for web ex controller : servicePath=" + anno.path() + " class="
+//								+ c.getName());
+//
+////				if (StringKit.isNotNull(anno.id())) {
+//////					Beans.setLastId(anno.id());
+////					Extension.setLastExtensionId(anno.id());
+////				}
+//				ExtensionBindKit.handleIdAndPriority(p,c);
+//			} else {
+//				ExtensionWebHelper.addWebControllerExtension(p, anno.path(), c);
+//				PluginEnvirement.INSTANCE.getStartLogger()
+//						.log("$$$ Auto add extension for web controller : servicePath=" + anno.path() + " class="
+//								+ c.getName());
+//
+////				if (StringKit.isNotNull(anno.id())) {
+//////					Beans.setLastId(anno.id());
+////					Extension.setLastExtensionId(anno.id());
+////				}
+//				ExtensionBindKit.handleIdAndPriority(p,c);
+//			}
+//		}
+//	}
 	
 	/**
 	 * <PRE>

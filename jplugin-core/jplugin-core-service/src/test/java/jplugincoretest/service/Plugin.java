@@ -10,6 +10,7 @@ public class Plugin extends AbstractPlugin {
 
     public Plugin(){
 //        this.addExtensionPoint(ExtensionPoint.createList(EP_SERVICE_FOR_INCEPT,Object.class));
+
     }
     @Override
     public int getPrivority() {

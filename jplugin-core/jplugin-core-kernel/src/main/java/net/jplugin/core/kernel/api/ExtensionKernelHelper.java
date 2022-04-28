@@ -5,6 +5,7 @@ import net.jplugin.core.kernel.impl_incept.ExtensionInterceptorFactory;
 import net.jplugin.core.kernel.kits.ExtensionBindKit;
 
 public class ExtensionKernelHelper {
+	@Deprecated
 	public static void addBeanExtension(AbstractPlugin p,String id,Class beanClazz){
 		p.addExtension(Extension.create(net.jplugin.core.kernel.Plugin.EP_BEAN,id,beanClazz));
 		Extension.setLastExtensionId(id);

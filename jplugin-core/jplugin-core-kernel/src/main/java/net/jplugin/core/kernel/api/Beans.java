@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 此类不推荐使用，后续版本会弃用，请使用ExtensionObjects类的对应方法。
+ * 已经不推荐使用，请使用ExtensionObjects类的对应方法。
  */
 @Deprecated
 public class Beans {
