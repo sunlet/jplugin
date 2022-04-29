@@ -20,7 +20,8 @@ public class WebControllerTest {
 	@RefRuleService
 	IRuleTestForAnno ruletest;
 	
-	@RefRuleService(name="rule1346")
+//	@RefRuleService(name="rule1346")
+	@RefRuleService
 	IRuleTestForAnno ruletest1;
 	
 	public void test(HttpServletRequest req,HttpServletResponse res) throws IOException {

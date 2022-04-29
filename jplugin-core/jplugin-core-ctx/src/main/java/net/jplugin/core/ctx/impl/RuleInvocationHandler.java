@@ -11,5 +11,5 @@ import net.jplugin.core.ctx.api.Rule;
  **/
 
 public interface RuleInvocationHandler {
-	public Object invoke(Object proxyObj, Object oldService, Method method, Object[] args, Rule meta) throws Throwable;
+	public Object invoke(Object proxyObj, Object oldService, Method method,Object[] args, Rule meta) throws Throwable;
 }

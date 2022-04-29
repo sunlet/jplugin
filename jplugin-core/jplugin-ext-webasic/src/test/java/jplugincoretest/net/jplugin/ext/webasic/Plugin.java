@@ -67,7 +67,7 @@ public class Plugin extends AbstractPluginForTest{
 		ExtensionWebHelper.addWebExControllerExtension(this, "/webanno/webex", WebExControllerTest.class);
 		ExtensionWebHelper.addServiceExportExtension(this, "/webanno/service", ServiceExportTest.class);
 		ExtensionCtxHelper.addRuleExtension(this,IRuleTestForAnno.class,RuleTestForAnno.class);
-		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
+//		ExtensionCtxHelper.addRuleExtension(this,"rule1346",IRuleTestForAnno.class,RuleTestForAnno.class);
 
 		ExtensionWebHelper.addServiceExportExtension(this,"/mttestclient",MtTestForRequest.class);
 

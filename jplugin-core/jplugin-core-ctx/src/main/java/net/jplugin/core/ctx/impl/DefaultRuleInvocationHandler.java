@@ -24,8 +24,10 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 	static private TransactionManagerAdaptor txm;
 	private static PluginFilterManager<RuleServiceFilterContext> filterManager = new PluginFilterManager<>(
 			net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE_FILTER, (fc, ctx) -> {
-				return invokeWithTx(ctx.getProxyObject(), ctx.getObject(), ctx.getMethod(), ctx.getArgs(), ctx.getAnnotation());
+//				return invokeWithTx(ctx.getProxyObject(), ctx.getObject(), ctx.getMethod(), ctx.getArgs(), ctx.getAnnotation());
+				return invokeWithTx(ctx.getProxyObject(), ctx.getObject(), ctx.getProceedMethod(), ctx.getArgs(), ctx.getAnnotation());
 			});
+
 
 	
 	public static void init(){
@@ -54,7 +56,15 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 			invokCtx.end(throwable);
 		}
 	}
+
+	@Override
 	public Object invoke(Object proxyObj, Object oldService, Method method,
+						 Object[] args, Rule meta) throws Throwable {
+		//method 和 proceed同样的值
+		return invoke(proxyObj,oldService,method,method,args,meta);
+	}
+
+	public Object invoke(Object proxyObj, Object oldService, Method method,Method proceedMethod,
 			Object[] args, Rule meta) throws Throwable {
 		boolean isCreate=false;
 		try{
@@ -62,7 +72,7 @@ public class DefaultRuleInvocationHandler implements RuleInvocationHandler {
 				ThreadLocalContextManager.instance.createContext();
 				isCreate = true;
 			}
-			return filterManager.filter(RuleServiceFilterContext.create(proxyObj, oldService, method, args, meta));
+			return filterManager.filter(RuleServiceFilterContext.create(proxyObj, oldService, method,proceedMethod, args, meta));
 //			return invokeWithTx(proxyObj,oldService,method,args,meta);
 		}finally{
 			if (isCreate){

@@ -16,6 +16,7 @@ import net.jplugin.core.ctx.impl.TxMgrListenerManager;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineManager;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineBean;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterManagerRuleFilter;
+import net.jplugin.core.ctx.ruleincept.ExtensionInterceptor4Rule;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -55,7 +56,8 @@ public class Plugin extends AbstractPlugin{
 	
 	public Plugin(){
 
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, RuleServiceDefinition.class,true));
+//		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, RuleServiceDefinition.class,true));
+		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, Object.class,true));
 		addExtensionPoint(ExtensionPoint.create(EP_TXMGR_LISTENER, ITransactionManagerListener.class,false));
 		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE_FILTER, IRuleServiceFilter.class,false));
 		addExtensionPoint(ExtensionPoint.create(EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class,false));
@@ -67,6 +69,8 @@ public class Plugin extends AbstractPlugin{
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, RuleServiceAttrAnnoHandler.class);
 		
 		ExtensionCtxHelper.addRuleServiceFilterExtension(this,RuleCallFilterManagerRuleFilter.class );
+
+		ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInterceptor4Rule.class,null,EP_RULE_SERVICE,"*");
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()
@@ -99,7 +103,8 @@ public class Plugin extends AbstractPlugin{
 		RuleServiceFactory ruleSvcFactory = ServiceFactory.getService(RuleServiceFactory.class);
 //		RuleServiceDefinition[] defs = PluginEnvirement.getInstance().getExtensionObjects(EP_RULE_SERVICE, RuleServiceDefinition.class);
 		Map<String,RuleServiceDefinition> defs = PluginEnvirement.getInstance().getExtensionMap(EP_RULE_SERVICE,RuleServiceDefinition.class);
-		ruleSvcFactory.init(defs);
+//		ruleSvcFactory.init(defs);
+		ruleSvcFactory.init();
 		
 		TxMgrListenerManager.init();
 		

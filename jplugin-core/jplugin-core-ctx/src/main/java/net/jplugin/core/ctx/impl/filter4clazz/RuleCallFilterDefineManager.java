@@ -82,15 +82,34 @@ public class RuleCallFilterDefineManager {
 	 * @return
 	 */
 	public List<RuleCallFilterDefine> getMatchedDefinesForClass(Class c) {
+
+		String cname = getClassName(c);
+
 		List ret = new ArrayList();
 		for (RuleCallFilterDefine o : defList) {
-			if (o.matchClazz(c.getName())) {
-				ret.add(o);
+//			if (o.matchClazz(c.getName())) {
+			if (o.matchClazz(cname)) {
+					ret.add(o);
 			}
 		}
 		SortUtil.sort(ret, (o1, o2) -> {
 			return ((RuleCallFilterDefine) o1).getPriority() > ((RuleCallFilterDefine) o2).getPriority();
 		});
 		return ret;
+	}
+
+	/**
+	 * 处理javassist处理的问题。
+	 * @param c
+	 * @return
+	 */
+	private String getClassName(Class c) {
+//		c.getName()
+		String name = c.getName();
+		int idx = name.indexOf("_$$_jvst");
+		if (idx<0)
+			return name;
+		else
+			return name.substring(0,idx);
 	}
 }

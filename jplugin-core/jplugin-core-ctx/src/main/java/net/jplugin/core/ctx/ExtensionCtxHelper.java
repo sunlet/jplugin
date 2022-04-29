@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.reso.ResolverKit;
 import net.jplugin.core.ctx.api.BindRuleMethodInterceptor;
@@ -29,12 +30,16 @@ import net.jplugin.core.kernel.kits.ExtensionBindKit;
  **/
 
 public class ExtensionCtxHelper {
+	@Deprecated
 	public static void addRuleExtension(AbstractPlugin plugin,String name,Class intf,Class impl){
-		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, name,RuleServiceDefinition.class,new String[][]{{"interf",intf.getName()},{"impl",impl.getName()}} ));
+		AssertKit.assertEqual(name,intf.getName());
+		addRuleExtension(plugin,intf,impl);
+//		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, name,RuleServiceDefinition.class,new String[][]{{"interf",intf.getName()},{"impl",impl.getName()}} ));
 	}
 	
 	public static void addRuleExtension(AbstractPlugin plugin,Class intf,Class impl){
-		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, intf.getName(),RuleServiceDefinition.class,new String[][]{{"interf",intf.getName()},{"impl",impl.getName()}} ));
+		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, intf.getName(),impl));
+//		plugin.addExtension(Extension.create(net.jplugin.core.ctx.Plugin.EP_RULE_SERVICE, intf.getName(),RuleServiceDefinition.class,new String[][]{{"interf",intf.getName()},{"impl",impl.getName()}} ));
 	}
 	
 	public static void addTxMgrListenerExtension(AbstractPlugin plugin,Class impl){

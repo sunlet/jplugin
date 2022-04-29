@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.jplugin.core.ctx.Plugin;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInterceptor;
 import net.jplugin.core.kernel.api.ExtensionObjects;
@@ -18,7 +19,6 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 public class RuleServiceFactory {
 
 	private static Hashtable<String, Object> svcMap=new Hashtable<String, Object>();
-	private static Map<String,RuleServiceDefinition> serviceDefine=null;
 	public static <T> T getRuleService(Class<T> clz){
 		return (T) svcMap.get(clz.getName());
 	}
@@ -32,36 +32,10 @@ public class RuleServiceFactory {
 	}
 
 	/**
-	 * @param defs
 	 */
-	public void init(Map<String, RuleServiceDefinition> defs) {
-		this.serviceDefine = defs;
-		
-		for (Entry<String, RuleServiceDefinition> en:defs.entrySet()){
-			RuleServiceDefinition def = (RuleServiceDefinition) en.getValue();
-			Object realImpl;
-			try {
-				def.valid();
-				realImpl = def.getImpl().newInstance();
-				PluginEnvirement.INSTANCE.resolveRefAnnotation(realImpl);
-			} catch (Exception e){
-				throw new CtxRuntimeException("Create proxy failed",e);
-			}
-			Object proxy = RuleInterceptor.getProxyInstance(def.getInterf(),realImpl,new DefaultRuleInvocationHandler());
-			ExtensionObjects.resetValue(def, realImpl);
-			svcMap.put(en.getKey(),proxy);
-		}
-//		for (int i=0;i<defs.length;i++){
-//			RuleServiceDefinition def = defs[i];
-//			Object realImpl;
-//			try {
-//				realImpl = def.getRuleImplementation().newInstance();
-//			} catch (Exception e){
-//				throw new CtxRuntimeException("Create proxy failed",e);
-//			}
-//			Object proxy = RuleInterceptor.getProxyInstance(def.getRuleInterface(),realImpl,new DefaultRuleInvocationHandler());
-//			svcMap.put(def.getRuleInterface(),proxy);
-//		}
+	public void init() {
+		Map<String, Object> objMap = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_RULE_SERVICE);
+		svcMap.putAll(objMap);
 	}
 
 	/**
@@ -69,6 +43,10 @@ public class RuleServiceFactory {
 	 * @return 
 	 */
 	public static Class<?> getRuleInterface(String blName) {
-		return serviceDefine.get(blName).getInterf();
+		try {
+			return Class.forName(blName);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("the name must be the interface",e);
+		}
 	}
 }
