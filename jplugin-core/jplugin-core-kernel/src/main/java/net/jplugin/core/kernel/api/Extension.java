@@ -177,6 +177,9 @@ public class Extension {
 //
 	public synchronized void load() throws Exception{
 		this.extensionObject = factory.create(this);
+		if (!(this.extensionObject instanceof String)){
+			PluginEnvirement.getInstance().resolveRefAnnotation(this.extensionObject);
+		}
 //		if (propertyFilter!=null){
 //			filterProperty(this.propertyList);
 //		}

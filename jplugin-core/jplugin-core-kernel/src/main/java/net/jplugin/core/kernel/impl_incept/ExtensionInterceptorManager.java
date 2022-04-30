@@ -22,7 +22,7 @@ public class ExtensionInterceptorManager {
         list = sortedList;
 
         for (Extension ext:extensionsNeedIntercept){
-            List<IExtensionInterceptor> interceptorList = getInterceptorList(ext);
+            List<AbstractExtensionInterceptor> interceptorList = getInterceptorList(ext);
             ((IExtensionFactoryInterceptAble)ext.getFactory()).setInterceptors(interceptorList);
         }
     }
@@ -62,11 +62,11 @@ public class ExtensionInterceptorManager {
      * @return
      */
     private static List getInterceptorList(Extension ext) {
-        List<IExtensionInterceptor> result = new ArrayList<>(list.size());
+        List<AbstractExtensionInterceptor> result = new ArrayList<>(list.size());
         for (Extension interceptorExtension:list){
             IExtensionFactory fac = interceptorExtension.getFactory();
             if (((ExtensionInterceptorFactory)fac).matchExtension(ext)) {
-                result.add((IExtensionInterceptor) interceptorExtension.getObject());
+                result.add((AbstractExtensionInterceptor) interceptorExtension.getObject());
             }
         }
         AssertKit.assertTrue(result.size()>0);

@@ -1,7 +1,10 @@
 package net.jplugin.core.kernel.api;
 
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.Plugin;
+import net.jplugin.core.kernel.impl_incept.AnnotationMethodFilter;
 import net.jplugin.core.kernel.impl_incept.ExtensionInterceptorFactory;
+import net.jplugin.core.kernel.impl_incept.StringMethodFilter;
 import net.jplugin.core.kernel.kits.ExtensionBindKit;
 
 public class ExtensionKernelHelper {
@@ -35,8 +38,32 @@ public class ExtensionKernelHelper {
 		p.addExtension(Extension.create(Plugin.EP_EXE_SCHEDULED_FILTER, c));
 	}
 
-	public static void addExtensionInterceptorExtension(AbstractPlugin p, Class c,String forExt,String forP,String methodFilter) {
-		IExtensionFactory f = ExtensionInterceptorFactory.create(c,forExt,forP,methodFilter);
+	public static void addExtensionInterceptorExtension(AbstractPlugin p, Class c,String forExt,String forP,String forImplClasses,String methodNameFilter,Class methodAnnoFilter) {
+
+		if (StringKit.isNull(forExt) && StringKit.isNull(forP) && StringKit.isNull(forImplClasses)){
+			throw new RuntimeException("forExtensions and forPoint and forImplClasses all null. ExtensionClass="+c.getName()+"  plugin="+p.getName());
+		}
+
+		if (methodAnnoFilter==Object.class)
+			methodAnnoFilter = null;
+
+		//存在AnnoFilter的情况下，为true，其他情况为false
+		boolean preCheckNeedIncept = false;
+		IMethodFilter methodFitler=null;
+		if (StringKit.isNotNull(methodNameFilter) && methodAnnoFilter!=null){
+			throw new RuntimeException("methodNameFilter and methodAnnotationFilter can only have one value not null. Clazz="+c.getName()+"  plugin="+p.getName());
+		}else{
+			if (StringKit.isNotNull(methodNameFilter)){
+				methodFitler = new StringMethodFilter(methodNameFilter);
+			}
+			if (methodAnnoFilter!=null){
+				methodFitler = new AnnotationMethodFilter(methodAnnoFilter);
+				preCheckNeedIncept = true;
+			}
+		}
+
+
+		IExtensionFactory f = ExtensionInterceptorFactory.create(c,forExt,forP,forImplClasses,methodFitler,preCheckNeedIncept);
 		p.addExtension(Extension.create(Plugin.EP_EXTENSION_INTERCEPTOR, f));
 	}
 

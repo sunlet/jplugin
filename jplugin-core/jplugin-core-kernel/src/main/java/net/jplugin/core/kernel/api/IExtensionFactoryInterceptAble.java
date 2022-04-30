@@ -12,5 +12,5 @@ public interface IExtensionFactoryInterceptAble {
      * 在Load以后被调用
      * @param interceptorList
      */
-    void setInterceptors(List<IExtensionInterceptor> interceptorList);
+    void setInterceptors(List<AbstractExtensionInterceptor> interceptorList);
 }

@@ -1,16 +1,15 @@
 package net.jplugin.core.ctx.ruleincept;
 
 import net.jplugin.common.kits.filter.FilterChain;
-import net.jplugin.core.ctx.api.Rule;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInterceptor;
 import net.jplugin.core.kernel.api.ExtensionInterceptorContext;
-import net.jplugin.core.kernel.api.IExtensionInterceptor;
+import net.jplugin.core.kernel.api.AbstractExtensionInterceptor;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ExtensionInterceptor4Rule implements IExtensionInterceptor {
+public class ExtensionInterceptor4Rule extends AbstractExtensionInterceptor {
 //    ConcurrentHashMap<Method,Class> method2RuleMapping = new ConcurrentHashMap<>();
 
     Map<Class,RuleInterceptor.MethodMetaLocater> implClazz2Locator = new ConcurrentHashMap<>();

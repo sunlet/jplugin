@@ -5,10 +5,12 @@ import net.jplugin.common.kits.filter.FilterManager;
 import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionInterceptorContext;
-import net.jplugin.core.kernel.api.IExtensionInterceptor;
+import net.jplugin.core.kernel.api.AbstractExtensionInterceptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TheInvocationHandler implements InvocationHandler, IInstanceLevelInfo,IFilter<ExtensionInterceptorContext> {
@@ -21,7 +23,7 @@ public class TheInvocationHandler implements InvocationHandler, IInstanceLevelIn
         this.implObject = aImplObject;
     }
 
-    public void initFilters(List<IExtensionInterceptor> filters){
+    public void initFilters(List<AbstractExtensionInterceptor> filters){
         for (IFilter f:filters){
             filterManager.addFilter(f);
         }
@@ -35,9 +37,20 @@ public class TheInvocationHandler implements InvocationHandler, IInstanceLevelIn
 
         //当前方法和继续执行需要的方法是同一个。
         ctx.init(method,args,this,method);
-
         return filterManager.filter(ctx);
     }
+
+//    IFilter[] getMatchingsForDebug(ExtensionInterceptorContext ctx){
+//        IFilter[] filters = filterManager._getFilterListForDebug();
+//        ArrayList list = new ArrayList();
+//        for (IFilter f:filters){
+//            AbstractExtensionInterceptor o = (AbstractExtensionInterceptor) f;
+//            if (o.__getMethodMatcher().match(ctx.getMethod().getName())){
+//                list.add(o);
+//            }
+//        }
+//        return (IFilter[]) list.toArray(new IFilter[list.size()]);
+//    }
 
     @Override
     public Object filter(FilterChain fc, ExtensionInterceptorContext ctx) throws Throwable {

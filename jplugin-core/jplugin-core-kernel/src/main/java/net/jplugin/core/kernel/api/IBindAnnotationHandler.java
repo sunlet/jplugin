@@ -1,7 +1,5 @@
 package net.jplugin.core.kernel.api;
 
-import java.util.List;
-
-public interface IBindAnnotationTransformer {
+public interface IBindAnnotationHandler {
 	public void transform(AbstractPlugin plugin, Class c, Object anno);
 }

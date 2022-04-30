@@ -2,7 +2,6 @@ package net.jplugin.core.kernel.api;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,7 +13,11 @@ public class AutoBindExtensionManager {
 	public static AutoBindExtensionManager INSTANCE = new AutoBindExtensionManager();
 	
 	private List<IBindExtensionHandler> handlers = new ArrayList<IBindExtensionHandler>();
-	private Map<Class,IBindAnnotationTransformer> transformers = new HashMap<Class, IBindAnnotationTransformer>();
+	private Map<Class, IBindAnnotationHandler> transformers = new HashMap<Class, IBindAnnotationHandler>();
+	/**
+	 * 集合类型的Annotation，通过ISetAnnotationTransformer转化为单个的
+	 */
+	private Map<Class,ISetAnnotationTransformer> setAnnoTransformer = new HashMap<>();
 	
 	private AutoBindExtensionManager(){
 		handlers.add(new Handler4Transformers());
@@ -33,8 +36,12 @@ public class AutoBindExtensionManager {
 		return handlers;
 	}
 	
-	public void addBindExtensionTransformer(Class annoClass,IBindAnnotationTransformer bat) {
+	public void addBindExtensionTransformer(Class annoClass, IBindAnnotationHandler bat) {
 		transformers.put(annoClass,bat);
+	}
+
+	public void addSetAnnoTransformer(Class setAnnoClass,ISetAnnotationTransformer sat){
+		this.setAnnoTransformer.put(setAnnoClass,sat);
 	}
 	
 	class Handler4Transformers implements IBindExtensionHandler {
@@ -50,10 +57,13 @@ public class AutoBindExtensionManager {
 					//do nothing
 				}else {
 					for (Annotation a:annos) {
-						IBindAnnotationTransformer trans = transformers.get(a.annotationType());
-						if (trans!=null) {
-							trans.transform(p, c, a);
-							addExtensionAndLog(p,c,a);
+						if (setAnnoTransformer.containsKey(a.annotationType())){
+							Annotation[] list = setAnnoTransformer.get(a.annotationType()).getAnnoList(a);
+							for (Annotation childA:list) {
+								handleOneAnnotation(p,c,childA);
+							}
+						}else {
+							handleOneAnnotation(p, c, a);
 						}
 					}
 				}
@@ -62,7 +72,15 @@ public class AutoBindExtensionManager {
 			});
 		}
 
-		private void addExtensionAndLog(AbstractPlugin p, Class c, Annotation a){
+		private void handleOneAnnotation(AbstractPlugin p, Class c, Annotation a) {
+			IBindAnnotationHandler trans = transformers.get(a.annotationType());
+			if (trans!=null) {
+				trans.transform(p, c, a);
+				addLog(p, c, a);
+			}
+		}
+
+		private void addLog(AbstractPlugin p, Class c, Annotation a){
 			StringBuffer sb = new StringBuffer("$$$ Auto add extension for ");
 			sb.append(a.annotationType().getSimpleName());
 			sb.append(" class=").append(c.getSimpleName());

@@ -6,7 +6,7 @@ import net.jplugin.common.kits.filter.FilterManager;
 import net.jplugin.common.kits.filter.IFilter;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.ExtensionInterceptorContext;
-import net.jplugin.core.kernel.api.IExtensionInterceptor;
+import net.jplugin.core.kernel.api.AbstractExtensionInterceptor;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 import java.lang.reflect.Method;
@@ -46,7 +46,7 @@ public class TheMethodHandler implements MethodHandler, IInstanceLevelInfo,IFilt
         this.objectInstance = o;
     }
 
-    public void initFilters(List<IExtensionInterceptor> filters){
+    public void initFilters(List<AbstractExtensionInterceptor> filters){
         filterManager = new FilterManager<>();
         for (IFilter f:filters){
             filterManager.addFilter(f);

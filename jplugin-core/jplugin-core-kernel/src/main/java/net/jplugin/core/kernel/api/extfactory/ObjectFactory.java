@@ -121,7 +121,7 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
             throw new RuntimeException(e);
         }
 
-        PluginEnvirement.getInstance().resolveRefAnnotation(result);
+//        PluginEnvirement.getInstance().resolveRefAnnotation(result);
         return result;
     }
 
@@ -264,7 +264,7 @@ public class ObjectFactory implements IExtensionFactory, IExtensionFactoryInterc
     }
 
     @Override
-    public void setInterceptors(List<IExtensionInterceptor> interceptorList) {
+    public void setInterceptors(List<AbstractExtensionInterceptor> interceptorList) {
 //        AssertKit.assertTrue(this.theMethodHandlerForNoInterface!=null || this.theInvocationHandlerForInterface!=null);
 //        AssertKit.assertFalse(this.theMethodHandlerForNoInterface!=null && this.theInvocationHandlerForInterface!=null);
 

@@ -68,17 +68,18 @@ public class Plugin extends AbstractPlugin{
 					throw new RuntimeException("not support");
 
 			}
-
 		});
 
+		AutoBindExtensionManager.INSTANCE.addSetAnnoTransformer(BindExtensionInterceptorSet.class,a->{
+			BindExtensionInterceptorSet anno = (BindExtensionInterceptorSet) a;
+			return anno.value();
+		});
 
 		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindExtensionInterceptor.class, (plugin,clazz,anno)->{
 			BindExtensionInterceptor bsAnno = (BindExtensionInterceptor) anno;
-			ExtensionKernelHelper.addExtensionInterceptorExtension(plugin,clazz,((BindExtensionInterceptor) anno).forExtensions(),((BindExtensionInterceptor) anno).forExtensionPoints(),((BindExtensionInterceptor) anno).methodFilter());
+			ExtensionKernelHelper.addExtensionInterceptorExtension(plugin,clazz,((BindExtensionInterceptor) anno).forExtensions(),((BindExtensionInterceptor) anno).forExtensionPoints(),((BindExtensionInterceptor) anno).forImplClasses(),((BindExtensionInterceptor) anno).methodNameFilter(),((BindExtensionInterceptor) anno).methodAnnotationFilter());
 
-			if (StringKit.isNotNull(bsAnno.id())) {
-				Extension.setLastExtensionId(bsAnno.id());
-			}
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
 		});
 
 		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
@@ -116,7 +117,7 @@ public class Plugin extends AbstractPlugin{
 		addExtensionPoint(ExtensionPoint.create(EP_PLUGIN_ENV_INIT_FILTER,IPluginEnvInitFilter.class));	
 		addExtensionPoint(ExtensionPoint.create(EP_EXE_SCHEDULED_FILTER,IScheduledExecutionFilter.class));
 		addExtensionPoint(ExtensionPoint.create(EP_BEAN, Object.class,true));
-		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_EXTENSION_INTERCEPTOR, IExtensionInterceptor.class));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_EXTENSION_INTERCEPTOR, AbstractExtensionInterceptor.class));
 		
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, AnnoForExtensionsHandler.class);
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, AnnoForExtensionHandler.class);

@@ -2,11 +2,7 @@ package net.jplugin.core.ctx;
 
 import java.util.Map;
 
-import net.jplugin.core.ctx.api.IRuleServiceFilter;
-import net.jplugin.core.ctx.api.ITransactionManagerListener;
-import net.jplugin.core.ctx.api.RuleServiceDefinition;
-import net.jplugin.core.ctx.api.RuleServiceFactory;
-import net.jplugin.core.ctx.api.TransactionManager;
+import net.jplugin.core.ctx.api.*;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInvocationContext;
 import net.jplugin.core.ctx.impl.RuleServiceAttrAnnoHandler;
@@ -16,6 +12,7 @@ import net.jplugin.core.ctx.impl.TxMgrListenerManager;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineManager;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineBean;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterManagerRuleFilter;
+import net.jplugin.core.ctx.impl.usetxincept.UseTransactionIncept;
 import net.jplugin.core.ctx.ruleincept.ExtensionInterceptor4Rule;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.AutoBindExtensionManager;
@@ -28,6 +25,8 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
+
+import static net.jplugin.core.service.Plugin.EP_SERVICE;
 
 /**
  *
@@ -70,7 +69,14 @@ public class Plugin extends AbstractPlugin{
 		
 		ExtensionCtxHelper.addRuleServiceFilterExtension(this,RuleCallFilterManagerRuleFilter.class );
 
-		ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInterceptor4Rule.class,null,EP_RULE_SERVICE,"*");
+		//ExtensionInterceptor方式支持Rule
+		ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInterceptor4Rule.class,null,EP_RULE_SERVICE,null,"*" , null);
+		//因为这个执行的时候会把后面的filter忽略掉，所以要把优先级设为最大值
+		Extension.setLastExtensionPriority(Integer.MAX_VALUE);
+
+		//Service支持UseTransaction方法标注
+		ExtensionKernelHelper.addExtensionInterceptorExtension(this, UseTransactionIncept.class,null,EP_SERVICE,null,null , UseTransaction.class);
+
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()

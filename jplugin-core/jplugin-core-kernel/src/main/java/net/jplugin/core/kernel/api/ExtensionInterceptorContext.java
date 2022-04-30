@@ -12,28 +12,6 @@ public class ExtensionInterceptorContext {
     //继续执行需要执行的方法，接口代理情况下就是method，类代理情况下是另一个方法
     private Method procceedMethod;
 
-//    /**
-//     * 无接口实现调用这个
-//     * @param e
-//     * @param aMethod
-//     * @param aArgs
-//     * @param aProcceedMethod
-//     */
-//    public void init(Extension e, Method aMethod, Object[] aArgs,Method aProcceedMethod) {
-//        init(e,aMethod,aArgs);
-//        this._procceedMethod = aProcceedMethod;
-//    }
-
-//    public Method _get_procceedMethod() {
-//        return _procceedMethod;
-//    }
-
-//    /**
-//     * 有接口实现调用这个
-//     * @param e
-//     * @param aMethod
-//     * @param aArgs
-//     */
     public void init(Method aMethod, Object[] aArgs,IInstanceLevelInfo ili,Method aProceedMethod){
         if (this.method!=null)
             throw new RuntimeException("can't init twice");

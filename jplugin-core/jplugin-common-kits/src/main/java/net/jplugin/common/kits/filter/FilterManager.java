@@ -52,14 +52,14 @@ public class FilterManager<T> {
 		}
 	}
 
-	private Object[] getFilterList(){
+	public IFilter[] _getFilterListForDebug(){
 		List<IFilter> list = new ArrayList<>();
 		FilterChain fc = chain.next;
 		while(fc!=null){
 			list.add(fc.filter);
 			fc = fc.next;
 		}
-		return list.toArray();
+		return list.toArray(new IFilter[list.size()]);
 	}
 
 }
