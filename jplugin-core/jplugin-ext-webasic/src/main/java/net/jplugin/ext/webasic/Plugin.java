@@ -16,6 +16,7 @@ import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvoker;
 import net.jplugin.ext.webasic.impl.web.WebControllerSet;
 import net.jplugin.ext.webasic.impl.web.webex.WebExControllerSet;
 
+
 /**
  *
  * @author: LiuHang
@@ -29,7 +30,7 @@ public class Plugin extends AbstractPlugin{
 
 	public static final String EP_WEBCONTROLLER = "EP_WEBCONTROLLER";
 	public static final String EP_WEBEXCONTROLLER = "EP_WEBEXCONTROLLER";
-	public static final String EP_RESTMETHOD = "EP_RESTMETHOD";
+//	public static final String EP_RESTMETHOD = EP_SERVICE_EXPORT;
 //	public static final String EP_RESTSERVICE = "EP_RESTSERVICE";
 //	public static final String EP_REMOTECALL = "EP_REMOTECALL";
 	

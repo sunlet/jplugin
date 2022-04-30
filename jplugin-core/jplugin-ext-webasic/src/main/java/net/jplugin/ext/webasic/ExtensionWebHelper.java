@@ -49,46 +49,9 @@ public class ExtensionWebHelper {
 	 * @param beanClz
 	 */
 	public static void addServiceExportExtension(AbstractPlugin plugin,String path,Class beanClz){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
-//		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, factory));
 		ExtensionServiceHelper.addServiceExportExtension(plugin,path,beanClz);
 	}
-	
-//	/**
-//	 * Export a service
-//	 * @param plugin
-//	 * @param path
-//	 * @param svcName
-//	 */
-//	public static void addServiceExportExtension(AbstractPlugin plugin,String path,String svcName){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
-//	}
-	
-//	public static void addRestMethodExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
-//	}
-//	public static void addRestMethodExtension(AbstractPlugin plugin,String path,String svcName,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-//	}
 
-	//add rest service。Hashmap参数
-//	@Deprecated
-//	public static void addRestServiceExtension(AbstractPlugin plugin,String path,Class beanClz){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
-//	}
-//	@Deprecated
-//	public static void addRestServiceExtension(AbstractPlugin plugin,String path,String svcName){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
-//	}
-//	public static void addRestServiceExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
-//	}
-//	public static void addRestServiceExtension(AbstractPlugin plugin,String path,String svcName,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_RESTSERVICE, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-//	}
-	
-	
 	//add webex controller  扩展的webcontroller
 	public static void addWebExControllerExtension(AbstractPlugin plugin,String path,Class beanClz){
 //		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER, path, ClassDefine.class,new String[][]{{"clazz",beanClz.getName()}} ));
@@ -102,34 +65,7 @@ public class ExtensionWebHelper {
 		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path,factory));
 	}
-//	public static void addWebControllerExtension(AbstractPlugin plugin,String path,String svcName){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
-//	}
-//	public static void addWebControllerExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
-//	}
-//	public static void addWebControllerExtension(AbstractPlugin plugin,String path,String svcName,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-//	}
 
-	//add remote call  Java序列化的远程服务
-//	@Deprecated
-//	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,Class beanClz){
-////		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()}} ));
-//		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, factory));
-//	}
-//	@Deprecated
-//	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,String svcName){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName}} ));
-//	}
-//	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,Class beanClz,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","javaObject"},{"objClass",beanClz.getName()},{"methodName",method}} ));
-//	}
-//	public static void addRemoteCallExtension(AbstractPlugin plugin,String path,String svcName,String method){
-//		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_REMOTECALL, path, ObjectDefine.class,new String[][]{{"objType","bizLogic"},{"blName",svcName},{"methodName",method}} ));
-//	}
-	
 	//filter
 	public static void addWebFilterExtension(AbstractPlugin plugin,Class filter){
 		plugin.addExtension(Extension.create(net.jplugin.ext.webasic.Plugin.EP_WEBFILTER,"",filter));
@@ -149,20 +85,7 @@ public class ExtensionWebHelper {
 	 * @param p   对应的Plugin类
 	 * @param pkgPath  相对于Plugin类的相对包路径，比如“.svc" ,可以为null
 	 */
-//	public static void autoBindServiceExportExtension(AbstractPlugin p,String pkgPath) {
-//		for(Class c:p.filterContainedClasses(pkgPath,BindServiceExport.class)){
-//			BindServiceExport anno = (BindServiceExport) c.getAnnotation(BindServiceExport.class);
-//			addServiceExportExtension(p, anno.path(), c);
-//			PluginEnvirement.INSTANCE.getStartLogger()
-//			.log("$$$ Auto add extension for service export : servicePath=" + anno.path() + " class="
-//					+ c.getName());
-////			if (StringKit.isNotNull(anno.id())) {
-//////				Beans.setLastId(anno.id());
-////				Extension.setLastExtensionId(anno.id());
-////			}
-//			ExtensionBindKit.handleIdAndPriority(p,c);
-//		}
-//	}
+
 	
 	/**
 	 * <PRE>
@@ -171,34 +94,7 @@ public class ExtensionWebHelper {
 	 * @param p   对应的Plugin类
 	 * @param pkgPath  相对于Plugin类的相对包路径。
 	 */
-//	public static void autoBindControllerExtension(AbstractPlugin p, String pkgPath) {
-//		for (Class c : p.filterContainedClasses(pkgPath, BindController.class)) {
-//			BindController anno = (BindController) c.getAnnotation(BindController.class);
-//			if (AbstractExController.class.isAssignableFrom(c)) {
-//				ExtensionWebHelper.addWebExControllerExtension(p, anno.path(), c);
-//				PluginEnvirement.INSTANCE.getStartLogger()
-//						.log("$$$ Auto add extension for web ex controller : servicePath=" + anno.path() + " class="
-//								+ c.getName());
-//
-////				if (StringKit.isNotNull(anno.id())) {
-//////					Beans.setLastId(anno.id());
-////					Extension.setLastExtensionId(anno.id());
-////				}
-//				ExtensionBindKit.handleIdAndPriority(p,c);
-//			} else {
-//				ExtensionWebHelper.addWebControllerExtension(p, anno.path(), c);
-//				PluginEnvirement.INSTANCE.getStartLogger()
-//						.log("$$$ Auto add extension for web controller : servicePath=" + anno.path() + " class="
-//								+ c.getName());
-//
-////				if (StringKit.isNotNull(anno.id())) {
-//////					Beans.setLastId(anno.id());
-////					Extension.setLastExtensionId(anno.id());
-////				}
-//				ExtensionBindKit.handleIdAndPriority(p,c);
-//			}
-//		}
-//	}
+
 	
 	/**
 	 * <PRE>

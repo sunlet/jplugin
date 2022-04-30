@@ -32,7 +32,7 @@ public class WebControllerSet implements IControllerSet{
 			controllerMap.put(en.getKey(), controller);
 			
 			//重新设置value值
-			ExtensionObjects.resetValue(en.getValue(), controller.getObject());
+//			ExtensionObjects.resetValue(en.getValue(), controller.getObject());
 		}
 	}
 	

@@ -44,7 +44,7 @@ public class WebExControllerSet implements IControllerSet{
 			controllerMap.put(en.getKey(), exController);
 
 			//重新设置value值
-			ExtensionObjects.resetValue(en.getValue(), exController.getObject());
+//			ExtensionObjects.resetValue(en.getValue(), exController.getObject());
 		}
 	}
 	public Set<String> getAcceptPaths() {
