@@ -40,13 +40,13 @@ public class Plugin extends AbstractPlugin {
 	public static final String EP_SQL_AGG_FUNCTION = "EP_SQL_AGG_FUNCTION";
 	
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.create(EP_TS_ALGM, ITsAlgorithm.class,true));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_TS_ALGM, ITsAlgorithm.class));
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"hash", HashAlgm.class);
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"weightHash", HashAlgm.class);
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"date", DateAlgm.class);
 		ExtensionDasRouteHelper.addRouteAlgmExtension(this,"month", MonthAlgm.class);
 		
-		this.addExtensionPoint(ExtensionPoint.create(EP_MULQRY_RS_WRAPCTRL, WrapperController.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_MULQRY_RS_WRAPCTRL, WrapperController.class));
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, CountStarWrapperController.class);
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, GroupByWrapperController.class);
 		ExtensionDasRouteHelper.addMulQryRsWrapperControllerExtension(this, LimitWrapperController.class);
@@ -59,8 +59,8 @@ public class Plugin extends AbstractPlugin {
 		
 		ExtensionDasHelper.addDynamisDataSourceTypeExtension(this,"db-table-split",RouterDataSource.class);
 
-		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_FUNCTION, IFunctionHandler.class,true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_AGG_FUNCTION, IAggregationFunctionHandler.class,true));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SQL_FUNCTION, IFunctionHandler.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SQL_AGG_FUNCTION, IAggregationFunctionHandler.class));
 
 	}
 	@Override

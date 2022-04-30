@@ -39,8 +39,8 @@ public class Plugin extends AbstractPlugin{
 			return;
 		}
 		enabled = true;
-		this.addExtensionPoint(ExtensionPoint.create(EP_MYBATIS_MAPPER, ExtensionDefinition4Mapping.class));
-		this.addExtensionPoint(ExtensionPoint.create(EP_MYBATIS_INCEPT,ExtensionDefinition4Incept.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_MYBATIS_MAPPER, ExtensionDefinition4Mapping.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_MYBATIS_INCEPT,ExtensionDefinition4Incept.class));
 		ExtensionServiceHelper.addServiceExtension(this, IMybatisService.class.getName(), DefaultMybaticsService4JianRong.class);
 		ExtensionCtxHelper.addTxMgrListenerExtension(this, MybatisTransactionManagerListener.class);
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this,MybatisServiceAnnoHandler.class );

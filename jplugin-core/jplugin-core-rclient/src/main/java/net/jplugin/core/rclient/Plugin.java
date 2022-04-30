@@ -37,14 +37,14 @@ public class Plugin extends AbstractPlugin{
 	
 	
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_HANDLER, IClientHandler.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEURL_RESOLVER, IServiceUrlResolver.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_FILTER, IClientFilter.class));
-		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENT_PROXY,ClientProxyDefinition.class,true ));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_CLIENT_HANDLER, IClientHandler.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SERVICEURL_RESOLVER, IServiceUrlResolver.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_CLIENT_FILTER, IClientFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_CLIENT_PROXY,ClientProxyDefinition.class));
 		//主要用来进行restfule链接失败的通知
-		this.addExtensionPoint(ExtensionPoint.create(EP_CLIENTFAIL_HANDLER,IClientFailHandler.class,true ));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_CLIENTFAIL_HANDLER,IClientFailHandler.class ));
 
-		this.addExtensionPoint(ExtensionPoint.create(EP_TOKEN_FETCHER,ITokenFetcher.class,true ));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_TOKEN_FETCHER,ITokenFetcher.class));
 
 //		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REMOJAVA,JavaRemotHandler.class);
 		ExtendsionClientHelper.addClientHandlerExtension(this,Client.PROTOCOL_REST,RestHandler.class);

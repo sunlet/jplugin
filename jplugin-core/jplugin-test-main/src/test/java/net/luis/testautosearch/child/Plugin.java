@@ -8,7 +8,7 @@ import net.jplugin.core.kernel.api.PluginAnnotation;
 @PluginAnnotation
 public class Plugin extends AbstractPlugin {
 	public Plugin() {
-		this.addExtensionPoint(ExtensionPoint.create("EL_TESTPOING100", ITestExten.class));
+		this.addExtensionPoint(ExtensionPoint.createList("EL_TESTPOING100", ITestExten.class));
 	}
 	
 	@Override

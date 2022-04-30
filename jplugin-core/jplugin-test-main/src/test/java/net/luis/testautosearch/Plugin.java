@@ -23,7 +23,7 @@ public class Plugin extends AbstractPlugin {
 		Extension.setLastExtensionId("theidabcde");
 
 		
-		this.addExtensionPoint(ExtensionPoint.create("EL_ExtensionForIdTest",IExtensionForIdTest.class));
+		this.addExtensionPoint(ExtensionPoint.createList("EL_ExtensionForIdTest",IExtensionForIdTest.class));
 	}
 	@Override
 	public void init() {

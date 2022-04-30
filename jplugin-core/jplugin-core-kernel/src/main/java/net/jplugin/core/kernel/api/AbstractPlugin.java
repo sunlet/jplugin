@@ -38,21 +38,25 @@ public abstract class AbstractPlugin implements IPlugin {
 	
 	public String printContent() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\n").append(this.getName()).append("   Privority="+this.getPrivority());
-		sb.append("\n  ExtensionPoints:");
+		sb.append(this.getName());
+		sb.append("\n  ExtensionPoints(").append(extensionPoints.size()).append(") :");
 		for (int i=0;i<this.extensionPoints.size();i++) {
 			ExtensionPoint p = extensionPoints.get(i);
 			sb.append("\n    ");
-			sb.append(p.getName() +"  { type="+p.getType()+" , baseCalss="+p.getExtensionClass().getName()+" }");
+			sb.append(p.getName() +"  { type="+p.getType()+" , baseCalss="+p.getExtensionClass().getName());
+			if (p.supportPriority()) sb.append("  SUPPORT_PRIORITY");
+			sb.append(" }");
 		}
 		
-		sb.append("\n  Extensions:");
+		sb.append("\n  Extensions(").append(extensions.size()).append(") :");
 		for (int i=0;i<this.extensions.size();i++) {
 			Extension e = extensions.get(i);
 			sb.append("\n    ").append("[ pointTo=");
 			sb.append(e.getExtensionPointName()).append(" , ");
 			sb.append("implClass=").append(e.getClazz().getName()).append(" , name=").append(e.getName());
-			sb.append("]");
+			if (StringKit.isNotNull(e.getId())) sb.append("  id=").append(e.getId());
+			if (e.getPriority()!=0) sb.append("  priority="+e.getPriority());
+			sb.append(" ]");
 		}
 		
 		return sb.toString();

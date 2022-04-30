@@ -26,7 +26,7 @@ public class Plugin extends AbstractPluginForTest {
 		
 		ExtensionKernelHelper.autoBindExtension(this, "");
 		
-		this.addExtensionPoint(ExtensionPoint.create("testExtensionPoint", IService1.class));
+		this.addExtensionPoint(ExtensionPoint.createList("testExtensionPoint", IService1.class));
 	}
 
 	@Override

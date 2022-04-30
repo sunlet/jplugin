@@ -37,15 +37,15 @@ public class Plugin extends AbstractPlugin {
 	
 
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.create(EP_DATASOURCE, DataSourceDefinition.class,true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_CONN_WRAPPER, IConnectionWrapperService.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_DATASOURCE, DataSourceDefinition.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_CONN_WRAPPER, IConnectionWrapperService.class));
 		
-		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_LISTENER, ISqlMonitorListener.class));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_EXEC_FILTER, ISqlExecFilter.class));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SQL_REFACTOR, ISqlRefactor.class));
-		this.addExtensionPoint(ExtensionPoint.create(EP_DYNAMIC_DS_PROVIDER, IDynamicDataSourceProvider.class,true));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_SQL_LISTENER, ISqlMonitorListener.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_SQL_EXEC_FILTER, ISqlExecFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_SQL_REFACTOR, ISqlRefactor.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_DYNAMIC_DS_PROVIDER, IDynamicDataSourceProvider.class));
 		
-		this.addExtensionPoint(ExtensionPoint.create(EP_DYNAMIC_DATASOURCE_TYPE,ClassDefine.class,true));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_DYNAMIC_DATASOURCE_TYPE,ClassDefine.class));
 
 
 		

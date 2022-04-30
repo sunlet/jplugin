@@ -40,7 +40,7 @@ public class Plugin extends AbstractPlugin{
 
 	public Plugin(){
 		//add point
-		this.addExtensionPoint(ExtensionPoint.create(EP_CONFIG_CHANGE_HANDLER, ConfigChangeHandlerDef.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_CONFIG_CHANGE_HANDLER, ConfigChangeHandlerDef.class));
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this,AnnoForAttrHandler.class );
 		ExtensionConfigHelper.addConfigChangeHandlerExtension(this, "*", AutoRefreshConfigChangeHandler.class);
 	}

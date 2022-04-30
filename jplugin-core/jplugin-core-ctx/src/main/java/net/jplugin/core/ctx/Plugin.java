@@ -56,10 +56,10 @@ public class Plugin extends AbstractPlugin{
 	public Plugin(){
 
 //		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, RuleServiceDefinition.class,true));
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, Object.class,true));
-		addExtensionPoint(ExtensionPoint.create(EP_TXMGR_LISTENER, ITransactionManagerListener.class,false));
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE_FILTER, IRuleServiceFilter.class,false));
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class,false));
+		addExtensionPoint(ExtensionPoint.createNamed(EP_RULE_SERVICE, Object.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_TXMGR_LISTENER, ITransactionManagerListener.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_RULE_SERVICE_FILTER, IRuleServiceFilter.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class));
 		
 		
 		addExtension(Extension.create(Constants.EP_SERVICE, RuleServiceFactory.class.getName(),RuleServiceFactory.class));

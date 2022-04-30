@@ -30,8 +30,8 @@ public class Plugin extends AbstractPlugin{
 		if (noHib()){
 			return;
 		}
-		addExtensionPoint(ExtensionPoint.create(EP_DATAMAPPING, IPersistObjDefinition.class));
-		addExtensionPoint(ExtensionPoint.create(EP_DATAMAPPING_SINGLE, SinglePoDefine.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_DATAMAPPING, IPersistObjDefinition.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_DATAMAPPING_SINGLE, SinglePoDefine.class));
 
 		addExtension(Extension.create(Constants.EP_SERVICE, IDataService.class.getName(),DataService4Hibernate.class));
 		addExtension(Extension.create(Constants.EP_SERVICE, IMtDataService.class.getName(),MtDataService.class));

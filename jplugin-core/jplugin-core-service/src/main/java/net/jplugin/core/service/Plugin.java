@@ -18,7 +18,7 @@ import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
 
 public class Plugin extends AbstractPlugin{
 
-	public static final String EP_SERVICE = "service";
+	public static final String EP_SERVICE = "EP_SERVICE";
 	public static final String EP_SERVICE_EXPORT = "EP_RESTMETHOD";
 
 	static{

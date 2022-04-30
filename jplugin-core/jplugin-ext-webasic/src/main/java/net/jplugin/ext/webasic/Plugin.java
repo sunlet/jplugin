@@ -67,20 +67,20 @@ public class Plugin extends AbstractPlugin{
 		});
 	}
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.create(EP_CONTROLLERSET, IControllerSet.class));
-		this.addExtensionPoint(ExtensionPoint.create(EP_WEBFILTER, WebFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_CONTROLLERSET, IControllerSet.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_WEBFILTER, WebFilter.class));
 //		this.addExtensionPoint(ExtensionPoint.create(EP_RESTSERVICE, ObjectDefine.class, true));
 //		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCONTROLLER, ObjectDefine.class, true));
 //		this.addExtensionPoint(ExtensionPoint.create(EP_WEBEXCONTROLLER, ClassDefine.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCONTROLLER, Object.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_WEBEXCONTROLLER, Object.class, true));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_WEBCONTROLLER, Object.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_WEBEXCONTROLLER, Object.class));
 //		this.addExtensionPoint(ExtensionPoint.create(EP_REMOTECALL, Object.class, true));
 //		this.addExtensionPoint(ExtensionPoint.create(EP_RESTMETHOD, Object.class, true));
-		this.addExtensionPoint(ExtensionPoint.create(EP_SERVICEFILTER, IInvocationFilter.class,false));
-		this.addExtensionPoint(ExtensionPoint.create(EP_WEBCTRLFILTER, IInvocationFilter.class,false));
-		this.addExtensionPoint(ExtensionPoint.create(EP_HTTP_FILTER, IHttpFilter.class,false));
-		this.addExtensionPoint(ExtensionPoint.create(EP_ESF_RPC_FILTER, IESFRpcFilter.class,false));
-		this.addExtensionPoint(ExtensionPoint.create(EP_ESF_REST_FILTER, IESFRestFilter.class,false));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_SERVICEFILTER, IInvocationFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_WEBCTRLFILTER, IInvocationFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_HTTP_FILTER, IHttpFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_ESF_RPC_FILTER, IESFRpcFilter.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_ESF_REST_FILTER, IESFRestFilter.class));
 		
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilter.class));
 		this.addExtension(Extension.create(EP_WEBFILTER,"",InitRequestInfoFilterNew.class));

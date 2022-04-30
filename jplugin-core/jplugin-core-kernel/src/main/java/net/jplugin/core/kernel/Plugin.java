@@ -90,10 +90,6 @@ public class Plugin extends AbstractPlugin{
 			BindStartup bsAnno = (BindStartup) anno;
 			plugin.addExtension(Extension.create(EP_STARTUP, clazz));
 			
-//			if (StringKit.isNotNull(bsAnno.id())) {
-//				Extension.setLastExtensionId(bsAnno.id());
-////				Beans.setLastId(bsAnno.id());
-//			}
 			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
 		});
 		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindBean.class, (plugin,clazz,anno)->{
@@ -109,14 +105,14 @@ public class Plugin extends AbstractPlugin{
 	}
 	
 	public Plugin(){
-		addExtensionPoint(ExtensionPoint.create(EP_STARTUP, IStartup.class));
-		addExtensionPoint(ExtensionPoint.create(EP_ANNO_FOR_ATTR, IAnnoForAttrHandler.class));
-		addExtensionPoint(ExtensionPoint.create(EP_EXECUTOR_FILTER,IExecutorFilter.class));
-		addExtensionPoint(ExtensionPoint.create(EP_EXE_RUN_INIT_FILTER,IExeRunnableInitFilter.class));
-		addExtensionPoint(ExtensionPoint.create(EP_HTTP_CLIENT_FILTER,IHttpClientFilter.class));	
-		addExtensionPoint(ExtensionPoint.create(EP_PLUGIN_ENV_INIT_FILTER,IPluginEnvInitFilter.class));	
-		addExtensionPoint(ExtensionPoint.create(EP_EXE_SCHEDULED_FILTER,IScheduledExecutionFilter.class));
-		addExtensionPoint(ExtensionPoint.create(EP_BEAN, Object.class,true));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_STARTUP, IStartup.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_ANNO_FOR_ATTR, IAnnoForAttrHandler.class));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_EXECUTOR_FILTER,IExecutorFilter.class));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_EXE_RUN_INIT_FILTER,IExeRunnableInitFilter.class));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_HTTP_CLIENT_FILTER,IHttpClientFilter.class));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_PLUGIN_ENV_INIT_FILTER,IPluginEnvInitFilter.class));
+		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_EXE_SCHEDULED_FILTER,IScheduledExecutionFilter.class));
+		addExtensionPoint(ExtensionPoint.createNamed(EP_BEAN, Object.class));
 		addExtensionPoint(ExtensionPoint.createListWithPriority(EP_EXTENSION_INTERCEPTOR, AbstractExtensionInterceptor.class));
 		
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, AnnoForExtensionsHandler.class);

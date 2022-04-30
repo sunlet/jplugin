@@ -21,11 +21,18 @@ public class PluginRegistry {
 	private Map<String, AbstractPlugin> loadedPluginMap = new Hashtable<String, AbstractPlugin>();
 	private List<Class> pluginClasses=new ArrayList<>();
 
-	public String printContent() {
+	public String printContent(boolean reverse) {
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < pluginList.size(); i++) {
-			sb.append("\n");
-			sb.append(pluginList.get(i).printContent());
+		if (reverse) {
+			for (int i = pluginList.size()-1; i >=0; i--) {
+				sb.append("\n\nPlugin[").append(i+1).append("] : ");
+				sb.append(pluginList.get(i).printContent());
+			}
+		} else{
+			for (int i = 0; i < pluginList.size(); i++) {
+				sb.append("\n\nPlugin[").append(i+1).append("] : ");
+				sb.append(pluginList.get(i).printContent());
+			}
 		}
 		return sb.toString();
 	}
