@@ -123,6 +123,7 @@
 
 <!--		core modules-->
 		<module>jplugin-package-core</module>
+<!--		<module>jplugin-package-core/pom-sonatype.xml</module>-->
 <!--		core childs-->
 		<module>jplugin-common-kits</module>
 		<module>jplugin-common-kits-http</module>
@@ -134,6 +135,7 @@
 
 <!--		das modules-->
 		<module>jplugin-package-das</module>
+<!--		<module>jplugin-package-das/pom-sonatype.xml</module>-->
 <!--		das childs-->
 		<module>jplugin-core-ctx</module>
 		<module>jplugin-core-das</module>
@@ -142,6 +144,7 @@
 
 <!--		jplugin mvc-->
 		<module>jplugin-package-mvc</module>
+<!--		<module>jplugin-package-mvc/pom-sonatype.xml</module>-->
 <!--		mvc childs-->
 		<module>jplugin-ext-webasic</module>
 		<module>jplugin-ext-gtrace</module>
@@ -149,7 +152,7 @@
 		<module>jplugin-ext-event</module>
     	<module>jplugin-ext-staticweb</module>
 
-<!--		others-->
+<!--&lt;!&ndash;		others&ndash;&gt;-->
 
 		<module>jplugin-ext-das-hib</module>
 		<module>jplugin-ext-token</module>

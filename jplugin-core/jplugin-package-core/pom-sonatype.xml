@@ -7,7 +7,7 @@
 
 	<groupId>net.jplugin</groupId>
 	<artifactId>jplugin-core</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.5.0</version>
 	<packaging>jar</packaging>
 	
 	<name>jplugin-core</name>
@@ -28,24 +28,13 @@
 	    </developer>
   	</developers>
   	<scm>
-    	<connection>scm:git:git://github.com/sunlet/jplugin-v2.git</connection>
-    	<developerConnection>scm:git:ssh://github.com:sunlet/jplugin-v2.git</developerConnection>
-    	<url>http://github.com/sunlet/jplugin-v2/tree/master</url>
+    	<connection>scm:git:git://github.com/sunlet/jplugin.git</connection>
+    	<developerConnection>scm:git:ssh://github.com:sunlet/jplugin.git</developerConnection>
+    	<url>http://github.com/sunlet/jplugin/tree/master</url>
     </scm>
   	
 
 	<dependencies>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-event</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-das-ts</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-
 		<dependency>
 			<groupId>net.jplugin.core</groupId>
 			<artifactId>jplugin-common-kits</artifactId>
@@ -59,16 +48,6 @@
 		<dependency>
 			<groupId>net.jplugin.core</groupId>
 			<artifactId>jplugin-core-config</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-ctx</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-das</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -91,39 +70,6 @@
 			<artifactId>jplugin-core-service</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-
-		<!-- <dependency> <groupId>net.jplugin.core</groupId> <artifactId>jplugin-ext-das-hib</artifactId> 
-			<version>0.0.2-SNAPSHOT</version> </dependency> -->
-
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-das-mybatis</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-gtrace</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-mtenant</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<!-- <dependency> <groupId>net.jplugin.core</groupId> <artifactId>jplugin-ext-token</artifactId> 
-			<version>0.0.2-SNAPSHOT</version> </dependency> -->
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-webasic</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-staticweb</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -138,6 +84,7 @@
 					<aggregate>true</aggregate>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 				<executions>
 					<execution>
@@ -168,24 +115,14 @@
 							<!-- 包含要合并的模块 -->
 							<artifactSet>
 								<includes>
-									<include>net.jplugin.core:jplugin-ext-das-ts</include>
 									<include>net.jplugin.core:jplugin-common-kits</include>
 									<include>net.jplugin.core:jplugin-common-kits-http</include>
 									<include>net.jplugin.core:jplugin-core-config</include>
 									<include>net.jplugin.core:jplugin-core-ctx</include>
-									<include>net.jplugin.core:jplugin-core-das</include>
 									<include>net.jplugin.core:jplugin-core-kernel</include>
 									<include>net.jplugin.core:jplugin-core-log</include>
 									<include>net.jplugin.core:jplugin-core-rclient</include>
 									<include>net.jplugin.core:jplugin-core-service</include>
-									<!-- <include>net.jplugin.core:jplugin-ext-das-hib</include> -->
-									<include>net.jplugin.core:jplugin-ext-das-mybatis</include>
-									<include>net.jplugin.core:jplugin-ext-gtrace</include>
-									<include>net.jplugin.core:jplugin-ext-mtenant</include>
-									<!-- <include>net.jplugin.core:jplugin-ext-token</include> -->
-									<include>net.jplugin.core:jplugin-ext-webasic</include>
-									<include>net.jplugin.core:jplugin-ext-event</include>
-									<include>net.jplugin.core:jplugin-ext-staticweb</include>
 								</includes>
 							</artifactSet>
 							<filters>
@@ -197,7 +134,7 @@
 								</filter>
 							</filters>
 							<!-- 包含号合并的资源文件 -->
-							<!-- >transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer"> 
+							<!-- >transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/xxxxx </resource> </transformer> </transformers -->
 
 						</configuration>
@@ -233,7 +170,7 @@
         		</configuration>
       		</plugin> 
 			<!--上面两个用来往maven中央仓库发布需要-->
-			
+
 		</plugins>
 	</build>
 
@@ -249,8 +186,8 @@
         </snapshotRepository>
     </distributionManagement>
     <!--上面两个用来往maven中央仓库发布需要-->
-    
-	<!-- 公司的私服 
+
+	<!-- 公司的私服
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshots</id>

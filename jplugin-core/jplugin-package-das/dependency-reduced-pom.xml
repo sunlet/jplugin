@@ -20,9 +20,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git://github.com/sunlet/jplugin-v2.git</connection>
-    <developerConnection>scm:git:ssh://github.com:sunlet/jplugin-v2.git</developerConnection>
-    <url>http://github.com/sunlet/jplugin-v2/tree/master</url>
+    <connection>scm:git:git://github.com/sunlet/jplugin.git</connection>
+    <developerConnection>scm:git:ssh://github.com:sunlet/jplugin.git</developerConnection>
+    <url>http://github.com/sunlet/jplugin/tree/master</url>
   </scm>
   <build>
     <plugins>
@@ -42,6 +42,7 @@
           <aggregate>true</aggregate>
           <charset>UTF-8</charset>
           <docencoding>UTF-8</docencoding>
+          <additionalparam>-Xdoclint:none</additionalparam>
         </configuration>
       </plugin>
       <plugin>

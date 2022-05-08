@@ -6,11 +6,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.jplugin.mvn</groupId>
-	<artifactId>jplugin-core</artifactId>
-	<version>2.5.0-SNAPSHOT</version>
+	<artifactId>jplugin-das</artifactId>
+	<version>2.5.0</version>
 	<packaging>jar</packaging>
 	
-	<name>jplugin-core</name>
+	<name>jplugin-das</name>
 	<description>A plugin based application framework for java</description>
 	<url>http://github.com/sunlet</url>
 	
@@ -28,37 +28,16 @@
 	    </developer>
   	</developers>
   	<scm>
-    	<connection>scm:git:git://github.com/sunlet/jplugin-v2.git</connection>
-    	<developerConnection>scm:git:ssh://github.com:sunlet/jplugin-v2.git</developerConnection>
-    	<url>http://github.com/sunlet/jplugin-v2/tree/master</url>
+    	<connection>scm:git:git://github.com/sunlet/jplugin.git</connection>
+    	<developerConnection>scm:git:ssh://github.com:sunlet/jplugin.git</developerConnection>
+    	<url>http://github.com/sunlet/jplugin/tree/master</url>
     </scm>
   	
 
 	<dependencies>
 		<dependency>
 			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-event</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
 			<artifactId>jplugin-ext-das-ts</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-common-kits</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-common-kits-http</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-config</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -73,56 +52,23 @@
 		</dependency>
 		<dependency>
 			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-kernel</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-log</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-rclient</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-core-service</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-
-		<!-- <dependency> <groupId>net.jplugin.core</groupId> <artifactId>jplugin-ext-das-hib</artifactId> 
-			<version>0.0.2-SNAPSHOT</version> </dependency> -->
-
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
 			<artifactId>jplugin-ext-das-mybatis</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-gtrace</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-mtenant</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<!-- <dependency> <groupId>net.jplugin.core</groupId> <artifactId>jplugin-ext-token</artifactId> 
-			<version>0.0.2-SNAPSHOT</version> </dependency> -->
-		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-webasic</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
 
+		<!-- 除了jplugin-core之外，jplugin-das/jplugin-mvc不适用传递依赖(promoteTransitiveDependencies=false)，所以把上面几个项目的第三方依赖全部添加上来-->
 		<dependency>
-			<groupId>net.jplugin.core</groupId>
-			<artifactId>jplugin-ext-staticweb</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.6.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -138,6 +84,7 @@
 					<aggregate>true</aggregate>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 				<executions>
 					<execution>
@@ -164,28 +111,15 @@
 						</goals>
 						<configuration>
 							<createSourcesJar>true</createSourcesJar>
-							<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+							<promoteTransitiveDependencies>false</promoteTransitiveDependencies>
+
 							<!-- 包含要合并的模块 -->
 							<artifactSet>
 								<includes>
 									<include>net.jplugin.core:jplugin-ext-das-ts</include>
-									<include>net.jplugin.core:jplugin-common-kits</include>
-									<include>net.jplugin.core:jplugin-common-kits-http</include>
-									<include>net.jplugin.core:jplugin-core-config</include>
 									<include>net.jplugin.core:jplugin-core-ctx</include>
 									<include>net.jplugin.core:jplugin-core-das</include>
-									<include>net.jplugin.core:jplugin-core-kernel</include>
-									<include>net.jplugin.core:jplugin-core-log</include>
-									<include>net.jplugin.core:jplugin-core-rclient</include>
-									<include>net.jplugin.core:jplugin-core-service</include>
-									<!-- <include>net.jplugin.core:jplugin-ext-das-hib</include> -->
 									<include>net.jplugin.core:jplugin-ext-das-mybatis</include>
-									<include>net.jplugin.core:jplugin-ext-gtrace</include>
-									<include>net.jplugin.core:jplugin-ext-mtenant</include>
-									<!-- <include>net.jplugin.core:jplugin-ext-token</include> -->
-									<include>net.jplugin.core:jplugin-ext-webasic</include>
-									<include>net.jplugin.core:jplugin-ext-event</include>
-									<include>net.jplugin.core:jplugin-ext-staticweb</include>
 								</includes>
 							</artifactSet>
 							<filters>
@@ -206,7 +140,6 @@
 			</plugin>
 			
 			<!-- 往Maven中央仓库发布需要的插件-->
-			<!-- 
 			<plugin>
         		<groupId>org.apache.maven.plugins</groupId>
         		<artifactId>maven-gpg-plugin</artifactId>
@@ -231,14 +164,14 @@
           			<nexusUrl>https://oss.sonatype.org/</nexusUrl>
           			<autoReleaseAfterClose>false</autoReleaseAfterClose>
         		</configuration>
-      		</plugin> 
-      		  -->
+      		</plugin>
+
 			<!--上面两个用来往maven中央仓库发布需要-->
 		</plugins>
 	</build>
 
 	<!-- 下面两个用来往maven中央仓库发布需要 -->
-	<!-- 
+
 	<distributionManagement>
         <repository>
             <id>repository</id>
@@ -249,10 +182,11 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-     -->
+
     <!--上面两个用来往maven中央仓库发布需要-->
     
-	<!-- 公司的私服--> 
+	<!-- 公司的私服-->
+	<!--
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshots</id>
@@ -265,5 +199,5 @@
 			<url>http://maven-server:8081/nexus/content/repositories/releases/</url>
 		</repository>
 	</distributionManagement>
-	 <!-- -->
+	  -->
 </project>

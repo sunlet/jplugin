@@ -7,7 +7,7 @@
 
 	<groupId>net.jplugin.mvn</groupId>
 	<artifactId>jplugin-mvc</artifactId>
-	<version>2.5.0-SNAPSHOT</version>
+	<version>2.5.0</version>
 	<packaging>jar</packaging>
 	
 	<name>jplugin-mvc</name>
@@ -133,7 +133,6 @@
 			</plugin>
 			
 			<!-- 往Maven中央仓库发布需要的插件-->
-			<!-- 
 			<plugin>
         		<groupId>org.apache.maven.plugins</groupId>
         		<artifactId>maven-gpg-plugin</artifactId>
@@ -159,13 +158,11 @@
           			<autoReleaseAfterClose>false</autoReleaseAfterClose>
         		</configuration>
       		</plugin> 
-      		  -->
 			<!--上面两个用来往maven中央仓库发布需要-->
 		</plugins>
 	</build>
 
 	<!-- 下面两个用来往maven中央仓库发布需要 -->
-	<!-- 
 	<distributionManagement>
         <repository>
             <id>repository</id>
@@ -176,10 +173,11 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-     -->
+
     <!--上面两个用来往maven中央仓库发布需要-->
     
-	<!-- 公司的私服--> 
+	<!-- 公司的私服-->
+	<!--
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshots</id>
@@ -192,4 +190,5 @@
 			<url>http://maven-server:8081/nexus/content/repositories/releases/</url>
 		</repository>
 	</distributionManagement>
+	-->
 </project>

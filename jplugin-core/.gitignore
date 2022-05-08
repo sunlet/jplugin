@@ -1,3 +1,5 @@
 /.idea/
 /logs/
 /jplugin-package-mvc/target/
+/jplugin-package-core/jplugin-core.iml
+/jplugin-package-das/jplugin-das.iml
