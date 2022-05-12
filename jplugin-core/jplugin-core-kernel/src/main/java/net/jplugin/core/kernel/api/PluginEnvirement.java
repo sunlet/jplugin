@@ -32,14 +32,17 @@ public class PluginEnvirement {
 	public static final int STAT_LEVEL_WIRING=20;
 	public static final int STAT_LEVEL_WIRED=22;
 	public static final int STAT_LEVEL_MAKINGSVC=25;
+
+	public static final int STAT_LEVEL_MADESVC=26;
+
 	public static final int STAT_LEVEL_RESOLVING_HIST=27;
-	public static final int STAT_LEVEL_RESOLVED_HIST=28;
+//	public static final int STAT_LEVEL_RESOLVED_HIST=28;
 	public static final int STAT_LEVEL_INITING=30;
 	public static final int STAT_LEVEL_WORKING=40;
 
 	public static final int STARTTYPE_BOTH=0;
-	public static final int STARTTYPE_READY=1;
-	public static final int STARTTYPE_INITIALIZE=2;
+	public static final int STARTTYPE_FIRST =1;
+	public static final int STARTTYPE_SECOND =2;
 	
 	public static final String WORK_DIR = "work-dir";
 	public static PluginEnvirement INSTANCE = new PluginEnvirement();
@@ -252,13 +255,13 @@ public class PluginEnvirement {
 	 */
 	public synchronized void startup(Set plgns ,int startType) {
 		try {
-			if (startType==STARTTYPE_READY || startType==STARTTYPE_BOTH) {
+			if (startType== STARTTYPE_FIRST || startType==STARTTYPE_BOTH) {
 				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_ORIGIN);
 				ready(plgns);
 			}
-			if (startType==STARTTYPE_INITIALIZE  || startType==STARTTYPE_BOTH) {
-				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_RESOLVED_HIST);
-				initialize();
+			if (startType== STARTTYPE_SECOND || startType==STARTTYPE_BOTH) {
+				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_MADESVC);
+				resolveAndinitialize();
 			}
 
 			//处理启动过程中registry.getErrors()，有可能退出
@@ -283,7 +286,22 @@ public class PluginEnvirement {
 		}
 	}
 
-	private void initialize() {
+	private void resolveAndinitialize() {
+
+		this.stateLevel = STAT_LEVEL_RESOLVING_HIST;
+
+		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
+			try {
+				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+
+				this.annoResolveHelper.resolveHistory();
+			} finally {
+				ThreadLocalContextManager.instance.releaseContext();
+			}
+		}
+//		this.stateLevel = STAT_LEVEL_RESOLVED_HIST;
+
+
 		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
 			try {
 				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
@@ -400,18 +418,7 @@ public class PluginEnvirement {
 		registry.makeServices();
 		registry.clearClassCache();
 
-		this.stateLevel = STAT_LEVEL_RESOLVING_HIST;
-
-		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
-			try {
-				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
-
-				this.annoResolveHelper.resolveHistory();
-			} finally {
-				ThreadLocalContextManager.instance.releaseContext();
-			}
-		}
-		this.stateLevel = STAT_LEVEL_RESOLVED_HIST;
+		this.stateLevel = STAT_LEVEL_MADESVC;
 	}
 
 	boolean testAll = false;
@@ -458,10 +465,7 @@ public class PluginEnvirement {
 //		registry.addPlugin((IPlugin) plugin);
 //	}
 
-	/**
-	 * @param e
-	 * @param object
-	 */
+
 	private void trigStartListener(Throwable e, List<PluginError> errors) {
 		IStartup[] listeners = getExtensionObjects(Plugin.EP_STARTUP,IStartup.class);
 		if (e==null && errors==null ){
