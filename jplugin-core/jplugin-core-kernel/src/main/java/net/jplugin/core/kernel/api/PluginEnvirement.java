@@ -508,6 +508,10 @@ public class PluginEnvirement {
 	public void resolveRefAnnotation(Object o) {
 		this.annoResolveHelper.resolveOne(o);
 	}
+
+	public void addObjectResolver(IObjectResolver r){
+		this.annoResolveHelper.addObjectResolver(r);
+	}
 	
 	public String getEnvType(){
 		return System.getProperty("plugin.env");
