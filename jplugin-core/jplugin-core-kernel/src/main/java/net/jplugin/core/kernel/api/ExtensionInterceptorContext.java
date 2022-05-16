@@ -3,11 +3,14 @@ package net.jplugin.core.kernel.api;
 import net.jplugin.core.kernel.impl_incept.IInstanceLevelInfo;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExtensionInterceptorContext {
     IInstanceLevelInfo instanceLeveInfo;
     private Method method;
     private Object[] args;
+    private Map<String,Object> attrMap;
 
     //继续执行需要执行的方法，接口代理情况下就是method，类代理情况下是另一个方法
     private Method procceedMethod;
@@ -80,5 +83,19 @@ public class ExtensionInterceptorContext {
      */
     public Object getProceedObject(){
         return this.instanceLeveInfo.getProceedObject();
+    }
+
+    public Object getAttribute(String key) {
+        if (this.attrMap ==null)
+            return null;
+        else
+            return attrMap.get(key);
+    }
+
+    public void setAttribute(String key,Object val) {
+        if (this.attrMap ==null){
+            this.attrMap = new HashMap<>();
+            this.attrMap.put(key,val);
+        }
     }
 }
