@@ -20,6 +20,10 @@
 			<artifactId>jplugin-core-kernel</artifactId>
 
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>jplugin-core-config</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

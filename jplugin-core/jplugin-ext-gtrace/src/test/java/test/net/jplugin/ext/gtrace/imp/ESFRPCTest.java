@@ -9,9 +9,10 @@ import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.ctx.impl.DefaultRuleAnnoConfig;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
+import net.jplugin.core.service.impl.esf.ESFHelper2;
+import net.jplugin.core.service.impl.esf.ESFRPCContext;
 import net.jplugin.ext.gtrace.kits.GTraceKit;
 import net.jplugin.ext.webasic.impl.ESFHelper;
-import net.jplugin.ext.webasic.impl.ESFRPCContext;
 
 public class ESFRPCTest {
 
@@ -27,7 +28,7 @@ public class ESFRPCTest {
 			ctx.setTenantId("tn1");
 
 			try {
-				return ESFHelper.invokeWithRule(ctx, "/abcde", ESFRPCTest.this,
+				return ESFHelper2.invokeRPC(ctx, "/abcde", ESFRPCTest.this,
 						ReflactKit.findSingeMethodExactly(ESFRPCTest.class, "testRPC"), new Object[] {});
 			} catch (Throwable th) {
 				th.printStackTrace();

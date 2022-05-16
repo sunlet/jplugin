@@ -5,6 +5,9 @@ import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.kernel.api.*;
 import net.jplugin.core.kernel.kits.ExtensionBindKit;
 import net.jplugin.core.service.ExtensionServiceHelper;
+import net.jplugin.core.service.impl.esf.ESFHelper2;
+import net.jplugin.core.service.impl.esf.ESFRPCContext;
+import net.jplugin.core.service.impl.esf.api.IRPCHandler;
 import net.jplugin.ext.webasic.api.*;
 import net.jplugin.ext.webasic.api.esf.IESFRestFilter;
 import net.jplugin.ext.webasic.api.esf.IESFRpcFilter;
@@ -15,6 +18,8 @@ import net.jplugin.ext.webasic.impl.restm.RestMethodControllerSet4Invoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvoker;
 import net.jplugin.ext.webasic.impl.web.WebControllerSet;
 import net.jplugin.ext.webasic.impl.web.webex.WebExControllerSet;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -108,6 +113,8 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
 	public void onCreateServices() {
+		ESFHelper.initRPCHandler();
+
 		WebDriver.INSTANCE.init();
 		ServiceFilterManager.INSTANCE.init();
 		WebCtrlFilterManager.INSTANCE.init();
@@ -134,4 +141,6 @@ public class Plugin extends AbstractPlugin{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
 }
