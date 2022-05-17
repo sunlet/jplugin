@@ -124,7 +124,6 @@ public class AbstractExController {
 		}
 	}
 
-	@Deprecated
 	public void renderJson(String json) {
 		getRes().setContentType("text/html; charset=utf-8");
 		try {
@@ -134,7 +133,6 @@ public class AbstractExController {
 		}
 	}
 	
-	@Deprecated
 	public void renderJson(JsonResult jr){
 		ServletRequest req=getReq();
 		String wa_ck = (String) req.getAttribute(WA_CK);
