@@ -95,7 +95,8 @@ public class ExtensionInterceptorContext {
     public void setAttribute(String key,Object val) {
         if (this.attrMap ==null){
             this.attrMap = new HashMap<>();
-            this.attrMap.put(key,val);
         }
+
+        this.attrMap.put(key,val);
     }
 }
