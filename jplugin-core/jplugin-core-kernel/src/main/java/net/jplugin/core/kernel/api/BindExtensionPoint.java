@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  *
  * </PRE>
  */
-public @interface DefineExtensionPoint {
+public @interface BindExtensionPoint {
     /**
      * 指定要定义的扩展点的名字
      * @return

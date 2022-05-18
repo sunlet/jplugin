@@ -1,10 +1,10 @@
 package jplugincoretest.service.test_extenxion_incept;
 
 import jplugincoretest.service.Plugin;
-import net.jplugin.core.kernel.api.DefineExtensionPoint;
+import net.jplugin.core.kernel.api.BindExtensionPoint;
 import net.jplugin.core.kernel.api.PointType;
 
-@DefineExtensionPoint(type = PointType.LIST ,name = Plugin.EP_SERVICE_FOR_INCEPT)
+@BindExtensionPoint(type = PointType.LIST ,name = Plugin.EP_SERVICE_FOR_INCEPT)
 public abstract class AbstractServiceForInceptTest {
     public static String staticVar;
 
