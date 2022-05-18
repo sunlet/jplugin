@@ -250,6 +250,8 @@ public class Extension {
 	}
 
 	public static Extension create(String aPointName,Class cls,String[][] property){
+		if (cls.equals(String.class))
+			throw new RuntimeException("Please call createStrignExtension");
 		return create(aPointName,ObjectFactory.createFactory(cls,property));
 	}
 	public static Extension create(String aPointName,IExtensionFactory fac){
@@ -257,6 +259,8 @@ public class Extension {
 	}
 
 	public static Extension create(String aPointName,String aName,Class cls,String[][] property){
+		if (cls.equals(String.class))
+			throw new RuntimeException("Please call createStrignExtension");
 		return create(aPointName,aName,ObjectFactory.createFactory(cls,property));
 	}
 	public static Extension create(String aPointName,String aName,IExtensionFactory fac){

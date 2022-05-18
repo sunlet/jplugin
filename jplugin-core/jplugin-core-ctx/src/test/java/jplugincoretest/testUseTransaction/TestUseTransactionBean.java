@@ -2,7 +2,7 @@ package jplugincoretest.testUseTransaction;
 
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.core.ctx.api.TransactionManager;
-import net.jplugin.core.ctx.api.UseTransaction;
+import net.jplugin.core.service.api.UseTransaction;
 import net.jplugin.core.ctx.impl.usetxincept.UseTransactionIncept;
 import net.jplugin.core.kernel.api.Initializable;
 import net.jplugin.core.service.api.BindService;

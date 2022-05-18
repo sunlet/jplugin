@@ -140,26 +140,34 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	public List<PluginError> load() {
-		List<PluginError> errList = null;
-		// 如果不是初始状态，异常
-		if (this.status != IPlugin.STAT_INIT)
-			throw new RuntimeException(
-					"Not init state,can't call load,plugin name:"
-							+ this.getName());
+		try {
+			List<PluginError> errList = null;
+			// 如果不是初始状态，异常
+			if (this.status != IPlugin.STAT_INIT)
+				throw new RuntimeException(
+						"Not init state,can't call load,plugin name:"
+								+ this.getName());
 
-		//逐个加载
-		for (int i = 0; i < this.extensions.size(); i++) {
-			try {
-				this.extensions.get(i).load();
-			} catch (Exception e) {
+			//逐个加载
+			for (int i = 0; i < this.extensions.size(); i++) {
+				try {
+					this.extensions.get(i).load();
+				} catch (Exception e) {
 //				if (errList==null){
 //					errList = new ArrayList<PluginError>();
 //				}
-				throw new RuntimeException("extension locad error."+this.extensions.get(i).getClazz()+" "+e.getMessage(),e);
+					throw new RuntimeException("extension locad error." + this.extensions.get(i).getClazz() + " " + e.getMessage(), e);
 //				errList.add(new PluginError(this.getName(), "extension load error."+this.extensions.get(i).getClazz(),e));
+				}
 			}
+			return errList;
+		}catch(Exception e){
+			PluginEnvirement.getInstance().getStartLogger().log("load error, Plugin="+this.getName()+"   msg="+e.getMessage(),e);
+			if (e instanceof  RuntimeException)
+				throw (RuntimeException)e;
+			else
+				throw new RuntimeException(e.getMessage(),e);
 		}
-		return errList;
 	}
 
 	/**

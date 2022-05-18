@@ -24,6 +24,7 @@ import net.jplugin.core.kernel.api.PluginAnnotation;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
+import net.jplugin.core.service.api.UseTransaction;
 import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
 
 import static net.jplugin.core.service.Plugin.EP_SERVICE;
