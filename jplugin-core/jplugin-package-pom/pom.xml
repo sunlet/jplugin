@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.jplugin.pom</groupId>
+    <artifactId>base</artifactId>
+    <packaging>pom</packaging>
+    <version>2.6.0-SNAPSHOT</version>
+
+    <properties>
+        <!--主版本号,core,das,mvc,各个pom版本号-->
+        <main-version>2.6.0-SNAPSHOT</main-version>
+        <jplugin-for-spring-version>2.6.0-SNAPSHOT</jplugin-for-spring-version>
+        <jplugin-request-recoder-version>2.0.0</jplugin-request-recoder-version>
+        <jplugin-embed-tomcat-version>2.0.0-SNAPSHOT</jplugin-embed-tomcat-version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.jplugin</groupId>
+                <artifactId>jplugin-core</artifactId>
+                <version>${main-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jplugin</groupId>
+                <artifactId>jplugin-das</artifactId>
+                <version>${main-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jplugin</groupId>
+                <artifactId>jplugin-mvc</artifactId>
+                <version>${main-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jplugin</groupId>
+                <artifactId>jplugin-for-spring</artifactId>
+                <version>${jplugin-for-spring-version}</version>
+            </dependency>
+
+            <!-- 支持自动记录请求日志 -->
+            <dependency>
+                <groupId>net.jplugin.extension</groupId>
+                <artifactId>jplugin-request-recoder</artifactId>
+                <version>${jplugin-request-recoder-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.jplugin.extension</groupId>
+                <artifactId>jplugin-embed-tomcat</artifactId>
+                <version>${jplugin-embed-tomcat-version}</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <!--RELEASE版发布到中央-->
+        <repository>
+            <id>repository</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <!--SNAPSHOT版发布到私服-->
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://maven-server:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <modules>
+        <module>base-pom-core</module>
+        <module>base-pom-mvc</module>
+        <module>base-pom-spring</module>
+    </modules>
+</project>
