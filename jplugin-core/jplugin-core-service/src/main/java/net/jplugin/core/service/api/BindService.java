@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  */
 public @interface BindService {
 //	public String name() default "";
-	public Class accessClass() ;
+	public Class accessClass() default BindService.class;
 //	public String id() default "";
 //
 //	public static class DefaultInterface{

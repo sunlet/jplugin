@@ -296,6 +296,9 @@ public class PluginRegistry {
 			if (plugin.getStatus() == IPlugin.STAT_LOADED) {
 				try {
 					PluginEnvirement.INSTANCE.getStartLogger().log("StartPlugin :[" + i + "] " + plugin.getName());
+					//对Plugin做一遍Resolve
+					PluginEnvirement.INSTANCE.resolveRefAnnotation(plugin);
+
 					plugin.init();
 
 					//如果不是全部测试，并且启动到目标插件，则停止

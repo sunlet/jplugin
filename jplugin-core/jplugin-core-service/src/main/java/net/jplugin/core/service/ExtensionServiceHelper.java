@@ -60,6 +60,9 @@ public class ExtensionServiceHelper {
 	private static void handleOneBind(AbstractPlugin p, Class c, Annotation a) {
 		BindService anno = (BindService) a;
 		Class interfaceClazz = anno.accessClass();
+		if (interfaceClazz.equals(BindService.class)){
+			interfaceClazz = c;
+		}
 //		if (interfaceClazz.getName().equals(net.jplugin.core.service.api.BindService.DefaultInterface.class.getName())){
 //			interfaceClazz = computeInterfaceCls(c);
 //		}

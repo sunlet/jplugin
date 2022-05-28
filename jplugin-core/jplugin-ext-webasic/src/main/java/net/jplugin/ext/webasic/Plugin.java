@@ -124,10 +124,6 @@ public class Plugin extends AbstractPlugin{
 		
 		MtInvocationFilterHandler.init();
 		ESFHelper.init();
-		
-		//初始化一下兼容设置
-		//1.7.0 默认不再兼容旧的application/json检查。不能在代码当中直接读取流了。
-		ContentKit.init(Boolean.parseBoolean(ConfigFactory.getStringConfig("platform.json-check-compatible","false")));
 	}
 
 	public void init() {
