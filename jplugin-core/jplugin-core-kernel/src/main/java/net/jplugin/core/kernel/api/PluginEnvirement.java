@@ -415,6 +415,7 @@ public class PluginEnvirement {
 				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
 
 				this.annoResolveHelper.resolveHistory();
+				this.annoResolveHelper.resolveHistoryForExtraResolver();
 			} finally {
 				ThreadLocalContextManager.instance.releaseContext();
 			}

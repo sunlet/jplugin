@@ -1,7 +1,9 @@
-package net.luis;
+package net;
 
 import net.jplugin.core.kernel.api.AbstractPlugin;
+import net.jplugin.core.kernel.api.PluginAnnotation;
 
+@PluginAnnotation
 public class MyPlugin extends AbstractPlugin {
     @Override
     public int getPrivority() {

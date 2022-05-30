@@ -26,9 +26,12 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
  *
  */
 public class AnnotationResolveHelper {
+	IObjectResolver defaultResolver;
+	IObjectResolver extraResolver=null;
 
-	private List<IObjectResolver> resolverList = new ArrayList(2);
 	private List<Object> toResolveList = new LinkedList();
+	private List<Object> extraToResolveList = new LinkedList();
+
 	private PluginEnvirement pluginEnvirement;
 
 	private List<Object> toInitingList = new LinkedList<>();
@@ -38,23 +41,25 @@ public class AnnotationResolveHelper {
 		this.pluginEnvirement = pe;
 
 		//增加默认的resolver
-		this.resolverList.add(new DefaultObjectResolver());
+		this.defaultResolver = new DefaultObjectResolver();
 	}
-
-
 
 	public void initHistory(){
 		for (Object o:toInitingList){
 			((Initializable)o).initialize();
 		}
 		toInitingList.clear();
+		toInitingList = null;
 	}
 
 	public void addObjectResolver(IObjectResolver ior){
 		if (PluginEnvirement.getInstance().getStateLevel()>= PluginEnvirement.STAT_LEVEL_RESOLVING_HIST) {
 			throw new RuntimeException("Resolver must be added before state:STAT_LEVEL_RESOLVING_HIST");
+		}
+		if (this.extraResolver!=null) {
+			throw new RuntimeException("addObjectResolver can't call twice");
 		}else{
-			this.resolverList.add(ior);
+			this.extraResolver = ior;
 		}
 	}
 
@@ -69,9 +74,22 @@ public class AnnotationResolveHelper {
 			set.add(o);
 			resolveOne(o);
 		}
-		toResolveList.clear();
 		set.clear();
+		toResolveList.clear();
+		toResolveList=null;
+
 	}
+	public void resolveHistoryForExtraResolver() {
+		/**
+		 * 这里已经在前一轮中已经做了排重,并且extraToResolveList不会为null
+		 */
+		for (Object o: extraToResolveList){
+			this.extraResolver.resolve(o);
+		}
+		this.extraToResolveList.clear();
+		this.extraToResolveList = null;
+	}
+
 
 	public final void valid() {
 		IAnnoForAttrHandler[] handlers = PluginEnvirement.getInstance()
@@ -107,12 +125,17 @@ public class AnnotationResolveHelper {
 			return;
 		}
 
-		//
-		for (int i=0;i<this.resolverList.size();i++){
-			this.resolverList.get(i).resolve(obj);
+		//Resolve 属性
+		this.defaultResolver.resolve(obj);
+		if (this.extraResolver!=null){
+			if (this.pluginEnvirement.getStateLevel()!=PluginEnvirement.STAT_LEVEL_RESOLVING_HIST){
+				this.extraResolver.resolve(obj);
+			}else{
+				this.extraToResolveList.add(obj);
+			}
 		}
-		
-		//
+
+		//初始化
 		if (obj instanceof Initializable){
 			if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_INITING){
 				//暂缓初始化
