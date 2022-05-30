@@ -36,7 +36,7 @@ public class PluginEnvirement {
 	public static final int STAT_LEVEL_MADESVC=26;
 
 	public static final int STAT_LEVEL_RESOLVING_HIST=27;
-//	public static final int STAT_LEVEL_RESOLVED_HIST=28;
+	public static final int STAT_LEVEL_RESOLVED_HIST=28;
 	public static final int STAT_LEVEL_INITING=30;
 	public static final int STAT_LEVEL_WORKING=40;
 
@@ -260,8 +260,9 @@ public class PluginEnvirement {
 				ready(plgns);
 			}
 			if (startType== STARTTYPE_SECOND || startType==STARTTYPE_BOTH) {
-				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_MADESVC);
-				resolveAndinitialize();
+//				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_MADESVC);
+				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_RESOLVED_HIST);
+				initialize();
 			}
 
 			//处理启动过程中registry.getErrors()，有可能退出
@@ -286,22 +287,8 @@ public class PluginEnvirement {
 		}
 	}
 
-	private void resolveAndinitialize() {
-
-		this.stateLevel = STAT_LEVEL_RESOLVING_HIST;
-
-		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
-			try {
-				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
-
-				this.annoResolveHelper.resolveHistory();
-			} finally {
-				ThreadLocalContextManager.instance.releaseContext();
-			}
-		}
-//		this.stateLevel = STAT_LEVEL_RESOLVED_HIST;
-
-
+	private void initialize() {
+		AssertKit.assertEqual(this.stateLevel,STAT_LEVEL_RESOLVED_HIST);
 		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
 			try {
 				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
@@ -419,6 +406,20 @@ public class PluginEnvirement {
 		registry.clearClassCache();
 
 		this.stateLevel = STAT_LEVEL_MADESVC;
+
+
+		this.stateLevel = STAT_LEVEL_RESOLVING_HIST;
+
+		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
+			try {
+				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+
+				this.annoResolveHelper.resolveHistory();
+			} finally {
+				ThreadLocalContextManager.instance.releaseContext();
+			}
+		}
+		this.stateLevel = STAT_LEVEL_RESOLVED_HIST;
 	}
 
 	boolean testAll = false;

@@ -10,8 +10,8 @@
         <!--主版本号,core,das,mvc,各个pom版本号-->
         <main-version>2.6.0-SNAPSHOT</main-version>
         <jplugin-for-spring-version>2.6.0-SNAPSHOT</jplugin-for-spring-version>
-        <jplugin-request-recoder-version>2.0.0</jplugin-request-recoder-version>
-        <jplugin-embed-tomcat-version>2.0.0-SNAPSHOT</jplugin-embed-tomcat-version>
+        <jplugin-request-recoder-version>2.6.0-SNAPSHOT</jplugin-request-recoder-version>
+        <jplugin-embed-tomcat-version>2.6.0-SNAPSHOT</jplugin-embed-tomcat-version>
     </properties>
 
     <dependencyManagement>
