@@ -36,7 +36,8 @@ public class PluginEnvirement {
 	public static final int STAT_LEVEL_MADESVC=26;
 
 	public static final int STAT_LEVEL_RESOLVING_HIST=27;
-	public static final int STAT_LEVEL_RESOLVED_HIST=28;
+	public static final int STAT_LEVEL_RESOLVING_EX_HIST=28;
+	public static final int STAT_LEVEL_RESOLVED_HIST=29;
 	public static final int STAT_LEVEL_INITING=30;
 	public static final int STAT_LEVEL_WORKING=40;
 
@@ -412,9 +413,10 @@ public class PluginEnvirement {
 
 		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
 			try {
-				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+				ThreadLocalContextManager.instance.createContext();
 
 				this.annoResolveHelper.resolveHistory();
+				this.stateLevel = STAT_LEVEL_RESOLVING_EX_HIST;
 				this.annoResolveHelper.resolveHistoryForExtraResolver();
 			} finally {
 				ThreadLocalContextManager.instance.releaseContext();

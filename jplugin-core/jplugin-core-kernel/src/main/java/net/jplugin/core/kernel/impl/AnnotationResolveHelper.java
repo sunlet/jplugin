@@ -128,10 +128,12 @@ public class AnnotationResolveHelper {
 		//Resolve 属性
 		this.defaultResolver.resolve(obj);
 		if (this.extraResolver!=null){
-			if (this.pluginEnvirement.getStateLevel()!=PluginEnvirement.STAT_LEVEL_RESOLVING_HIST){
-				this.extraResolver.resolve(obj);
-			}else{
+			if (this.pluginEnvirement.getStateLevel()==PluginEnvirement.STAT_LEVEL_RESOLVING_HIST){
+				// 等于 STAT_LEVEL_RESOLVING_HIST，放入队列
 				this.extraToResolveList.add(obj);
+			}else{
+				//大于 STAT_LEVEL_RESOLVING_HIST，直接执行
+				this.extraResolver.resolve(obj);
 			}
 		}
 
