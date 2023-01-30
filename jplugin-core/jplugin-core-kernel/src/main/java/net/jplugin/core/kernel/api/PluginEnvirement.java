@@ -334,6 +334,7 @@ public class PluginEnvirement {
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ WorkDir="+this.getWorkDir());
 		PluginAutoDetect.addAutoDetectPackage("net.jplugin.extension");
 		PluginAutoDetect.addAutoDetectPackage("net.jplugin.app");
+		PluginAutoDetect.addAutoDetectPackage("net.jplugin.cloud");
 		Set<Object> pluginToLoad = new HashSet<Object>();
 
 		if (plgns==null){
