@@ -4,14 +4,14 @@
     <groupId>net.jplugin.pom</groupId>
     <artifactId>base</artifactId>
     <packaging>pom</packaging>
-    <version>2.6.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <properties>
         <!--主版本号,core,das,mvc,各个pom版本号-->
-        <main-version>2.6.0-SNAPSHOT</main-version>
-        <jplugin-for-spring-version>2.6.0-SNAPSHOT</jplugin-for-spring-version>
-        <jplugin-request-recoder-version>2.6.0-SNAPSHOT</jplugin-request-recoder-version>
-        <jplugin-embed-tomcat-version>2.6.0-SNAPSHOT</jplugin-embed-tomcat-version>
+        <main-version>3.0.0-SNAPSHOT</main-version>
+        <jplugin-for-spring-version>3.0.0-SNAPSHOT</jplugin-for-spring-version>
+        <jplugin-request-recoder-version>3.0.0-SNAPSHOT</jplugin-request-recoder-version>
+        <jplugin-embed-tomcat-version>3.0.0-SNAPSHOT</jplugin-embed-tomcat-version>
     </properties>
 
     <dependencyManagement>

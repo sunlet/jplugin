@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class GlobalConfigFactory {
     private static IConfigProvidor remoteConfigProvidor=new EmptyProvidor();
-
+    private static final String DEFAULT_GROUP="DEFAULT_GROUP";
 
     static class EmptyProvidor implements IConfigProvidor{
 
@@ -35,39 +35,26 @@ public class GlobalConfigFactory {
         }
     }
 
-    public static String getStringConfig(String path,String def){
+    public static String getValueInDefaultGroup(String path,String def){
+        return getValue(DEFAULT_GROUP+'.'+path,def);
+    }
+    public static String getValueInDefaultGroup(String path){
+        return getValueInDefaultGroup(path,null);
+    }
+
+    public static String getValue(String path,String def){
         String val = _getStringConfig(path);
         if (StringKit.isNull(val)) return def;
         else return val;
     }
-    public static String getStringConfig(String path){
-        return getStringConfig(path,null);
+    public static String getValue(String path){
+        return getValue(path,null);
     }
-    public static String getStringConfigWithTrim(String path){
-        String v = getStringConfig(path,null);
+    public static String getValueWithTrim(String path){
+        String v = getValue(path,null);
         if (v!=null)
             v = v.trim();
         return v;
-    }
-    public static Long getLongConfig(String path,Long def){
-        String val = _getStringConfig(path);
-        if (StringKit.isNull(val)) return def;
-        else return Long.parseLong(val);
-    }
-
-    public static Long getLongConfig(String path){
-        return getLongConfig(path,null);
-    }
-
-
-    public static Integer getIntConfig(String path,Integer def){
-        String val = _getStringConfig(path);
-        if (StringKit.isNull(val)) return def;
-        return Integer.parseInt(val);
-    }
-
-    public static Integer getIntConfig(String path){
-        return getIntConfig(path,null);
     }
 
     public static Set<String> getGroups(){

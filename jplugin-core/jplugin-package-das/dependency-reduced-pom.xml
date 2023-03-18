@@ -4,7 +4,7 @@
   <groupId>net.jplugin</groupId>
   <artifactId>jplugin-das</artifactId>
   <name>jplugin-das</name>
-  <version>2.6.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <description>A plugin based application framework for java</description>
   <url>http://github.com/sunlet</url>
   <developers>
