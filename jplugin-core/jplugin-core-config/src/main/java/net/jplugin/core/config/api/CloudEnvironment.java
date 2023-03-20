@@ -1,10 +1,7 @@
 package net.jplugin.core.config.api;
 
 
-import net.jplugin.common.kits.AssertKit;
-import net.jplugin.common.kits.FileKit;
-import net.jplugin.common.kits.PropertiesKit;
-import net.jplugin.common.kits.StringKit;
+import net.jplugin.common.kits.*;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
 import java.util.HashMap;
@@ -43,6 +40,11 @@ public class CloudEnvironment {
     public static final String NACOS_USER = "nacosUser";
     public static final String NACOS_PWD = "nacosPwd";
 
+    /**
+     * embbed tomcat 情况下获取默认的rpc端口。
+     */
+    public static final String RPC_PORT_HINT_EMBED_TOMCAT = "-1";
+
     private String nacosUrl;
     private String appCode;
     private String serviceCode;
@@ -50,6 +52,8 @@ public class CloudEnvironment {
     private String nacosUser;
     private String nacosPwd;
     private String composedAppCode;
+
+    private String boundIp;
 
     private boolean inited = false;
 
@@ -66,7 +70,16 @@ public class CloudEnvironment {
     }
 
     public String getRpcPort() {
-        return rpcPort;
+        checkInit();
+        if (!RPC_PORT_HINT_EMBED_TOMCAT.equals(this.rpcPort)){
+            return this.rpcPort;
+        }else{
+            Integer intTomcatPort = ConfigFactory.getIntConfig("embed-tomcat.context-port", 8080);
+            String esfport = (intTomcatPort + 100) + "";
+            //赋值一下
+            this.rpcPort = esfport;
+            return esfport;
+        }
     }
 
     public String getNacosUser() {
@@ -91,18 +104,12 @@ public class CloudEnvironment {
         return composedAppCode;
     }
 
-    /**
-     * embbed tomcat 情况下获取默认的rpc端口。
-     */
-    public static final String RPC_PORT_HINT_EMBED_TOMCAT = "-1";
-    public String _getRpcPortWithEmbbedTomcat(){
-        if (!RPC_PORT_HINT_EMBED_TOMCAT.equals(this.rpcPort)){
-            return this.rpcPort;
-        }else{
-            Integer intTomcatPort = ConfigFactory.getIntConfig("embed-tomcat.context-port", 8080);
-            String esfport = (intTomcatPort + 100) + "";
-            return esfport;
+    public String getBoundIp(){
+        checkInit();
+        if (StringKit.isNull(boundIp)){
+            boundIp = IpKit.getLocalIp();
         }
+        return boundIp;
     }
 
     private void checkInit() {

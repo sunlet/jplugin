@@ -1,10 +1,8 @@
 package net.jplugin.core.service;
 
-import java.util.Map;
-
-import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.*;
 import net.jplugin.core.kernel.kits.ExtensionBindKit;
+import net.jplugin.core.service.api.BindExportService;
 import net.jplugin.core.service.api.BindServiceExport;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
@@ -27,8 +25,14 @@ public class Plugin extends AbstractPlugin{
 			ExtensionServiceHelper.autoBindServiceExtension(p, "");
 		});
 
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindExportService.class, (plugin, clazz, a)->{
+			BindExportService anno = (BindExportService) a;
+			ExtensionServiceHelper.addServiceExportExtension(plugin, anno.path(), clazz);
+
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
+		});
 		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindServiceExport.class, (plugin, clazz, a)->{
-			BindServiceExport anno = (BindServiceExport) a;
+			BindExportService anno = (BindExportService) a;
 			ExtensionServiceHelper.addServiceExportExtension(plugin, anno.path(), clazz);
 
 			ExtensionBindKit.handleIdAndPriority(plugin,clazz);

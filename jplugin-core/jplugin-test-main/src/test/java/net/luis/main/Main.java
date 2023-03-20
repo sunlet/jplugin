@@ -48,6 +48,9 @@ public class Main {
 	 */
 	public static void main(String[] args) throws InterruptedException,
 			SQLException, ClassNotFoundException {
+
+		System.out.println(System.getProperty("java.class.path"));
+
 		PluginAutoDetect.addAutoDetectPackage("net.luis");
 		PluginAutoDetect.addAutoDetectPackage("jplugincoretest");
 		System.out.println("testAll="+System.getProperty("testAll")+" testTarget="+System.getProperty("testTarget"));

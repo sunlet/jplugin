@@ -1,6 +1,5 @@
 package net.jplugin.core.kernel.api;
 
-import javafx.beans.DefaultProperty;
 import net.jplugin.common.kits.StringKit;
 
 import java.util.HashMap;

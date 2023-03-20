@@ -27,13 +27,20 @@ public class ExtensionServiceHelper {
 		plugin.addExtension(Extension.create(Constants.EP_SERVICE, intf.getName(),f));
 	}
 
+
 	/**
+	 * 本方法不推荐使用。 功能相同，请切换到 addBindExportService(...)
 	 * Export a service
 	 * @param plugin
 	 * @param path
 	 * @param beanClz
 	 */
+	@Deprecated
 	public static void addServiceExportExtension(AbstractPlugin plugin,String path,Class beanClz){
+		addExportServiceExtension(plugin, path, beanClz);
+	}
+
+	public static void addExportServiceExtension(AbstractPlugin plugin,String path,Class beanClz){
 		ObjectFactory factory = ObjectFactory.createFactory(beanClz);
 		plugin.addExtension(Extension.create(Plugin.EP_SERVICE_EXPORT, path, factory));
 	}
