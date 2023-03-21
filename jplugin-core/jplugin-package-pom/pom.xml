@@ -33,6 +33,11 @@
             </dependency>
             <dependency>
                 <groupId>net.jplugin</groupId>
+                <artifactId>jplugin-cloud</artifactId>
+                <version>${main-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jplugin</groupId>
                 <artifactId>jplugin-for-spring</artifactId>
                 <version>${jplugin-for-spring-version}</version>
             </dependency>
