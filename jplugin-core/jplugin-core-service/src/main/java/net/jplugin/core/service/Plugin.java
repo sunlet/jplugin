@@ -27,13 +27,13 @@ public class Plugin extends AbstractPlugin{
 
 		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindExportService.class, (plugin, clazz, a)->{
 			BindExportService anno = (BindExportService) a;
-			ExtensionServiceHelper.addServiceExportExtension(plugin, anno.path(), clazz);
+			ExtensionServiceHelper.addExportServiceExtension(plugin, anno.path(), clazz);
 
 			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
 		});
 		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindServiceExport.class, (plugin, clazz, a)->{
-			BindExportService anno = (BindExportService) a;
-			ExtensionServiceHelper.addServiceExportExtension(plugin, anno.path(), clazz);
+			BindServiceExport anno = (BindServiceExport) a;
+			ExtensionServiceHelper.addExportServiceExtension(plugin, anno.path(), clazz);
 
 			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
 		});
