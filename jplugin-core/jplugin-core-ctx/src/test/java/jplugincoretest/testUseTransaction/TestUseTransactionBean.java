@@ -8,7 +8,8 @@ import net.jplugin.core.kernel.api.Initializable;
 import net.jplugin.core.service.api.BindService;
 import net.jplugin.core.service.api.RefService;
 
-@BindService(accessClass = TestUseTransactionBean.class)
+@BindService()
+//@BindService(accessClass = TestUseTransactionBean.class)
 public class TestUseTransactionBean implements Initializable {
 
     @RefService

@@ -8,7 +8,7 @@ import net.jplugin.core.service.api.ServiceFactory;
 
 public class ServiceAttrAnnoHandler implements IAnnoForAttrHandler<RefService> {
 
-	public static IServiceExtensionResolver serviceExtensionResolver;
+//	public static IServiceExtensionResolver serviceExtensionResolver;
 
 	public Class<RefService> getAnnoClass() {
 		return RefService.class;
@@ -23,14 +23,14 @@ public class ServiceAttrAnnoHandler implements IAnnoForAttrHandler<RefService> {
 	 */
 	public Object getValue(Object theObject, Class fieldType, RefService anno) {
 		Object o=null;
-		try {
-			// 发生查找错误，不要抛出异常，后续查找
-			if (serviceExtensionResolver != null) {
-				o = serviceExtensionResolver.resolve(theObject, fieldType, anno);
-			}
-		} catch (RuntimeException e) {
-			o = null;
-		}
+//		try {
+//			// 发生查找错误，不要抛出异常，后续查找
+//			if (serviceExtensionResolver != null) {
+//				o = serviceExtensionResolver.resolve(theObject, fieldType, anno);
+//			}
+//		} catch (RuntimeException e) {
+//			o = null;
+//		}
 		
 		if (o == null){
 			o = get(fieldType,anno);

@@ -2,6 +2,7 @@ package net.jplugin.core.service;
 
 import java.lang.annotation.Annotation;
 
+import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
@@ -18,13 +19,36 @@ import net.jplugin.core.service.api.Constants;
  **/
 
 public class ExtensionServiceHelper {
-	public static void addServiceExtension(AbstractPlugin plugin,String name,Class impl){
-		plugin.addExtension(Extension.create(Constants.EP_SERVICE, name,impl));
+
+	/**
+	 * 添加Service扩展，不指定名称
+	 * @param plugin
+	 * @param impl
+	 */
+	public static void addServiceExtension(AbstractPlugin plugin,Class impl){
+		plugin.addExtension(Extension.create(Plugin.EP_SERVICE, impl));
 	}
+
+	/**
+	 * 指定名称添加Sercie扩展
+	 * @param plugin
+	 * @param name
+	 * @param impl
+	 */
+	public static void addServiceExtension(AbstractPlugin plugin,String name,Class impl){
+		plugin.addExtension(Extension.create(Plugin.EP_SERVICE, name,impl));
+	}
+
+	/**
+	 * interfaceName 作为name添加Service扩展
+	 * @param plugin
+	 * @param intf
+	 * @param impl
+	 */
 	public static void addServiceExtension(AbstractPlugin plugin,Class intf,Class impl){
 //		ObjectFactory f = ObjectFactory.createFactory(intf, impl);
 		ObjectFactory f = ObjectFactory.createFactory(impl);
-		plugin.addExtension(Extension.create(Constants.EP_SERVICE, intf.getName(),f));
+		plugin.addExtension(Extension.create(Plugin.EP_SERVICE, intf.getName(),f));
 	}
 
 
@@ -66,35 +90,38 @@ public class ExtensionServiceHelper {
 
 	private static void handleOneBind(AbstractPlugin p, Class c, Annotation a) {
 		BindService anno = (BindService) a;
-		Class interfaceClazz = anno.accessClass();
-		if (interfaceClazz.equals(BindService.class)){
-			interfaceClazz = c;
+//		Class interfaceClazz = anno.accessClass();
+//		if (interfaceClazz.equals(BindService.class)){
+//			interfaceClazz = c;
+//		}
+
+		String name = anno.name();
+		if (StringKit.isNull(name)){
+			addServiceExtension(p,c);
+		}else{
+			addServiceExtension(p,name,c);
 		}
-//		if (interfaceClazz.getName().equals(net.jplugin.core.service.api.BindService.DefaultInterface.class.getName())){
-//			interfaceClazz = computeInterfaceCls(c);
-//		}
 
-		addServiceExtension(p, interfaceClazz.getName(),c);
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
-				+ interfaceClazz.getName() + " impl=" + c.getName());
-
-//		if (StringKit.isNull(anno.name())){
-//			addServiceExtension(p, interfaceClazz.getName(),c);
-//			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
-//					+ interfaceClazz.getName() + " impl=" + c.getName());
-//		}else{
-//			addServiceExtension(p, anno.name(),c);
-//			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
-//					+ interfaceClazz.getName() + " impl=" + c.getName());
-//		}
-//		if (StringKit.isNotNull(anno.id())) {
-////			Beans.setLastId(anno.id());
-//			Extension.setLastExtensionId(anno.id());
-//		}
+				+ " impl=" + c.getName());
 
 		ExtensionBindKit.handleIdAndPriority(p,c);
-
 	}
+
+//2023-3-22备份
+//	private static void handleOneBind(AbstractPlugin p, Class c, Annotation a) {
+//		BindService anno = (BindService) a;
+//		Class interfaceClazz = anno.accessClass();
+//		if (interfaceClazz.equals(BindService.class)){
+//			interfaceClazz = c;
+//		}
+//
+//		addServiceExtension(p, interfaceClazz.getName(),c);
+//		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ Auto add extension for service: interface="
+//				+ interfaceClazz.getName() + " impl=" + c.getName());
+//
+//		ExtensionBindKit.handleIdAndPriority(p,c);
+//	}
 	
 	private static Class computeInterfaceCls(Class impClazz) {
 		Class[] clazzs = impClazz.getInterfaces();

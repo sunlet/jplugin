@@ -41,7 +41,8 @@ public class Plugin extends AbstractPlugin{
 	}
 	
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SERVICE,Object.class));
+//		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SERVICE,Object.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_SERVICE,Object.class));
 		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SERVICE_EXPORT,Object.class));
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, ServiceAttrAnnoHandler.class);
 	}
@@ -57,7 +58,8 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
 	public void onCreateServices() {
-		ServiceFactory.init(PluginEnvirement.getInstance().getExtensionMap(Constants.EP_SERVICE));
+//		ServiceFactory.init(PluginEnvirement.getInstance().getExtensionMap(Constants.EP_SERVICE));
+		ServiceFactory.initExtensions(PluginEnvirement.getInstance().getExtensionList(EP_SERVICE));
 	}
 	public void init() {
 		// TODO Auto-generated method stub

@@ -9,7 +9,8 @@ import net.jplugin.core.service.api.BindService;
 import java.util.List;
 
 
-@BindService(accessClass = AutoBindTest.class)
+@BindService()
+//@BindService(accessClass = AutoBindTest.class)
 public class AutoBindTest implements Initializable {
 
     @RefExtension(pointTo = "jplugincoretest.service.autobindextension.IAutoBindExtensionAbstractClass")

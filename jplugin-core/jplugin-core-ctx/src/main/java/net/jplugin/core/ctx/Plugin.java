@@ -26,6 +26,7 @@ import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.core.service.api.UseTransaction;
 import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
+import net.jplugin.core.service.impl.esf.ESFHelper2;
 
 import static net.jplugin.core.service.Plugin.EP_SERVICE;
 
@@ -109,7 +110,7 @@ public class Plugin extends AbstractPlugin{
 		
 		RuleServiceFactory ruleSvcFactory = ServiceFactory.getService(RuleServiceFactory.class);
 //		RuleServiceDefinition[] defs = PluginEnvirement.getInstance().getExtensionObjects(EP_RULE_SERVICE, RuleServiceDefinition.class);
-		Map<String,RuleServiceDefinition> defs = PluginEnvirement.getInstance().getExtensionMap(EP_RULE_SERVICE,RuleServiceDefinition.class);
+//		Map<String,RuleServiceDefinition> defs = PluginEnvirement.getInstance().getExtensionMap(EP_RULE_SERVICE,RuleServiceDefinition.class);
 //		ruleSvcFactory.init(defs);
 		ruleSvcFactory.init();
 		
@@ -119,6 +120,9 @@ public class Plugin extends AbstractPlugin{
 	
 		//注册一下这个扩展的resolver
 		ServiceAttrAnnoHandler.serviceExtensionResolver = new ServiceExtensionResolver();
+
+		//ESFHelper2
+		ESFHelper2.init();
 	}
 	public void init() {
 		// TODO Auto-generated method stub

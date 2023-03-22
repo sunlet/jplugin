@@ -1,10 +1,6 @@
 package net.jplugin.core.kernel.api;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ExceptionKit;
@@ -158,6 +154,15 @@ public class PluginEnvirement {
 
 		return point.getExtensionMap();
 	}
+
+	public List<Extension> getExtensionList(String pointName){
+		ExtensionPoint point = this.registry.getExtensionPointMap().get(pointName);
+		if (point == null)
+			throw new PluginRuntimeException("Can't find the extension point:"
+					+ pointName);
+		return Collections.unmodifiableList(point.getExtensions());
+	}
+
 	
 	/**
 	 * 获取通过ExtensionPoint.createUnique()方法创建的扩展点上注册的 扩展对象

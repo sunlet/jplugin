@@ -16,7 +16,6 @@ public class DasSupportTest extends SqlSessionDaoSupport implements Initializabl
 
     public void test(){
         AssertKit.assertTrue(getSqlSession()!=null);
-
     }
 
     @RefService

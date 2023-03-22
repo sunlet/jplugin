@@ -1,13 +1,16 @@
 package net.jplugin.core.service.impl.esf;
 
 import net.jplugin.core.config.api.ConfigFactory;
+import net.jplugin.core.kernel.api.Extension;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.service.Plugin;
+import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.core.service.impl.esf.api.IRPCHandler;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class ESFHelper2 {
@@ -28,10 +31,17 @@ public class ESFHelper2 {
      */
     static IRPCHandler rpcHandler = new DefaultRpcHandler();
 
-    private static void init() {
+    public static void init() {
         if (!init) {
             synchronized (ESFHelper2.class) {
                 if (!init) {
+                    //在ServiceFactory中初始化
+                    List<Extension> list = PluginEnvirement.getInstance().getExtensionList(Plugin.EP_SERVICE_EXPORT);
+                    for (Extension ext:list){
+                        ServiceFactory._addMapping("", ext.getObject(), ext.getFactory().getImplClass());
+                    }
+
+                    //初始化ObjectsMap
                     objectsMap = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_SERVICE_EXPORT);
                     init = true;
                 }

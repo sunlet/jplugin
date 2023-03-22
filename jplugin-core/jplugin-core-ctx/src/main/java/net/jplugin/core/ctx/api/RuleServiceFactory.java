@@ -9,6 +9,7 @@ import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInterceptor;
 import net.jplugin.core.kernel.api.ExtensionObjects;
 import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.service.api.ServiceFactory;
 
 /**
  *
@@ -36,6 +37,10 @@ public class RuleServiceFactory {
 	public void init() {
 		Map<String, Object> objMap = PluginEnvirement.getInstance().getExtensionMap(Plugin.EP_RULE_SERVICE);
 		svcMap.putAll(objMap);
+
+		//添加到RuleServiceFactory
+		ServiceFactory.initExtensions(PluginEnvirement.getInstance().getExtensionList(Plugin.EP_RULE_SERVICE));
+
 	}
 
 	/**

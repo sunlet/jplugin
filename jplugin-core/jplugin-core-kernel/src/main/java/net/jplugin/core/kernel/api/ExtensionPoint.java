@@ -152,7 +152,7 @@ public class ExtensionPoint {
 	 * 运行阶段
 	 * @return
 	 */
-	private List<Extension> getExtensions(){
+	public List<Extension> getExtensions(){
 		return this.extensions;
 	}
 	
