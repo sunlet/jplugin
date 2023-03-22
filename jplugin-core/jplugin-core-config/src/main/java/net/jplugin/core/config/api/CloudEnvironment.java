@@ -18,14 +18,14 @@ import java.util.Properties;
  *      访问方式：访问时候使用GlobalConfigFactory 来访问。
  *
  * 应用级共享配置
- *      存放位置：一个应用中各个Service的共享配置，放在应用的命名空间下面，APP-CONFIG(group)下面。
- *      访问方式：这些变量会被融合到Service的访问当中，如果APP-CONFIG 下的group名称和 Service自己的group重合，Service自己配置的Group优先。
+ *      存放位置：一个应用中各个Module的共享配置，放在应用的命名空间下面，APP-CONFIG(group)下面。
+ *      访问方式：这些变量会被融合到Module的访问当中，如果APP-CONFIG 下的group名称和 Module自己的group重合，MOdule自己配置的Group优先。
  *
  * 关于旧版本兼容性的设计：
  *      兼容旧版本的AppEnvirement.getGlobalVar(varname）：旧版本的GlobalVar访问，统一在public命名空间-->GLOBAL-CONFIG数据Id-->DEFAULT_GROUP组下面。
  * 关于订阅应用时不指定服务：
- *      A应用访问B应用，如果没有指定SERVICE-CODE,则会订阅默认的服务。服务编码是：DEFAULT.
- *      所以，如果一个应用希望别人访问路径中不包含ServiceCode也能访问，需要自己部署一个服务编码为DEFAULT的服务。
+ *      A应用访问B应用，如果没有指定MODULE-CODE,则会订阅默认的服务。服务编码是：DEFAULT.
+ *      所以，如果一个应用希望别人访问路径中不包含ModuleCode也能访问，需要自己部署一个服务编码为DEFAULT的服务。
  *      也就是说：esf://appcode/svc1 等价于 esf://appcode:DEFAULT/svc1
  * </pre>
  */
@@ -33,12 +33,12 @@ public class CloudEnvironment {
 
 
     public static CloudEnvironment INSTANCE = new CloudEnvironment();
-    public static final String NACOS_URL = "nacosUrl";
-    public static final String SERVICE_CODE = "serviceCode";
-    public static final String APP_CODE = "appCode";
-    public static final String RPC_PORT = "rpcPort";
-    public static final String NACOS_USER = "nacosUser";
-    public static final String NACOS_PWD = "nacosPwd";
+    public static final String NACOS_URL = "nacos-url";
+    public static final String MODULE_CODE = "module-code";
+    public static final String APP_CODE = "app-code";
+    public static final String RPC_PORT = "rpc-port";
+    public static final String NACOS_USER = "nacos-user";
+    public static final String NACOS_PWD = "nacos-pwd";
 
     /**
      * embbed tomcat 情况下获取默认的rpc端口。
@@ -47,7 +47,7 @@ public class CloudEnvironment {
 
     private String nacosUrl;
     private String appCode;
-    private String serviceCode;
+    private String moduleCode;
     private String rpcPort;
     private String nacosUser;
     private String nacosPwd;
@@ -91,15 +91,15 @@ public class CloudEnvironment {
         return appCode;
     }
 
-    public String getServiceCode() {
+    public String getModuleCode() {
         checkInit();
-        return serviceCode;
+        return moduleCode;
     }
 
     public String _composeAppCode(){
         checkInit();
         if (StringKit.isNull(composedAppCode)){
-            composedAppCode = appCode+":"+serviceCode;
+            composedAppCode = appCode+":"+ moduleCode;
         }
         return composedAppCode;
     }
@@ -124,22 +124,22 @@ public class CloudEnvironment {
 
         AssertKit.assertStringNotNull(map.get(NACOS_URL), NACOS_URL);
         AssertKit.assertStringNotNull(map.get(APP_CODE), APP_CODE);
-        AssertKit.assertStringNotNull(map.get(SERVICE_CODE), SERVICE_CODE);
+        AssertKit.assertStringNotNull(map.get(MODULE_CODE), MODULE_CODE);
         AssertKit.assertStringNotNull(map.get(RPC_PORT), RPC_PORT);
 
         nacosUrl = map.get(NACOS_URL).trim();
         appCode = map.get(APP_CODE).trim();
-        serviceCode = map.get(SERVICE_CODE).trim();
+        moduleCode = map.get(MODULE_CODE).trim();
         rpcPort = map.get(RPC_PORT).trim();
 
         //handle composed appcode
         if (StringKit.isNotNull(appCode) && appCode.indexOf(":")>=0){
             //service code must be null
-            AssertKit.assertNull(serviceCode);
+            AssertKit.assertNull(moduleCode);
             int pos = appCode.indexOf(":");
             String temp = appCode;
             appCode = temp.substring(0, pos);
-            serviceCode = temp.substring(pos+1);
+            moduleCode = temp.substring(pos+1);
         }
 
         //user
@@ -151,7 +151,7 @@ public class CloudEnvironment {
         if (StringKit.isNotNull(temp))
             nacosPwd = temp.trim();
 
-        PluginEnvirement.getInstance().getStartLogger().log("$$$ CloudEnvironment Init: nacosUrl=" + nacosUrl + ", appCode=" + appCode + ", serviceCode=" + serviceCode + " nacosUser=" + nacosUser + " rpcPort=" + rpcPort);
+        PluginEnvirement.getInstance().getStartLogger().log("$$$ CloudEnvironment Init: nacosUrl=" + nacosUrl + ", appCode=" + appCode + ", serviceCode=" + moduleCode + " nacosUser=" + nacosUser + " rpcPort=" + rpcPort);
         inited = true;
     }
 
@@ -167,12 +167,12 @@ public class CloudEnvironment {
         Map<String, String> map = new HashMap<>();
         map.put(NACOS_URL, "url1");
         map.put(APP_CODE, "appcode1");
-        map.put(SERVICE_CODE, "S1,S2");
+        map.put(MODULE_CODE, "S1,S2");
         CloudEnvironment.INSTANCE.init(map);
 
         System.out.println(CloudEnvironment.INSTANCE.getAppCode());
         System.out.println(CloudEnvironment.INSTANCE.getNacosUrl());
-        System.out.println(CloudEnvironment.INSTANCE.getServiceCode());
+        System.out.println(CloudEnvironment.INSTANCE.getModuleCode());
 
     }
 

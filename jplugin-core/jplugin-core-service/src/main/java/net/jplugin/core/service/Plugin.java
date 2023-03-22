@@ -7,6 +7,7 @@ import net.jplugin.core.service.api.BindServiceExport;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
+import net.jplugin.core.service.impl.esf.ESFHelper2;
 
 /**
  *
@@ -60,6 +61,9 @@ public class Plugin extends AbstractPlugin{
 	public void onCreateServices() {
 //		ServiceFactory.init(PluginEnvirement.getInstance().getExtensionMap(Constants.EP_SERVICE));
 		ServiceFactory.initExtensions(PluginEnvirement.getInstance().getExtensionList(EP_SERVICE));
+
+		//ESFHelper2
+		ESFHelper2.init();
 	}
 	public void init() {
 		// TODO Auto-generated method stub

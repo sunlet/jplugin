@@ -119,10 +119,7 @@ public class Plugin extends AbstractPlugin{
 		DefaultRuleInvocationHandler.init();
 	
 		//注册一下这个扩展的resolver
-		ServiceAttrAnnoHandler.serviceExtensionResolver = new ServiceExtensionResolver();
-
-		//ESFHelper2
-		ESFHelper2.init();
+//		ServiceAttrAnnoHandler.serviceExtensionResolver = new ServiceExtensionResolver();
 	}
 	public void init() {
 		// TODO Auto-generated method stub
