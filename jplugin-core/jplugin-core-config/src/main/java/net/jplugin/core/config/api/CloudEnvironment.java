@@ -112,6 +112,10 @@ public class CloudEnvironment {
         return boundIp;
     }
 
+    public boolean hasInit(){
+        return this.inited;
+    }
+
     private void checkInit() {
         if (!inited) {
             throw new RuntimeException("init not called");
