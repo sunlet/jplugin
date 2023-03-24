@@ -12,6 +12,7 @@
         <jplugin-for-spring-version>3.0.0-SNAPSHOT</jplugin-for-spring-version>
         <jplugin-request-recoder-version>3.0.0-SNAPSHOT</jplugin-request-recoder-version>
         <jplugin-embed-tomcat-version>3.0.0-SNAPSHOT</jplugin-embed-tomcat-version>
+        <slf4j-log4j12-version>2.0.7</slf4j-log4j12-version>
     </properties>
 
     <dependencyManagement>
@@ -53,6 +54,12 @@
                 <groupId>net.jplugin.extension</groupId>
                 <artifactId>jplugin-embed-tomcat</artifactId>
                 <version>${jplugin-embed-tomcat-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j-log4j12-version}</version>
             </dependency>
 
         </dependencies>
