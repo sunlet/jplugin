@@ -71,15 +71,7 @@ public class CloudEnvironment {
 
     public String getRpcPort() {
         checkInit();
-        if (!RPC_PORT_HINT_EMBED_TOMCAT.equals(this.rpcPort)){
-            return this.rpcPort;
-        }else{
-            Integer intTomcatPort = ConfigFactory.getIntConfig("embed-tomcat.context-port", 8080);
-            String esfport = (intTomcatPort + 100) + "";
-            //赋值一下
-            this.rpcPort = esfport;
-            return esfport;
-        }
+        return rpcPort;
     }
 
     public String getNacosUser() {
@@ -136,6 +128,8 @@ public class CloudEnvironment {
         moduleCode = map.get(MODULE_CODE).trim();
         rpcPort = map.get(RPC_PORT).trim();
 
+        rpcPort = handleForEmbbedTomcat(rpcPort);
+
         //handle composed appcode
         if (StringKit.isNotNull(appCode) && appCode.indexOf(":")>=0){
             //service code must be null
@@ -155,8 +149,19 @@ public class CloudEnvironment {
         if (StringKit.isNotNull(temp))
             nacosPwd = temp.trim();
 
-        PluginEnvirement.getInstance().getStartLogger().log("$$$ CloudEnvironment Init: nacosUrl=" + nacosUrl + ", appCode=" + appCode + ", serviceCode=" + moduleCode + " nacosUser=" + nacosUser + " rpcPort=" + rpcPort);
         inited = true;
+        PluginEnvirement.getInstance().getStartLogger().log("$$$ CloudEnvironment Init: nacosUrl=" + nacosUrl + ", appCode=" + appCode + ", serviceCode=" + moduleCode + " nacosUser=" + nacosUser + " rpcPort=" + getRpcPort());
+    }
+
+    private static String handleForEmbbedTomcat(String rpcPort) {
+        if (!RPC_PORT_HINT_EMBED_TOMCAT.equals(rpcPort)){
+            return rpcPort;
+        }else{
+            Integer intTomcatPort = ConfigFactory.getIntConfig("embed-tomcat.context-port", 8080);
+            String esfport = (intTomcatPort + 100) + "";
+            //赋值一下
+            return esfport;
+        }
     }
 
     private String arrToString(String[] serviceCodes) {
