@@ -14,6 +14,7 @@
         <jplugin-embed-tomcat-version>3.0.0-SNAPSHOT</jplugin-embed-tomcat-version>
         <slf4j-log4j12-version>2.0.7</slf4j-log4j12-version>
         <jplugin-app-notify-version>3.0.0-SNAPSHOT</jplugin-app-notify-version>
+        <jplugin-source-gen-version>3.0.0-SNAPSHOT</jplugin-source-gen-version>
     </properties>
 
     <dependencyManagement>
@@ -66,6 +67,11 @@
                 <groupId>net.jplugin.extension</groupId>
                 <artifactId>jplugin-app-notify</artifactId>
                 <version>${jplugin-app-notify-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jplugin.extension</groupId>
+                <artifactId>jplugin-source-gen</artifactId>
+                <version>${jplugin-source-gen-version}</version>
             </dependency>
 
 
