@@ -2,12 +2,9 @@ package net.jplugin.core.ctx.api;
 
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.jplugin.core.ctx.Plugin;
-import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
-import net.jplugin.core.ctx.impl.RuleInterceptor;
-import net.jplugin.core.kernel.api.ExtensionObjects;
+import net.jplugin.core.ctx.impl.proxy.RuleServiceProxyFactory;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.ServiceFactory;
 
@@ -21,7 +18,10 @@ public class RuleServiceFactory {
 
 	private static Hashtable<String, Object> svcMap=new Hashtable<String, Object>();
 	public static <T> T getRuleService(Class<T> clz){
-		return (T) svcMap.get(clz.getName());
+		if (PluginEnvirement.INSTANCE.getStateLevel()>=PluginEnvirement.STAT_LEVEL_MADESVC)
+			return (T) svcMap.get(clz.getName());
+		else
+			return (T)RuleServiceProxyFactory.getRuleService(clz.getName(), clz);
 	}
 
 	public static Object getRuleService(String svcname){
@@ -29,7 +29,10 @@ public class RuleServiceFactory {
 	}
 
 	public static <T> T getRuleService(String svcname,Class<T> clz){
-		return (T) svcMap.get(svcname);
+		if (PluginEnvirement.INSTANCE.getStateLevel()>=PluginEnvirement.STAT_LEVEL_MADESVC)
+			return (T) svcMap.get(svcname);
+		else
+			return (T)RuleServiceProxyFactory.getRuleService(svcname, clz);
 	}
 
 	/**
