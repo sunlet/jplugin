@@ -23,6 +23,16 @@ import java.util.Set;
 
 public class ReflactKit {
 
+
+	//public com.haiziwang.app.first.export.FirstExport_$$_jvstf54_1()
+	private final static String JAVASIST_HINT="_$$_jvst";
+	public static Class getNonJavaSisSuperClass(Class c){
+		if (c.getSimpleName().indexOf(JAVASIST_HINT)>=0){
+			return getNonJavaSisSuperClass(c.getSuperclass());
+		}else{
+			return c;
+		}
+	}
 	/**
 	 * @param extensionObject
 	 * @param string
@@ -322,7 +332,9 @@ public class ReflactKit {
 	}
 	
 	public static void main(String[] arg){
-		System.out.println(ReflactKit.getMethodNamesExceptObject(ReflactKit.class));
+//		System.out.println(ReflactKit.getMethodNamesExceptObject(ReflactKit.class));
+		System.out.println(ReflactKit.class.getSuperclass());
+		System.out.println(getNonJavaSisSuperClass(ReflactKit.class));
 	}
 
 //	public static List<Class> getAllTypes(Class clazz) {

@@ -48,5 +48,8 @@ public class IpKit {
 	public static void main(String[] args) {
 		System.out.println(isOuterIpAddress("192.168.1.1"));
 		System.out.println(isOuterIpAddress("172.168.1.1"));
+
+		System.out.println(getLocalIp());
+
 	}
 }

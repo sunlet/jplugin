@@ -111,19 +111,19 @@ public class ObjectCallHelper{
 		String methodName;
 		if (StringKit.isNull(reqMethodName))
 			methodName = "index";
-		else 
+		else
 			methodName = reqMethodName;
-		
+
 		/*String methodName = objeceDefine.getMethodName();
-		
+
 		if (StringKit.isNull(methodName)){
 			methodName = reqMethodName;
 		}*/
-		
+
 		if (StringKit.isNull(methodName)){
 			throw new RuntimeException("method name is null for req method name:"+reqMethodName);
 		}
-		
+
 		String methodKey = getMethodKey(methodName,arg);
 		Method method = this.methodMap.get(methodKey);
 		if (method ==null){
@@ -133,17 +133,21 @@ public class ObjectCallHelper{
 					if (this.svcObject == null){
 						throw new RuntimeException("Object can't be null");
 					}
+
+					//decode the real impl class!
+					Class implClass = ReflactKit.getNonJavaSisSuperClass(svcObject.getClass());
+
 					try {
 						if (arg!=null){
-							method = this.svcObject.getClass().getMethod(methodName, arg);
+							method = implClass.getMethod(methodName, arg);
 						}else{
-							method = ReflactKit.findSingeMethodExactly(this.svcObject.getClass(),methodName);
+							method = ReflactKit.findSingeMethodExactly(implClass,methodName);
 						}
 					} catch (Exception e) {
-						throw new RuntimeException("Can't find method ["+methodName +"] with arg:"+ getString(arg) +" in "+svcObject.getClass().getName());
+						throw new RuntimeException("Can't find method ["+methodName +"] with arg:"+ getString(arg) +" in "+implClass.getName());
 					}
-					
-					if (method == null || (Modifier.PUBLIC & method.getModifiers()) ==0)  
+
+					if (method == null || (Modifier.PUBLIC & method.getModifiers()) ==0)
 						throw new RuntimeException("Can't find method ["+methodName +"], the method not exists or Not a public method");
 					this.methodMap.put(methodKey, method);
 				}
