@@ -3,3 +3,6 @@
 /jplugin-package-mvc/target/
 /jplugin-package-core/jplugin-core.iml
 /jplugin-package-das/jplugin-das.iml
+/jplugin-package-pom/base-pom-core/target/
+/jplugin-package-pom/base-pom-mvc/target/
+/jplugin-package-pom/target/
