@@ -1,11 +1,8 @@
 package net.jplugin.core.kernel.api;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
+import net.jplugin.common.kits.AssertKit;
 import net.jplugin.common.kits.ExceptionKit;
 import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
@@ -14,7 +11,6 @@ import net.jplugin.core.kernel.Plugin;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
-import net.jplugin.core.kernel.impl.PluginPrepareHelper;
 import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
 
 /**
@@ -24,12 +20,26 @@ import net.jplugin.core.kernel.impl.StartUpLoggerImpl;
  **/
 
 public class PluginEnvirement {
-	public static final int STAT_LEVEL_PREPAREING=0;
+	public static final int STAT_LEVEL_ORIGIN=0;
+	public static final int STAT_LEVEL_PREPAREING=5;
+	public static final int STAT_LEVEL_CONSTRUCTED=15;
 	public static final int STAT_LEVEL_LOADING=10;
+	public static final int STAT_LEVEL_LOADED=15;
 	public static final int STAT_LEVEL_WIRING=20;
+	public static final int STAT_LEVEL_WIRED=22;
 	public static final int STAT_LEVEL_MAKINGSVC=25;
+
+	public static final int STAT_LEVEL_MADESVC=26;
+
+	public static final int STAT_LEVEL_RESOLVING_HIST=27;
+	public static final int STAT_LEVEL_RESOLVING_EX_HIST=28;
+	public static final int STAT_LEVEL_RESOLVED_HIST=29;
 	public static final int STAT_LEVEL_INITING=30;
 	public static final int STAT_LEVEL_WORKING=40;
+
+	public static final int STARTTYPE_BOTH=0;
+	public static final int STARTTYPE_FIRST =1;
+	public static final int STARTTYPE_SECOND =2;
 	
 	public static final String WORK_DIR = "work-dir";
 	public static PluginEnvirement INSTANCE = new PluginEnvirement();
@@ -37,7 +47,7 @@ public class PluginEnvirement {
 //	private StartupLogger startupLog = new StartupLogger();
 	String workdir=null;
 	private AnnotationResolveHelper annoResolveHelper=new AnnotationResolveHelper(this);
-	private int stateLevel=STAT_LEVEL_PREPAREING;
+	private int stateLevel=STAT_LEVEL_ORIGIN;
 	
 	private IStartLogger startLogger = new StartUpLoggerImpl();
 	private boolean unitTesting = false;
@@ -51,6 +61,13 @@ public class PluginEnvirement {
 	
 	public static PluginEnvirement getInstance() {
 		return INSTANCE;
+	}
+
+	public <T> T getExtensionById(String id,Class<T> t){
+		return ExtensionObjects.get(id,t);
+	}
+	public Object getExtensionById(String id){
+		return ExtensionObjects.get(id);
 	}
 	
 	public  void initStartFilter(){
@@ -77,7 +94,7 @@ public class PluginEnvirement {
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ now to stop plugin envirment");
 		this.registry.destroy();
 		this.registry = new PluginRegistry();
-		this.started = false;
+//		this.stateLevel =
 		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ plugin envirment stopped");
 	}
 
@@ -86,7 +103,7 @@ public class PluginEnvirement {
 	}
 	
 	public boolean getStarted(){
-		return this.started;
+		return this.stateLevel!=STAT_LEVEL_ORIGIN;
 	}
 
 	public boolean hasExtensionPoint(String pointName){
@@ -137,6 +154,15 @@ public class PluginEnvirement {
 
 		return point.getExtensionMap();
 	}
+
+	public List<Extension> getExtensionList(String pointName){
+		ExtensionPoint point = this.registry.getExtensionPointMap().get(pointName);
+		if (point == null)
+			throw new PluginRuntimeException("Can't find the extension point:"
+					+ pointName);
+		return Collections.unmodifiableList(point.getExtensions());
+	}
+
 	
 	/**
 	 * 获取通过ExtensionPoint.createUnique()方法创建的扩展点上注册的 扩展对象
@@ -216,12 +242,14 @@ public class PluginEnvirement {
 		return webRootPath;
 	}
 
-	boolean started = false;
+//	boolean started = false;
 
 	public synchronized void startup() {
-		startup(null);
+		startup(null,STARTTYPE_BOTH);
 	}
-	
+
+
+
 	/**
 	 * <pre>
 	 * 有testAll和testTarget两个属性
@@ -231,97 +259,22 @@ public class PluginEnvirement {
 	 * </pre>
 	 * @param plgns
 	 */
-	public synchronized void startup(Set plgns) {
-		if (started)
-			return;
-		started = true;
+	public synchronized void startup(Set plgns ,int startType) {
 		try {
-			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ ConfigDir="+this.getConfigDir());
-			PluginEnvirement.INSTANCE.getStartLogger().log("$$$ WorkDir="+this.getWorkDir());
-			PluginAutoDetect.addAutoDetectPackage("net.jplugin.extension");
-			PluginAutoDetect.addAutoDetectPackage("net.jplugin.app");
-			Set<Object> pluginToLoad = new HashSet<Object>();
-			
-			if (plgns==null){
-				if (FileKit.existsFile(getConfigDir() + "/plugin.cfg")){
-					Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
-					pluginToLoad.addAll(prop.keySet());
-				}
-				pluginToLoad.addAll(CorePlugin.get());
-				pluginToLoad.addAll(ExtPlugin.get());
-				pluginToLoad.addAll(PluginAutoDetect.get(pluginToLoad));
-			}else{
-				pluginToLoad.addAll( plgns);
+			if (startType== STARTTYPE_FIRST || startType==STARTTYPE_BOTH) {
+				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_ORIGIN);
+				ready(plgns);
+			}
+			if (startType== STARTTYPE_SECOND || startType==STARTTYPE_BOTH) {
+//				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_MADESVC);
+				AssertKit.assertTrue(this.stateLevel==STAT_LEVEL_RESOLVED_HIST);
+				initialize();
 			}
 
-
-			//有testAll和testTarget两个属性，testAll优先
-			boolean testAll = false;
-			String testTarget = null;
-			testTarget = System.getProperty("testTarget");
-			if ("true".equals(System.getProperty("testAll"))){
-				testAll = true;
-			}
-			
-			PluginPrepareHelper.preparePlugins(pluginToLoad);
-			
-			
-			for (Object obj : pluginToLoad) {
-				addPlugin(obj);
-				
-				//加载测试插件
-				if (testAll){
-					addPluginIfExists("test."+obj);
-				}else{
-					if ( ("test."+obj).equals(testTarget)){
-						addPluginIfExists("test."+obj);
-					}
-				}
-			}
-			registry.afterPluginsContruct();
-			registry.sort();
-			registry.handleDuplicateExtension();
-			registry.valid();
-			this.stateLevel = STAT_LEVEL_LOADING;
-			registry.load();
-			Beans.initFromPluginList();//所有Extension加入ExtensionFactory
-			
-			this.stateLevel = STAT_LEVEL_WIRING;
-			registry.wire();
-			
-			this.stateLevel = STAT_LEVEL_MAKINGSVC;
-			registry.makeServices();
-			registry.clearClassCache();
-			
-			this.stateLevel = STAT_LEVEL_INITING;
-
-			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
-				try{
-					ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
-
-					this.annoResolveHelper.resolveHistory();
-					startFilterManager.filter(Tuple2.with(testAll,testTarget));
-
-				}finally{
-					ThreadLocalContextManager.instance.releaseContext();
-				}
-			}
-			
-			if (registry.getErrors() == null || registry.getErrors().isEmpty()){
-				trigStartListener(null,null);
-			
-				logStart(registry.getErrors());
-			}else{
-				trigStartListener(null,registry.getErrors());
-				
-				logStart(registry.getErrors());
-				
-				try{
-					Thread.sleep(3000);
-				}catch(Exception th){}
+			//处理启动过程中registry.getErrors()，有可能退出
+			if (!handleStartErrors()){
 				System.exit(-2);
 			}
-			this.stateLevel = STAT_LEVEL_WORKING;
 		} catch (Throwable e) {
 			e = ExceptionKit.getRootCause(e);
 			PluginEnvirement.INSTANCE.getStartLogger().log("初始化过程发生错误",e);
@@ -340,34 +293,189 @@ public class PluginEnvirement {
 		}
 	}
 
-	private void addPluginIfExists(Object obj) {
-		String cname = (String) obj;
+	private void initialize() {
+		AssertKit.assertEqual(this.stateLevel,STAT_LEVEL_RESOLVED_HIST);
+		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
+			try {
+				ThreadLocalContext ctx = ThreadLocalContextManager.instance.createContext();
+
+				this.stateLevel = STAT_LEVEL_INITING;
+
+				this.annoResolveHelper.initHistory();
+				startFilterManager.filter(Tuple2.with(testAll,testTarget));
+
+			}finally{
+				ThreadLocalContextManager.instance.releaseContext();
+			}
+		}
+
+		this.stateLevel = STAT_LEVEL_WORKING;
+	}
+
+	/**
+	 * 返回是否需要继续
+	 * @return
+	 */
+	private boolean handleStartErrors() {
+		if (registry.getErrors() == null || registry.getErrors().isEmpty()){
+			trigStartListener(null,null);
+
+			logStart(registry.getErrors());
+			return true;
+		}else{
+			trigStartListener(null,registry.getErrors());
+
+			logStart(registry.getErrors());
+
+			try{
+				Thread.sleep(3000);
+			}catch(Exception th){}
+			return false;
+		}
+	}
+
+	private void ready(Set plgns) {
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ ConfigDir="+this.getConfigDir());
+		PluginEnvirement.INSTANCE.getStartLogger().log("$$$ WorkDir="+this.getWorkDir());
+		PluginAutoDetect.addAutoDetectPackage("net.jplugin.extension");
+		PluginAutoDetect.addAutoDetectPackage("net.jplugin.app");
+		PluginAutoDetect.addAutoDetectPackage("net.jplugin.cloud");
+		Set<Object> pluginToLoad = new HashSet<Object>();
+
+		if (plgns==null){
+			if (FileKit.existsFile(getConfigDir() + "/plugin.cfg")){
+				Properties prop = PropertiesKit.loadProperties(getConfigDir() + "/plugin.cfg");
+				pluginToLoad.addAll(prop.keySet());
+			}
+			pluginToLoad.addAll(CorePlugin.get());
+			pluginToLoad.addAll(ExtPlugin.get());
+			pluginToLoad.addAll(PluginAutoDetect.get(pluginToLoad));
+		}else{
+			pluginToLoad.addAll( plgns);
+		}
+
+		initTestingProperty();
+
+		//查找需要加载的测试Plugin
+		Set<String> testPluginClasses = new HashSet<>();
+		for (Object obj : pluginToLoad) {
+			//加载测试插件
+			if (testAll){
+				String c = getPluginClazzIfExists("test."+obj);
+				if (c!=null){
+					testPluginClasses.add(c);
+				}
+			}else{
+				if ( ("test."+obj).equals(testTarget)){
+//						addPluginIfExists("test."+obj);
+					String c = getPluginClazzIfExists("test."+obj);
+					if (c!=null){
+						testPluginClasses.add(c);
+					}
+				}
+			}
+		}
+		pluginToLoad.addAll(testPluginClasses);
+
+		//add plugin classes
+		registry.addPluginClasses(pluginToLoad);
+
+		//Prepare
+		registry.prepare();
+
+		//Construct
+		registry.construct();
+
+		this.stateLevel = STAT_LEVEL_CONSTRUCTED;
+
+		registry.sort();
+		registry.inferencePointToOfExtension();
+
+		registry.handleDuplicateExtension();
+		registry.validAndFillExtensionPointMap();
+		registry.afterPluginsContruct();
+
+		this.stateLevel = STAT_LEVEL_LOADING;
+		registry.load();
+
+		this.stateLevel = STAT_LEVEL_LOADED;
+		registry.afterPluginLoad();
+		ExtensionObjects.initFromPluginList();//所有Extension加入ExtensionFactory
+
+		this.stateLevel = STAT_LEVEL_WIRING;
+		registry.wire();
+
+		this.stateLevel = STAT_LEVEL_WIRED;
+		registry.afterWire();
+
+		this.stateLevel = STAT_LEVEL_MAKINGSVC;
+		registry.makeServices();
+		registry.clearClassCache();
+
+		this.stateLevel = STAT_LEVEL_MADESVC;
+
+
+		this.stateLevel = STAT_LEVEL_RESOLVING_HIST;
+
+		if (registry.getErrors() == null || registry.getErrors().isEmpty()) {
+			try {
+				ThreadLocalContextManager.instance.createContext();
+
+				this.annoResolveHelper.resolveHistory();
+				this.stateLevel = STAT_LEVEL_RESOLVING_EX_HIST;
+				this.annoResolveHelper.resolveHistoryForExtraResolver();
+			} finally {
+				ThreadLocalContextManager.instance.releaseContext();
+			}
+		}
+		this.stateLevel = STAT_LEVEL_RESOLVED_HIST;
+	}
+
+	boolean testAll = false;
+	String testTarget = null;
+	private void initTestingProperty(){
+		//有testAll和testTarget两个属性，testAll优先
+		testTarget = System.getProperty("testTarget");
+		if ("true".equals(System.getProperty("testAll"))){
+			testAll = true;
+		}
+	}
+
+
+	private String getPluginClazzIfExists(String cname) {
 		try {
 			Class.forName(cname);
+			return cname;
 		} catch (ClassNotFoundException e) {
-			return;
+			return null;
 		}
-		addPlugin(obj);
 	}
 
-	/**
-	 * @param obj
-	 */
-	private void addPlugin(Object obj) {
-		String cname = (String) obj;
-		Object plugin;
-		try {
-			plugin = Class.forName(cname).newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException("plugin instance create error,"+e.getMessage()+obj, e);
-		}
-		registry.addPlugin((IPlugin) plugin);
-	}
+//	private void addPluginIfExists(Object obj) {
+//		String cname = (String) obj;
+//		try {
+//			Class.forName(cname);
+//		} catch (ClassNotFoundException e) {
+//			return;
+//		}
+//		addPlugin(obj);
+//	}
 
-	/**
-	 * @param e
-	 * @param object
-	 */
+//	/**
+//	 * @param obj
+//	 */
+//	private void addPlugin(Object obj) {
+//		String cname = (String) obj;
+//		Object plugin;
+//		try {
+//			plugin = Class.forName(cname).newInstance();
+//		} catch (Exception e) {
+//			throw new RuntimeException("plugin instance create error,"+e.getMessage()+obj, e);
+//		}
+//		registry.addPlugin((IPlugin) plugin);
+//	}
+
+
 	private void trigStartListener(Throwable e, List<PluginError> errors) {
 		IStartup[] listeners = getExtensionObjects(Plugin.EP_STARTUP,IStartup.class);
 		if (e==null && errors==null ){
@@ -409,6 +517,10 @@ public class PluginEnvirement {
 
 	public void resolveRefAnnotation(Object o) {
 		this.annoResolveHelper.resolveOne(o);
+	}
+
+	public void addObjectResolver(IObjectResolver r){
+		this.annoResolveHelper.addObjectResolver(r);
 	}
 	
 	public String getEnvType(){

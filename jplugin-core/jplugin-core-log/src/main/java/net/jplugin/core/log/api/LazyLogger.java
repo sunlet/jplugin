@@ -56,6 +56,11 @@ public class LazyLogger implements Logger{
 		return log.getLevel();
 	}
 
+	@Override
+	public int getLoggerLevel() {
+		throw new RuntimeException("not support");
+	}
+
 	public void info(Object message, Throwable t) {
 		if (log == null) initlog();
 		log.info(message, t);
@@ -76,6 +81,11 @@ public class LazyLogger implements Logger{
 		return log.isEnabledFor(level);
 	}
 
+	@Override
+	public boolean isEnabledFor(int level) {
+		throw new RuntimeException("not support");
+	}
+
 	public boolean isInfoEnabled() {
 		if (log == null) initlog();
 		return log.isInfoEnabled();
@@ -84,6 +94,16 @@ public class LazyLogger implements Logger{
 	public boolean isTraceEnabled() {
 		if (log == null) initlog();
 		return log.isTraceEnabled();
+	}
+
+	@Override
+	public boolean isErrorEnabled() {
+		throw new RuntimeException("not support");
+	}
+
+	@Override
+	public boolean isWarnEnabled() {
+		throw new RuntimeException("not support");
 	}
 
 	public void warn(Object message, Throwable t) {

@@ -1,19 +1,16 @@
 package net.jplugin.ext.webasic.impl.web.webex;
 
+import net.jplugin.core.kernel.api.ExtensionObjects;
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.ext.webasic.api.IController;
+import net.jplugin.ext.webasic.api.IControllerSet;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.jplugin.core.kernel.api.ClassDefine;
-import net.jplugin.core.kernel.api.Beans;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.ext.webasic.api.IController;
-import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
  *
@@ -24,20 +21,32 @@ import net.jplugin.ext.webasic.api.ObjectDefine;
 public class WebExControllerSet implements IControllerSet{
 	private Map<String, IController> controllerMap;
 
+//	public void init() {
+//		Map<String, ClassDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER,ClassDefine.class);
+//
+//		controllerMap = new ConcurrentHashMap<String, IController>();
+//
+//		for (Entry<String, ClassDefine> en:defs.entrySet()){
+//			WebExController exController = new WebExController(en.getValue());
+//			controllerMap.put(en.getKey(), exController);
+//
+//			//重新设置value值
+//			Beans.resetValue(en.getValue(), exController.getObject());
+//		}
+//	}
 	public void init() {
-		Map<String, ClassDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER,ClassDefine.class);
-		
+		Map<String, Object> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBEXCONTROLLER);
+
 		controllerMap = new ConcurrentHashMap<String, IController>();
-		
-		for (Entry<String, ClassDefine> en:defs.entrySet()){
+
+		for (Entry<String, Object> en:defs.entrySet()){
 			WebExController exController = new WebExController(en.getValue());
 			controllerMap.put(en.getKey(), exController);
-			
+
 			//重新设置value值
-			Beans.resetValue(en.getValue(), exController.getObject());
+//			ExtensionObjects.resetValue(en.getValue(), exController.getObject());
 		}
 	}
-	
 	public Set<String> getAcceptPaths() {
 		return controllerMap.keySet();
 	}

@@ -1,20 +1,15 @@
 package net.jplugin.ext.webasic.impl.web;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import net.jplugin.core.kernel.api.ExtensionObjects;
+import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.ext.webasic.api.IControllerSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.jplugin.core.kernel.api.Beans;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.ext.webasic.api.IController;
-import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.ObjectDefine;
-import net.jplugin.ext.webasic.impl.rests.ServiceController;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -26,16 +21,18 @@ public class WebControllerSet implements IControllerSet{
 	private Map<String, WebController> controllerMap;
 
 	public void init() {
-		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,ObjectDefine.class);
+//		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,ObjectDefine.class);
+		Map<String, Object> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_WEBCONTROLLER,Object.class);
 		
 		controllerMap = new ConcurrentHashMap<String, WebController>();
 		
-		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+//		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+		for (Entry<String, Object> en:defs.entrySet()){
 			WebController controller = new WebController(en.getValue()) ;
 			controllerMap.put(en.getKey(), controller);
 			
 			//重新设置value值
-			Beans.resetValue(en.getValue(), controller.getObject());
+//			ExtensionObjects.resetValue(en.getValue(), controller.getObject());
 		}
 	}
 	

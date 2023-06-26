@@ -1,5 +1,7 @@
 package net.jplugin.core.config;
 
+import net.jplugin.common.kits.http.ContentKit;
+import net.jplugin.core.config.api.CloudEnvironment;
 import net.jplugin.core.config.api.ConfigChangeManager;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.IConfigChangeHandler;
@@ -36,11 +38,17 @@ public class Plugin extends AbstractPlugin{
 		repo.init(cfgdir);
 		ConfigFactory._setLocalConfigProvidor(repo);
 		Extension.propertyFilter = new PropertyFilter();
+
+		//初始化CloudEnvirement
+		CloudEnvironment.INSTANCE.loadFromConfig();
+		//从BaiscConfig初始化,两套初始化只能有一个生效
+
+
 	}
 
 	public Plugin(){
 		//add point
-		this.addExtensionPoint(ExtensionPoint.create(EP_CONFIG_CHANGE_HANDLER, ConfigChangeHandlerDef.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_CONFIG_CHANGE_HANDLER, ConfigChangeHandlerDef.class));
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this,AnnoForAttrHandler.class );
 		ExtensionConfigHelper.addConfigChangeHandlerExtension(this, "*", AutoRefreshConfigChangeHandler.class);
 	}
@@ -49,6 +57,10 @@ public class Plugin extends AbstractPlugin{
 		//load config
 //		ConfigChangeManager.instance.init();
 		ConfigureChangeManager.instance.init();
+
+		//初始化一下兼容设置
+		//1.7.0 默认不再兼容旧的application/json检查。不能在代码当中直接读取流了。
+		ContentKit.init(Boolean.parseBoolean(ConfigFactory.getStringConfig("platform.json-check-compatible","false")));
 	}
 
 	@Override

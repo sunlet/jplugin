@@ -1,5 +1,7 @@
 package net.jplugin.core.service.api;
 
+import net.jplugin.core.service.Plugin;
+
 /**
  *
  * @author: LiuHang
@@ -7,7 +9,7 @@ package net.jplugin.core.service.api;
  **/
 
 public class Constants {
-
-	public static final String EP_SERVICE = "service";
+	@Deprecated
+	public static final String EP_SERVICE = Plugin.EP_SERVICE;
 
 }

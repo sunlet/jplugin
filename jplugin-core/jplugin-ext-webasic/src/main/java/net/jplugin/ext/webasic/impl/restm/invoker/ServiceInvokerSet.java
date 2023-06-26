@@ -1,20 +1,11 @@
 package net.jplugin.ext.webasic.impl.restm.invoker;
 
+import net.jplugin.core.kernel.api.ExtensionObjects;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.jplugin.core.kernel.api.Beans;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.ext.webasic.api.IController;
-import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.ObjectDefine;
-import net.jplugin.ext.webasic.impl.helper.ObjectCallHelper;
+import java.util.Set;
 
 
 /**
@@ -30,24 +21,17 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 	private Map<String, IServiceInvoker> serviceMap;
 
 	private ServiceInvokerSet(){}
-	
-//	public void init() {
-//		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
-//		serviceMap = new HashMap<String, IServiceInvoker>();
-//		
-//		for (Entry<String, ObjectDefine> en:defs.entrySet()){
-//			serviceMap.put(en.getKey(), new ServiceInvoker(en.getValue()));
-//		}
-//	}
 	public Set<String>  getPathSet(){
 		return serviceMap.keySet();
 	}
 
-	public void addServices(Map<String, ObjectDefine> defs) {
+
+
+	public void addServices(Map<String, Object> defs) {
 		if (serviceMap==null)
 			serviceMap = new HashMap<String, IServiceInvoker>();
 		
-		for (Entry<String, ObjectDefine> en:defs.entrySet()){
+		for (Entry<String, Object> en:defs.entrySet()){
 			if (serviceMap.get(en.getKey())!=null)
 				throw new RuntimeException("duplicate service path:"+en.getKey());
 			
@@ -55,7 +39,7 @@ public class ServiceInvokerSet implements IServiceInvokerSet{
 			serviceMap.put(en.getKey(), invoker);
 			
 			//重新设置value值
-			Beans.resetValue(en.getValue(), invoker.getObjectCallHelper().getObject());
+//			ExtensionObjects.resetValue(en.getValue(), invoker.getObjectCallHelper().getObject());
 		}
 	}
 	

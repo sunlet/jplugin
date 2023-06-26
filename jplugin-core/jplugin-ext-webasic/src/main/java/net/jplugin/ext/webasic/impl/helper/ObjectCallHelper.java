@@ -1,19 +1,13 @@
 package net.jplugin.ext.webasic.impl.helper;
 
+import net.jplugin.common.kits.ReflactKit;
+import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.ctx.api.RuleProxyHelper;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Hashtable;
 import java.util.Map;
-
-import net.jplugin.common.kits.ReflactKit;
-import net.jplugin.common.kits.StringKit;
-import net.jplugin.core.ctx.api.Rule;
-import net.jplugin.core.ctx.api.RuleProxyHelper;
-import net.jplugin.core.ctx.api.RuleServiceFactory;
-import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
-import net.jplugin.core.kernel.api.PluginEnvirement;
-import net.jplugin.ext.webasic.Plugin;
-import net.jplugin.ext.webasic.api.ObjectDefine;
 
 /**
  *
@@ -29,104 +23,107 @@ public class ObjectCallHelper{
 
 	Object svcObject = null;
 	Map<String,Method> methodMap = new Hashtable<String, Method>();
-	ObjectDefine objeceDefine;
+//	ObjectDefine objeceDefine;
 	
 	
 	public Object getObject(){
-		initObject();
+//		initObject();
 		return this.svcObject;
 	}
-	/**
-	 * @param value
-	 */
-	public ObjectCallHelper(ObjectDefine d) {
-		this.objeceDefine = d;
-		initObject();
+//	/**
+//	 * @param value
+//	 */
+//	public ObjectCallHelper(ObjectDefine d) {
+//		this.objeceDefine = d;
+//		initObject();
+//	}
+
+	public ObjectCallHelper(Object o) {
+		svcObject = o;
 	}
 	
 	
-	public ObjectDefine getObjeceDefine() {
-		return objeceDefine;
-	}
+//	public ObjectDefine getObjeceDefine() {
+//		return objeceDefine;
+//	}
 
 
 	/**
 	 * 如果arg为空，表示只能通过对应的方法名（不考虑参数）获取到一个方法，否则抛出异常！
-	 * @param req
 	 * @param arg
 	 * @return
 	 */
 	public ObjectAndMethod get(String requestMethodName,Class[] arg){
-		initObject();
+//		initObject();
 		ObjectAndMethod ret = new ObjectAndMethod();
 		ret.object = this.svcObject;
 		ret.method = getMethod(requestMethodName,arg);
 		return ret;
 	}
 
-	public void initObject(){
-		//初始化svcObject
-		if (svcObject==null){
-			synchronized (this) {
-				if (svcObject == null){
-					svcObject = createObject(objeceDefine);	
-				}
-			}
-		}
-	}
+//	public void initObject(){
+//		//初始化svcObject
+//		if (svcObject==null){
+//			synchronized (this) {
+//				if (svcObject == null){
+//					svcObject = createObject(objeceDefine);
+//				}
+//			}
+//		}
+//	}
 
-	/**
-	 * @param objeceDefine2
-	 * @return
-	 */
-	private static Object createObject(ObjectDefine od) {
-			Object objType = od.getObjType();
-			Class objClass = od.getObjClass();
-			String blName =od.getBlName();
-			
-			if (ObjectDefine.OBJ_JAVAOBJECT.equals(objType)){
-				if (objClass == null){
-					throw new RuntimeException("the service object class is null");
-				}
-				try {
-					Object o = objClass.newInstance();
-					PluginEnvirement.INSTANCE.resolveRefAnnotation(o);
-					return o;
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}else if (ObjectDefine.OBJ_BIZLOGIC.equals(objType)){
-				if (StringKit.isNull(blName)){
-					throw new RuntimeException("the bizlogic name is null");
-				}
-				Object obj = RuleServiceFactory.getRuleService(blName);
-				if (obj == null){
-					throw new RuntimeException("can't find object:"+blName);
-				}
-				return obj;
-			}else{
-				throw new RuntimeException("Error obj type :"+objType);
-			}
-	}
+//	/**
+//	 * @param objeceDefine2
+//	 * @return
+//	 */
+//	private static Object createObject(ObjectDefine od) {
+//			Object objType = od.getObjType();
+//			Class objClass = od.getObjClass();
+//			String blName =od.getBlName();
+//
+//			if (ObjectDefine.OBJ_JAVAOBJECT.equals(objType)){
+//				if (objClass == null){
+//					throw new RuntimeException("the service object class is null");
+//				}
+//				try {
+//					Object o = objClass.newInstance();
+//					PluginEnvirement.INSTANCE.resolveRefAnnotation(o);
+//					return o;
+//				} catch (Exception e) {
+//					throw new RuntimeException(e);
+//				}
+//			}else if (ObjectDefine.OBJ_BIZLOGIC.equals(objType)){
+//				if (StringKit.isNull(blName)){
+//					throw new RuntimeException("the bizlogic name is null");
+//				}
+//				Object obj = RuleServiceFactory.getRuleService(blName);
+//				if (obj == null){
+//					throw new RuntimeException("can't find object:"+blName);
+//				}
+//				return obj;
+//			}else{
+//				throw new RuntimeException("Error obj type :"+objType);
+//			}
+//	}
 
 	private Method getMethod(String reqMethodName,Class[] arg) {
 		//获取MethodName
 		String methodName;
 		if (StringKit.isNull(reqMethodName))
 			methodName = "index";
-		else 
+		else
 			methodName = reqMethodName;
-		
+
 		/*String methodName = objeceDefine.getMethodName();
-		
+
 		if (StringKit.isNull(methodName)){
 			methodName = reqMethodName;
 		}*/
-		
+
 		if (StringKit.isNull(methodName)){
 			throw new RuntimeException("method name is null for req method name:"+reqMethodName);
 		}
-		
+
 		String methodKey = getMethodKey(methodName,arg);
 		Method method = this.methodMap.get(methodKey);
 		if (method ==null){
@@ -136,17 +133,21 @@ public class ObjectCallHelper{
 					if (this.svcObject == null){
 						throw new RuntimeException("Object can't be null");
 					}
+
+					//decode the real impl class!
+					Class implClass = ReflactKit.getNonJavaSisSuperClass(svcObject.getClass());
+
 					try {
 						if (arg!=null){
-							method = this.svcObject.getClass().getMethod(methodName, arg);
+							method = implClass.getMethod(methodName, arg);
 						}else{
-							method = ReflactKit.findSingeMethodExactly(this.svcObject.getClass(),methodName);
+							method = ReflactKit.findSingeMethodExactly(implClass,methodName);
 						}
 					} catch (Exception e) {
-						throw new RuntimeException("Can't find method ["+methodName +"] with arg:"+ getString(arg) +" in "+svcObject.getClass().getName());
+						throw new RuntimeException("Can't find method ["+methodName +"] with arg:"+ getString(arg) +" in "+implClass.getName());
 					}
-					
-					if (method == null || (Modifier.PUBLIC & method.getModifiers()) ==0)  
+
+					if (method == null || (Modifier.PUBLIC & method.getModifiers()) ==0)
 						throw new RuntimeException("Can't find method ["+methodName +"], the method not exists or Not a public method");
 					this.methodMap.put(methodKey, method);
 				}
@@ -191,12 +192,12 @@ public class ObjectCallHelper{
 	}
 	
 	public Object invokeWithRuleSupport(ObjectAndMethod oam,Object[] paraValue) throws Throwable{
-		if (ObjectDefine.OBJ_BIZLOGIC.equals(getObjeceDefine().getObjType())){
-			//如果是业务逻辑，则不会再判断Rule 
-			return oam.method.invoke(oam.object, paraValue);
-		}else{
-			//普通方法，并且有Rule标记，则需要判断Rule Annotation
+//		if (ObjectDefine.OBJ_BIZLOGIC.equals(getObjeceDefine().getObjType())){
+//			//如果是业务逻辑，则不会再判断Rule
+//			return oam.method.invoke(oam.object, paraValue);
+//		}else{
+//			//普通方法，并且有Rule标记，则需要判断Rule Annotation
 			return RuleProxyHelper.invokeWithRule(oam.object, oam.method, paraValue);
-		}
+//		}
 	}
 }

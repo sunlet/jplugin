@@ -1,37 +1,37 @@
 <?xml version="1.0"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+		xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.jplugin.mvn</groupId>
+	<groupId>net.jplugin</groupId>
 	<artifactId>jplugin-mvc</artifactId>
-	<version>2.5.0-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>jplugin-mvc</name>
 	<description>A plugin based application framework for java</description>
 	<url>http://github.com/sunlet</url>
-	
+
 	<licenses>
-	    <license>
-	      <name>The Apache Software License, Version 2.0</name>
-	      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-	    </license>
-    </licenses>
-    
-    <developers>
-	    <developer>
-	      <name>sunlet</name>
-	      <email>liuhang.163@163.com</email>
-	    </developer>
-  	</developers>
-  	<scm>
-    	<connection>scm:git:git://github.com/sunlet/jplugin-v2.git</connection>
-    	<developerConnection>scm:git:ssh://github.com:sunlet/jplugin-v2.git</developerConnection>
-    	<url>http://github.com/sunlet/jplugin-v2/tree/master</url>
-    </scm>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>sunlet</name>
+			<email>jplugin@163.com</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git://github.com/sunlet/jplugin.git</connection>
+		<developerConnection>scm:git:ssh://github.com:sunlet/jplugin.git</developerConnection>
+		<url>http://github.com/sunlet/jplugin/tree/master</url>
+	</scm>
 
 
 	<dependencies>
@@ -77,6 +77,7 @@
 					<aggregate>true</aggregate>
 					<charset>UTF-8</charset>
 					<docencoding>UTF-8</docencoding>
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 				<executions>
 					<execution>
@@ -123,72 +124,62 @@
 								</filter>
 							</filters>
 							<!-- 包含号合并的资源文件 -->
-							<!-- >transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer"> 
+							<!-- >transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/xxxxx </resource> </transformer> </transformers -->
 
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- 往Maven中央仓库发布需要的插件-->
-			<!-- 
 			<plugin>
-        		<groupId>org.apache.maven.plugins</groupId>
-        		<artifactId>maven-gpg-plugin</artifactId>
-        		<version>1.5</version>
-        		<executions>
-          			<execution>
-            			<id>sign-artifacts</id>
-            			<phase>verify</phase>
-            			<goals>
-              				<goal>sign</goal>
-            			</goals>
-          			</execution>
-        			</executions>
-      		</plugin>
-      		<plugin>
-        		<groupId>org.sonatype.plugins</groupId>
-        		<artifactId>nexus-staging-maven-plugin</artifactId>
-        		<version>1.6.7</version>
-        		<extensions>true</extensions>
-        		<configuration>
-          			<serverId>ossrh</serverId>
-          			<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          			<autoReleaseAfterClose>false</autoReleaseAfterClose>
-        		</configuration>
-      		</plugin> 
-      		  -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
 			<!--上面两个用来往maven中央仓库发布需要-->
 		</plugins>
 	</build>
 
 	<!-- 下面两个用来往maven中央仓库发布需要 -->
-	<!-- 
 	<distributionManagement>
-        <repository>
-            <id>repository</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-     -->
-    <!--上面两个用来往maven中央仓库发布需要-->
-    
-	<!-- 公司的私服--> 
-	<distributionManagement>
+		<!--RELEASE版发布到中央-->
+		<repository>
+			<id>repository</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<!--SNAPSHOT版发布到私服-->
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Snapshot Repository</name>
 			<url>http://maven-server:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
-		<repository>
-			<id>releases</id>
-			<name>Nexus Release Repository</name>
-			<url>http://maven-server:8081/nexus/content/repositories/releases/</url>
-		</repository>
+		<!--		<snapshotRepository>-->
+		<!--			<id>ossrh</id>-->
+		<!--			<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+		<!--		</snapshotRepository>-->
 	</distributionManagement>
+
+	<!--上面两个用来往maven中央仓库发布需要-->
 </project>

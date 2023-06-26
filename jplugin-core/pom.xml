@@ -149,11 +149,11 @@
 		<module>jplugin-ext-event</module>
     	<module>jplugin-ext-staticweb</module>
 
-<!--		others-->
+<!--&lt;!&ndash;		others&ndash;&gt;-->
 
 		<module>jplugin-ext-das-hib</module>
 		<module>jplugin-ext-token</module>
-<!--		<module>jplugin-test-main</module>-->
+		<module>jplugin-test-main</module>
 
 
 	</modules>

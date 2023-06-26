@@ -1,7 +1,7 @@
 package test.net.jplugin.core.ctx.bind;
 
 import net.jplugin.core.ctx.api.BindRuleService;
-
+import net.jplugin.core.kernel.api.SetExtensionPriority;
 
 @BindRuleService(interfaceClass=IBindRuleService2.class)
 @BindRuleService(interfaceClass=IBindRuleService3.class)

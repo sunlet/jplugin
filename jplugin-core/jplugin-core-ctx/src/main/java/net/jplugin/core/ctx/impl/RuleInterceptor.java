@@ -145,7 +145,7 @@ public class RuleInterceptor implements InvocationHandler {
 	}
 	
 	
-	static class MethodMetaLocater {
+	public static class MethodMetaLocater {
 		HashMap<String, MethodParaInfo> singleMetaMap = new HashMap<String, MethodParaInfo>();
 
 		HashMap<String, List<MethodParaInfo>> dupMetaMap = new HashMap<String, List<MethodParaInfo>>();
@@ -302,7 +302,7 @@ public class RuleInterceptor implements InvocationHandler {
 
 		}
 
-		static class MethodParaInfo {
+		public static class MethodParaInfo {
 //			MethodParaInfo(Rule e, Class[] p) {
 //				meta = e;
 //				paraTypes = p;
@@ -353,6 +353,19 @@ public class RuleInterceptor implements InvocationHandler {
 			Rule meta;
 
 			Class[] paraTypes;
+
+
+			public Method getMethod() {
+				return method;
+			}
+
+			public Rule getMeta() {
+				return meta;
+			}
+
+			public Class[] getParaTypes() {
+				return paraTypes;
+			}
 		}
 	}
 }

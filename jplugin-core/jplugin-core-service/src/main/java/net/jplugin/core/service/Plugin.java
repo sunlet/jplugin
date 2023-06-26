@@ -1,17 +1,13 @@
 package net.jplugin.core.service;
 
-import java.util.Map;
-
-import net.jplugin.core.kernel.api.AbstractPlugin;
-import net.jplugin.core.kernel.api.AutoBindExtensionManager;
-import net.jplugin.core.kernel.api.CoreServicePriority;
-import net.jplugin.core.kernel.api.ExtensionKernelHelper;
-import net.jplugin.core.kernel.api.ExtensionPoint;
-import net.jplugin.core.kernel.api.PluginAnnotation;
-import net.jplugin.core.kernel.api.PluginEnvirement;
+import net.jplugin.core.kernel.api.*;
+import net.jplugin.core.kernel.kits.ExtensionBindKit;
+import net.jplugin.core.service.api.BindExportService;
+import net.jplugin.core.service.api.BindServiceExport;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
 import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
+import net.jplugin.core.service.impl.esf.ESFHelper2;
 
 /**
  *
@@ -21,14 +17,34 @@ import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
 
 public class Plugin extends AbstractPlugin{
 
+	public static final String EP_SERVICE = "EP_SERVICE";
+//	public static final String EP_SERVICE_EXPORT = "EP_RESTMETHOD";
+	public static final String EP_SERVICE_EXPORT = "EP_SERVICE_EXPORT";
+
 	static{
 		AutoBindExtensionManager.INSTANCE.addBindExtensionHandler((p)->{
 			ExtensionServiceHelper.autoBindServiceExtension(p, "");
 		});
+
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindExportService.class, (plugin, clazz, a)->{
+			BindExportService anno = (BindExportService) a;
+			ExtensionServiceHelper.addExportServiceExtension(plugin, anno.path(), clazz);
+
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
+		});
+		AutoBindExtensionManager.INSTANCE.addBindExtensionTransformer(BindServiceExport.class, (plugin, clazz, a)->{
+			BindServiceExport anno = (BindServiceExport) a;
+			ExtensionServiceHelper.addExportServiceExtension(plugin, anno.path(), clazz);
+
+			ExtensionBindKit.handleIdAndPriority(plugin,clazz);
+		});
+
 	}
 	
 	public Plugin(){
-		this.addExtensionPoint(ExtensionPoint.create(Constants.EP_SERVICE,Object.class,true));
+//		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SERVICE,Object.class));
+		this.addExtensionPoint(ExtensionPoint.createList(EP_SERVICE,Object.class));
+		this.addExtensionPoint(ExtensionPoint.createNamed(EP_SERVICE_EXPORT,Object.class));
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, ServiceAttrAnnoHandler.class);
 	}
 	/* (non-Javadoc)
@@ -43,10 +59,11 @@ public class Plugin extends AbstractPlugin{
 	 * @see net.luis.common.kernel.api.IPlugin#init()
 	 */
 	public void onCreateServices() {
-		ExtensionPoint servicesPoint = PluginEnvirement.getInstance().getExtensionPoint(Constants.EP_SERVICE);
-		
-		Map<String, Object> map  = servicesPoint.getExtensionMap();
-		ServiceFactory.init(map);
+//		ServiceFactory.init(PluginEnvirement.getInstance().getExtensionMap(Constants.EP_SERVICE));
+		ServiceFactory.initExtensions(PluginEnvirement.getInstance().getExtensionList(EP_SERVICE));
+
+		//ESFHelper2
+		ESFHelper2.init();
 	}
 	public void init() {
 		// TODO Auto-generated method stub

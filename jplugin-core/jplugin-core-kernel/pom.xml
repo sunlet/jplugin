@@ -25,6 +25,13 @@
 			<artifactId>jplugin-common-kits-http</artifactId>
 
 		</dependency>
+
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.28.0-GA</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -45,6 +52,26 @@
 						<phase>compile</phase>
 						<goals>
 							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<aggregate>true</aggregate>
+					<charset>UTF-8</charset>
+					<docencoding>UTF-8</docencoding>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>

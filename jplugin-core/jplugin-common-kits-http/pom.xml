@@ -24,12 +24,12 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.2</version>
+			<version>4.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.4.4</version>
+			<version>4.4.6</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -50,6 +50,26 @@
 						<phase>compile</phase>
 						<goals>
 							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<aggregate>true</aggregate>
+					<charset>UTF-8</charset>
+					<docencoding>UTF-8</docencoding>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>

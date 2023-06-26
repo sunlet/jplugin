@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface BindRuleMethodInterceptor {
 	public String applyTo();
 	public int sequence() default 10;//默认不要为0，0优先级太高了
-	public String id() default "";
+//	public String id() default "";
 }

@@ -18,8 +18,6 @@ public class AssertKit {
 		if (StringKit.isNull(o)) throw new RuntimeException(name +" shoudln't be null");
 	}
 	/**
-	 * @param type
-	 * @param ftImage
 	 */
 	public static void assertEqual(Object a, Object b,String msg) {
 		if (a == null){
@@ -37,7 +35,6 @@ public class AssertKit {
 		assertNull(o,"Object");
 	}
 	/**
-	 * @param entityId
 	 */
 	public static void assertNull(Object o,String name) {
 		if (o!=null) throw new RuntimeException(name +" must be null");
@@ -54,20 +51,16 @@ public class AssertKit {
 		throw new RuntimeException("assert failed,can't come here");
 	}
 	/**
-	 * @param findObject
-	 * @param string
 	 */
 	public static void assertEqual(Object a, Object b) {
 		assertEqual(a, b,"");
 	}
 	/**
-	 * @param null1
 	 */
 	public static void assertFalse(boolean b) {
 		if (b) throw new RuntimeException("Assert error,must false");
 	}
 	/**
-	 * @param containsKey
 	 */
 	public static void assertTrue(boolean b) {
 		if (!b) throw new RuntimeException("Assert error,must true");
@@ -77,5 +70,30 @@ public class AssertKit {
 	}
 	public static void assertStringNull(String s,String name) {
 		if (StringKit.isNotNull(s)) throw new RuntimeException(name +" must be null");
+	}
+
+	public static void assertStackTraceNotHas(Class ... classSequence) {
+		if (!hasStackTraceSequence(classSequence))
+			return;
+		throw new RuntimeException("Assert assertStackTraceNotHas error.");
+	}
+
+	public static void assertStackTraceHas(Class ... classSequence) {
+		if (hasStackTraceSequence(classSequence)) return;
+		throw new RuntimeException("Assert stacktrace sequence error.");
+	}
+
+	private static boolean hasStackTraceSequence(Class[] classSequence) {
+		StackTraceElement[] sts = Thread.currentThread().getStackTrace();
+		int pos = 0;
+		for (StackTraceElement st:sts){
+			if (st.getClassName().equals(classSequence[pos].getName())){
+				if (pos == classSequence.length-1)
+					return true;
+				else
+					pos++;
+			}
+		}
+		return false;
 	}
 }

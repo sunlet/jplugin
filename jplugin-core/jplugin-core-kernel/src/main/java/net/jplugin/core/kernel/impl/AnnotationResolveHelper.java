@@ -3,14 +3,11 @@ package net.jplugin.core.kernel.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import net.jplugin.common.kits.ReflactKit;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
+import net.jplugin.core.kernel.api.IObjectResolver;
 import net.jplugin.core.kernel.api.Initializable;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 
@@ -29,13 +26,41 @@ import net.jplugin.core.kernel.api.PluginEnvirement;
  *
  */
 public class AnnotationResolveHelper {
-	private IAnnoForAttrHandler[] handlers;
-	private Class[] annoClassArr;
+	IObjectResolver defaultResolver;
+	IObjectResolver extraResolver=null;
+
 	private List<Object> toResolveList = new LinkedList();
+	private List<Object> extraToResolveList = new LinkedList();
+
 	private PluginEnvirement pluginEnvirement;
+
+	private List<Object> toInitingList = new LinkedList<>();
+
 
 	public AnnotationResolveHelper(PluginEnvirement pe) {
 		this.pluginEnvirement = pe;
+
+		//增加默认的resolver
+		this.defaultResolver = new DefaultObjectResolver();
+	}
+
+	public void initHistory(){
+		for (Object o:toInitingList){
+			((Initializable)o).initialize();
+		}
+		toInitingList.clear();
+		toInitingList = null;
+	}
+
+	public void addObjectResolver(IObjectResolver ior){
+		if (PluginEnvirement.getInstance().getStateLevel()>= PluginEnvirement.STAT_LEVEL_RESOLVING_HIST) {
+			throw new RuntimeException("Resolver must be added before state:STAT_LEVEL_RESOLVING_HIST");
+		}
+		if (this.extraResolver!=null) {
+			throw new RuntimeException("addObjectResolver can't call twice");
+		}else{
+			this.extraResolver = ior;
+		}
 	}
 
 	public void resolveHistory() {
@@ -49,9 +74,22 @@ public class AnnotationResolveHelper {
 			set.add(o);
 			resolveOne(o);
 		}
-		toResolveList.clear();
 		set.clear();
+		toResolveList.clear();
+		toResolveList=null;
+
 	}
+	public void resolveHistoryForExtraResolver() {
+		/**
+		 * 这里已经在前一轮中已经做了排重,并且extraToResolveList不会为null
+		 */
+		for (Object o: extraToResolveList){
+			this.extraResolver.resolve(o);
+		}
+		this.extraToResolveList.clear();
+		this.extraToResolveList = null;
+	}
+
 
 	public final void valid() {
 		IAnnoForAttrHandler[] handlers = PluginEnvirement.getInstance()
@@ -82,70 +120,33 @@ public class AnnotationResolveHelper {
 
 	public final void resolveOne(Object obj) {
 		// 初始化以前先保留
-		if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_INITING) {
+		if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_RESOLVING_HIST) {
 			this.toResolveList.add(obj);
 			return;
 		}
-		// 初始化以后就操作
-		if (handlers == null)
-			init();
 
-		if (String.class.equals(obj.getClass()))
-			return;
-
-		List<Field> fields = ReflactKit.getAllFields(obj);
-		for (Field field : fields) {
-			for (int i = 0; i < annoClassArr.length; i++) {
-				if (field.isAnnotationPresent(annoClassArr[i])) {
-					try {
-						handleAnnoted(obj, field, handlers[i]);
-					} catch (Exception e) {
-						throw new RuntimeException("Error to handle annotation ref: class =" + obj.getClass().getName()
-								+ "  field=" + field.getName(), e);
-					}
-				}
+		//Resolve 属性
+		this.defaultResolver.resolve(obj);
+		if (this.extraResolver!=null){
+			if (this.pluginEnvirement.getStateLevel()==PluginEnvirement.STAT_LEVEL_RESOLVING_HIST){
+				// 等于 STAT_LEVEL_RESOLVING_HIST，放入队列
+				this.extraToResolveList.add(obj);
+			}else{
+				//大于 STAT_LEVEL_RESOLVING_HIST，直接执行
+				this.extraResolver.resolve(obj);
 			}
 		}
-		
-		//
+
+		//初始化
 		if (obj instanceof Initializable){
-			((Initializable)obj).initialize();
+			if (this.pluginEnvirement.getStateLevel() < PluginEnvirement.STAT_LEVEL_INITING){
+				//暂缓初始化
+				toInitingList.add(obj);
+			}else {
+				((Initializable) obj).initialize();
+			}
 		}
 	}
 
-	private void init() {
-		handlers = PluginEnvirement.getInstance().getExtensionPoint(net.jplugin.core.kernel.Plugin.EP_ANNO_FOR_ATTR)
-				.getExtensionObjects(IAnnoForAttrHandler.class);
-		annoClassArr = new Class[handlers.length];
-		for (int i = 0; i < handlers.length; i++) {
-			annoClassArr[i] = handlers[i].getAnnoClass();
-		}
-	}
 
-	private void handleAnnoted(Object obj, Field field, IAnnoForAttrHandler h) {
-		Object oldV;
-		oldV = ReflactKit.getFieldValueForce(field, obj);
-
-		if (oldV != null) {
-			if (Modifier.isStatic(field.getModifiers()))
-				return;
-			else
-				throw new RuntimeException("None static JPlugin annotated attribute value must be init as null."
-						+ obj.getClass().getName());
-		}
-
-		if (!h.getAttrClass().isAssignableFrom(field.getType()))
-			throw new RuntimeException(
-					"The type of annotated attribute " + h.getAnnoClass().getName() + " must be subclass of "
-							+ h.getAttrClass() + " ," + obj.getClass().getName() + "." + field.getName());
-
-		Annotation anno = field.getAnnotation(h.getAnnoClass());
-		Object newV = h.getValue(obj, field.getType(),field, anno);
-		if (newV == null)
-			throw new RuntimeException("Annotated attribute value retrived null: " + h.getAnnoClass().getName() + " ,"
-					+ obj.getClass().getName() + "." + field.getName());
-		else {
-			ReflactKit.setFieldValueForce(field, obj, newV);
-		}
-	}
 }

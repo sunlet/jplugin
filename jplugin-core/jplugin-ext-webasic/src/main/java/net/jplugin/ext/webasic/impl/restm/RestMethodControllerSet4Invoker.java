@@ -1,28 +1,19 @@
 package net.jplugin.ext.webasic.impl.restm;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.jplugin.common.kits.http.ContentKit;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.kernel.api.ctx.RequesterInfo;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.ext.webasic.api.IControllerSet;
-import net.jplugin.ext.webasic.api.ObjectDefine;
 import net.jplugin.ext.webasic.impl.restm.invoker.CallParam;
-import net.jplugin.ext.webasic.impl.restm.invoker.IServiceInvoker;
-import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvoker;
 import net.jplugin.ext.webasic.impl.restm.invoker.ServiceInvokerSet;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -34,7 +25,8 @@ public class RestMethodControllerSet4Invoker implements IControllerSet{
 
 	Set<String> servicePathSet = new HashSet();
 	public void init() {
-		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
+		Map<String, Object> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.core.service.Plugin.EP_SERVICE_EXPORT,Object.class);
+//		Map<String, ObjectDefine> defs = PluginEnvirement.getInstance().getExtensionMap(net.jplugin.ext.webasic.Plugin.EP_RESTMETHOD,ObjectDefine.class);
 		servicePathSet.addAll(defs.keySet());
 		ServiceInvokerSet.instance.addServices(defs);
 	}

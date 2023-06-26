@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import javax.servlet.ServletException;
 
+import jplugincoretest.service.Plugin;
 import net.jplugin.common.kits.http.HttpKit;
 import net.jplugin.common.kits.http.mock.HttpMock;
 import net.jplugin.common.kits.http.mock.HttpServletRequestMock;
@@ -34,7 +35,7 @@ import net.luis.testautosearch.StartupAnnoTest;
 
 /**
  * 
- * @author: LiuHang
+ * @author: sunlet
  * @version ����ʱ�䣺2015-3-8 ����12:39:43
  **/
 
@@ -47,10 +48,11 @@ public class Main {
 	 */
 	public static void main(String[] args) throws InterruptedException,
 			SQLException, ClassNotFoundException {
+
+		System.out.println(System.getProperty("java.class.path"));
+
 		PluginAutoDetect.addAutoDetectPackage("net.luis");
-//		System.setProperty("testAll","false");
-		System.setProperty("testAll","true");
-		System.setProperty("testTarget","test.net.jplugin.core.das.mybatis.Plugin");
+		PluginAutoDetect.addAutoDetectPackage("jplugincoretest");
 		System.out.println("testAll="+System.getProperty("testAll")+" testTarget="+System.getProperty("testTarget"));
 		PluginEnvirement.INSTANCE.setUnitTesting(true);
 		HttpKit.setUnitTesting(true);

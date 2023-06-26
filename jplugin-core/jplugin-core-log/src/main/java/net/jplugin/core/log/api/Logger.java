@@ -34,7 +34,10 @@ public interface Logger {
 
 	public abstract void fatal(Object message);
 
+	@Deprecated
 	public abstract Level getLevel();
+
+	public abstract int getLoggerLevel();
 
 	public abstract void info(Object message, Throwable t);
 
@@ -42,11 +45,18 @@ public interface Logger {
 
 	public abstract boolean isDebugEnabled();
 
+	@Deprecated
 	public abstract boolean isEnabledFor(Priority level);
+
+	public abstract boolean isEnabledFor(int level);
 
 	public abstract boolean isInfoEnabled();
 
 	public abstract boolean isTraceEnabled();
+
+	public abstract boolean isErrorEnabled();
+
+	public abstract boolean isWarnEnabled();
 
 	public abstract void warn(Object message, Throwable t);
 

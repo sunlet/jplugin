@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: net.jplugin.core:jplugin-core-log:0.0.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/jplugin/core/jplugin-core-log/0.0.2-SNAPSHOT/jplugin-core-log-0.0.2-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/net/jplugin/core/jplugin-core-log/0.0.2-SNAPSHOT/jplugin-core-log-0.0.2-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/jplugin/core/jplugin-core-log/0.0.2-SNAPSHOT/jplugin-core-log-0.0.2-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

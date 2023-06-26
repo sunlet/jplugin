@@ -1,5 +1,8 @@
 package net.jplugin.common.kits.filter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FilterManager<T> {
 	// 初始化一个空的头节点
 	FilterChain<T> chain = new FilterChain<T>();
@@ -48,4 +51,15 @@ public class FilterManager<T> {
 			}
 		}
 	}
+
+	public IFilter[] _getFilterListForDebug(){
+		List<IFilter> list = new ArrayList<>();
+		FilterChain fc = chain.next;
+		while(fc!=null){
+			list.add(fc.filter);
+			fc = fc.next;
+		}
+		return list.toArray(new IFilter[list.size()]);
+	}
+
 }

@@ -28,9 +28,9 @@ public class Plugin extends AbstractPlugin{
 	public static final String EP_EVENT_CONSUMER = "EP_EVENT_CONSUMER";
 
 	public Plugin(){
-		addExtensionPoint(ExtensionPoint.create(EP_EVENT_TYPES, String.class));
-		addExtensionPoint(ExtensionPoint.create(EP_EVENT_CONSUMER, EventConsumer.class));
-		addExtensionPoint(ExtensionPoint.create(EP_EVENT_TYPE_ALIAS, EventAliasDefine.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_EVENT_TYPES, String.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_EVENT_CONSUMER, EventConsumer.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_EVENT_TYPE_ALIAS, EventAliasDefine.class));
 		
 		addExtension(Extension.create(Constants.EP_SERVICE, Channel.class.getName(), ChannelFacade.class));
 	}

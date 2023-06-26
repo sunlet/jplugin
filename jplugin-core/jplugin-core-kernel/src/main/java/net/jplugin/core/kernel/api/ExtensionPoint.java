@@ -43,7 +43,11 @@ public class ExtensionPoint {
 	public static ExtensionPoint createList(String aName,Class<?> clazz){
 		return new ExtensionPoint(aName,clazz,Type.LIST);
 	}
-	
+
+	public Type getType() {
+		return type;
+	}
+
 	/**
 	 * 创建一个扩展点， 扩展为多个不限定名称的实例，支持优先级顺序。
 	 * @param aName
@@ -148,7 +152,7 @@ public class ExtensionPoint {
 	 * 运行阶段
 	 * @return
 	 */
-	private List<Extension> getExtensions(){
+	public List<Extension> getExtensions(){
 		return this.extensions;
 	}
 	
@@ -217,7 +221,7 @@ public class ExtensionPoint {
 	
 	public Map<String,Object> getExtensionMap(){
 		if (! (this.type==Type.NAMED)){
-			throw new RuntimeException("can't call getExtensionMap when extensionNameReqiredAndUnique is false");
+			throw new RuntimeException("can't call getExtensionMap when the extension point is not a NAMED one");
 		}
 		
 		if (this.extensionMap==null){

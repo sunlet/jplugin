@@ -1,6 +1,5 @@
 package net.jplugin.core.kernel.api;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,23 +36,27 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 	}
 	
-	public String toString() {
+	public String printContent() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\n").append(this.getName()).append("   Privority="+this.getPrivority());
-		sb.append("\n  ExtensionPoints:");
+		sb.append(this.getName());
+		sb.append("\n  ExtensionPoints(").append(extensionPoints.size()).append(") :");
 		for (int i=0;i<this.extensionPoints.size();i++) {
 			ExtensionPoint p = extensionPoints.get(i);
 			sb.append("\n    ");
-			sb.append(p.getName());
+			sb.append(p.getName() +"  { type="+p.getType()+" , baseCalss="+p.getExtensionClass().getName());
+			if (p.supportPriority()) sb.append("  SUPPORT_PRIORITY");
+			sb.append(" }");
 		}
 		
-		sb.append("\n  Extensions:");
+		sb.append("\n  Extensions(").append(extensions.size()).append(") :");
 		for (int i=0;i<this.extensions.size();i++) {
 			Extension e = extensions.get(i);
-			sb.append("\n    ").append("[");
-			sb.append(e.getExtensionPointName()).append(" ");
-			sb.append(e.getClazz().getName());
-			sb.append("]");
+			sb.append("\n    ").append("[ pointTo=");
+			sb.append(e.getExtensionPointName()).append(" , ");
+			sb.append("implClass=").append(e.getClazz().getName()).append(" , name=").append(e.getName());
+			if (StringKit.isNotNull(e.getId())) sb.append("  id=").append(e.getId());
+			if (e.getPriority()!=0) sb.append("  priority="+e.getPriority());
+			sb.append(" ]");
 		}
 		
 		return sb.toString();
@@ -88,7 +91,8 @@ public abstract class AbstractPlugin implements IPlugin {
 
 	public void addExtension(Extension e) {
 		this.extensions.add(e);
-		Beans.setLastExtension(e);
+//		Beans.setLastExtension(e);
+		Extension.lastAdded = e;
 	}
 
 	public void addConfigure(String name,String val){
@@ -136,25 +140,34 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	public List<PluginError> load() {
-		List<PluginError> errList = null;
-		// 如果不是初始状态，异常
-		if (this.status != IPlugin.STAT_INIT)
-			throw new RuntimeException(
-					"Not init state,can't call load,plugin name:"
-							+ this.getName());
+		try {
+			List<PluginError> errList = null;
+			// 如果不是初始状态，异常
+			if (this.status != IPlugin.STAT_INIT)
+				throw new RuntimeException(
+						"Not init state,can't call load,plugin name:"
+								+ this.getName());
 
-		//逐个加载
-		for (int i = 0; i < this.extensions.size(); i++) {
-			try {
-				this.extensions.get(i).load();
-			} catch (Exception e) {
-				if (errList==null){
-					errList = new ArrayList<PluginError>();
+			//逐个加载
+			for (int i = 0; i < this.extensions.size(); i++) {
+				try {
+					this.extensions.get(i).load();
+				} catch (Exception e) {
+//				if (errList==null){
+//					errList = new ArrayList<PluginError>();
+//				}
+					throw new RuntimeException("extension locad error." + this.extensions.get(i).getClazz() + " " + e.getMessage(), e);
+//				errList.add(new PluginError(this.getName(), "extension load error."+this.extensions.get(i).getClazz(),e));
 				}
-				errList.add(new PluginError(this.getName(), "extension load error."+this.extensions.get(i).getClazz(),e));
 			}
+			return errList;
+		}catch(Exception e){
+			PluginEnvirement.getInstance().getStartLogger().log("load error, Plugin="+this.getName()+"   msg="+e.getMessage(),e);
+			if (e instanceof  RuntimeException)
+				throw (RuntimeException)e;
+			else
+				throw new RuntimeException(e.getMessage(),e);
 		}
-		return errList;
 	}
 
 	/**
@@ -181,7 +194,7 @@ public abstract class AbstractPlugin implements IPlugin {
 			}else{
 				String msg = point.validAndAddExtension(e);
 				if (msg!=null) {
-					errorList.add(new PluginError(this.getName(),msg +"  EP="+point.getName()+" Extension="+e.getClass()+","+e.getName()));
+					errorList.add(new PluginError(this.getName(),msg +"  ExtensionPoint="+point.getName()+" ImplClazz="+e.getClazz()+", ExtensionName="+e.getName()));
 				}
 				
 //				if (point.validToAddExtensionByName(e.getName())){
@@ -237,11 +250,11 @@ public abstract class AbstractPlugin implements IPlugin {
 					errors.add(new PluginError(this.getName(),"The extension is not sub class of the point required. extClass="+e.getClazz()+" required="+finder.getExtensionClass()+" point="+pname));
 				}
 				
-				if (e.getClass().equals(String.class)){
-					if (e.getProperties().size()!=1){
-						errors.add(new PluginError(this.getName(),"String type extension must has one property with the val."+e.getName() +" pointname="+pname));
-					}
-				}
+//				if (e.getClass().equals(String.class)){
+//					if (e.getProperties().size()!=1){
+//						errors.add(new PluginError(this.getName(),"String type extension must has one property with the val."+e.getName() +" pointname="+pname));
+//					}
+//				}
 			}
 		}
 		//由于目前不采用配置文件，所以不用检查extension和point中的类的存在性了。
@@ -249,7 +262,7 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	/**
-	 * @param statError
+	 * @param st
 	 */
 	public void setStatus(int st) {
 		this.status = st;
@@ -295,13 +308,15 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 		return this.containedClasses;
 	}
-	
+
 	private List<String> getExcludePackages() {
 		List<String> result = new ArrayList(2);
 		String myPkg = this.getClass().getPackage().getName();
-		List<AbstractPlugin> list = PluginEnvirement.getInstance().getPluginRegistry().getPluginList();
-		for (AbstractPlugin p:list) {
-			String pkgname = p.getClass().getPackage().getName();
+		List<Class> list = PluginEnvirement.getInstance().getPluginRegistry().getPluginClasses();
+		for (Class p:list) {
+			if (this.getClass().equals(p))
+				continue;
+			String pkgname = p.getPackage().getName();
 			if (pkgname.equals(myPkg)) {
 				throw new RuntimeException("Duplicate plugin found  in one single package. "+this.getClass().getName()+" | "+ p.getClass().getName());
 			}else if (pkgname.startsWith(myPkg)){
@@ -310,6 +325,20 @@ public abstract class AbstractPlugin implements IPlugin {
 		}
 		return result;
 	}
+//	private List<String> getExcludePackages() {
+//		List<String> result = new ArrayList(2);
+//		String myPkg = this.getClass().getPackage().getName();
+//		List<AbstractPlugin> list = PluginEnvirement.getInstance().getPluginRegistry().getPluginList();
+//		for (AbstractPlugin p:list) {
+//			String pkgname = p.getClass().getPackage().getName();
+//			if (pkgname.equals(myPkg)) {
+//				throw new RuntimeException("Duplicate plugin found  in one single package. "+this.getClass().getName()+" | "+ p.getClass().getName());
+//			}else if (pkgname.startsWith(myPkg)){
+//				result.add(StringKit.replaceStr(pkgname , ".","/"));
+//			}
+//		}
+//		return result;
+//	}
 
 	public Set<Class> filterContainedClassesByChecker(String pkgPath, IClassChecker checker) {
 		AssertKit.assertTrue(StringKit.isNull(pkgPath) || pkgPath.startsWith("."));
@@ -347,5 +376,11 @@ public abstract class AbstractPlugin implements IPlugin {
 	}
 
 	public void afterPluginsContruct() {
+	}
+
+    public void afterPluginsLoad() {
+    }
+
+	public void afterWire() {
 	}
 }

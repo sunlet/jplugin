@@ -2,11 +2,7 @@ package net.jplugin.core.ctx;
 
 import java.util.Map;
 
-import net.jplugin.core.ctx.api.IRuleServiceFilter;
-import net.jplugin.core.ctx.api.ITransactionManagerListener;
-import net.jplugin.core.ctx.api.RuleServiceDefinition;
-import net.jplugin.core.ctx.api.RuleServiceFactory;
-import net.jplugin.core.ctx.api.TransactionManager;
+import net.jplugin.core.ctx.api.*;
 import net.jplugin.core.ctx.impl.DefaultRuleInvocationHandler;
 import net.jplugin.core.ctx.impl.RuleInvocationContext;
 import net.jplugin.core.ctx.impl.RuleServiceAttrAnnoHandler;
@@ -16,6 +12,8 @@ import net.jplugin.core.ctx.impl.TxMgrListenerManager;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineManager;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterDefineBean;
 import net.jplugin.core.ctx.impl.filter4clazz.RuleCallFilterManagerRuleFilter;
+import net.jplugin.core.ctx.impl.usetxincept.UseTransactionIncept;
+import net.jplugin.core.ctx.ruleincept.ExtensionInterceptor4Rule;
 import net.jplugin.core.kernel.api.AbstractPlugin;
 import net.jplugin.core.kernel.api.AutoBindExtensionManager;
 import net.jplugin.core.kernel.api.CoreServicePriority;
@@ -26,7 +24,11 @@ import net.jplugin.core.kernel.api.PluginAnnotation;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.service.api.Constants;
 import net.jplugin.core.service.api.ServiceFactory;
+import net.jplugin.core.service.api.UseTransaction;
 import net.jplugin.core.service.impl.ServiceAttrAnnoHandler;
+import net.jplugin.core.service.impl.esf.ESFHelper2;
+
+import static net.jplugin.core.service.Plugin.EP_SERVICE;
 
 /**
  *
@@ -55,10 +57,11 @@ public class Plugin extends AbstractPlugin{
 	
 	public Plugin(){
 
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, RuleServiceDefinition.class,true));
-		addExtensionPoint(ExtensionPoint.create(EP_TXMGR_LISTENER, ITransactionManagerListener.class,false));
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE_FILTER, IRuleServiceFilter.class,false));
-		addExtensionPoint(ExtensionPoint.create(EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class,false));
+//		addExtensionPoint(ExtensionPoint.create(EP_RULE_SERVICE, RuleServiceDefinition.class,true));
+		addExtensionPoint(ExtensionPoint.createNamed(EP_RULE_SERVICE, Object.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_TXMGR_LISTENER, ITransactionManagerListener.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_RULE_SERVICE_FILTER, IRuleServiceFilter.class));
+		addExtensionPoint(ExtensionPoint.createList(EP_RULE_METHOD_INTERCEPTOR, RuleCallFilterDefineBean.class));
 		
 		
 		addExtension(Extension.create(Constants.EP_SERVICE, RuleServiceFactory.class.getName(),RuleServiceFactory.class));
@@ -67,6 +70,15 @@ public class Plugin extends AbstractPlugin{
 		ExtensionKernelHelper.addAnnoAttrHandlerExtension(this, RuleServiceAttrAnnoHandler.class);
 		
 		ExtensionCtxHelper.addRuleServiceFilterExtension(this,RuleCallFilterManagerRuleFilter.class );
+
+		//ExtensionInterceptor方式支持Rule
+		ExtensionKernelHelper.addExtensionInterceptorExtension(this, ExtensionInterceptor4Rule.class,null,EP_RULE_SERVICE,null,"*" , null);
+		//因为这个执行的时候会把后面的filter忽略掉，所以要把优先级设为最大值
+		Extension.setLastExtensionPriority(Integer.MAX_VALUE);
+
+		//Service支持UseTransaction方法标注
+		ExtensionKernelHelper.addExtensionInterceptorExtension(this, UseTransactionIncept.class,null,EP_SERVICE,null,null , UseTransaction.class);
+
 	}
 	/* (non-Javadoc)
 	 * @see net.luis.common.kernel.AbstractPlugin#getPrivority()
@@ -98,15 +110,16 @@ public class Plugin extends AbstractPlugin{
 		
 		RuleServiceFactory ruleSvcFactory = ServiceFactory.getService(RuleServiceFactory.class);
 //		RuleServiceDefinition[] defs = PluginEnvirement.getInstance().getExtensionObjects(EP_RULE_SERVICE, RuleServiceDefinition.class);
-		Map<String,RuleServiceDefinition> defs = PluginEnvirement.getInstance().getExtensionMap(EP_RULE_SERVICE,RuleServiceDefinition.class);
-		ruleSvcFactory.init(defs);
+//		Map<String,RuleServiceDefinition> defs = PluginEnvirement.getInstance().getExtensionMap(EP_RULE_SERVICE,RuleServiceDefinition.class);
+//		ruleSvcFactory.init(defs);
+		ruleSvcFactory.init();
 		
 		TxMgrListenerManager.init();
 		
 		DefaultRuleInvocationHandler.init();
 	
 		//注册一下这个扩展的resolver
-		ServiceAttrAnnoHandler.serviceExtensionResolver = new ServiceExtensionResolver();
+//		ServiceAttrAnnoHandler.serviceExtensionResolver = new ServiceExtensionResolver();
 	}
 	public void init() {
 		// TODO Auto-generated method stub

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.core.rclient.handler.ClientHandlerRegistry;
-import net.jplugin.core.rclient.handler.JavaRemotHandler;
+//import net.jplugin.core.rclient.handler.JavaRemotHandler;
 import net.jplugin.core.rclient.handler.ClientProxyUtil;
 import net.jplugin.core.rclient.handler.RestHandler;
 

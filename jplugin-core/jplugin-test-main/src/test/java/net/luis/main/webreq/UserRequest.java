@@ -1,16 +1,20 @@
 package net.luis.main.webreq;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jplugin.common.kits.AssertKit;
+import net.jplugin.common.kits.http.HttpKit;
+import net.jplugin.common.kits.http.HttpStatusException;
 import net.jplugin.ext.webasic.api.IController;
 
 /**
  *
  * @author: LiuHang
- * @version ´´½¨Ê±¼ä£º2015-3-14 ÏÂÎç03:56:28
+ * @version ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º2015-3-14 ï¿½ï¿½ï¿½ï¿½03:56:28
  **/
 
 public class UserRequest{
@@ -20,7 +24,12 @@ public class UserRequest{
 		sb.append("<tr><td>aaaa</td><td>bbb</td></tr>");
 		sb.append("</table>");
 		
-		res.getWriter().println(sb.toString());
+		res.getWriter().print(sb.toString());
+	}
+
+	public static void test() throws HttpStatusException, IOException {
+		String result = HttpKit.post("http://localhost:8080/demo/userreq/showAddPage.do", new HashMap());
+		AssertKit.assertEqual(result,"<table><tr><td>aaaa</td><td>bbb</td></tr></table>");
 	}
 
 }

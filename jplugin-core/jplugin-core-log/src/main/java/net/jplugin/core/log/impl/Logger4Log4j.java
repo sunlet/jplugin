@@ -66,6 +66,11 @@ public class Logger4Log4j implements Logger {
 		return getLogLevel();
 	}
 
+	@Override
+	public int getLoggerLevel() {
+		return getLogLevel().toInt();
+	}
+
 	public void info(Object message, Throwable t) {
 		log(Level.INFO,message,t);
 	}
@@ -86,12 +91,42 @@ public class Logger4Log4j implements Logger {
 		return isLogEnabled(level);
 	}
 
+	@Override
+	public boolean isEnabledFor(int level) {
+		switch (level){
+			case Level.ALL_INT:
+				return isLogEnabled(Level.ALL);
+			case Level.DEBUG_INT:
+				return isLogEnabled(Level.DEBUG);
+			case Level.INFO_INT:
+				return isLogEnabled(Level.INFO);
+			case Level.WARN_INT:
+				return isLogEnabled(Level.WARN);
+			case Level.ERROR_INT:
+				return isLogEnabled(Level.ERROR);
+			case Level.FATAL_INT:
+				return isLogEnabled(Level.FATAL);
+			default:
+				throw new RuntimeException("error log level:"+level);
+		}
+	}
+
 	public boolean isInfoEnabled() {
 		return isLogEnabled(Level.INFO);
 	}
 
 	public boolean isTraceEnabled() {
 		return isLogEnabled(Level.TRACE);
+	}
+
+	@Override
+	public boolean isErrorEnabled() {
+		return isLogEnabled(Level.ERROR);
+	}
+
+	@Override
+	public boolean isWarnEnabled() {
+		return isLogEnabled(Level.WARN);
 	}
 
 	public void warn(Object message, Throwable t) {
@@ -114,10 +149,11 @@ public class Logger4Log4j implements Logger {
 		
 		return logger.getLevel();
 	}
+
 	private boolean isLogEnabled(Priority level){
 		if (logger == null) 
 			return true;
-		
+
 		return logger.isEnabledFor(level);
 	}
 	private void log(Level level,Object message){

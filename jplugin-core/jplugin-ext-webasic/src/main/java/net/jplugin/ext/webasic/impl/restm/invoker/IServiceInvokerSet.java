@@ -2,8 +2,6 @@ package net.jplugin.ext.webasic.impl.restm.invoker;
 
 import java.util.Map;
 import java.util.Set;
-
-import net.jplugin.ext.webasic.api.ObjectDefine;
 /**
   * 
  * <P>该接口用户已文本形式调用一个已经发布的Rest服务，并得到返回结果。<br>
@@ -29,5 +27,5 @@ public interface IServiceInvokerSet {
 	public Set<String> getAcceptPaths();
 	//为了支持ESF添加
 	public IServiceInvoker getServiceInvoker(String path);
-	public void addServices(Map<String, ObjectDefine> defs);
+	public void addServices(Map<String, Object> defs);
 }
