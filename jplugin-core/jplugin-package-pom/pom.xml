@@ -4,18 +4,42 @@
     <groupId>net.jplugin.pom</groupId>
     <artifactId>base</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.1.0-SNAPSHOT</version>
 
     <properties>
         <!--主版本号,core,das,mvc,各个pom版本号-->
-        <main-version>3.0.0-SNAPSHOT</main-version>
-        <jplugin-for-spring-version>3.0.0-SNAPSHOT</jplugin-for-spring-version>
-        <jplugin-request-recoder-version>3.0.0-SNAPSHOT</jplugin-request-recoder-version>
-        <jplugin-embed-tomcat-version>3.0.0-SNAPSHOT</jplugin-embed-tomcat-version>
+        <main-version>3.1.0-SNAPSHOT</main-version>
+        <jplugin-for-spring-version>3.0.0</jplugin-for-spring-version>
+        <jplugin-request-recoder-version>3.0.0</jplugin-request-recoder-version>
+        <jplugin-embed-tomcat-version>3.0.0</jplugin-embed-tomcat-version>
         <slf4j-log4j12-version>1.7.25</slf4j-log4j12-version>
-        <jplugin-app-notify-version>3.0.0-SNAPSHOT</jplugin-app-notify-version>
-        <jplugin-source-gen-version>3.0.0-SNAPSHOT</jplugin-source-gen-version>
+        <jplugin-app-notify-version>3.0.0</jplugin-app-notify-version>
+        <jplugin-source-gen-version>3.0.0</jplugin-source-gen-version>
     </properties>
+
+    <name>jplugin-pom-base</name>
+    <description>Jplugin project base pom</description>
+    <url>http://github.com/sunlet</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>sunlet</name>
+            <email>jplugin@163.com</email>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/sunlet/jplugin.git</connection>
+        <developerConnection>scm:git:ssh://github.com:sunlet/jplugin.git</developerConnection>
+        <url>http://github.com/sunlet/jplugin/tree/master</url>
+    </scm>
+
 
     <dependencyManagement>
         <dependencies>
@@ -91,8 +115,47 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+
+            <!-- 往Maven中央仓库发布需要的插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- Set this to true and the release will automatically proceed and sync to Central Repository will follow  -->
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <!--上面两个用来往maven中央仓库发布需要-->
+
+
         </plugins>
+
     </build>
+
+
+
+
+
+
 
     <distributionManagement>
         <!--RELEASE版发布到中央-->
