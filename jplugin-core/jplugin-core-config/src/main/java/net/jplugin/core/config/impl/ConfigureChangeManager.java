@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
-
 import net.jplugin.common.kits.StringMatcher;
 import net.jplugin.core.config.Plugin;
 import net.jplugin.core.config.api.ConfigChangeManager;
