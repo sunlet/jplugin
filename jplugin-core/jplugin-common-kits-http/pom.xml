@@ -69,6 +69,56 @@
 					</execution>
 				</executions>
 			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<configuration>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>true</minimizeJar>
+							<createSourcesJar>true</createSourcesJar>
+							<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+							<!-- 包含要合并的模块 -->
+							<artifactSet>
+								<includes>
+									<include>cn.hutool:hutool-all</include>
+								</includes>
+							</artifactSet>
+							<filters>
+<!--								<filter>-->
+<!--									<artifact>cn.hutool:hutool-all</artifact>-->
+<!--									<includes>-->
+<!--										<include>cn/hutool/**</include>-->
+<!--									</includes>-->
+<!--								</filter>-->
+							</filters>
+							<!-- 包含号合并的资源文件 -->
+							<!-- >transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <resource>META-INF/xxxxx </resource> </transformer> </transformers -->
+							<relocations>
+								<relocation>
+									<!-- 源包名 -->
+									<pattern>cn.hutool</pattern>
+									<!-- 目的包名 -->
+									<shadedPattern>net.jplugin.cn.hutool</shadedPattern>
+								</relocation>
+							</relocations>
+
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
