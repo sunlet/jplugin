@@ -8,6 +8,7 @@ import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.kernel.Plugin;
+import net.jplugin.core.kernel.api.compositeapp.ComponentModeConfig;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
@@ -385,6 +386,9 @@ public class PluginEnvirement {
 
 		//Construct
 		registry.construct();
+
+		//CompositeApp
+		ComponentModeConfig.initPluginAppCodeMapping();
 
 		this.stateLevel = STAT_LEVEL_CONSTRUCTED;
 
