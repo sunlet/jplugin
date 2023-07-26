@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import net.jplugin.common.kits.ObjectKit;
 import net.jplugin.common.kits.PritiveKits;
+import net.jplugin.core.config.api.CompConfigFactory;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.RefConfig;
 import net.jplugin.core.config.impl.autofresh.RefConfigAutoRefresher;
@@ -26,8 +27,15 @@ public class AnnoForAttrHandler implements IAnnoForAttrHandler<RefConfig> {
 		
 		RefConfigAutoRefresher.instance.handleAutoFresh(theObject,f,anno);
 		
-		String val = ConfigFactory.getStringConfig(anno.path(),anno.defaultValue());
+		String val = getStringConfigValue(theObject,anno.path(),anno.defaultValue());
 		return PritiveKits.getTransformer(fieldType).fromString(fieldType,val);
+	}
+
+	private String getStringConfigValue(Object theObject, String path, String defaultValue) {
+//		if (theObject.getClass().getName().startsWith("net.jplugin"))
+//			return ConfigFactory.getStringConfig(path,defaultValue);
+//		else
+			return CompConfigFactory.getStringConfig(path,defaultValue);
 	}
 
 	@Override

@@ -40,7 +40,7 @@ class ComponentModeConfigHelper {
      */
     private static String getAppCode(String jarPath){
         try (JarFile jarFile = new JarFile(jarPath)){
-            JarEntry entry =jarFile.getJarEntry("META-INF/composite-app.properties");
+            JarEntry entry =jarFile.getJarEntry("META-INF/jplugin-component.properties");
             try(InputStream stream = jarFile.getInputStream(entry)){
                 if (stream==null)
                     return null;

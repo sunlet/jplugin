@@ -381,14 +381,16 @@ public class PluginEnvirement {
 		//add plugin classes
 		registry.addPluginClasses(pluginToLoad);
 
+		//CompositeApp
+		ComponentModeConfig.initPluginAppCodeMapping();
+
 		//Prepare
 		registry.prepare();
 
 		//Construct
 		registry.construct();
 
-		//CompositeApp
-		ComponentModeConfig.initPluginAppCodeMapping();
+
 
 		this.stateLevel = STAT_LEVEL_CONSTRUCTED;
 

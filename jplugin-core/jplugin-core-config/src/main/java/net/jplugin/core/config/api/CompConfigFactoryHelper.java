@@ -22,7 +22,7 @@ import java.util.Set;
  * </PRE>
  */
 class CompConfigFactoryHelper {
-    private static final String EXPINFO = "Can't inference composite app info , ";
+    private static final String EXPINFO = "Can't inference composite app info , perhaps the jplugin-component.properties is not packed in the component jar , ";
 
     public static String getStringConfig(String path, String def){
         String val = _getStringConfig(path);
