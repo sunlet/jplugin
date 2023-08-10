@@ -1,9 +1,9 @@
-package net.jplugin.core.config.api;
+package net.jplugin.core.config.comp;
 
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.tuple.Tuple2;
-import net.jplugin.core.kernel.api.compositeapp.ComponentModeConfig;
-
+import net.jplugin.core.config.api.IConfigProvidor;
+import net.jplugin.core.kernel.api.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +21,7 @@ import java.util.Set;
  * 另一个是 getGroups(appcode)，不用推理，appcode直接传入了。
  * </PRE>
  */
-class CompConfigFactoryHelper {
+public class CompConfigFactoryHelper {
     private static final String EXPINFO = "Can't inference composite app info , perhaps the jplugin-component.properties is not packed in the component jar , ";
 
     public static String getStringConfig(String path, String def){
@@ -29,11 +29,14 @@ class CompConfigFactoryHelper {
         if (StringKit.isNull(val)) return def;
         else return val;
     }
+
     public static String getStringConfig(String path){
         return getStringConfig(path,null);
     }
     public static String getStringConfigWithTrim(String path){
         String v = getStringConfig(path,null);
+
+
         if (v!=null)
             v = v.trim();
         return v;
@@ -134,13 +137,18 @@ class CompConfigFactoryHelper {
             if (pos<0) throw new RuntimeException("error config path:"+path);
             return Tuple2.with(path.substring(1, pos),path.substring(pos));
         }else{
-            String appcode = ComponentModeConfig.getCurrThreadAppCode();
-            if (StringKit.isNotNull(appcode))
-                return Tuple2.with(appcode,path);
+            Component comp = ComponentInfoManager.getComponentFromThreadStack();
+            String appcode = comp.getComponentCode();
+
+            if (StringKit.isNull(appcode)){
+                throw new RuntimeException("Got null appcode for component, path:"+ comp.getStorePath());
+            }else {
+                return Tuple2.with(appcode, path);
+            }
         }
         //以上规则都没有命中
 
-        return null;
+//        return null;
     }
 
     private static void checkExists(String appcode) {

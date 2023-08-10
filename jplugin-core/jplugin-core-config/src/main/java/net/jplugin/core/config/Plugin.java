@@ -5,6 +5,7 @@ import net.jplugin.core.config.api.CloudEnvironment;
 import net.jplugin.core.config.api.ConfigChangeManager;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.IConfigChangeHandler;
+import net.jplugin.core.config.comp.ComponentInfoManager;
 import net.jplugin.core.config.impl.AnnoForAttrHandler;
 import net.jplugin.core.config.impl.ConfigChangeHandlerDef;
 import net.jplugin.core.config.impl.ConfigRepository;
@@ -39,11 +40,17 @@ public class Plugin extends AbstractPlugin{
 		ConfigFactory._setLocalConfigProvidor(repo);
 		Extension.propertyFilter = new PropertyFilter();
 
+		//初始化CompoentMode
+		CloudEnvironment.initComponentMode();
+
 		//初始化CloudEnvirement
 		CloudEnvironment.INSTANCE.loadFromConfig();
 		//从BaiscConfig初始化,两套初始化只能有一个生效
 
-
+		//Component模式，才启动初始化
+		if (CloudEnvironment.isUseComponentMode()) {
+			ComponentInfoManager.init();
+		}
 	}
 
 	public Plugin(){

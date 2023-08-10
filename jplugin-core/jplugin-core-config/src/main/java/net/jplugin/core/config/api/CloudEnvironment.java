@@ -40,6 +40,7 @@ public class CloudEnvironment {
     public static final String NACOS_USER = "nacos-user";
     public static final String NACOS_PWD = "nacos-pwd";
 
+    private static Boolean useComponentMode = null;
     /**
      * embbed tomcat 情况下获取默认的rpc端口。
      */
@@ -56,6 +57,7 @@ public class CloudEnvironment {
     private String boundIp;
 
     private boolean inited = false;
+
 
     private CloudEnvironment() {
     }
@@ -212,4 +214,23 @@ public class CloudEnvironment {
         return map;
     }
 
+
+    /**
+     * 注意，静态方法
+     * @return
+     */
+    public static boolean isUseComponentMode() {
+        if (useComponentMode==null)
+            throw new RuntimeException("not init yet");
+        return useComponentMode;
+    }
+
+    public static void initComponentMode() {
+        if (PluginEnvirement.INSTANCE.getStateLevel()> PluginEnvirement.STAT_LEVEL_PREPAREING)
+            throw new RuntimeException("error state");
+
+        useComponentMode = Boolean.valueOf(ConfigFactory.getStringConfig("local.use-component-mode", "false"));
+
+        PluginEnvirement.INSTANCE.getStartLogger().log("$$$ useComponentMode inited , value:"+useComponentMode);
+    }
 }

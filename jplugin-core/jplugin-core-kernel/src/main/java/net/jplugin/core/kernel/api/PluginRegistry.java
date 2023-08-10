@@ -20,6 +20,7 @@ public class PluginRegistry {
 	private Hashtable<String, ExtensionPoint> extensionPointMap = new Hashtable<String, ExtensionPoint>();
 	private Map<String, AbstractPlugin> loadedPluginMap = new Hashtable<String, AbstractPlugin>();
 	private List<Class> pluginClasses=new ArrayList<>();
+	private PluginRegistryHelperComponent compHelper = new PluginRegistryHelperComponent();
 
 	public String printContent(boolean reverse) {
 		StringBuffer sb = new StringBuffer();
@@ -37,7 +38,6 @@ public class PluginRegistry {
 		return sb.toString();
 	}
 
-
 	public List<PluginError> getErrors() {
 		return this.errorList;
 	}
@@ -46,6 +46,9 @@ public class PluginRegistry {
 		return Collections.unmodifiableList(this.pluginList);
 	}
 
+	public Component getComponentByClazz(Class clazz){
+		return this.compHelper.getComponentByClazz(clazz);
+	}
 
 	public void addPluginClasses(Set<Object> pluginToLoad) {
 		for (Object name:pluginToLoad){
@@ -55,6 +58,9 @@ public class PluginRegistry {
 				throw new RuntimeException("The plugin class not found:"+name);
 			}
 		}
+
+		//初始化componentHelper
+		this.compHelper.init(this.pluginClasses);
 	}
 //	/**
 //	 * @param plugin

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.comp.ComponentInfoManager;
 import net.jplugin.core.kernel.api.PluginEnvirement;
 /**
 *
@@ -90,6 +91,9 @@ public class ConfigFactory {
 	 * @return
 	 */
 	private static String _getStringConfig(String path){
+		ComponentInfoManager.checkErrorCallPlatformConfig();
+
+
 		if (localConfigProvidor.containsConfig(path))
 			return localConfigProvidor.getConfigValue(path);
 		

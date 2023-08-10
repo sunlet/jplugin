@@ -8,7 +8,6 @@ import net.jplugin.common.kits.FileKit;
 import net.jplugin.common.kits.PropertiesKit;
 import net.jplugin.common.kits.tuple.Tuple2;
 import net.jplugin.core.kernel.Plugin;
-import net.jplugin.core.kernel.api.compositeapp.ComponentModeConfig;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContext;
 import net.jplugin.core.kernel.api.ctx.ThreadLocalContextManager;
 import net.jplugin.core.kernel.impl.AnnotationResolveHelper;
@@ -45,6 +44,7 @@ public class PluginEnvirement {
 	public static final String WORK_DIR = "work-dir";
 	public static PluginEnvirement INSTANCE = new PluginEnvirement();
 	private PluginRegistry registry = new PluginRegistry();
+
 //	private StartupLogger startupLog = new StartupLogger();
 	String workdir=null;
 	private AnnotationResolveHelper annoResolveHelper=new AnnotationResolveHelper(this);
@@ -82,7 +82,7 @@ public class PluginEnvirement {
 	public int getStateLevel(){
 		return this.stateLevel;
 	}
-	
+
 	public boolean isUnitTesting() {
 		return unitTesting;
 	}
@@ -380,9 +380,6 @@ public class PluginEnvirement {
 
 		//add plugin classes
 		registry.addPluginClasses(pluginToLoad);
-
-		//CompositeApp
-		ComponentModeConfig.initPluginAppCodeMapping();
 
 		//Prepare
 		registry.prepare();

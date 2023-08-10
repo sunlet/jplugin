@@ -4,10 +4,14 @@ import java.lang.reflect.Field;
 
 import net.jplugin.common.kits.ObjectKit;
 import net.jplugin.common.kits.PritiveKits;
+import net.jplugin.common.kits.StringKit;
+import net.jplugin.core.config.api.CloudEnvironment;
 import net.jplugin.core.config.api.CompConfigFactory;
 import net.jplugin.core.config.api.ConfigFactory;
 import net.jplugin.core.config.api.RefConfig;
+import net.jplugin.core.config.comp.ComponentInfoManager;
 import net.jplugin.core.config.impl.autofresh.RefConfigAutoRefresher;
+import net.jplugin.core.kernel.api.Component;
 import net.jplugin.core.kernel.api.IAnnoForAttrHandler;
 
 public class AnnoForAttrHandler implements IAnnoForAttrHandler<RefConfig> {
@@ -35,7 +39,20 @@ public class AnnoForAttrHandler implements IAnnoForAttrHandler<RefConfig> {
 //		if (theObject.getClass().getName().startsWith("net.jplugin"))
 //			return ConfigFactory.getStringConfig(path,defaultValue);
 //		else
-			return CompConfigFactory.getStringConfig(path,defaultValue);
+		if (CloudEnvironment.isUseComponentMode()) {
+			Component comp = ComponentInfoManager.getComponentFromClass(theObject.getClass());
+			if (comp != null && !comp.isPlatform()) {
+				if (StringKit.isNull(comp.getComponentCode())){
+					throw new RuntimeException("component code is null , and not platform component "+comp);
+				}
+				path = "@"+comp.getComponentCode()+"/"+path;
+				return CompConfigFactory.getStringConfig(path, defaultValue);
+			} else {
+				return ConfigFactory.getStringConfig(path, defaultValue);
+			}
+		}else{
+			return ConfigFactory.getStringConfig(path, defaultValue);
+		}
 	}
 
 	@Override

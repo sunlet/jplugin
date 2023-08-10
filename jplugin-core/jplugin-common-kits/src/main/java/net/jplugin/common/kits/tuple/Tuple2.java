@@ -23,6 +23,10 @@ public final class Tuple2<A, B> extends Tuple {
         this.second = second;
     }
 
+    public String toString(){
+        return "[ "+ first+","+second+" ]";
+    }
+
     public static <A, B> Tuple2<A, B> with(final A first, final B second) {
         return new Tuple2<>(first, second);
     }
