@@ -1,5 +1,6 @@
 package net.jplugin.common.kits.http;
 
+import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import net.jplugin.common.kits.AssertKit;
@@ -124,6 +125,16 @@ public final class HttpKit {
 
         //设置headers
         request.addHeaders(extHeaders);
+        
+        //单独处理cookie，目前cookie的传递也是放在header里的，hutool框架对cookie是单独处理的
+        String cookie = extHeaders.get(Header.COOKIE.getValue());
+        if (StringKit.isNotNullAndBlank(cookie)) {
+            request.cookie(cookie);
+        } else {
+            //适配下cookie的key全小写
+            String c = extHeaders.get(Header.COOKIE.getValue().toLowerCase());
+            request.cookie(c);
+        }
 
         //下面设置http调用参数
         useInvokeParam(request);
