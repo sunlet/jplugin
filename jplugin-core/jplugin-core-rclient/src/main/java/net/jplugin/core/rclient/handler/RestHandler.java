@@ -12,13 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.HttpHostConnectException;
 
 import net.jplugin.common.kits.JsonKit;
 import net.jplugin.common.kits.StringKit;
 import net.jplugin.common.kits.http.HttpKit;
 import net.jplugin.common.kits.http.HttpStatusException;
+import net.jplugin.core.kernel.api.PluginEnvirement;
 import net.jplugin.core.rclient.api.Client;
 import net.jplugin.core.rclient.api.ClientInfo;
 import net.jplugin.core.rclient.api.IClientHandler;
@@ -105,13 +104,20 @@ public static final Object MIX_PARA_VALUE = "1";
 			private String httpKitPost(String url, HashMap<String, Object> map, Map<String, String> headerMap) throws IOException, HttpStatusException {
 				try{
 					return HttpKit.postWithHeader(url, map,headerMap);
-				}catch(org.apache.http.conn.HttpHostConnectException e){
-					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
-					throw e;
-				}catch(org.apache.http.conn.ConnectTimeoutException e){
-					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
+				}catch(Exception e){
+//					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
+					//改用hutu访问http服务，这个版本暂时不处理链接失败的情况
+					PluginEnvirement.getInstance().getStartLogger().log("改用hutu访问http服务，这个版本暂时不处理链接失败的情况!");
 					throw e;
 				}
+
+//				}catch(org.apache.http.conn.HttpHostConnectException e){
+//					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
+//					throw e;
+//				}catch(org.apache.http.conn.ConnectTimeoutException e){
+//					ClientFailHandlerManager.connectFailed(Client.PROTOCOL_REST, url);
+//					throw e;
+//				}
 			}
 
 			private Object json2ObjectWithGenericType(String content, Class<?> rettype, Type generictype) {
