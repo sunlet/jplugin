@@ -183,7 +183,7 @@
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://maven-server:8081/nexus/content/repositories/snapshots/</url>
+			<url>https://maven-server:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 		<!--		<snapshotRepository>-->
 		<!--			<id>ossrh</id>-->
